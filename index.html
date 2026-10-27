@@ -160,6 +160,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
 #hdr{position:absolute;left:0;right:0;top:0;height:calc(env(safe-area-inset-top) + 50px);padding-top:env(safe-area-inset-top);background:var(--glass);-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);border-bottom:.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;letter-spacing:-.01em;z-index:4;transform:translateY(-100%);opacity:0;transition:transform .35s var(--spring),opacity .25s}
 #hdr.on{transform:none;opacity:1}
 #fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:40}
+.mmap .body{fill:var(--card2);stroke:var(--line);stroke-width:1} .mmap path:not(.body){fill:rgba(120,120,128,.18);transition:fill .4s}
+.mmap path.mon{fill:#FF4F45;filter:url(#glow);animation:mpulse 1.6s ease-in-out infinite} @keyframes mpulse{50%{fill:#FF8A3D}} .mmap .lbl{font-size:11px;fill:var(--text2);font-family:var(--font)}
+
 #scroll{transition:transform .42s var(--spring),border-radius .42s} #phone.modal #scroll{transform:scale(.94);border-radius:36px}
 .okmark{width:92px;height:92px;border-radius:50%;background:rgba(31,181,126,.14);display:grid;place-items:center;margin:0 auto;animation:okpop .55s var(--spring)}
 .okmark svg{width:50px;height:50px;stroke:var(--ok);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
@@ -563,7 +566,8 @@ function vGym(){
     <div class="row" style="gap:10px;margin-top:12px">${Array.from({length:setsOf(x)},(_,j)=>`<button class="setdot ${S.sets[i+'-'+j]?'on':''}" onclick="toggleSet(${i},${j})">${S.sets[i+'-'+j]?ic('check','style="width:18px;height:18px"'):j+1}</button>`).join('')}
      <button class="btn sec sm" style="margin-left:auto" onclick="openTrainer('${x[0]}')">${ic('people','style="width:18px;height:18px"')} С тренером</button></div></div>`).join('')}
   <button class="btn ${doneSets&&doneSets===allSets?'ready':''}" onclick="finishWorkout()" style="margin-top:6px">Завершить тренировку</button>
-  <div class="card tap row" style="margin-top:14px" onclick="openHome()"><div class="ibox" style="background:rgba(31,181,126,.14);color:var(--ok)">${ic('home')}</div><div style="flex:1"><div class="title" style="font-size:16px">Не получается в зал?</div><div class="small muted">Домашняя тренировка на 20 минут без инвентаря</div></div><span class="chev">${ic('chev')}</span></div>`;
+  <div class="card tap row" style="margin-top:14px" onclick="openForm()"><div class="ibox" style="background:var(--grad);color:#fff">${ic('cam')}</div><div style="flex:1"><div class="title" style="font-size:16px">Проверить технику по видео</div><div class="small muted">Снимите себя сбоку — телефон найдёт ошибки и покажет, как надо</div></div><span class="chev">${ic('chev')}</span></div>
+  <div class="card tap row" style="margin-top:0" onclick="openHome()"><div class="ibox" style="background:rgba(31,181,126,.14);color:var(--ok)">${ic('home')}</div><div style="flex:1"><div class="title" style="font-size:16px">Не получается в зал?</div><div class="small muted">Домашняя тренировка на 20 минут без инвентаря</div></div><span class="chev">${ic('chev')}</span></div>`;
 }
 function toggleSet(i,j){const k=i+'-'+j;S.sets[k]=!S.sets[k];if(S.sets[k]&&!S.startedAt)S.startedAt=Date.now();save();haptic(S.sets[k]?12:5);rerender();if(S.sets[k])startRest()}
 function openExercise(i){
@@ -602,6 +606,121 @@ function openHome(){
   sheet('Дома · 20 минут · без инвентаря',`<div class="vid">${pic(gymPic('home'),'Дома')}<div class="play">${ic('play')}</div><div class="cap">Видео домашних упражнений снимем сами</div></div>
    <div class="card list" style="margin-top:12px">${[['Приседания','3 × 15'],['Отжимания от стула','3 × 10'],['Ягодичный мост','3 × 15'],['Планка','3 × 30 сек'],['Скалолаз','3 × 30 сек']].map(([n,r])=>`<div class="li"><div style="flex:1;font-weight:600">${n}</div><div class="muted">${r}</div></div>`).join('')}</div>
    <button class="btn" onclick="closeSheet();toast('Домашняя тренировка засчитана')">Начать</button>`);
+}
+
+/* ---------- Разбор техники по видео (MediaPipe Pose в браузере, считает код) ---------- */
+const FORM={
+ squat:{n:'Приседания',img:'squat',muscles:['quads','glutes','hams','core'],steps:['Стопы на ширине плеч, носки чуть наружу','Взгляд вперёд, грудь раскрыта, спина нейтральная','Садитесь назад и вниз, колени идут за носками','Бедро до параллели с полом или ниже','Встаёте через пятки, колени не сводите']},
+ lunge:{n:'Выпады',img:'lunge',muscles:['quads','glutes','hams'],steps:['Шаг вперёд на длину ноги','Корпус вертикально, взгляд вперёд','Заднее колено почти касается пола','Переднее колено над стопой, не уходит внутрь','Вернитесь толчком передней ноги']},
+ pushup:{n:'Отжимания',img:'home',muscles:['chest','triceps','shoulders','core'],steps:['Ладони чуть шире плеч','Тело — одна линия от головы до пяток','Опускайтесь, локти под 45° к корпусу','Грудь почти касается пола','Выжмите себя, не прогибая поясницу']},
+ plank:{n:'Планка',img:'plank',muscles:['core','shoulders','glutes'],steps:['Локти под плечами','Таз подкручен, поясница не провисает','Шея — продолжение спины','Дышите ровно, держите 30–60 секунд']},
+ deadlift:{n:'Румынская тяга',img:'seatedrow',muscles:['hams','glutes','back'],steps:['Стопы на ширине таза, гриф у ног','Спина прямая, лопатки сведены','Таз назад, гриф скользит по бёдрам','Опускаете до середины голени','Встаёте, выпрямляя таз, не круглите спину']},
+ press:{n:'Жим гантелей стоя',img:'shoulder',muscles:['shoulders','triceps','core'],steps:['Гантели на уровне ушей, локти под кистями','Пресс напряжён, поясница без прогиба','Выжимайте вверх, гантели сходятся над головой','Опускайте под контролем до ушей']}
+};
+const MUSCLES={quads:'Квадрицепсы',glutes:'Ягодичные',hams:'Задняя поверхность бедра',core:'Пресс и кор',chest:'Грудные',triceps:'Трицепсы',shoulders:'Плечи',back:'Спина'};
+let FV={ex:'squat',file:null};
+function openForm(){
+  sheet('Разбор техники по видео',`<div class="card small muted">Снимите себя сбоку, целиком в кадре, 2–5 повторов. Телефон разберёт движение сам, без отправки видео на сервер: точки суставов, углы, повторы. Это подсказка по технике, не медицинская консультация.</div>
+   <div class="small muted" style="margin:0 4px 6px">Упражнение</div><div class="chips" style="margin-bottom:12px">${Object.entries(FORM).map(([k,f])=>`<button class="chip ${FV.ex===k?'on':''}" onclick="FV.ex='${k}';openForm()">${f.n}</button>`).join('')}</div>
+   <label class="card tap" style="display:block;text-align:center;padding:22px 16px;cursor:pointer"><div style="width:64px;height:64px;border-radius:20px;background:var(--grad);color:#fff;display:grid;place-items:center;margin:0 auto 10px">${ic('cam','style="width:30px;height:30px"')}</div><div class="title">Снять или выбрать видео</div><div class="small muted">до 20 секунд, сбоку, во весь рост</div><input type="file" accept="video/*" style="display:none" onchange="formFile(this)"></label>
+   <button class="btn sec" onclick="formRun('squat.mp4','squat')">Показать на примере: присед</button>
+   <div class="concept">Распознавание суставов — MediaPipe Pose, работает в телефоне · правила техники считает код</div>`);
+}
+function formFile(inp){const f=inp.files&&inp.files[0];if(!f)return;formRun(URL.createObjectURL(f),FV.ex)}
+const angle=(a,b,c)=>{const v1=[a.x-b.x,a.y-b.y],v2=[c.x-b.x,c.y-b.y];const d=v1[0]*v2[0]+v1[1]*v2[1],m=Math.hypot(...v1)*Math.hypot(...v2)||1;return Math.acos(Math.max(-1,Math.min(1,d/m)))*180/Math.PI};
+const EDGES=[[11,12],[11,13],[13,15],[12,14],[14,16],[11,23],[12,24],[23,24],[23,25],[25,27],[24,26],[26,28]];
+let POSE=null;
+async function loadPose(){
+  if(POSE)return POSE;
+  const m=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs');
+  const vision=await m.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm');
+  POSE=await m.PoseLandmarker.createFromOptions(vision,{baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',delegate:'GPU'},runningMode:'VIDEO',numPoses:1});
+  return POSE;
+}
+async function formRun(src,ex){
+  FV.ex=ex;const f=FORM[ex];
+  sheet('Разбираем…',`<div class="plate" style="background:#111"><video id="fv" playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain"></video><canvas id="fc" style="position:absolute;inset:0;width:100%;height:100%;z-index:2"></canvas></div>
+   <div class="card" style="margin-top:12px"><div class="row between"><span class="small muted" id="fstat">Загружаем модель…</span><span class="num" id="fpct">0%</span></div><div class="bar" style="margin-top:8px"><i id="fbar" style="width:0;background:var(--grad)"></i></div></div>`);
+  const v=$('#fv'),c=$('#fc'),ctx=c.getContext('2d');
+  try{
+    const pl=await loadPose();v.src=src;await new Promise((r,j)=>{v.onloadeddata=r;v.onerror=()=>j(new Error('видео не читается'));v.load()});
+    c.width=v.videoWidth;c.height=v.videoHeight;const dur=Math.min(v.duration||0,20),step=1/10,S2=[];
+    $('#fstat').textContent='Ищем суставы…';
+    for(let t=0;t<dur;t+=step){v.currentTime=t;await new Promise(r=>{v.onseeked=r});const r=pl.detectForVideo(v,Math.round(t*1000));const lm=r.landmarks&&r.landmarks[0];
+      if(lm)S2.push({t,lm:lm.map(p=>({x:p.x,y:p.y,v:p.visibility}))});
+      const pct=Math.round(t/dur*100);$('#fpct').textContent=pct+'%';$('#fbar').style.width=pct+'%';
+      if(lm){ctx.clearRect(0,0,c.width,c.height);drawSkel(ctx,lm,c.width,c.height)}}
+    if(S2.length<10)throw new Error('человек не найден в кадре — снимите целиком, сбоку, при хорошем свете');
+    formResult(src,ex,S2,v);
+  }catch(e){sheet('Не получилось',`<div class="card">${e.message}</div><button class="btn" onclick="openForm()">Попробовать ещё</button>`)}
+}
+function drawSkel(ctx,lm,W,H,col='#FF4F45'){ctx.strokeStyle=col;ctx.lineWidth=Math.max(3,W/160);ctx.lineCap='round';EDGES.forEach(([a,b])=>{if(lm[a].v<.4||lm[b].v<.4)return;ctx.beginPath();ctx.moveTo(lm[a].x*W,lm[a].y*H);ctx.lineTo(lm[b].x*W,lm[b].y*H);ctx.stroke()});ctx.fillStyle='#fff';lm.slice(11,29).forEach(p=>{if(p.v<.4)return;ctx.beginPath();ctx.arc(p.x*W,p.y*H,Math.max(3,W/120),0,7);ctx.fill()})}
+function analyze(ex,S2){
+  const kneeL=S2.map(s=>angle(s.lm[23],s.lm[25],s.lm[27])),kneeR=S2.map(s=>angle(s.lm[24],s.lm[26],s.lm[28]));
+  const knee=kneeL.map((a,i)=>Math.min(a,kneeR[i])),hip=S2.map(s=>Math.min(angle(s.lm[11],s.lm[23],s.lm[25]),angle(s.lm[12],s.lm[24],s.lm[26])));
+  const elbow=S2.map(s=>Math.min(angle(s.lm[11],s.lm[13],s.lm[15]),angle(s.lm[12],s.lm[14],s.lm[16])));
+  const torso=S2.map(s=>{const sh={x:(s.lm[11].x+s.lm[12].x)/2,y:(s.lm[11].y+s.lm[12].y)/2},hp={x:(s.lm[23].x+s.lm[24].x)/2,y:(s.lm[23].y+s.lm[24].y)/2};return Math.abs(Math.atan2(sh.x-hp.x,hp.y-sh.y)*180/Math.PI)});
+  const sig=ex==='pushup'?elbow:ex==='press'?elbow.map(a=>180-a):knee; // что считаем «движением»
+  // повторы: минимумы сигнала ниже порога
+  const reps=[];let inRep=false,start=0,minI=0;const hi=Math.max(...sig),lo=Math.min(...sig),thr=lo+(hi-lo)*.4;
+  sig.forEach((a,i)=>{if(!inRep&&a<thr){inRep=true;start=i;minI=i}else if(inRep){if(a<sig[minI])minI=i;if(a>=thr+(hi-lo)*.2){reps.push({start,bottom:minI,end:i});inRep=false}}});
+  const findings=[],good=[];let score=100;
+  const bottoms=reps.map(r=>r.bottom);
+  if(ex==='squat'||ex==='lunge'){
+    const depth=bottoms.length?Math.min(...bottoms.map(i=>knee[i])):Math.min(...knee);
+    if(depth>110){findings.push({k:'Недостаточная глубина',d:`В нижней точке угол в колене ${Math.round(depth)}°: бедро не доходит до параллели. Садитесь ниже, если позволяют колени.`,at:bottoms[0]});score-=25}else good.push('Глубина приседа достаточная');
+    const lean=bottoms.length?Math.max(...bottoms.map(i=>torso[i])):Math.max(...torso);
+    if(lean>45){findings.push({k:'Сильный наклон корпуса',d:`Корпус наклонён на ${Math.round(lean)}° в нижней точке — нагрузка уходит на поясницу. Держите грудь выше, вес на пятках.`,at:bottoms.find(i=>torso[i]>45)});score-=20}else good.push('Корпус держите ровно');
+    const valgus=bottoms.filter(i=>{const l=S2[i].lm;const w=Math.abs(l[27].x-l[28].x)||.01;return Math.abs(l[25].x-l[26].x)<w*.75});
+    if(valgus.length){findings.push({k:'Колени уходят внутрь',d:'В нижней точке колени ближе друг к другу, чем стопы. Разводите колени в стороны носков — так безопаснее для связок.',at:valgus[0]});score-=25}else good.push('Колени идут за носками');
+    const asym=bottoms.length?Math.max(...bottoms.map(i=>Math.abs(kneeL[i]-kneeR[i]))):0;
+    if(asym>15){findings.push({k:'Перекос на одну ногу',d:`Разница углов в коленях ${Math.round(asym)}°. Распределяйте вес на обе ноги поровну.`,at:bottoms[0]});score-=10}
+  }
+  if(ex==='pushup'){
+    const depth=bottoms.length?Math.min(...bottoms.map(i=>elbow[i])):Math.min(...elbow);
+    if(depth>100){findings.push({k:'Неполная амплитуда',d:`Локоть сгибается только до ${Math.round(depth)}°. Опускайтесь, пока грудь почти не коснётся пола.`,at:bottoms[0]});score-=25}else good.push('Амплитуда полная');
+    const sag=Math.max(...S2.map(s=>Math.abs(angle(s.lm[11],s.lm[23],s.lm[25])-180)));
+    if(sag>25){findings.push({k:'Провисает поясница',d:'Таз ниже линии плечи — пятки. Напрягите пресс и ягодицы, тело должно быть одной линией.',at:0});score-=20}else good.push('Тело держите одной линией');
+  }
+  if(ex==='plank'){
+    const sag=S2.map(s=>Math.abs(angle(s.lm[11],s.lm[23],s.lm[25])-180)),worst=sag.indexOf(Math.max(...sag));
+    if(sag[worst]>20){findings.push({k:'Таз провисает или задран',d:`Отклонение от прямой линии ${Math.round(sag[worst])}°. Подкрутите таз, напрягите пресс.`,at:worst});score-=30}else good.push('Линия тела прямая');
+  }
+  if(ex==='deadlift'){
+    const lean=Math.max(...torso);if(lean<40){findings.push({k:'Мало наклона',d:'Таз почти не уходит назад — работают колени, а не задняя поверхность бедра. Наклоняйтесь глубже, отводя таз.',at:torso.indexOf(lean)});score-=20}else good.push('Таз уходит назад, наклон есть');
+    const kneeMin=Math.min(...knee);if(kneeMin<100){findings.push({k:'Сильно сгибаете колени',d:`Колено сгибается до ${Math.round(kneeMin)}° — это присед, а не тяга. Колени чуть согнуты, движение в тазу.`,at:knee.indexOf(kneeMin)});score-=20}
+  }
+  if(ex==='press'){
+    const lean=Math.max(...torso);if(lean>12){findings.push({k:'Прогиб в пояснице',d:`Корпус отклоняется на ${Math.round(lean)}°. Напрягите пресс, не подталкивайте гантели корпусом.`,at:torso.indexOf(lean)});score-=20}else good.push('Корпус стабилен');
+    const top=Math.max(...elbow);if(top<160){findings.push({k:'Не дожимаете вверх',d:`Локоть распрямляется только до ${Math.round(top)}°. Выжимайте до полного выпрямления.`,at:elbow.indexOf(top)});score-=15}
+  }
+  if(!reps.length&&ex!=='plank'){findings.push({k:'Повторы не распознаны',d:'Не нашли ни одного полного движения: снимите сбоку, чтобы были видны колени и таз, 2–5 повторов.',at:0});score-=30}
+  const tempo=reps.length?reps.map(r=>((r.end-r.start)*0.1).toFixed(1)):[];
+  return {reps:reps.length,findings,good,score:Math.max(0,score),tempo,bottomIdx:bottoms[0]??Math.floor(S2.length/2)};
+}
+async function formResult(src,ex,S2,v){
+  const f=FORM[ex],a=analyze(ex,S2),worst=a.findings.find(x=>x.at!=null)?.at??a.bottomIdx;
+  const fr=S2[Math.min(worst,S2.length-1)];v.currentTime=fr.t;await new Promise(r=>{v.onseeked=r});
+  const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;const ctx=c.getContext('2d');ctx.drawImage(v,0,0);drawSkel(ctx,fr.lm,c.width,c.height,a.findings.length?'#FF3B30':'#1FB57E');
+  const shot=c.toDataURL('image/jpeg',.82);
+  const col=a.score>=80?'var(--ok-text)':a.score>=55?'var(--warn)':'var(--bad)';
+  sheet('Разбор: '+f.n,`<div class="plate" style="background:#111"><img src="${shot}" alt="" style="object-fit:contain"><div class="capt"><span>${a.findings.length?'Момент для правки':'Нижняя точка'}</span><span class="small" style="font-weight:600">кадр ${fr.t.toFixed(1)} с</span></div></div>
+   <div class="card" style="margin-top:12px;text-align:center"><div class="num" style="font-size:52px;color:${col}">${CU(a.score)}</div><div class="muted">из 100 · ${ex==='plank'?'удержание':pl(a.reps,'повтор','повтора','повторов')}${a.tempo.length?' · темп '+a.tempo.slice(0,3).join(' / ')+' с':''}</div></div>
+   ${a.findings.map(x=>`<div class="card" style="border-left:4px solid var(--bad)"><div class="title" style="font-size:16px">${x.k}</div><div class="small muted" style="margin-top:4px">${x.d}</div></div>`).join('')}
+   ${a.good.map(g=>`<div class="card row" style="padding:12px 16px"><span style="color:var(--ok-text)">${ic('check')}</span><div style="flex:1">${g}</div></div>`).join('')}
+   <h2 style="margin-top:14px">Какие мышцы работают</h2><div class="card">${muscleMap(f.muscles)}<div class="chips" style="margin-top:10px">${f.muscles.map(m=>`<span class="chip on">${MUSCLES[m]}</span>`).join('')}</div></div>
+   <h2>Как делать правильно</h2><div class="card list">${f.steps.map((s,i)=>`<div class="li"><div class="num" style="width:28px;color:var(--accent-text)">${i+1}</div><div style="flex:1">${s}</div></div>`).join('')}</div>
+   <div class="vid" style="margin-top:12px">${pic(gymPic(f.img),f.n)}<div class="play">${ic('play')}</div><div class="cap">эталон: видео техники снимем с тренером</div></div>
+   <div class="concept">Углы считаются по точкам суставов, точность зависит от ракурса и света · не медицинская консультация</div>
+   <button class="btn" style="margin-top:12px" onclick="openForm()">Разобрать другое видео</button>`);
+}
+function muscleMap(on){
+  const g=(id,d,side)=>`<path d="${d}" class="${on.includes(id)?'mon':''}"/>`;
+  const front=`<g transform="translate(0,0)"><circle cx="60" cy="22" r="14" class="body"/><path d="M42 40h36l6 60H36z" class="body"/><path d="M36 100h48l-6 100H42z" class="body"/><path d="M34 42l-14 60 8 2 14-54zM86 42l14 60-8 2-14-54z" class="body"/>
+   ${g('shoulders','M40 40a10 10 0 0 1 10-4l-6 14zM80 40a10 10 0 0 0-10-4l6 14z')}${g('chest','M46 48h28l-2 22H48z')}${g('core','M50 72h20l1 28H49z')}${g('quads','M40 104h16l-2 70h-12zM64 104h16l-2 70h-12z')}${g('biceps','M26 50l6 2-6 30-6-2zM94 50l-6 2 6 30 6-2z')}</g>`;
+  const back=`<g transform="translate(130,0)"><circle cx="60" cy="22" r="14" class="body"/><path d="M42 40h36l6 60H36z" class="body"/><path d="M36 100h48l-6 100H42z" class="body"/><path d="M34 42l-14 60 8 2 14-54zM86 42l14 60-8 2-14-54z" class="body"/>
+   ${g('back','M46 44h28l-3 46H49z')}${g('glutes','M40 100h40l-2 24H42z')}${g('hams','M40 126h16l-2 50h-12zM64 126h16l-2 50h-12z')}${g('triceps','M26 50l6 2-6 30-6-2zM94 50l-6 2 6 30 6-2z')}${g('shoulders','M40 40a10 10 0 0 1 10-4l-6 14zM80 40a10 10 0 0 0-10-4l6 14z')}</g>`;
+  return `<svg viewBox="0 0 250 210" class="mmap" style="width:100%;max-height:220px;display:block"><defs><filter id="glow"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${front}${back}<text x="60" y="206" text-anchor="middle" class="lbl">спереди</text><text x="190" y="206" text-anchor="middle" class="lbl">сзади</text></svg>`;
 }
 
 /* ---------- Клуб ---------- */
