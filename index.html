@@ -91,14 +91,14 @@ h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.msg,.src,.lock,.calcrow span{
 .glasschip{background:rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;flex:1;min-width:0}
 .glasschip .bar{background:rgba(255,255,255,.18)} .glasschip .bar>i{background:#fff}
 /* таббар: во всю ширину, как в системе; «+» — действие внутри панели */
-#tabs{position:absolute;left:0;right:0;bottom:0;height:calc(env(safe-area-inset-bottom) + 58px);padding:0 6px env(safe-area-inset-bottom);background:var(--glass);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);border-top:.5px solid var(--line);display:flex;align-items:center;z-index:5}
+#tabs{position:absolute;left:0;right:0;bottom:0;height:calc(env(safe-area-inset-bottom) + 60px);padding:0 4px env(safe-area-inset-bottom);background:var(--glass);-webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);border-top:.5px solid var(--line);display:flex;align-items:center;z-index:5}
 @media (prefers-reduced-transparency: reduce){#tabs,#hdr{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}}
 #tabbtns{position:relative;z-index:1;display:flex;align-items:center;width:100%;height:100%}
 #tabpill{display:none}
-.tab{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:600;letter-spacing:.01em;color:var(--text3);transition:color .2s;padding-top:2px}
+.tab{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;font-size:10px;font-weight:600;letter-spacing:.01em;color:var(--text3);transition:color .2s;padding-top:9px}
 .tab.on{color:var(--text)} .tab .ic{width:24px;height:24px;transition:transform .2s var(--ease-out)} .tab:active .ic{transform:scale(.88)}
-.scanfab{width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;flex:none;margin:0 10px;transition:transform .16s var(--ease-out)}
-.scanfab:active{transform:scale(.92)} .scanfab .ic{width:24px;height:24px}
+.tab.fab .circ{width:40px;height:40px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;margin:-8px 0;transition:transform .16s var(--ease-out)}
+.tab.fab:active .circ{transform:scale(.92)} .tab.fab .circ .ic{width:24px;height:24px;transform:none} .tab.fab{color:var(--text3)}
 #veil{position:absolute;inset:0;background:rgba(23,21,15,.35);opacity:0;pointer-events:none;transition:opacity .25s;z-index:10}
 #veil.on{opacity:1;pointer-events:auto} #veil.drag{transition:none}
 #sheet{position:absolute;left:0;right:0;bottom:0;max-height:92%;background:var(--sheet);box-shadow:0 -1px 0 var(--line);border-radius:24px 24px 0 0;transform:translateY(calc(100% + 40px));visibility:hidden;transition:transform .42s var(--spring),visibility 0s .42s;z-index:11;display:flex;flex-direction:column}
@@ -185,6 +185,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;heigh
 .ev .tag{position:absolute;left:8px;top:8px;z-index:2;background:var(--ink);color:var(--paper);font-family:var(--num);font-weight:600;font-size:13px;padding:3px 7px;border-radius:6px;letter-spacing:0}
 .ev .cap{position:absolute;left:9px;right:9px;bottom:8px;z-index:2;font-size:12px;line-height:1.25;text-shadow:0 1px 6px rgba(0,0,0,.6)} .ev .cap b{display:block;font-size:13px;font-weight:600}
 .ev.empty{color:var(--text2);display:grid;place-items:center;text-align:center;padding:12px;border:1.5px dashed var(--line2);background:transparent} .ev.empty::after{display:none} .ev.empty .ic{width:26px;height:26px;margin-bottom:6px;color:var(--text3)}
+/* библиотека упражнений */
+.exrow{display:flex;align-items:center;gap:12px;width:100%;padding:10px 0;border-bottom:.5px solid var(--line);text-align:left} .exrow:last-child{border-bottom:0}
+.exrow .th{width:64px;height:48px;border-radius:8px;overflow:hidden;background:var(--card2);flex:none} .exrow .th img{width:100%;height:100%;object-fit:cover;display:block;outline:0}
+.exrow .t{flex:1;min-width:0} .exrow .t b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-weight:600;font-size:15px;line-height:1.25;overflow:hidden;text-wrap:balance} .exrow .t small{display:block;color:var(--text2);font-size:12px;margin-top:2px}
+.exhero{position:relative;border-radius:14px;overflow:hidden;background:#fff;aspect-ratio:4/3} .exhero img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;outline:0;transition:opacity .35s var(--ease-out)} .exhero img.b{opacity:0} .exhero.alt img.b{opacity:1}
+.exhero.noimg{display:grid;place-items:center;color:var(--text3);font-size:13px;background:var(--card2)} .exhero.noimg::before{content:"картинка загрузится позже"} .exhero.noimg img,.exhero.noimg .dots{display:none}
+.exhero .dots{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:6px} .exhero .dots i{width:6px;height:6px;border-radius:50%;background:rgba(0,0,0,.2)} .exhero .dots i.on{background:#17150F}
+.field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:.5px solid var(--line)} .field:last-child{border-bottom:0} .field label{color:var(--text2);font-size:15px;flex:none}
+.field input[type=text],.field input[type=number],.field input[type=tel]{flex:1;min-width:0;text-align:right;border:0;background:transparent;font-size:17px;font-weight:600;padding:4px 0;outline:0;color:var(--text)}
+.search{width:100%;height:46px;border:0;border-radius:12px;padding:0 14px 0 40px;background:var(--card);font-size:16px;box-shadow:var(--shadow);outline:0;color:var(--text);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A39E93' stroke-width='1.9' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cpath d='M20 20l-4.2-4.2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:12px center;background-size:20px}
+.search::placeholder{color:var(--text3)}
+.spark{display:block;width:100%;height:56px}
+.hscroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px 2px} .hscroll::-webkit-scrollbar{display:none} .hscroll .chip{flex:none}
 /* хроника дня */
 .tl .li{align-items:flex-start;padding:12px 0} .tl time{width:46px;flex:none;font-family:var(--num);font-weight:500;font-size:15px;color:var(--text2);padding-top:1px;letter-spacing:0} .tl .kc{font-family:var(--num);font-weight:600;font-size:17px;letter-spacing:0;padding-top:0}
 .tl .li.next{color:var(--text2)} .tl .li.next b{color:var(--text);font-weight:600}
@@ -235,6 +248,11 @@ const I={
  ruler:'<path d="M3 16.5L16.5 3 21 7.5 7.5 21z"/><path d="M7 12.5l2 2M10 9.5l2 2M13 6.5l2 2"/>',
  search:'<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
  barcode:'<path d="M4 6v12M8 6v12M11 6v12M15 6v12M19 6v12M6 6v12" stroke-width="1.4"/>',
+ scale:'<path d="M4 8h16l-1.5 11h-13z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+ history:'<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 8v4l3 2"/>',
+ download:'<path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 19h16"/>',
+ trash:'<path d="M5 7h14M9 7V4h6v3M8 7l1 13h6l1-13"/>',
+ chevl:'<path d="M15 6l-6 6 6 6"/>',
  cam:'<path d="M4 8h3l2-2.5h6L17 8h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.6"/>',
  bell:'<path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
  chev:'<path d="M9 6l6 6-6 6"/>', check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
@@ -371,7 +389,8 @@ const ROMAN=['I','II','III','IV','V'];
 /* ---------- состояние ---------- */
 const DEMO={name:'Алексей',sex:'m',age:30,h:180,w:88,goal:'lose',pace:'mid',work:'sit',trains:3,level:'new',income:120000,people:1,share:.3,club:'izumrud',place:'both'};
 const fresh=()=>({onb:true,profile:{...DEMO},log:[],done:[0],sets:{},remind:{},tab:'today'});
-let S=load()||fresh();if(!['today','tech','me'].includes(S.tab))S.tab='today';window.__S=()=>S;window.__demoAllSets=()=>{program().ex.forEach((x,i)=>{for(let j=0;j<setsOf(x);j++)S.sets[i+'-'+j]=true});S.startedAt=Date.now()-46*60000;save();rerender()}; // для записи ролика
+let S=load()||fresh();if(!['today','tech','me'].includes(S.tab))S.tab='today';
+S.weights=S.weights||[];S.forms=S.forms||[];S.extra=S.extra||[];S.custom=S.custom||[]; // вес по датам, разборы техники, упражнения в план, свои продуктыwindow.__S=()=>S;window.__demoAllSets=()=>{program().ex.forEach((x,i)=>{for(let j=0;j<setsOf(x);j++)S.sets[i+'-'+j]=true});S.startedAt=Date.now()-46*60000;save();rerender()}; // для записи ролика
 if(!S.profile||!GOALS[S.profile.goal]||S.profile.income==null)S=fresh();
 function save(){try{localStorage.setItem('yb-demo2',JSON.stringify(S))}catch(e){}}
 function load(){try{return JSON.parse(localStorage.getItem('yb-demo2'))}catch(e){return null}}
@@ -404,9 +423,9 @@ const setsOf=x=>Math.min(parseInt(x[1])||3,6);
 const gymPic=k=>'img/gym/'+(k||'club')+'.jpg';
 
 /* ---------- каркас ---------- */
-const TABS=[['today','Сегодня','sun'],['scan','','plus'],['tech','Разбор','ruler'],['me','Я','me']];
-const TITLES={today:'Сегодня',tech:'Разбор техники',me:'Мой план',food:'Питание',gym:'Тренировки',club:'Клуб'};
-function renderTabs(){const box=$('#tabbtns');if(!box.children.length)box.innerHTML=TABS.map(([id,l,i])=>id==='scan'?`<button class="scanfab" onclick="openAdd()" aria-label="Записать">${ic('plus')}</button>`:`<button class="tab" data-id="${id}" onclick="go('${id}')">${ic(i)}<span>${l}</span></button>`).join('');box.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.id===S.tab));movePill()}
+const TABS=[['today','Сегодня','sun'],['scan','','plus'],['tech','Атлас','ruler'],['me','Я','me']];
+const TITLES={today:'Сегодня',tech:'Атлас',me:'Личный кабинет',food:'Питание',gym:'Тренировки',club:'Клуб'};
+function renderTabs(){const box=$('#tabbtns');if(!box.children.length)box.innerHTML=TABS.map(([id,l,i])=>id==='scan'?`<button class="tab fab" onclick="openAdd()" aria-label="Записать"><span class="circ">${ic('plus')}</span><span>Записать</span></button>`:`<button class="tab" data-id="${id}" onclick="go('${id}')">${ic(i)}<span>${l}</span></button>`).join('');box.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.id===S.tab));movePill()}
 function movePill(){const on=$('#tabbtns .tab.on'),p=$('#tabpill');if(!on)return;if(!p.dataset.init){p.style.transition='none';p.dataset.init=1;requestAnimationFrame(()=>{p.style.transition=''})}p.style.left=(on.offsetLeft+on.offsetWidth/2-32)+'px';p.style.opacity=1}
 function toTop(){const sc=$('#scroll');sc.style.scrollBehavior='auto';sc.scrollTop=0;sc.style.scrollBehavior=''}
 function go(t){if(t==='food'){openFoodPlan();return}if(t==='gym'){openProgram();return}if(t==='club'){t='me'}if(!['today','tech','me'].includes(t))t='today';if(t===S.tab){$('#scroll').scrollTo({top:0,behavior:'smooth'});return}DIR=TABS.findIndex(x=>x[0]===t)>TABS.findIndex(x=>x[0]===S.tab)?'sl':'sr';S.tab=t;save();render();toTop();haptic(8)}
@@ -416,7 +435,8 @@ function openProgram(){sheet('Программа тренировок',vGym().re
 function openFoodPlan(){sheet('Питание и бюджет',vFood().replace(/^<div class="top">[\s\S]*?<\/h1>/,''));SHEET_FN=openFoodPlan}
 function openAdd(){
   sheet('Записать',`<button class="addopt" onclick="openScan()"><div class="ibox">${ic('cam')}</div><div style="flex:1"><div class="title">Сфотографировать блюдо</div><div class="small muted">Узнаем по базе, вы уточните граммы</div></div><span class="chev">${ic('chev')}</span></button>
-   <button class="addopt" onclick="openSearch()"><div class="ibox">${ic('search')}</div><div style="flex:1"><div class="title">Найти в базе продуктов</div><div class="small muted">${DB?pl(DB.products.length,'продукт','продукта','продуктов')+' и '+pl(DB.dishes.length,'блюдо','блюда','блюд'):'416 продуктов и 87 блюд'} · считает код</div></div><span class="chev">${ic('chev')}</span></button>
+   <button class="addopt" onclick="openBarcode()"><div class="ibox">${ic('barcode')}</div><div style="flex:1"><div class="title">Штрихкод с упаковки</div><div class="small muted">Мировая база Open Food Facts · миллионы продуктов</div></div><span class="chev">${ic('chev')}</span></button>
+   <button class="addopt" onclick="openSearch()"><div class="ibox">${ic('search')}</div><div style="flex:1"><div class="title">Найти в базе продуктов</div><div class="small muted">наша база с источниками, ваши продукты и блюда · считает код</div></div><span class="chev">${ic('chev')}</span></button>
    <button class="addopt" onclick="openForm()"><div class="ibox">${ic('ruler')}</div><div style="flex:1"><div class="title">Проверить технику по видео</div><div class="small muted">Снимите себя сбоку, 2–5 повторов</div></div><span class="chev">${ic('chev')}</span></button>
    <button class="addopt" onclick="openProgram()"><div class="ibox">${ic('gym')}</div><div style="flex:1"><div class="title">Отметить тренировку</div><div class="small muted">Сегодня · ${program().days[Math.min(1,program().days.length-1)]}</div></div><span class="chev">${ic('chev')}</span></button>`);
 }
@@ -464,14 +484,14 @@ function vToday(){
   const dateStr=new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
   const last=S.log[S.log.length-1],lf=S.lastForm,s=suggest(),nextMeal=s.list[0],mealTime=hr<11?'13:00':hr<16?'19:00':'';
   const done=S.done.includes(ti);
-  return `<div class="top"><span class="date">${dateStr[0].toUpperCase()+dateStr.slice(1)}</span><button class="avatar tap" onclick="go('me')" aria-label="Мой план">${pr.name[0]}</button></div>
+  return `<div class="top"><span class="date">${dateStr[0].toUpperCase()+dateStr.slice(1)}</span><button class="avatar tap" onclick="go('me')" aria-label="Личный кабинет">${pr.name[0]}</button></div>
   ${weekStrip()}
   <div class="big"><span class="num" style="color:${left<0?'var(--accent-text)':'inherit'}">${CU(Math.abs(left))}</span><span class="sub">${left>=0?'ккал осталось':'ккал сверх нормы'}<br>из ${fmt(n.kcal)} · цель «${g.n.toLowerCase()}»</span></div>
   <div class="macros">${[['Белки','p','var(--p)'],['Жиры','f','var(--f)'],['Углеводы','c','var(--c)']].map(([l,k,col])=>`<div class="mrow"><span class="nm">${l}</span><div class="bar">${bar(Math.min(e[k]/n[k]*100,100),'background:'+col)}</div><span class="v">${fmt(e[k])} <span>/ ${n[k]} г</span></span></div>`).join('')}</div>
   <h2>Сегодня, по вашим данным</h2>
   <div class="grid2">
-    ${lf?`<a class="ev" onclick="go('tech')"><img src="${lf.shot}" alt="Ваш кадр с разбора техники"><span class="tag">${lf.score} / 100</span><span class="cap"><b>${FORM[lf.ex].n}</b>${lf.reps?pl(lf.reps,'повтор','повтора','повторов')+' · ':''}${ago(lf.t)}</span></a>`
-        :`<a class="ev" onclick="go('tech')"><img src="img/tech-demo.jpg" alt="Пример разбора техники"><span class="tag">пример</span><span class="cap"><b>Разбор техники</b>снимите себя сбоку</span></a>`}
+    ${lf?`<a class="ev" onclick="openForm()"><img src="${lf.shot}" alt="Ваш кадр с разбора техники"><span class="tag">${lf.score} / 100</span><span class="cap"><b>${FORM[lf.ex].n}</b>${lf.reps?pl(lf.reps,'повтор','повтора','повторов')+' · ':''}${ago(lf.t)}</span></a>`
+        :`<a class="ev" onclick="formRun('squat.mp4','squat')"><img src="img/tech-demo.jpg" alt="Пример разбора техники"><span class="tag">пример</span><span class="cap"><b>Разбор техники</b>снимите себя сбоку</span></a>`}
     ${last&&last.img?`<a class="ev" onclick="openFoodPlan()"><img src="${last.img}" alt="${last.n}"><span class="tag">${fmt(last.k)} ккал</span><span class="cap"><b>${last.n}</b>${last.t} · ${last.src==='этикетка'?'по этикетке':'по базе'}</span></a>`
         :last?`<a class="ev" onclick="openFoodPlan()" style="background:var(--ink);color:var(--paper);display:grid;align-content:end;padding:12px"><span class="num" style="font-size:34px;line-height:1">${fmt(last.k)}</span><span style="font-size:12px;opacity:.75">ккал · ${last.n}</span></a>`
         :`<a class="ev empty" onclick="openScan()">${ic('cam')}<span><b>Тарелка</b><br>сфотографируйте первое блюдо</span></a>`}
@@ -550,6 +570,7 @@ async function loadDB(){
   if(DB)return DB;
   try{const [pr,ds,al]=await Promise.all([fetch('data/products.json').then(r=>r.json()),fetch('data/dishes.json').then(r=>r.json()),fetch('data/aliases.json').then(r=>r.json()).catch(()=>({}))]);
     DB={products:pr,dishes:ds};DBI={};pr.forEach(x=>{P[x.id]={n:x.n,p:x.p,f:x.f,c:x.c};DBI[norm_(x.n)]=x.id});Object.entries(al).forEach(([n,id])=>{if(!DBI[norm_(n)])DBI[norm_(n)]=id}); // алиасы: имя из рецепта -> id продукта
+    (S.custom||[]).forEach(x=>{if(!pr.find(p=>p.id===x.id))pr.push(x)});
   }catch(e){DB={products:[],dishes:[]};DBI={}}
   return DB;
 }
@@ -562,29 +583,29 @@ function searchDB(q){
   return{products,dishes};
 }
 async function openSearch(q=''){
-  sheet('Найти в базе',`<input id="q" type="search" placeholder="Продукт или блюдо, например «творог 5%»" value="${q.replace(/"/g,'&quot;')}" oninput="searchRender(this.value)" style="width:100%;height:50px;border:0;border-radius:16px;padding:0 16px;background:var(--card);font-size:17px;margin-bottom:10px;box-shadow:var(--shadow)">
+  sheet('Найти продукт',`<input id="q" class="search" type="search" placeholder="Продукт или блюдо, например «творог 5%»" value="${q.replace(/"/g,'&quot;')}" oninput="searchRender(this.value)" style="margin-bottom:10px">
    <div id="qres"><div class="card small muted">Загружаем базу…</div></div>`);
   await loadDB();searchRender(q);const el=$('#q');if(el&&!q)el.focus();
 }
 function searchRender(q){
   const box=$('#qres');if(!box)return;if(!DB)return;
-  if(!norm_(q)){box.innerHTML=`<div class="card small muted">В базе ${pl(DB.products.length,'продукт','продукта','продуктов')} и ${pl(DB.dishes.length,'блюдо','блюда','блюд')}. Калории и состав считает код по данным USDA и таблицам Скурихина, блюда — по Сборнику рецептур.</div>`;return}
-  const r=searchDB(q);
+  if(!norm_(q)){box.innerHTML=`<div class="card small muted">Наша база: ${pl(DB.products.filter(x=>!x.id.startsWith('off_')).length,'продукт','продукта','продуктов')} и ${pl(DB.dishes.length,'блюдо','блюда','блюд')} с проверяемыми источниками (USDA, таблицы Скурихина, Сборник рецептур). Дальше — мировая база Open Food Facts по названию или штрихкоду.</div><button class="addopt" onclick="openBarcode()"><div class="ibox">${ic('barcode')}</div><div style="flex:1"><div class="title">Штрихкод с упаковки</div><div class="small muted">Мировая база · миллионы продуктов</div></div><span class="chev">${ic('chev')}</span></button>`;return}
+  const r=searchDB(q);clearTimeout(searchRender.t);searchRender.t=setTimeout(()=>offSearchRender(q),500);
   box.innerHTML=(r.dishes.length?`<div class="small muted" style="margin:4px 4px 6px">Блюда</div>`+r.dishes.map(d=>`<button class="opt" onclick="dishFromDB('${d.id}')"><div class="ibox" style="background:var(--accent-soft);color:var(--accent-text)">${ic('food')}</div><div style="flex:1"><div style="font-weight:700">${d.n}</div><div class="small muted">${d.parts.length} ${d.parts.length===1?'часть':'части'} · порция ${d.portion_g} г</div></div><span class="chev">${ic('chev')}</span></button>`).join(''):'')+
-   (r.products.length?`<div class="small muted" style="margin:10px 4px 6px">Продукты · на 100 г</div>`+r.products.map(x=>`<button class="opt" onclick="productPortion('${x.id}')"><div style="flex:1"><div style="font-weight:700">${x.n}</div><div class="small muted">${Math.round(x.kcal||kcalOf(x))} ккал · Б ${x.p} · Ж ${x.f} · У ${x.c}</div></div><span class="chev">${ic('chev')}</span></button>`).join(''):'')||'<div class="card small muted">Не нашли. Попробуйте короче: «гречка», «куриная грудка».</div>';
+   (r.products.length?`<div class="small muted" style="margin:10px 4px 6px">Наша база · на 100 г</div>`+r.products.map(x=>`<button class="opt" onclick="productPortion('${x.id}')"><div style="flex:1"><div style="font-weight:700">${x.n}</div><div class="small muted">${Math.round(x.kcal||kcalOf(x))} ккал · Б ${x.p} · Ж ${x.f} · У ${x.c}${x.mine?' · ваш':''}</div></div><span class="chev">${ic('chev')}</span></button>`).join(''):'<div class="card small muted">В нашей базе нет. Смотрим в мировой…</div>')+`<div id="qoff"></div>`;
 }
 let PP=null;
 function productPortion(id,g){
   const x=DB.products.find(p=>p.id===id);if(!x)return;g=g||(x.portion&&x.portion.g)||100;PP={id,g};
   const k=g/100,kc=kcalOf(x)*k;
-  sheet(x.n,`<div class="card" style="text-align:center"><div class="num" style="font-size:52px">${fmt(kc)}</div><div class="muted">ккал · ${g} г${x.portion&&x.portion.name?' · '+x.portion.name:''}</div>
+  sheet(x.n,`${x.img?`<div class="exhero" style="aspect-ratio:16/9;margin-bottom:10px"><img src="${x.img}" alt=""></div>`:''}<div class="card" style="text-align:center"><div class="num" style="font-size:52px">${fmt(kc)}</div><div class="muted">ккал · ${g} г${x.portion&&x.portion.name&&g===x.portion.g?' · '+x.portion.name:''}</div>
    <div class="row" style="gap:10px;margin-top:14px">${[['Белки',x.p*k,'var(--p-text)'],['Жиры',x.f*k,'var(--f-text)'],['Углеводы',x.c*k,'var(--ok-text)']].map(([l,v,col])=>`<div style="flex:1;background:var(--card2);border-radius:10px;padding:10px"><div class="small muted">${l}</div><div class="num" style="font-size:20px;color:${col}">${fmt(v)} г</div></div>`).join('')}</div></div>
    <div class="card"><div class="row between"><span class="muted small">Сколько съели</span><span class="num" style="font-size:22px">${g} г</span></div><input type="range" min="10" max="${Math.max(400,g*2)}" step="5" value="${g}" oninput="productPortion('${id}',+this.value)">
     <div class="chips">${[50,100,150,200,300].map(v=>`<button class="chip ${g===v?'on':''}" onclick="productPortion('${id}',${v})">${v} г</button>`).join('')}</div></div>
    <div class="src" style="margin:0 4px 10px">Источник: ${x.src||'база приложения'} · считает код: Б×4 + Ж×9 + У×4</div>
    <button class="btn" onclick="logProduct()">Записать в дневник</button><button class="btn ghost" onclick="openSearch('${x.n.replace(/'/g,'')}')">Назад к поиску</button>`);
 }
-function logProduct(){const x=DB.products.find(p=>p.id===PP.id),k=PP.g/100;S.log.push({t:new Date().toTimeString().slice(0,5),n:x.n+' · '+PP.g+' г',k:kcalOf(x)*k,p:x.p*k,f:x.f*k,c:x.c*k,cost:0,acc:'высокая',src:'база'});save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(kcalOf(x)*k,'ккал'))}
+function logProduct(){const x=DB.products.find(p=>p.id===PP.id),k=PP.g/100,kc=(x.kcal||kcalOf(x))*k;S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:x.n+' · '+PP.g+' г',img:x.img||'',k:kc,p:x.p*k,f:x.f*k,c:x.c*k,cost:0,acc:'высокая',src:x.id.startsWith('off_')||x.mine?'этикетка':'база'});save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(kc,'ккал'))}
 function dishFromDB(id){
   const d=DB.dishes.find(x=>x.id===id);if(!d)return;const miss=[];
   const parts=d.parts.map(pt=>{
@@ -597,6 +618,66 @@ function dishFromDB(id){
   const dish={name:d.n,cost:0,parts,tone:['#F4E3B5','#9C5B34','#C0392B'],fromDB:true,srcText:d.src};
   if(miss.length)toast('Нет в базе: '+miss.slice(0,2).join(', '));
   DISHES['db_'+id]=dish;recognize('db_'+id);
+}
+
+/* ---------- Мировая база: Open Food Facts (штрихкод и поиск), считает код ---------- */
+const OFF_FIELDS='code,product_name,product_name_ru,brands,nutriments,quantity,image_small_url,serving_size';
+function offToProduct(pr){const n=pr.nutriments||{},num=v=>v==null||v===''?null:+v;const p=num(n.proteins_100g)||0,f=num(n.fat_100g)||0,c=num(n.carbohydrates_100g)||0;let kcal=num(n['energy-kcal_100g']);if(kcal==null&&n.energy_100g)kcal=Math.round(n.energy_100g/4.184);if(kcal==null)kcal=Math.round(p*4+f*9+c*4);
+  const name=(pr.product_name_ru||pr.product_name||'Без названия').trim(),brand=(pr.brands||'').split(',')[0].trim();
+  const qm=/(\d+(?:[.,]\d+)?)\s*(г|g|гр|мл|ml)\b/i.exec(pr.quantity||''),qg=qm?Math.round(parseFloat(qm[1].replace(',','.'))):0;
+  return {id:'off_'+pr.code,n:brand&&!name.toLowerCase().includes(brand.toLowerCase())?name+' · '+brand:name,cat:'мировая база',p,f,c,kcal,portion:qg>0&&qg<=600?{g:qg,name:'упаковка '+pr.quantity}:{g:100,name:'100 г'},src:'Open Food Facts, этикетка производителя · код '+pr.code,img:pr.image_small_url||'',code:pr.code,qty:pr.quantity||''}}
+async function offProduct(code){
+  const r=await fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}?fields=${OFF_FIELDS}`);if(!r.ok)throw new Error('сервер базы не отвечает');
+  const j=await r.json();if(j.status!==1||!j.product)return null;return offToProduct(j.product);
+}
+async function offSearch(q){
+  const url=`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=20&fields=${OFF_FIELDS}`;
+  const r=await fetch(url);if(!r.ok)throw new Error('503');const j=await r.json();return (j.products||[]).filter(x=>x.nutriments&&(x.nutriments['energy-kcal_100g']!=null||x.nutriments.proteins_100g!=null)).map(offToProduct);
+}
+function useOff(x){await0=null;if(!DB)DB={products:[],dishes:[]};if(!DB.products.find(p=>p.id===x.id))DB.products.push(x);productPortion(x.id,x.portion&&x.portion.g>0&&x.portion.g<=400?x.portion.g:100)}
+let await0=null;
+async function offSearchRender(q){
+  const box=$('#qoff');if(!box)return;box.innerHTML=`<div class="card small muted" style="margin-top:10px">Ищем в мировой базе…</div>`;
+  try{const list=await offSearch(q);if(!$('#qoff'))return;
+    box.innerHTML=list.length?`<div class="small muted" style="margin:14px 4px 6px">Мировая база · Open Food Facts · на 100 г</div>`+list.map(x=>{const id=x.id;if(!DB.products.find(p=>p.id===id))DB.products.push(x);return `<button class="opt" onclick="productPortion('${id}',100)">${x.img?`<div class="thumb" style="width:44px;height:44px;border-radius:10px;background:#fff"><img src="${x.img}" alt="" style="object-fit:contain"></div>`:''}<div style="flex:1;min-width:0"><div style="font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x.n}</div><div class="small muted">${Math.round(x.kcal)} ккал · Б ${x.p} · Ж ${x.f} · У ${x.c}${x.qty?' · '+x.qty:''}</div></div><span class="chev">${ic('chev')}</span></button>`}).join('')
+      :`<div class="card small muted" style="margin-top:10px">В мировой базе ничего не нашлось. Попробуйте штрихкод с упаковки.</div>`;
+  }catch(e){box.innerHTML=`<div class="card small muted" style="margin-top:10px">Мировая база сейчас не отвечает (так бывает: сервер Open Food Facts перегружен). Штрихкод с упаковки обычно работает — кнопка «+» → «Штрихкод».</div>`}
+}
+let BC=null;
+function openBarcode(){
+  const can='BarcodeDetector' in window;
+  sheet('Штрихкод',`<div class="card small muted">Наведите камеру на штрихкод или введите цифры под ним. Продукт найдём в Open Food Facts — мировой открытой базе этикеток, калории посчитаем по составу.</div>
+   ${can?`<div class="plate" style="aspect-ratio:4/3;background:#111;margin-bottom:10px"><video id="bcv" playsinline muted autoplay style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></video><div class="scanline"></div><div class="capt"><span class="small" id="bcs">Ищем штрихкод…</span></div></div>`:''}
+   <div class="card"><div class="field"><label>Цифры штрихкода</label><input type="tel" id="bcin" inputmode="numeric" placeholder="4607025392651" autocomplete="off" onkeydown="if(event.key==='Enter')bcLookup(this.value)"></div></div>
+   <button class="btn" onclick="bcLookup($('#bcin').value)">Найти продукт</button>
+   <div class="concept">Open Food Facts — открытая база, данные с этикеток, которые загружают люди. Если продукта нет — сфотографируйте этикетку, и мы добавим его в вашу базу.</div>`);
+  if(can)bcCamera();
+}
+async function bcCamera(){
+  try{const v=$('#bcv');const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});v.srcObject=st;BC={st,det:new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128']}),on:true};
+    const loop=async()=>{if(!BC||!BC.on||!$('#bcv'))return bcStop();try{const codes=await BC.det.detect(v);if(codes.length){const c=codes[0].rawValue;bcStop();bcLookup(c);return}}catch(e){}setTimeout(loop,250)};loop();
+  }catch(e){const v=$('#bcv');if(v&&v.parentNode)v.parentNode.remove();toast('Камера недоступна — введите цифры');const inp=$('#bcin');if(inp)inp.focus()}
+}
+function bcStop(){if(BC&&BC.st)BC.st.getTracks().forEach(t=>t.stop());BC=null}
+async function bcLookup(code){
+  code=(code||'').replace(/\D/g,'');if(code.length<8){toast('Введите цифры штрихкода');return}
+  bcStop();sheet('Ищем…',`<div class="card"><div class="sk" style="width:55%"></div><div class="sk" style="width:85%;margin-top:10px"></div></div><div class="small muted" style="text-align:center">Open Food Facts · код ${code}</div>`);
+  try{await loadDB();const x=await offProduct(code);
+    if(!x){sheet('Не нашли',`<div class="card">Продукта с кодом ${code} нет в Open Food Facts. Можно сфотографировать этикетку и добавить вручную — или найти похожий в нашей базе.</div><button class="btn" onclick="openCustom('${code}')">Добавить продукт вручную</button><button class="btn ghost" onclick="openSearch()">Найти в нашей базе</button>`);return}
+    haptic(12);useOff(x);
+  }catch(e){sheet('Нет связи',`<div class="card">Не удалось связаться с базой: ${e.message}. Проверьте интернет и попробуйте ещё раз.</div><button class="btn" onclick="openBarcode()">Попробовать снова</button>`)}
+}
+function openCustom(code){
+  const c={n:'',p:'',f:'',c:'',kcal:'',code:code||''};
+  sheet('Свой продукт',`<div class="card small muted">Перепишите с этикетки значения на 100 г. Калории посчитаем сами, если оставить пустым.</div>
+   <div class="card"><div class="small muted" style="margin-bottom:4px">Название</div><input type="text" id="cu_n" class="search" style="background-image:none;padding-left:14px;background:var(--card2);box-shadow:none" placeholder="Творог 5% «Простоквашино»">
+    ${[['Белки, г','p','16'],['Жиры, г','f','5'],['Углеводы, г','c','3'],['Ккал с этикетки','kcal','121']].map(([l,k,ph])=>`<div class="field"><label>${l}</label><input type="number" id="cu_${k}" placeholder="${ph}" inputmode="decimal" step="0.1"></div>`).join('')}</div>
+   <button class="btn" onclick="saveCustom('${code||''}')">Сохранить и записать</button>`);
+}
+async function saveCustom(code){
+  const g=k=>($('#cu_'+k)||{}).value||'',n=g('n').trim(),p=+g('p').replace(',','.')||0,f=+g('f').replace(',','.')||0,c=+g('c').replace(',','.')||0;let kcal=+g('kcal').replace(',','.');if(!n){toast('Введите название');return}if(!kcal)kcal=Math.round(p*4+f*9+c*4);
+  const x={id:'my_'+Date.now(),n,cat:'мои продукты',p,f,c,kcal,portion:{g:100,name:'100 г'},src:'вы переписали с этикетки'+(code?' · код '+code:''),mine:true};
+  S.custom.push(x);save();await loadDB();DB.products.push(x);productPortion(x.id,100);
 }
 
 /* ---------- Скан ---------- */
@@ -664,7 +745,7 @@ function result(){
    <div class="card row"><div class="ibox" style="background:${after>=0?'rgba(31,181,126,.14)':'rgba(245,158,11,.16)'};color:${after>=0?'var(--ok)':'var(--warn)'}">${ic('today')}</div><div style="flex:1">${after>=0?`После этого блюда останется <b>${fmt(after)} ккал</b> на сегодня`:`Это блюдо выводит за норму на <b>${fmt(-after)} ккал</b>`}</div></div>
    <button class="btn" onclick="addLog()">Записать в дневник</button><button class="btn ghost" onclick="clarify()">Поправить граммы</button>`);
 }
-function addLog(){const d=SC.d,t=total();S.log.push({t:new Date().toTimeString().slice(0,5),n:d.name,img:SC.photo||d.img,k:t.k,p:t.p,f:t.f,c:t.c,cost:d.cost,acc:d.store?'высокая':'средняя',src:d.store?'этикетка':d.fromDB?'база':'база'});save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(t.k,'ккал'))}
+function addLog(){const d=SC.d,t=total();S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:d.name,img:SC.photo||d.img,k:t.k,p:t.p,f:t.f,c:t.c,cost:d.cost,acc:d.store?'высокая':'средняя',src:d.store?'этикетка':d.fromDB?'база':'база'});save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(t.k,'ккал'))}
 
 /* ---------- Тренировки ---------- */
 const STAGES=[['Старт','8 недель'],['Прогресс','4 недели'],['Результат','6 недель']];
@@ -688,6 +769,7 @@ function vGym(){
     <div style="margin-top:12px"><div class="row between"><div class="title">${x[0]}</div>${exDone(i,x)?'<span class="pill ok" style="padding:3px 9px;font-size:11px">готово</span>':''}</div><div class="small muted">${x[1]}</div></div><div class="small muted" style="margin-top:6px">${x[2]}</div>
     <div class="row" style="gap:10px;margin-top:12px">${Array.from({length:setsOf(x)},(_,j)=>`<button class="setdot ${S.sets[i+'-'+j]?'on':''}" onclick="toggleSet(${i},${j})">${S.sets[i+'-'+j]?ic('check','style="width:18px;height:18px"'):j+1}</button>`).join('')}
      <button class="btn sec sm" style="margin-left:auto" onclick="openTrainer('${x[0]}')">${ic('people','style="width:18px;height:18px"')} С тренером</button></div></div>`).join('')}
+  ${S.extra.length?`<h2>Добавлено из атласа</h2><div class="card list">${S.extra.map(id=>{const x=EXL&&EXL.find(e=>e.id===id);return `<button class="exrow" onclick="${x?`openEx('${id}')`:`loadEX().then(()=>openEx('${id}'))`}"><div class="th"><img src="${EXIMG(id)}0.jpg" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div><div class="t"><b>${x?x.n:id.replace(/_/g,' ')}</b><small>${x?(EXEQ[x.eq]||'Без инвентаря')+' · 3 подхода':'из атласа'}</small></div><span class="chev">${ic('chev')}</span></button>`}).join('')}</div>`:''}
   <button class="btn ${doneSets&&doneSets===allSets?'ready':''}" onclick="finishWorkout()" style="margin-top:6px">Завершить тренировку</button>
   <div class="card tap row" style="margin-top:14px" onclick="openForm()"><div class="ibox" style="background:var(--ink);color:var(--paper)">${ic('ruler')}</div><div style="flex:1"><div class="title" style="font-size:16px">Проверить технику по видео</div><div class="small muted">Снимите себя сбоку — телефон найдёт ошибки и покажет, как надо</div></div><span class="chev">${ic('chev')}</span></div>
   <div class="card tap row" style="margin-top:0" onclick="openHome()"><div class="ibox" style="background:rgba(31,181,126,.14);color:var(--ok)">${ic('home')}</div><div style="flex:1"><div class="title" style="font-size:16px">Не получается в зал?</div><div class="small muted">Домашняя тренировка на 20 минут без инвентаря</div></div><span class="chev">${ic('chev')}</span></div>`;
@@ -721,15 +803,63 @@ function finishWorkout(){
    <button class="btn" onclick="closeSheet();go('today')">Отлично</button>`);
 }
 function openTrainer(ex){
-  sheet('Разобрать технику',`<div class="card small muted">Мой тренер видит, что в упражнении «${ex}» нужна помощь с техникой. Живой тренер клуба поставит её за одну тренировку.</div>
-   ${[['Анна','Силовые и техника, стаж 7 лет','4,9'],['Максим','Новички и восстановление, стаж 5 лет','5,0']].map(([n,d,r])=>`<div class="card row"><div class="avatar" style="width:48px;height:48px">${n[0]}</div><div style="flex:1"><div class="title">${n}</div><div class="small muted">${d}</div><div class="small" style="color:var(--f-text)">★ ${r} · от 3 000 ₽</div></div><button class="btn sm" onclick="closeSheet();toast('Заявка тренеру отправлена')">Записаться</button></div>`).join('')}
-   <div class="concept">Имена тренеров — для показа</div>`);
+  sheet('Техника: '+ex,`<div class="card small muted">Лучший способ проверить технику — снять 2–5 повторов сбоку: телефон покажет углы в суставах и что поправить, на ваших же кадрах.</div>
+   <button class="btn" onclick="openForm()">${ic('ruler')} Проверить технику по видео</button>
+   <button class="btn sec" style="margin-top:10px" onclick="openChat()">${ic('spark')} Спросить тренера</button>
+   <div class="concept">Пока разбираем 6 упражнений: ${Object.values(FORM).map(f=>f.n.toLowerCase()).join(', ')}</div>`);
 }
 function openHome(){
   sheet('Дома · 20 минут · без инвентаря',`<div class="vid">${pic(gymPic('home'),'Дома')}<div class="play">${ic('play')}</div><div class="cap">Видео домашних упражнений снимем сами</div></div>
    <div class="card list" style="margin-top:12px">${[['Приседания','3 × 15'],['Отжимания от стула','3 × 10'],['Ягодичный мост','3 × 15'],['Планка','3 × 30 сек'],['Скалолаз','3 × 30 сек']].map(([n,r])=>`<div class="li"><div style="flex:1;font-weight:600">${n}</div><div class="muted">${r}</div></div>`).join('')}</div>
    <button class="btn" onclick="closeSheet();toast('Домашняя тренировка засчитана')">Начать</button>`);
 }
+
+/* ---------- Библиотека упражнений (free-exercise-db, Unlicense; перевод наш) ---------- */
+let EXL=null,EXQ='',EXG='all',EXN=20;
+const EXIMG=id=>`ex/${id}/`;
+const EXMUS={abdominals:'Пресс',chest:'Грудные',shoulders:'Дельты',triceps:'Трицепсы',biceps:'Бицепсы',forearms:'Предплечья',lats:'Широчайшие',"middle back":'Середина спины',"lower back":'Поясница',traps:'Трапеции',quadriceps:'Квадрицепсы',hamstrings:'Задняя поверхность бедра',glutes:'Ягодичные',calves:'Икры',adductors:'Приводящие',abductors:'Отводящие',neck:'Шея'};
+const EXMAP={abdominals:'abs',chest:'chest',shoulders:'shoulders',triceps:'triceps',biceps:'biceps',lats:'back',"middle back":'back',"lower back":'lowerback',traps:'traps',quadriceps:'quads',hamstrings:'hams',glutes:'glutes',calves:'calves',adductors:'adductors',abductors:'glutes'};
+const EXEQ={barbell:'Штанга',dumbbell:'Гантели',other:'Другое',"body only":'Своё тело',cable:'Блок',machine:'Тренажёр',kettlebells:'Гири',bands:'Резинки',"medicine ball":'Медбол',"exercise ball":'Фитбол',"foam roll":'Ролл',"e-z curl bar":'EZ-гриф',null:'Без инвентаря'};
+const EXCAT={strength:'Сила',stretching:'Растяжка',plyometrics:'Плиометрика',powerlifting:'Пауэрлифтинг',"olympic weightlifting":'Тяжёлая атлетика',strongman:'Стронгмен',cardio:'Кардио'};
+const EXLVL={beginner:'новичок',intermediate:'средний',expert:'продвинутый'};
+const EXGROUPS=[['all','Все',null],['legs','Ноги',['quadriceps','hamstrings','calves','adductors','abductors']],['glutes','Ягодицы',['glutes']],['back','Спина',['lats','middle back','lower back','traps']],['chest','Грудь',['chest']],['shoulders','Плечи',['shoulders']],['arms','Руки',['biceps','triceps','forearms']],['core','Пресс',['abdominals']],['stretch','Растяжка',null],['cardio','Кардио',null]];
+const TECHMAP={Bodyweight_Squat:'squat',Barbell_Squat:'squat',Barbell_Full_Squat:'squat',Dumbbell_Squat:'squat',Dumbbell_Lunges:'lunge',Barbell_Lunge:'lunge',Bodyweight_Walking_Lunge:'lunge',Pushups:'pushup',Plank:'plank',Romanian_Deadlift:'deadlift',Standing_Dumbbell_Press:'press',Dumbbell_Shoulder_Press:'press'};
+async function loadEX(){if(EXL)return EXL;try{EXL=await fetch('data/exercises.json').then(r=>r.json())}catch(e){EXL=[]}return EXL}
+function exFilter(){
+  const k=norm_(EXQ),words=k.split(' ').filter(Boolean),g=EXGROUPS.find(x=>x[0]===EXG);
+  return EXL.filter(x=>{
+    if(g&&g[0]==='stretch'&&x.cat!=='stretching')return false;if(g&&g[0]==='cardio'&&!['cardio','plyometrics'].includes(x.cat))return false;
+    if(g&&g[2]&&!x.pm.some(m=>g[2].includes(m)))return false;
+    if(words.length){const hay=norm_(x.n+' '+x.en+' '+x.pm.map(m=>EXMUS[m]||m).join(' ')+' '+(EXEQ[x.eq]||''));return words.every(w=>hay.includes(w))}
+    return true}).sort((a,b)=>(a.lvl==='beginner'?0:a.lvl==='intermediate'?1:2)-(b.lvl==='beginner'?0:b.lvl==='intermediate'?1:2));
+}
+function exList(){
+  if(!EXL)return `<div class="card"><div class="sk" style="width:60%"></div><div class="sk" style="width:85%;margin-top:10px"></div><div class="sk" style="width:40%;margin-top:10px"></div></div>`;
+  const list=exFilter(),show=list.slice(0,EXN);
+  return `<div class="card list" style="padding:2px 16px">${show.map(x=>`<button class="exrow" onclick="openEx('${x.id}')"><div class="th"><img src="${EXIMG(x.id)}0.jpg" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div><div class="t"><b>${x.n}</b><small>${EXEQ[x.eq]||'Без инвентаря'} · ${EXLVL[x.lvl]} · ${x.pm.slice(0,2).map(m=>(EXMUS[m]||m).toLowerCase()).join(', ')}</small></div><span class="chev">${ic('chev')}</span></button>`).join('')||`<div class="li muted small" style="justify-content:center">Ничего не нашли. Попробуйте «жим», «тяга», «присед»</div>`}</div>
+  ${list.length>EXN?`<button class="btn sec" onclick="EXN+=30;rerender()">Показать ещё · осталось ${list.length-EXN}</button>`:''}
+  <div class="tiny muted" style="margin:8px 4px 0">${pl(list.length,'упражнение','упражнения','упражнений')} · база free-exercise-db (свободная лицензия), перевод наш · картинки схематичные</div>`;
+}
+function exSearch(v){EXQ=v;EXN=20;clearTimeout(exSearch.t);exSearch.t=setTimeout(()=>{const box=$('#exlist');if(box)box.innerHTML=exList()},120)}
+function exGroup(g){EXG=g;EXN=20;rerender()}
+let EXT=null;
+function openEx(id){
+  const x=EXL.find(e=>e.id===id);if(!x)return;const groups=[...new Set(x.pm.map(m=>EXMAP[m]).filter(Boolean))],help=[...new Set(x.sm.map(m=>EXMAP[m]).filter(Boolean).filter(g=>!groups.includes(g)))];
+  const lv={};groups.forEach(g=>lv[g]=1);help.forEach(g=>lv[g]=2);const gs=Object.keys(lv);
+  const tech=TECHMAP[id],inPlan=S.extra.includes(id);
+  clearInterval(EXT);
+  sheet(x.n,`<div class="exhero" id="exhero" onclick="this.classList.toggle('alt')"><img src="${EXIMG(id)}0.jpg" alt="" class="a" onerror="this.parentNode.classList.add('noimg')"><img src="${EXIMG(id)}1.jpg" alt="" class="b" onerror="this.remove()"><div class="dots"><i class="on"></i><i></i></div></div>
+   <div class="row" style="gap:6px;flex-wrap:wrap;margin:10px 0 2px"><span class="pill">${EXEQ[x.eq]||'Без инвентаря'}</span><span class="pill">${EXLVL[x.lvl]}</span><span class="pill">${EXCAT[x.cat]||x.cat}</span>${x.mech?`<span class="pill">${x.mech==='compound'?'базовое':'изолирующее'}</span>`:''}</div>
+   <div class="tiny muted" style="margin:0 4px 10px">${x.en}</div>
+   ${tech?`<button class="btn" onclick="FV.ex='${tech}';openForm()">${ic('ruler')} Проверить технику по видео</button>`:`<button class="btn ${inPlan?'sec':''}" onclick="togglePlan('${id}')">${inPlan?'Убрать из плана на сегодня':'В план на сегодня'}</button>`}
+   ${tech?`<button class="btn ${inPlan?'sec':'ghost'}" onclick="togglePlan('${id}')">${inPlan?'Убрать из плана на сегодня':'В план на сегодня'}</button>`:''}
+   <h2>Какие мышцы работают</h2><div class="card">${gs.length?muscleMapLv(lv):'<div class="small muted">Для этого упражнения карта мышц не размечена</div>'}<div class="tiny muted" style="margin-top:8px">Основные: ${x.pm.map(m=>EXMUS[m]||m).join(', ')||'—'}${x.sm.length?' · помогают: '+x.sm.map(m=>EXMUS[m]||m).join(', '):''}</div></div>
+   <h2>Как выполнять</h2><div class="card list">${x.steps.map((t,i)=>`<div class="li" style="align-items:flex-start"><span class="num" style="width:26px;color:var(--text3);font-size:17px">${i+1}</span><div style="flex:1;line-height:1.4">${t}</div></div>`).join('')}</div>
+   <div class="concept">Картинки и описание — база free-exercise-db (свободная лицензия), перевод наш. При боли остановитесь · не медицинская консультация</div>`);
+  EXT=setInterval(()=>{const h=$('#exhero');if(!h)return clearInterval(EXT);h.classList.toggle('alt');const d=h.querySelectorAll('.dots i');d.forEach((e,i)=>e.classList.toggle('on',h.classList.contains('alt')?i===1:i===0))},1400);
+}
+function muscleMapLv(lv){const gs=Object.keys(lv).sort((a,b)=>lv[a]-lv[b]);return `<div class="anat"><img class="base" src="img/anat/base.png" alt="Атлас мышц" loading="lazy">${gs.map(g=>`<img class="ly ${lv[g]===2?'s':''}" src="img/anat/${g}.png" alt="" loading="lazy">`).join('')}<span class="lbl l">спереди</span><span class="lbl r">сзади</span></div><div class="legend"><span><i style="background:#D8432A"></i>Основная нагрузка</span><span><i style="background:#C98A14"></i>Помогают</span></div>`}
+function togglePlan(id){const i=S.extra.indexOf(id);if(i>-1)S.extra.splice(i,1);else S.extra.push(id);save();haptic(8);toast(i>-1?'Убрано из плана':'Добавлено в план на сегодня');openEx(id)}
 
 /* ---------- Разбор техники по видео (MediaPipe Pose в браузере, считает код) ---------- */
 const FORM={
@@ -872,7 +1002,8 @@ async function formResult(src,ex,S2,v){
   const f=FORM[ex],a=analyze(ex,S2);window.LAST={ex,S2,a};const worst=a.findings.find(x=>x.at!=null)?.at??a.bottomIdx;
   const fr=S2[Math.min(worst,S2.length-1)];await seekTo(v,fr.t);
   const badJ=a.findings.flatMap(x=>x.j||[]);const sh=frameShot(v,fr.lm,ex,a.findings.length?'#FF3B30':'#1FB57E',720,badJ),shot=sh.src;
-  S.lastForm={score:a.score,ex,t:Date.now(),reps:a.reps,shot:frameShot(v,fr.lm,ex,a.findings.length?'#FF3B30':'#1FB57E',420,badJ).src};save();
+  S.lastForm={score:a.score,ex,t:Date.now(),reps:a.reps,shot:frameShot(v,fr.lm,ex,a.findings.length?'#FF3B30':'#1FB57E',420,badJ).src};
+  S.forms=S.forms||[];S.forms.push({score:a.score,ex,t:Date.now(),reps:a.reps,findings:a.findings.map(x=>x.k),shot:S.forms.length<40?frameShot(v,fr.lm,ex,'#FF4F45',160,badJ).src:''});if(S.forms.length>40)S.forms.shift();save();
   const ph=phaseFrames(a,S2),stepsHtml=[];
   const phases=[...new Set(f.steps.map(x=>x[1]))];
   for(const phase of phases){const i=Math.min(ph[phase],S2.length-1),s=S2[i];await seekTo(v,s.t);const img=frameShot(v,s.lm,phase==='bottom'?ex:null,'#FF4F45',360,badJ).src;const m=phase==='bottom'?phaseMetric(ex,a,i):null;const tips=f.steps.filter(x=>x[1]===phase).map(x=>x[0]);
@@ -895,36 +1026,93 @@ function clubLoad(){const c=club(),k=0.8+([...c.id].reduce((s,ch)=>s+ch.charCode
 function loadNow(){const h=new Date().getHours();return h<7||h>23?5:clubLoad()[h-7]}
 function bestHour(){const L=clubLoad(),h=Math.max(new Date().getHours()+1,7);if(h>22)return 10;let best=h,v=999;for(let x=h;x<=22;x++){if(L[x-7]<v){v=L[x-7];best=x}}return best}
 function vTech(){
-  const lf=S.lastForm,f=FORM[FV.ex];
-  return `<div class="top"><span class="date">Разбор техники</span><button class="avatar tap" onclick="go('me')" aria-label="Мой план">${S.profile.name[0]}</button></div>
-  ${lf?`<a class="ev" style="aspect-ratio:4/4.2;margin-bottom:10px" onclick="openForm()"><img src="${lf.shot}" alt="Ваш кадр"><span class="tag">${lf.score} / 100</span><span class="cap"><b>${FORM[lf.ex].n} · ${ago(lf.t)}</b>${lf.reps?pl(lf.reps,'повтор засчитан','повтора засчитаны','повторов засчитано'):'удержание'} · углы по точкам суставов</span></a>`
-     :`<a class="ev" style="aspect-ratio:4/4.2;margin-bottom:10px" onclick="formRun('squat.mp4','squat')"><img src="img/tech-demo.jpg" alt="Пример разбора"><span class="tag">пример</span><span class="cap"><b>Так выглядит разбор</b>кадр крупно, углы в суставах, что поправить — на ваших кадрах</span></a>`}
+  const lf=S.lastForm;if(!EXL)loadEX().then(()=>{if(S.tab==='tech')rerender()});
+  return `<div class="top"><span class="date">Атлас</span><button class="avatar tap" onclick="go('me')" aria-label="Личный кабинет">${S.profile.name[0]}</button></div>
+  <input class="search" type="search" placeholder="Упражнение, мышца или инвентарь" value="${EXQ.replace(/"/g,'&quot;')}" oninput="exSearch(this.value)" style="margin-bottom:10px">
+  <div class="hscroll">${EXGROUPS.map(([k,l])=>`<button class="chip ${EXG===k?'on':''}" onclick="exGroup('${k}')">${l}</button>`).join('')}</div>
+  <div id="exlist" style="margin-top:12px">${exList()}</div>
+  <h2>Разбор техники по видео</h2>
+  ${lf?`<a class="ev" style="aspect-ratio:4/3;margin-bottom:10px" onclick="openForm()"><img src="${lf.shot}" alt="Ваш кадр"><span class="tag">${lf.score} / 100</span><span class="cap"><b>${FORM[lf.ex].n} · ${ago(lf.t)}</b>${lf.reps?pl(lf.reps,'повтор засчитан','повтора засчитаны','повторов засчитано'):'удержание'} · углы по точкам суставов</span></a>`
+     :`<a class="ev" style="aspect-ratio:4/3;margin-bottom:10px" onclick="formRun('squat.mp4','squat')"><img src="img/tech-demo.jpg" alt="Пример разбора"><span class="tag">пример</span><span class="cap"><b>Так выглядит разбор</b>кадр крупно, углы в суставах, что поправить — на ваших кадрах</span></a>`}
   <button class="btn" onclick="openForm()">${ic('cam')} Проверить технику по видео</button>
-  <div class="small muted" style="text-align:center;margin:10px 4px 0">Снимите себя сбоку, 2–5 повторов. Видео не уходит с телефона.</div>
-  <h2>Упражнения</h2>
-  <div class="chips">${Object.entries(FORM).map(([k,x])=>`<button class="chip ${FV.ex===k?'on':''}" onclick="FV.ex='${k}';rerender()">${x.n}</button>`).join('')}</div>
-  <div class="card" style="margin-top:12px">${muscleMap(f.muscles)}<div class="tiny muted" style="margin-top:10px">Атлас мышц: Wikimedia Commons, CC BY-SA 4.0 · подсветка по упражнению, не измерение активности</div></div>
-  <h2>Как это работает</h2>
-  <div class="card list">${[['1','Снимаете 2–5 повторов сбоку','телефон на полу или у стены, вы целиком в кадре'],['2','Телефон находит суставы','33 точки тела, 10 кадров в секунду, без отправки видео'],['3','Код считает углы и повторы','засчитываются только полные движения'],['4','Показываем, что поправить','на ваших же кадрах: исходное, движение, нижняя точка, подъём']].map(([n,t,d])=>`<div class="li"><span class="num" style="width:28px;color:var(--text3);font-size:18px">${n}</span><div style="flex:1"><div style="font-weight:600">${t}</div><div class="tiny muted">${d}</div></div></div>`).join('')}</div>
-  <div class="concept">Углы считаются по точкам суставов, точность зависит от ракурса и света · подсказка по технике, не медицинская консультация</div>`;
+  <div class="small muted" style="text-align:center;margin:10px 4px 0">Пока умеем 6 упражнений: ${Object.values(FORM).map(f=>f.n.toLowerCase()).join(', ')}. Видео не уходит с телефона.</div>
+  <div class="concept">Углы считаются по точкам суставов, точность зависит от ракурса и света · не медицинская консультация</div>`;
 }
 function vMe(){
-  const pr=S.profile,n=norm(pr),g=GOALS[pr.goal],pg=program();
-  return `<div class="top"><span class="date">${pr.name}</span><button class="avatar tap" onclick="openProfile()" aria-label="Мой план">${pr.name[0]}</button></div>
-  <div class="card tap" onclick="openProfile()"><div class="row between"><div><div class="small muted">Цель · ${g.n.toLowerCase()}, ${PACE[pr.pace].toLowerCase()}</div><div class="num" style="font-size:34px;line-height:1.1;margin-top:2px">${fmt(n.kcal)} <span class="muted" style="font-size:15px;font-weight:500">ккал в день</span></div><div class="small muted" style="margin-top:4px">Б ${n.p} · Ж ${n.f} · У ${n.c} г · формулы, не нейросеть</div></div><span class="chev">${ic('chev')}</span></div></div>
-  <div class="card list">
-    <button class="rowbtn" onclick="openProgram()"><div class="ibox">${ic('gym')}</div><div class="t">Программа «${pg.name}»<small>${pl(pg.days.length,'тренировка','тренировки','тренировок')} в неделю · ${S.done.length} из ${pg.days.length} на этой неделе</small></div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="openFoodPlan()"><div class="ibox">${ic('food')}</div><div class="t">Питание и бюджет<small>${fmt(budgetOf(pr))} ₽ в день · что съесть, магазины рядом</small></div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="openSearch()"><div class="ibox">${ic('search')}</div><div class="t">База продуктов и блюд<small>416 продуктов, 87 блюд · калории считает код</small></div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="openProfile()"><div class="ibox">${ic('doc')}</div><div class="t">Норма и расчёт<small>вес, рост, активность · на чём основан расчёт</small></div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="openSub()"><div class="ibox">${ic('star')}</div><div class="t">Подписка<small>пока всё бесплатно · прототип</small></div><span class="chev">${ic('chev')}</span></button>
+  const pr=S.profile,n=norm(pr),g=GOALS[pr.goal],pg=program(),w=S.weights,lastW=w.length?w[w.length-1].w:pr.w,firstW=w.length?w[0].w:pr.w,dW=lastW-firstW;
+  const days=new Set(S.log.map(e=>e.d||today0())).size;
+  return `<div class="top"><span class="date">${pr.name}</span><button class="avatar tap" onclick="openEdit()" aria-label="Изменить профиль">${pr.name[0]}</button></div>
+  <div class="card tap" onclick="openEdit()"><div class="row between"><div style="min-width:0"><div class="small muted">Цель · ${g.n.toLowerCase()}, ${PACE[pr.pace].toLowerCase()}</div><div class="num" style="font-size:34px;line-height:1.1;margin-top:2px">${fmt(n.kcal)} <span class="muted" style="font-size:15px;font-weight:500">ккал в день</span></div><div class="small muted" style="margin-top:4px">Б ${n.p} · Ж ${n.f} · У ${n.c} г · ${pr.h} см · ${lastW} кг · ${pr.age} лет</div></div><span class="chev">${ic('chev')}</span></div></div>
+  <div class="grid2">
+    <button class="card tap" style="margin:0;text-align:left" onclick="openWeight()"><div class="small muted">Вес</div><div class="num" style="font-size:28px;margin-top:2px">${(''+lastW).replace('.',',')} <span class="muted" style="font-size:14px;font-weight:500">кг</span></div><div class="small" style="color:${dW<0?'var(--ok-text)':dW>0?'var(--accent-text)':'var(--text2)'}">${w.length>1?(dW>0?'+':'')+dW.toFixed(1).replace('.',',')+' кг с начала':w.length&&w[w.length-1].d===today0()?'записано сегодня':'записать сегодня'}</div></button>
+    <button class="card tap" style="margin:0;text-align:left" onclick="openHistory()"><div class="small muted">История</div><div class="num" style="font-size:28px;margin-top:2px">${S.workouts||0}</div><div class="small muted">${pl(S.workouts||0,'тренировка','тренировки','тренировок')} · ${pl(S.forms.length,'разбор','разбора','разборов')}</div></button>
   </div>
-  <div class="lock" style="margin-top:4px">${ic('lock')}<div><b>Данные на вашем телефоне.</b> Вес, доход и видео никуда не отправляются. Удалить всё — в расчёте нормы.</div></div>
+  <div class="card list">
+    <button class="rowbtn" onclick="openProgram()"><div class="ibox">${ic('gym')}</div><div class="t">Программа «${pg.name}»<small>${pl(pg.days.length,'тренировка','тренировки','тренировок')} в неделю · ${S.done.length} из ${pg.days.length} на этой неделе${S.extra.length?' · +'+pl(S.extra.length,'упражнение','упражнения','упражнений')+' в плане':''}</small></div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="openFoodPlan()"><div class="ibox">${ic('food')}</div><div class="t">Питание и бюджет<small>${fmt(budgetOf(pr))} ₽ в день · что съесть, магазины рядом</small></div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="openSearch()"><div class="ibox">${ic('search')}</div><div class="t">База продуктов<small>наша база с источниками + мировая Open Food Facts${S.custom.length?' · '+pl(S.custom.length,'ваш продукт','ваших продукта','ваших продуктов'):''}</small></div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="openProfile()"><div class="ibox">${ic('doc')}</div><div class="t">Как считаем норму<small>формулы, коэффициенты, источники</small></div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="openSub()"><div class="ibox">${ic('star')}</div><div class="t">Подписка<small>пока всё бесплатно · прототип</small></div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="openData()"><div class="ibox">${ic('lock')}</div><div class="t">Мои данные<small>всё хранится на телефоне · скачать или удалить</small></div><span class="chev">${ic('chev')}</span></button>
+  </div>
   <div class="concept">Не медицинская консультация. При травмах и заболеваниях посоветуйтесь с врачом.</div>`;
 }
+function today0(){return new Date().toISOString().slice(0,10)}
+function openEdit(){
+  const pr=S.profile,set=(k,v)=>{pr[k]=v;save();rerender()};
+  sheet('Профиль',`<div class="card">
+    <div class="field"><label>Имя</label><input type="text" value="${pr.name.replace(/"/g,'&quot;')}" maxlength="24" onchange="S.profile.name=this.value.trim()||'Вы';save();rerender()"></div>
+    <div class="field"><label>Пол</label><div class="chips">${[['m','Мужчина'],['f','Женщина']].map(([k,l])=>`<button class="chip ${pr.sex===k?'on':''}" onclick="S.profile.sex='${k}';save();rerender()">${l}</button>`).join('')}</div></div>
+    ${[['age','Возраст','лет',1,14,80],['h','Рост','см',1,140,210]].map(([k,l,u2,st,mn,mx])=>`<div class="field"><label>${l}</label><div class="ctl"><button class="rb" onclick="adjP('${k}',-${st},${mn},${mx})">−</button><span class="num" style="font-size:22px;min-width:56px;text-align:center">${pr[k]} <span class="muted" style="font-size:12px;font-weight:500">${u2}</span></span><button class="rb" onclick="adjP('${k}',${st},${mn},${mx})">+</button></div></div>`).join('')}
+    <div class="field"><label>Вес</label><div class="row" style="gap:10px"><span class="num" style="font-size:22px">${(''+pr.w).replace('.',',')} <span class="muted" style="font-size:12px;font-weight:500">кг</span></span><button class="btn sm sec" onclick="openWeight()">Записать</button></div></div>
+   </div>
+   <div class="card">
+    <div class="small muted" style="margin-bottom:6px">Цель</div><div class="chips">${Object.entries(GOALS).map(([k,g])=>`<button class="chip ${pr.goal===k?'on':''}" onclick="S.profile.goal='${k}';save();rerender()">${g.n}</button>`).join('')}</div>
+    ${pr.goal==='lose'||pr.goal==='muscle'?`<div class="small muted" style="margin:12px 0 6px">Темп</div><div class="chips">${Object.entries(PACE).map(([k,l])=>`<button class="chip ${pr.pace===k?'on':''}" onclick="S.profile.pace='${k}';save();rerender()">${l}</button>`).join('')}</div>`:''}
+    <div class="small muted" style="margin:12px 0 6px">Активность в будни</div><div class="chips">${Object.entries(WORK).map(([k,w])=>`<button class="chip ${pr.work===k?'on':''}" onclick="S.profile.work='${k}';save();rerender()">${w[0]}</button>`).join('')}</div>
+    <div class="small muted" style="margin:12px 0 6px">Тренировок в неделю</div><div class="chips">${[2,3,4,5].map(t=>`<button class="chip ${pr.trains===t?'on':''}" onclick="S.profile.trains=${t};save();rerender()">${t}</button>`).join('')}</div>
+    <div class="small muted" style="margin:12px 0 6px">Где тренируетесь</div><div class="chips">${[['gym','В зале'],['home','Дома'],['both','И там, и там']].map(([k,l])=>`<button class="chip ${(pr.place||'both')===k?'on':''}" onclick="S.profile.place='${k}';save();rerender()">${l}</button>`).join('')}</div>
+   </div>
+   <div class="card"><div class="small muted">Доход в месяц · для бюджета на еду</div><div class="num" style="font-size:30px">${fmt(pr.income)} ₽</div><input type="range" min="20000" max="500000" step="5000" value="${pr.income}" oninput="S.profile.income=+this.value;this.previousElementSibling.textContent=fmt(this.value)+' ₽'" onchange="save();rerender()">
+    <div class="row between"><span class="small muted">Доля на еду</span><div class="chips">${[[.2,'20%'],[.3,'30%'],[.4,'40%']].map(([v,l])=>`<button class="chip ${pr.share===v?'on':''}" onclick="S.profile.share=${v};save();rerender()">${l}</button>`).join('')}</div></div>
+    <div class="row between" style="margin-top:10px"><span class="small muted">Сколько человек кормит доход</span><div class="ctl"><button class="rb" onclick="adjP('people',-1,1,6)">−</button><span class="num" style="font-size:20px;min-width:20px;text-align:center">${pr.people}</span><button class="rb" onclick="adjP('people',1,1,6)">+</button></div></div>
+    <div class="small muted" style="margin-top:10px">Бюджет на еду: <b>${fmt(budgetOf(pr))} ₽ в день</b></div></div>
+   <button class="card tap" style="width:100%;text-align:left" onclick="openProfile()"><div class="row between"><div><div style="font-weight:600">Норма пересчитана: ${fmt(norm(pr).kcal)} ккал</div><div class="small muted">Б ${norm(pr).p} · Ж ${norm(pr).f} · У ${norm(pr).c} г · как считаем</div></div><span class="chev">${ic('chev')}</span></div></button>
+   <button class="btn" onclick="closeSheet()">Готово</button>`);SHEET_FN=openEdit;
+}
+function adjP(k,d,mn,mx){S.profile[k]=Math.max(mn,Math.min(mx,S.profile[k]+d));save();haptic(4);rerender()}
+let WT=null;
+function openWeight(){
+  if(WT==null)WT=S.weights.length?S.weights[S.weights.length-1].w:S.profile.w;
+  const w=S.weights.slice(-30);
+  sheet('Вес',`<div class="card" style="text-align:center"><div class="num" style="font-size:56px;line-height:1">${WT.toFixed(1).replace('.',',')}</div><div class="muted">кг · сегодня</div>
+    <div class="ctl" style="justify-content:center;margin-top:14px;gap:16px"><button class="rb" onclick="WT=Math.max(35,+(WT-0.1).toFixed(1));openWeight()">−</button><input type="range" min="35" max="200" step="0.1" value="${WT}" style="flex:1;max-width:200px" oninput="WT=+this.value;this.parentNode.parentNode.querySelector('.num').textContent=WT.toFixed(1).replace('.',',')"><button class="rb" onclick="WT=Math.min(200,+(WT+0.1).toFixed(1));openWeight()">+</button></div>
+    <button class="btn" style="margin-top:14px" onclick="saveWeight()">Записать ${WT.toFixed(1).replace('.',',')} кг</button></div>
+   ${w.length>1?`<div class="card"><div class="row between"><span class="small muted">Последние ${pl(w.length,'запись','записи','записей')}</span><span class="small" style="color:${w[w.length-1].w-w[0].w<0?'var(--ok-text)':'var(--accent-text)'};font-weight:600">${(w[w.length-1].w-w[0].w>0?'+':'')+(w[w.length-1].w-w[0].w).toFixed(1).replace('.',',')} кг</span></div>${spark(w.map(x=>x.w))}<div class="row between tiny muted"><span>${w[0].d.slice(8,10)}.${w[0].d.slice(5,7)}</span><span>${w[w.length-1].d.slice(8,10)}.${w[w.length-1].d.slice(5,7)}</span></div></div>`:`<div class="card small muted">Записывайте вес утром, после туалета, до еды — так график будет честным. Норма калорий пересчитывается по последнему весу.</div>`}
+   <div class="card list">${S.weights.slice(-7).reverse().map(x=>`<div class="li"><div style="flex:1" class="muted">${x.d.slice(8,10)}.${x.d.slice(5,7)}.${x.d.slice(0,4)}</div><span class="num">${x.w.toFixed(1).replace('.',',')} кг</span></div>`).join('')}</div>`);SHEET_FN=openWeight;
+}
+function saveWeight(){const d=today0(),i=S.weights.findIndex(x=>x.d===d);if(i>-1)S.weights[i].w=WT;else S.weights.push({d,w:WT});S.profile.w=WT;save();haptic([10,40,10]);toast('Вес записан · норма пересчитана');WT=null;closeSheet();rerender()}
+function spark(vals){const W=300,H=56,mn=Math.min(...vals),mx=Math.max(...vals),r=mx-mn||1;const pts=vals.map((v,i)=>[i/(vals.length-1)*(W-8)+4,H-6-(v-mn)/r*(H-14)]);return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><polyline fill="none" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${pts.map(p=>p.map(n=>n.toFixed(1)).join(',')).join(' ')}"/><circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="4" fill="var(--accent)"/></svg>`}
+function openHistory(){
+  const f=S.forms.slice().reverse();
+  sheet('История',`<div class="grid2"><div class="card" style="margin:0"><div class="small muted">Тренировок</div><div class="num" style="font-size:28px">${S.workouts||0}</div></div><div class="card" style="margin:0"><div class="small muted">Разборов техники</div><div class="num" style="font-size:28px">${S.forms.length}</div></div></div>
+   <h2>Разборы техники</h2>${f.length?f.map(x=>`<div class="card row" style="padding:10px"><img src="${x.shot||'img/tech-demo.jpg'}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:10px;flex:none;background:#111"><div style="flex:1"><div style="font-weight:600">${FORM[x.ex]?FORM[x.ex].n:x.ex}</div><div class="small muted">${new Date(x.t).toLocaleDateString('ru-RU',{day:'numeric',month:'short'})} · ${x.reps?pl(x.reps,'повтор','повтора','повторов'):'удержание'}${x.findings&&x.findings.length?' · '+x.findings[0]:''}</div></div><span class="num" style="font-size:22px;color:${x.score>=80?'var(--ok-text)':x.score>=55?'var(--warn)':'var(--bad)'}">${x.score}</span></div>`).join(''):`<div class="card small muted">Разборов пока нет. Снимите себя сбоку — вкладка «Атлас».</div>`}
+   <h2>Дневник еды</h2><div class="card small muted">${S.log.length?pl(S.log.length,'запись','записи','записей')+' сегодня · '+fmt(eaten().k)+' ккал':'Сегодня ничего не записано'}</div>`);
+}
+function openData(){
+  sheet('Мои данные',`<div class="lock">${ic('lock')}<div><b>Всё хранится на вашем телефоне</b> — в памяти браузера. Мы не получаем вес, доход, фото и видео. Сменили телефон — скачайте файл и загрузите на новом (загрузка появится в рабочей версии).</div></div>
+   <div class="card list" style="margin-top:10px">
+    <button class="rowbtn" onclick="exportData()"><div class="ibox">${ic('download')}</div><div class="t">Скачать мои данные<small>файл JSON: профиль, дневник, вес, разборы</small></div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="openProfile()"><div class="ibox">${ic('doc')}</div><div class="t">Что и как считается<small>формулы и источники</small></div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="confirmReset()"><div class="ibox" style="color:var(--bad)">${ic('trash')}</div><div class="t" style="color:var(--bad)">Удалить всё и начать заново<small>без подтверждения ничего не удалится</small></div><span class="chev">${ic('chev')}</span></button>
+   </div>
+   <div class="concept">Персональные данные по 152-ФЗ: в рабочей версии будут храниться в России · оферта и политика — на этапе юриста</div>`);
+}
+function exportData(){try{const blob=new Blob([JSON.stringify(S,null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='moy-trener-'+today0()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast('Файл сохранён')}catch(e){toast('Не удалось сохранить файл')}}
+function confirmReset(){sheet('Удалить всё?',`<div class="card">Профиль, дневник, вес и разборы техники будут удалены с этого телефона. Вернуть их будет нельзя.</div><button class="btn" style="background:var(--bad);color:#fff" onclick="resetAll()">Да, удалить всё</button><button class="btn ghost" onclick="openData()">Отмена</button>`)}
 function openSub(){
   sheet('Подписка',`<div class="card"><div class="small muted">Что будет платным</div><div class="title" style="margin-top:4px">Разбор техники без лимита, тренер и тренды</div><div class="small muted" style="margin-top:6px">Запись еды и база продуктов останутся бесплатными. Цена и условия ещё не определены — это прототип.</div></div>
-   <div class="card list">${[['Запись еды по фото и базе','бесплатно'],['Норма и программа','бесплатно'],['Разбор техники','3 видео в неделю бесплатно'],['Тренер и разбор без лимита','по подписке']].map(([a,b])=>`<div class="li"><div style="flex:1">${a}</div><span class="small muted">${b}</span></div>`).join('')}</div>
+   <div class="card list">${[['Запись еды по фото, базе и штрихкоду','бесплатно'],['Норма, программа, вес и история','бесплатно'],['Атлас упражнений','бесплатно'],['Разбор техники по видео','3 видео в неделю бесплатно, дальше по подписке'],['Тренер без лимита и тренды за месяцы','по подписке']].map(([a,b])=>`<div class="li" style="align-items:flex-start"><div style="flex:1"><div style="font-weight:600">${a}</div><div class="small muted">${b}</div></div><span style="color:${b.startsWith('бесплатно')?'var(--ok-text)':'var(--accent-text)'}">${ic('check','style="width:18px;height:18px"')}</span></div>`).join('')}</div>
    <button class="btn sec" onclick="closeSheet()">Понятно</button>`);
 }
 function clubList(mode){
@@ -973,8 +1161,8 @@ function openProfile(){
   sheet('Мой план',`${calcCard(pr)}
    <div class="card list">${[['Цель',GOALS[pr.goal].n+' · '+PACE[pr.pace].toLowerCase()],['Рост и вес',pr.h+' см · '+pr.w+' кг'],['Работа',WORK[pr.work][0]+' · '+pl(pr.trains,'тренировка','тренировки','тренировок')+' в неделю'],['Бюджет на еду',fmt(budgetOf(pr))+' ₽ в день']].map(([a,b])=>`<div class="li"><div style="flex:1" class="muted">${a}</div><div style="font-weight:600;text-align:right">${b}</div></div>`).join('')}</div>
    <div class="lock" style="margin-bottom:12px">${ic('lock')}<div>Доход, вес и цели видите только вы и храните на своём телефоне.</div></div>
-   ${SOURCES}<button class="btn sec" onclick="resetAll()">Пройти анкету заново</button>
-   <div class="concept">Концепт приложения для фитнес-клубов · демо-данные · привязывается к вашим клубам и тренерам</div>`);
+   ${SOURCES}<button class="btn sec" onclick="openEdit()">Изменить данные</button>
+   <div class="concept">Норма — ориентир, а не предписание · не медицинская консультация</div>`);
 }
 function resetAll(){try{localStorage.removeItem('yb-demo2')}catch(e){};S=fresh();closeSheet();showOnb()}
 
@@ -1008,7 +1196,7 @@ function renderOnb(){
       <button class="btn" onclick="obNext()">Дальше</button>`,
    ()=>`<div class="q">Бюджет на питание</div><div class="qs">Подберём меню и магазины, которые вам по карману</div>
       <div style="overflow-y:auto;flex:1;margin:0 -4px;padding:0 4px">
-      <div class="lock" style="margin-bottom:12px">${ic('lock')}<div><b>Конфиденциально.</b> Доход видите только вы — он хранится на вашем телефоне и не передаётся клубу.</div></div>
+      <div class="lock" style="margin-bottom:12px">${ic('lock')}<div><b>Конфиденциально.</b> Доход видите только вы — он хранится на вашем телефоне и никуда не передаётся.</div></div>
       <div class="card"><div class="small muted">Доход в месяц</div><div class="num" style="font-size:34px" id="incv">${fmt(D.income)} ₽</div>
        <input type="range" min="20000" max="500000" step="5000" value="${D.income}" oninput="D.income=+this.value;updBud()">
        <div class="row between" style="margin-top:8px"><span class="small muted">Сколько человек кормит этот доход</span><div class="ctl"><button class="rb" onclick="obAdj('people',-1,1,6)">−</button><span class="num" style="font-size:20px;min-width:20px;text-align:center">${D.people}</span><button class="rb" onclick="obAdj('people',1,1,6)">+</button></div></div>
