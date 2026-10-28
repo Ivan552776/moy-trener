@@ -2,7 +2,7 @@
 <html lang="ru" data-theme="light">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" id="themecolor" content="#F4F2ED">
 <title>Мой тренер — ИИ-тренер: питание по базе и техника по видео</title>
@@ -47,6 +47,16 @@
   --p-text:#8FB0F0; --f-text:#E8B65A; --ok-text:#5FCB8E;
 }}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,button,a,input,label,.tap,.chip,.rb,.setdot,.tab,.opt,.exrow,.rowbtn,.addopt,.ev,.toggle,.li{touch-action:manipulation}
+.rowbtn,.exrow,.addopt,.opt,.li[onclick],button.li{transition:background-color .18s var(--ease-out),transform .16s var(--ease-out)}
+.rowbtn:active,.exrow:active,button.li:active,.li[onclick]:active{background:var(--card2)}
+.addopt:active,.opt:active{transform:scale(.985)}
+.chip{will-change:transform} .chip.on{animation:chipin .22s var(--ease-out)} @keyframes chipin{from{transform:scale(.94)}to{transform:none}}
+.ev img,.exrow .th img,.thumb img{animation:imgin .4s var(--ease-out)} @keyframes imgin{from{opacity:0}to{opacity:1}}
+.wk .d i{transition:background-color .25s var(--ease-out),box-shadow .25s var(--ease-out),color .25s}
+.anat img.ly{animation:lyin .5s var(--ease-out),mpulse 2s ease-in-out .5s infinite} @keyframes lyin{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:none}}
+.big .num{animation:numin .5s var(--ease-out)} @keyframes numin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (hover:hover) and (pointer:fine){.rowbtn:hover,.exrow:hover,.addopt:hover,.opt:hover{background:var(--card2)} .tab:hover{color:var(--text2)}}
 html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:var(--bg);color:var(--text);font-family:var(--font);font-size:17px;line-height:1.35;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 body{display:flex;justify-content:center}
 button,input{font:inherit;color:inherit}
@@ -450,7 +460,9 @@ function openAdd(){
    <button class="addopt" onclick="openForm()"><div class="ibox">${ic('ruler')}</div><div style="flex:1"><div class="title">Проверить технику по видео</div><div class="small muted">Снимите себя сбоку, 2–5 повторов</div></div><span class="chev">${ic('chev')}</span></button>
    <button class="addopt" onclick="openProgram()"><div class="ibox">${ic('gym')}</div><div style="flex:1"><div class="title">Отметить тренировку</div><div class="small muted">Сегодня · ${program().days[Math.min(1,program().days.length-1)]}</div></div><span class="chev">${ic('chev')}</span></button>`);
 }
-function render(){ANIM=!RM;renderTabs();$('#scroll').innerHTML=`<div class="stg ${DIR}">${screen()}</div>`;DIR='';$('#hdr').textContent=TITLES[S.tab];after($('#scroll'),ANIM,true)}
+function render(){ANIM=!RM;renderTabs();let html;try{html=screen()}catch(e){console.error(e);html=`<div class="card"><div class="title">Экран не открылся</div><div class="small muted" style="margin-top:6px">${(e&&e.message)||e}</div><button class="btn sec" style="margin-top:12px" onclick="S.tab='today';save();render()">На главную</button><button class="btn ghost" onclick="confirmReset()">Начать заново</button></div>`}$('#scroll').innerHTML=`<div class="stg ${DIR}">${html}</div>`;DIR='';$('#hdr').textContent=TITLES[S.tab];after($('#scroll'),ANIM,true)}
+window.addEventListener('error',e=>{try{toast('Ошибка: '+(e.message||'').slice(0,60))}catch(_){}});
+window.addEventListener('unhandledrejection',e=>{try{toast('Ошибка: '+((e.reason&&e.reason.message)||'').slice(0,60))}catch(_){}});
 function rerender(){const y=$('#scroll').scrollTop;ANIM=false;renderTabs();$('#scroll').innerHTML=`<div>${screen()}</div>`;after($('#scroll'),false,false);ANIM=!RM;$('#scroll').scrollTo({top:y,behavior:'instant'});if(SHEET_FN&&$('#sheet').classList.contains('on')){const fn=SHEET_FN;keepScroll(()=>{ANIM=false;fn();ANIM=!RM})}}
 function haptic(ms){try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
 function toast(t){const el=$('#toast');el.innerHTML=`<span style="color:var(--ok)">${ic('check')}</span>${t}`;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2200)}
@@ -705,12 +717,48 @@ function openScan(){
 }
 function plateMini(d){return `<div class="thumb"><i style="background:conic-gradient(${d.tone[0]} 0 45%,${d.tone[1]} 45% 80%,${d.tone[2]} 80% 100%)"></i>${pic(d.img,d.name)}</div>`}
 function plateInner(d,capt){const im=SC.photo?`<img src="${SC.photo}" alt="">`:d.img?pic(d.img,d.name):`<div class="blob" style="width:30%;height:38%;left:26%;top:30%;background:${d.tone[0]}"></div><div class="blob" style="width:22%;height:26%;left:50%;top:34%;background:${d.tone[1]}"></div><div class="blob" style="width:14%;height:18%;left:47%;top:58%;background:${d.tone[2]};opacity:.9"></div>`;return im+(capt?`<div class="capt"><span>${d.name}</span>${capt===true?'':`<span class="num">${capt}</span>`}</div>`:'')}
+/* ---------- Распознавание блюда по фото: бесплатная модель в телефоне (EfficientNet-B0, Food-101, ONNX), калории считает код по базе ---------- */
+const TFJS_URL='https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2';
+// Класс модели → похожие блюда из НАШЕЙ базы (по тому, как это выглядит на фото). Пользователь видит только наши блюда.
+const FOOD_NEAR={apple_pie:['sharlotka','medovik','napoleon'],baby_back_ribs:['shashlyk','otbivnaya','kurica_gril'],baklava:['medovik','napoleon','eclair'],beef_carpaccio:['steak','befstroganov'],beef_tartare:['befstroganov','steak','tefteli'],beet_salad:['vinegret','shuba','borsch'],beignets:['oladi','syrniki','pirozhok_kapusta'],bibimbap:['ris','plov','wok_lapsha'],bread_pudding:['tvorozhnaya_zapekanka','sharlotka','manka'],breakfast_burrito:['shaurma','cheburek','bliny'],bruschetta:['buterbrod_syr','buterbrod_kolbasa','tost_avokado'],caesar_salad:['caesar','grecheskiy','krabovyi'],cannoli:['eclair','napoleon','syrok_glazirovannyi'],caprese_salad:['grecheskiy','ovoshi_s_maslom','caesar'],carrot_cake:['medovik','sharlotka','napoleon'],ceviche:['ryba_zapechennaya','rolly','krabovyi'],cheese_plate:['buterbrod_syr','hachapuri'],cheesecake:['cheesecake','tvorozhnaya_zapekanka','napoleon'],chicken_curry:['grechka_kurica','gulyash','zharkoe','plov'],chicken_quesadilla:['shaurma','hachapuri','cheburek'],chicken_wings:['kurica_gril','nuggets','kurica_zapechennaya'],chocolate_cake:['pirozhnoe_kartoshka','medovik','napoleon'],chocolate_mousse:['tvorozhnaya_zapekanka','syrok_glazirovannyi','morozhenoe'],churros:['oladi','eclair','sosiska_v_teste'],clam_chowder:['krem_sup_gribnoi','sup_gorohovyi','rassolnik'],club_sandwich:['sandwich','buterbrod_kolbasa','burger'],crab_cakes:['kotlety_pyure','tefteli','syrniki'],creme_brulee:['tvorozhnaya_zapekanka','manka','cheesecake'],croque_madame:['buterbrod_syr','yaichnica_bekon','sandwich'],cup_cakes:['eclair','pirozhnoe_kartoshka','sharlotka'],deviled_eggs:['yaichnica_bekon','omlet','mimoza'],donuts:['oladi','eclair','pirozhok_kapusta'],dumplings:['pelmeni','vareniki','golubtsy'],edamame:['ovoshi_na_paru','ovoshi_gril'],eggs_benedict:['yaichnica_bekon','omlet','buterbrod_syr'],escargots:['tefteli','ovoshi_gril'],falafel:['tefteli','nuggets','kotlety_pyure'],filet_mignon:['steak','otbivnaya','befstroganov'],fish_and_chips:['ryba_zharenaya','nuggets','kartofel_fri'],foie_gras:['buterbrod_kolbasa','befstroganov'],french_fries:['kartofel_fri','kartofel_zharenyi','kartofel_zapechennyi'],french_onion_soup:['krem_sup_gribnoi','solyanka','sup_kurinyi_lapsha'],french_toast:['syrniki','oladi','bliny'],fried_calamari:['nuggets','ryba_zharenaya','kartofel_fri'],fried_rice:['ris','plov','wok_lapsha'],frozen_yogurt:['tvorog_banan','granola_yogurt','morozhenoe'],garlic_bread:['buterbrod_syr','hachapuri','pizza'],gnocchi:['makarony_po_flotski','makarony','vareniki','pelmeni'],greek_salad:['grecheskiy','ovoshi_s_maslom','caesar'],grilled_cheese_sandwich:['buterbrod_syr','sandwich','hachapuri'],grilled_salmon:['ryba_zapechennaya','ryba_zharenaya','kurica_zapechennaya'],guacamole:['tost_avokado','ovoshi_s_maslom'],gyoza:['pelmeni','vareniki','cheburek'],hamburger:['burger','sandwich','hot_dog'],hot_and_sour_soup:['solyanka','rassolnik','sup_kurinyi_lapsha'],hot_dog:['hot_dog','sosiska_v_teste','sosiski_makarony'],huevos_rancheros:['yaichnica_bekon','omlet','ovoshi_gril'],hummus:['tost_avokado','pyure','ovoshi_s_maslom'],ice_cream:['morozhenoe','syrok_glazirovannyi','tvorog_banan'],lasagna:['makarony_po_flotski','golubtsy','tvorozhnaya_zapekanka'],lobster_bisque:['krem_sup_gribnoi','sup_gorohovyi','uha'],lobster_roll_sandwich:['sandwich','hot_dog','buterbrod_kolbasa'],macaroni_and_cheese:['makarony','sosiski_makarony','pasta_carbonara'],macarons:['eclair','syrok_glazirovannyi','pirozhnoe_kartoshka'],miso_soup:['uha','sup_kurinyi_lapsha','shchi'],mussels:['ryba_zapechennaya','uha','rolly'],nachos:['kartofel_fri','kartofel_zapechennyi','pizza'],omelette:['omlet','yaichnica_bekon','syrniki'],onion_rings:['nuggets','kartofel_fri','draniki'],oysters:['ryba_zapechennaya','rolly'],pad_thai:['wok_lapsha','makarony_po_flotski','sup_kurinyi_lapsha'],paella:['plov','ris','wok_lapsha'],pancakes:['oladi','bliny','syrniki'],panna_cotta:['tvorozhnaya_zapekanka','cheesecake','manka'],peking_duck:['kurica_gril','kurica_zapechennaya','shashlyk'],pho:['sup_kurinyi_lapsha','wok_lapsha','solyanka'],pizza:['pizza','hachapuri','buterbrod_syr'],pork_chop:['otbivnaya','steak','shashlyk'],poutine:['kartofel_fri','kartofel_zharenyi','zharkoe'],prime_rib:['steak','otbivnaya','shashlyk'],pulled_pork_sandwich:['sandwich','burger','shaurma'],ramen:['sup_kurinyi_lapsha','wok_lapsha','solyanka'],ravioli:['vareniki','pelmeni','golubtsy'],red_velvet_cake:['medovik','napoleon','pirozhnoe_kartoshka'],risotto:['ris','pyure','plov'],samosa:['pirozhok_kapusta','cheburek','sosiska_v_teste'],sashimi:['rolly','ryba_zapechennaya'],scallops:['kotlety_pyure','syrniki','tefteli'],seaweed_salad:['kapusta_morkov','ovoshi_s_maslom','grecheskiy'],shrimp_and_grits:['ris','manka','ovsyanka'],spaghetti_bolognese:['makarony_po_flotski','pasta_carbonara','makarony'],spaghetti_carbonara:['pasta_carbonara','makarony','makarony_po_flotski'],spring_rolls:['bliny','cheburek','shaurma'],steak:['steak','otbivnaya','shashlyk'],strawberry_shortcake:['napoleon','cheesecake','sharlotka'],sushi:['rolly','ryba_zapechennaya'],tacos:['shaurma','cheburek','bliny'],takoyaki:['tefteli','kotlety_pyure','draniki'],tiramisu:['tiramisu','napoleon','cheesecake'],tuna_tartare:['rolly','ryba_zapechennaya','krabovyi'],waffles:['oladi','bliny','syrniki']};
+function nearDishes(out){ // суммируем вероятности классов по нашим блюдам
+  const sc={};(out||[]).forEach(x=>{(FOOD_NEAR[x.label]||[]).forEach((id,i)=>{sc[id]=(sc[id]||0)+x.score*[1,.55,.35,.25][i]})});
+  return Object.entries(sc).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([id,v])=>({id,v}));
+}
+let FOODCLF=null,FOODLOAD=null;
+async function loadFoodClf(onStatus){
+  if(FOODCLF)return FOODCLF;if(FOODLOAD)return FOODLOAD;
+  FOODLOAD=(async()=>{const T=await import(TFJS_URL);T.env.allowRemoteModels=false;T.env.allowLocalModels=true;T.env.localModelPath=new URL('models/',location.href).href;
+    let last=0;const cb=p=>{if(p.status==='progress'&&p.progress-last>8){last=p.progress;onStatus&&onStatus('Загружаем модель (один раз, ~60 МБ)… '+Math.round(p.progress)+'%')}};
+    const [model,proc]=await Promise.all([T.AutoModelForImageClassification.from_pretrained('food101',{dtype:'q4',device:'wasm',progress_callback:cb}),T.AutoProcessor.from_pretrained('food101')]);
+    const labels=model.config.id2label||{};
+    const clf=async(src,{top_k=5}={})=>{const img=await T.RawImage.read(src);const inputs=await proc(img);const out=await model(inputs);const lg=Array.from(out.logits.data);const m=Math.max(...lg);const ex=lg.map(v=>Math.exp(v-m));const sum=ex.reduce((a,b)=>a+b,0);
+      return ex.map((v,i)=>({label:labels[i]||String(i),score:v/sum})).sort((a,b)=>b.score-a.score).slice(0,top_k)};
+    FOODCLF=clf;return clf})();
+  try{return await FOODLOAD}catch(e){FOODLOAD=null;throw e}
+}
 function gotPhoto(inp){
   const f=inp.files&&inp.files[0];if(!f)return;const r=new FileReader();
-  r.onload=()=>{SC.photo=r.result;sheet('Что на фото?',`<div class="plate" style="margin-bottom:12px"><img src="${SC.photo}" alt=""></div>
-    <div class="card small muted">Демо-режим: настоящее распознавание подключается по ключу нейросети. Для показа выберите, что на фото:</div>
-    ${Object.entries(DISHES).map(([id,d])=>`<button class="opt" onclick="recognize('${id}')">${plateMini(d)}<div style="flex:1;font-weight:700">${d.name}</div></button>`).join('')}`)};
+  r.onload=()=>{SC.photo=r.result;photoFlow()};
   r.readAsDataURL(f);
+}
+async function photoFlow(){
+  sheet('Узнаём блюдо…',`<div class="plate" style="margin-bottom:12px"><img src="${SC.photo}" alt=""><div class="scanline"></div></div>
+    <div class="card"><div class="row between"><span class="small muted" id="fdst">Смотрим на фото…</span></div><div class="sk" style="width:60%;margin-top:10px"></div><div class="sk" style="width:85%;margin-top:8px"></div></div>
+    <div class="small muted" style="text-align:center">Модель работает в телефоне, фото никуда не отправляется · калории считает код по базе</div>`);
+  const st=t=>{const el=$('#fdst');if(el)el.textContent=t};
+  let top=[];
+  try{const clf=await loadFoodClf(st);st('Узнаём…');const out=await clf(SC.photo,{top_k:6});top=(out||[]).filter(x=>x.score>0.02)}catch(e){console.error(e);top=null}
+  if(!$('#fdst'))return; // пользователь закрыл шторку
+  await loadDB();
+  const near=top?nearDishes(top):[],tot=near.reduce((a,x)=>a+x.v,0)||1;
+  const rows=near.map(x=>{const d=DB.dishes.find(z=>z.id===x.id);if(!d)return '';const pct=Math.round(x.v/tot*100);
+    return `<button class="opt" onclick="dishFromDB('${x.id}')"><div class="ibox" style="background:var(--accent-soft);color:var(--accent-text)">${ic('food')}</div><div style="flex:1"><div style="font-weight:700">${d.n}</div><div class="small muted">${pct>=50?'очень похоже':pct>=25?'похоже':'возможно'} · ${d.parts.length===1?'1 часть':pl(d.parts.length,'часть','части','частей')}, посчитаем по рецепту</div></div><span class="chev">${ic('chev')}</span></button>`}).join('');
+  sheet('Что на фото?',`<div class="plate" style="margin-bottom:12px"><img src="${SC.photo}" alt=""></div>
+    ${top===null?`<div class="card small muted">Модель распознавания не загрузилась (при первом запуске нужен интернет, модель ~60 МБ, лучше по Wi-Fi; дальше работает без сети). Найдите блюдо в базе вручную.</div>`:rows?`<div class="small muted" style="margin:0 4px 8px">Похоже на блюда из нашей базы</div>${rows}`:`<div class="card small muted">Не узнали блюдо. Снимите сверху при хорошем свете или найдите в базе.</div>`}
+    <button class="btn sec" onclick="openSearch()">${ic('search')} Найти в базе по названию</button>
+    <button class="btn ghost" onclick="openBarcode()">Это упаковка? Штрихкод</button>
+    <div class="concept">Распознавание — открытая модель Swin (Food-101, 101 блюдо), бесплатно и прямо в телефоне; русские блюда она подбирает «по похожести». Состав и калории всегда из нашей базы, а не «на глаз».</div>`);
 }
 function recognize(id){
   if(!SC)SC={photo:null};const d=JSON.parse(JSON.stringify(DISHES[id]));SC.id=id;SC.d=d;
