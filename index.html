@@ -207,7 +207,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;heigh
 .exrow .t{flex:1;min-width:0} .exrow .t b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-weight:600;font-size:15px;line-height:1.25;overflow:hidden;text-wrap:balance} .exrow .t small{display:block;color:var(--text2);font-size:12px;margin-top:2px}
 .exhero{position:relative;border-radius:14px;overflow:hidden;background:#fff;aspect-ratio:4/3} .exhero img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;outline:0;transition:opacity .35s var(--ease-out)} .exhero img.b{opacity:0} .exhero.alt img.b{opacity:1}
 .exhero.noimg{display:grid;place-items:center;color:var(--text3);font-size:13px;background:var(--card2)} .exhero.noimg::before{content:"картинка загрузится позже"} .exhero.noimg img,.exhero.noimg .dots{display:none}
-.exhero .dots{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:6px} .exhero .dots i{width:6px;height:6px;border-radius:50%;background:rgba(0,0,0,.2)} .exhero .dots i.on{background:#17150F}
+.exhero .dots{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:6px}
+.explay{position:absolute;left:10px;bottom:10px;z-index:3;display:flex;align-items:center;gap:8px;padding:9px 14px 9px 10px;border-radius:999px;background:rgba(0,0,0,.68);color:#fff;font-weight:700;font-size:14px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}.explay svg{width:18px;height:18px}
+.exhero iframe{position:absolute;inset:0;width:100%;height:100%;border:0} .exhero .dots i{width:6px;height:6px;border-radius:50%;background:rgba(0,0,0,.2)} .exhero .dots i.on{background:#17150F}
 .field{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:.5px solid var(--line)} .field:last-child{border-bottom:0} .field label{color:var(--text2);font-size:15px;flex:none}
 .field input[type=text],.field input[type=number],.field input[type=tel]{flex:1;min-width:0;text-align:right;border:0;background:transparent;font-size:17px;font-weight:600;padding:4px 0;outline:0;color:var(--text)}
 .search{width:100%;height:46px;border:0;border-radius:12px;padding:0 14px 0 40px;background:var(--card);font-size:16px;box-shadow:var(--shadow);outline:0;color:var(--text);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A39E93' stroke-width='1.9' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cpath d='M20 20l-4.2-4.2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:12px center;background-size:20px}
@@ -303,7 +305,7 @@ const u=(n,unit)=>fmt(n)+NBS+unit;
 const pic=(src,alt='')=>src?`<img src="${src}" alt="${alt}" loading="lazy" decoding="async" onerror="this.remove()">`:'';
 const loadLabel=v=>v>70?'людно':v>45?'умеренно':'свободно';
 const CU=(n,suf='')=>`<span data-cu="${n}" data-suf="${suf.replace(/^ /,NBS)}">${fmt(0)}${suf.replace(/^ /,NBS)}</span>`;
-function cu(el,anim){const to=+el.dataset.cu,suf=el.dataset.suf||'';if(!anim||!to){el.textContent=fmt(to)+suf;return}const t0=performance.now(),d=700;const step=t=>{const k=Math.min((t-t0)/d,1),e=1-Math.pow(1-k,3);el.textContent=fmt(to*e)+suf;if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+function cu(el,anim){const to=+el.dataset.cu,suf=el.dataset.suf||'';if(!anim||!to){el.textContent=fmt(to)+suf;return}const t0=performance.now(),d=700;const step=t=>{const k=Math.max(0,Math.min((t-t0)/d,1)),e=1-Math.pow(1-k,3);el.textContent=fmt(to*e)+suf;if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
 const bar=(p,extra='')=>`<i style="width:${ANIM?0:p}%;${extra}" data-w="${p}%"></i>`;
 const raf2=f=>requestAnimationFrame(()=>requestAnimationFrame(f));
 function after(root,anim,stag){
@@ -513,7 +515,7 @@ function vToday(){
   <div class="macros">${[['Белки','p','var(--p)'],['Жиры','f','var(--f)'],['Углеводы','c','var(--c)']].map(([l,k,col])=>`<div class="mrow"><span class="nm">${l}</span><div class="bar">${bar(Math.min(e[k]/n[k]*100,100),'background:'+col)}</div><span class="v">${fmt(e[k])} <span>/ ${n[k]} г</span></span></div>`).join('')}</div>
   <h2>Сегодня, по вашим данным</h2>
   <div class="grid2">
-    ${lf?`<a class="ev" onclick="openForm()"><img src="${lf.shot}" alt="Ваш кадр с разбора техники"><span class="tag">${lf.score} / 100</span><span class="cap"><b>${FORM[lf.ex].n}</b>${lf.reps?pl(lf.reps,'повтор','повтора','повторов')+' · ':''}${ago(lf.t)}</span></a>`
+    ${lf?`<a class="ev" onclick="openForm()"><img src="${lf.shot}" alt="Ваш кадр с разбора техники"><span class="tag">${lf.score} / 100</span><span class="cap"><b>${fName(lf.ex)}</b>${lf.reps?pl(lf.reps,'повтор','повтора','повторов')+' · ':''}${ago(lf.t)}</span></a>`
         :`<a class="ev" onclick="formRun('squat.mp4','squat')"><img src="img/tech-demo.jpg" alt="Пример разбора техники"><span class="tag">пример</span><span class="cap"><b>Разбор техники</b>снимите себя сбоку</span></a>`}
     ${last&&last.img?`<a class="ev" onclick="openFoodPlan()"><img src="${last.img}" alt="${last.n}"><span class="tag">${fmt(last.k)} ккал</span><span class="cap"><b>${last.n}</b>${last.t} · ${last.src==='этикетка'?'по этикетке':'по базе'}</span></a>`
         :last?`<a class="ev" onclick="openFoodPlan()" style="background:var(--ink);color:var(--paper);display:grid;align-content:end;padding:12px"><span class="num" style="font-size:34px;line-height:1">${fmt(last.k)}</span><span style="font-size:12px;opacity:.75">ккал · ${last.n}</span></a>`
@@ -530,7 +532,7 @@ function vToday(){
   </div>
   <h2>Атлас</h2>
   <div class="card list">
-    ${lf?`<div class="li"><div style="flex:1"><div style="font-weight:600">${FORM[lf.ex].muscles.slice(0,2).map(m=>MUSCLES[m]).join(', ')}</div><div class="tiny muted">работали · ${FORM[lf.ex].n.toLowerCase()}, ${ago(lf.t)}</div></div><i style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none"></i></div>`:''}
+    ${lf?`<div class="li"><div style="flex:1"><div style="font-weight:600">${fMus(lf.ex).slice(0,2).map(m=>MUSCLES[m]).filter(Boolean).join(', ')||'Мышцы по упражнению'}</div><div class="tiny muted">работали · ${fName(lf.ex).toLowerCase()}, ${ago(lf.t)}</div></div><i style="width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none"></i></div>`:''}
     <div class="li"><div style="flex:1"><div style="font-weight:600">${pg.days[ti]}</div><div class="tiny muted">${done?'сделано сегодня':'сегодня вечером'} · ${pl(pg.ex.length,'упражнение','упражнения','упражнений')}</div></div><i style="width:8px;height:8px;border-radius:50%;background:${done?'var(--ok)':'var(--text3)'};flex:none"></i></div>
     <div class="li"><div style="flex:1"><div style="font-weight:600">Белок</div><div class="tiny muted">${e.p>=n.p?'норма закрыта':'не хватает '+u(n.p-e.p,'г')+' — мышцы не уходят вместе с жиром'}</div></div><span class="num" style="font-size:16px">${fmt(e.p)} <span class="muted" style="font-weight:500">/ ${n.p}</span></span></div>
     <div class="li"><div style="flex:1"><div style="font-weight:600">Бюджет на еду</div><div class="tiny muted">осталось сегодня из ${fmt(budgetOf(pr))} ₽</div></div><span class="num" style="font-size:16px">${fmt(Math.max(budgetOf(pr)-e.cost,0))} ₽</span></div>
@@ -720,28 +722,33 @@ function plateInner(d,capt){const im=SC.photo?`<img src="${SC.photo}" alt="">`:d
 /* ---------- Распознавание по фото: MobileCLIP-S0 прямо в телефоне сравнивает снимок со ВСЕМИ позициями нашей базы (тексты + эталонные фото + ваши подтверждения). Чужого предложить не может; калории считает код ---------- */
 const TFJS_URL='https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2';
 let CLIP=null,CLIPLOAD=null,CLIPDB=null;
+const f16=u=>{const s=u>>15,e=(u>>10)&31,m=u&1023;return (s?-1:1)*(e===0?m*5.960464477539063e-8:e===31?(m?NaN:Infinity):Math.pow(2,e-15)*(1+m/1024))};
 async function loadClip(onStatus){
   if(CLIP)return CLIP;if(CLIPLOAD)return CLIPLOAD;
   CLIPLOAD=(async()=>{const T=await import(TFJS_URL);T.env.allowRemoteModels=false;T.env.allowLocalModels=true;T.env.localModelPath=new URL('models/',location.href).href;
-    let last=0;const cb=p=>{if(p.status==='progress'&&p.progress-last>8){last=p.progress;onStatus&&onStatus('Загружаем модель (один раз, ~37 МБ)… '+Math.round(p.progress)+'%')}};
-    const load=dt=>T.CLIPVisionModelWithProjection.from_pretrained('mobileclip',{dtype:dt,device:'wasm',progress_callback:cb});
-    const [model,proc,db,bin]=await Promise.all([load('q4').catch(e=>{console.warn('q4 не пошла, берём fp16',e);last=0;return load('fp16')}),T.AutoProcessor.from_pretrained('mobileclip'),fetch('models/clipdb.json',{cache:'no-cache'}).then(r=>r.json()),fetch('models/clipdb.bin',{cache:'no-cache'}).then(r=>r.arrayBuffer())]); // q4 (37 МБ) — 0,25 с на фото; fp16 (23 МБ) точнее, но в wasm в 4 раза медленнее — запасной вариант
-    const i8=new Int8Array(bin),dim=db.dim,n=db.items.length,vec=k=>{const v=new Float32Array(dim);for(let j=0;j<dim;j++)v[j]=i8[k*dim+j]/db.scale;return v};
-    CLIPDB={db,tv:db.items.map((_,i)=>vec(i)),rv:db.refs.map((_,k)=>vec(n+k))};
-    try{const warm=await proc(new T.RawImage(new Uint8ClampedArray(256*256*3).fill(128),256,256,3));await model(warm);await model(warm)}catch(e){} // прогрев: первые два прогона q4 в 5 раз медленнее
+    // база распознавания: дообученные веса по группам (clipdb.bin, float16) + список позиций; модель берём ту, на которой обучали
+    const [db,bin]=await Promise.all([fetch('models/clipdb.json',{cache:'no-cache'}).then(r=>r.json()),fetch('models/clipdb.bin',{cache:'no-cache'}).then(r=>r.arrayBuffer())]);
+    const dir=db.dir||'mobileclip',mb=db.mb||37;
+    let last=0;const cb=p=>{if(p.status==='progress'&&p.progress-last>8){last=p.progress;onStatus&&onStatus(`Загружаем модель (один раз, ~${mb} МБ)… `+Math.round(p.progress)+'%')}};
+    const load=dt=>T.CLIPVisionModelWithProjection.from_pretrained(dir,{dtype:dt,device:'wasm',progress_callback:cb});
+    const dts=db.dtypes||['q4','fp16'];let model=null,err=null;for(const dt of dts){try{model=await load(dt);break}catch(e){err=e;last=0;console.warn('модель '+dt+' не пошла',e)}}if(!model)throw err;
+    const proc=await T.AutoProcessor.from_pretrained(dir);
+    const u16=new Uint16Array(bin),dim=db.dim,G=db.groups,W=[];for(let g=0;g<G;g++){const v=new Float32Array(dim);for(let j=0;j<dim;j++)v[j]=f16(u16[g*dim+j]);W.push(v)}
+    const byG=Array.from({length:G},()=>[]);db.items.forEach((x,i)=>byG[x.k].push(i));
+    CLIPDB={db,W,byG,bias:db.bias};
+    try{const S0=db.size||256,warm=await proc(new T.RawImage(new Uint8ClampedArray(S0*S0*3).fill(128),S0,S0,3));await model(warm);await model(warm)}catch(e){} // прогрев: первые прогоны в несколько раз медленнее
     CLIP=async src=>{const img=await T.RawImage.read(src);const out=await model(await proc(img));const e=Float32Array.from(out.image_embeds.data);let s=0;for(const x of e)s+=x*x;s=Math.sqrt(s)||1;return e.map(x=>x/s)};
     return CLIP})();
   try{return await CLIPLOAD}catch(e){CLIPLOAD=null;throw e}
 }
 const dotf=(a,b)=>{let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s};
-function clipMatch(e){ // близость к тексту каждой позиции + голосование 5 ближайших эталонов (общие с Commons и ваши подтверждения) → группы «визуальных близнецов» (кефир 1% и 2,5% — одна)
-  const {db,tv,rv}=CLIPDB,K=5,W=0.3,sc=tv.map(v=>dotf(e,v));
-  const nn=rv.map((v,k)=>[dotf(e,v),db.refs[k]]);
-  (S.refs||[]).forEach(r=>{const i=db.items.findIndex(x=>x.id===r.id);if(i<0||!r.e)return;let s=0;for(let j=0;j<r.e.length;j++)s+=e[j]*r.e[j];nn.push([s/db.scale+0.08,i])}); // ваш снимок при равной близости важнее чужого
-  nn.sort((a,b)=>b[0]-a[0]).slice(0,K).forEach(([s,i])=>{sc[i]+=W*s/K});
-  const groups={};db.items.forEach((x,i)=>{const g=groups[x.g]||(groups[x.g]={s:-1,i,ids:[]});g.ids.push(i);if(sc[i]>g.s){g.s=sc[i];g.i=i}});
-  const top=Object.values(groups).sort((a,b)=>b.s-a.s).slice(0,5),ex=top.map(g=>Math.exp(40*(g.s-top[0].s))),z=ex.reduce((a,b)=>a+b,0);
-  return top.map((g,k)=>({...g,p:ex[k]/z}));
+function clipMatch(e){ // дообученный классификатор по группам «визуальных близнецов» (кефир 1% и 2,5% — одна) + ваши подтверждённые снимки
+  const {db,W,byG,bias}=CLIPDB,lg=W.map((w,g)=>dotf(e,w)+bias[g]);
+  // ваш снимок той же позиции рядом — сильная подсказка («дообучение» в телефоне)
+  (S.refs||[]).forEach(r=>{if((r.m||'s0')!==(db.model||'s0'))return;const i=db.items.findIndex(x=>x.id===r.id);if(i<0||!r.e)return;let s=0;for(let j=0;j<r.e.length;j++)s+=e[j]*r.e[j];s/=(r.sc||600);if(s>0.6)lg[db.items[i].k]+=12*(s-0.6)});
+  const order=lg.map((v,g)=>g).sort((a,b)=>lg[b]-lg[a]).slice(0,5),m=lg[order[0]];
+  let z=0;lg.forEach(v=>z+=Math.exp(v-m));
+  return order.map(g=>{const ids=byG[g],mine=ids.find(i=>(S.refs||[]).some(r=>r.id===db.items[i].id));return {g,s:lg[g],i:mine!=null?mine:ids[0],ids,p:Math.exp(lg[g]-m)/z}});
 }
 function gotPhoto(inp){
   const f=inp.files&&inp.files[0];if(!f)return;const r=new FileReader();
@@ -757,7 +764,7 @@ async function photoFlow(){
   try{const embed=await loadClip(st);st('Сравниваем с базой…');SC.emb=await embed(SC.photo);top=clipMatch(SC.emb)}catch(e){console.error(e);top=null}
   if(!$('#fdst'))return; // пользователь закрыл шторку
   await loadDB();
-  const sure=top&&top.length&&top[0].s>=0.19; // ниже — скорее не еда или совсем незнакомое
+  const sure=top&&top.length&&top[0].p>=0.08; // ниже — скорее не еда или совсем незнакомое
   const rows=sure?top.filter((g,k)=>k<3||g.p>=0.08).slice(0,4).map(g=>{const it=CLIPDB.db.items;const x=it[g.i];const vars=g.ids.length>1?`<div class="chips" style="margin-top:6px">${g.ids.map(i=>`<span class="chip ${i===g.i?'on':''}" role="button" onclick="event.stopPropagation();pickMatch(${i})">${it[i].n.replace(/\(.*?\)/g,'').replace(/[«»]/g,'').trim()}</span>`).join('')}</div>`:'';
     const sub=x.t==='d'?'блюдо · посчитаем по рецепту':(()=>{const pr=DB.products.find(p=>p.id===x.id);return pr?`продукт · ${Math.round(pr.kcal||kcalOf(pr))} ккал на 100 г`:'продукт'})();
     return `<button class="opt" onclick="pickMatch(${g.i})"><div class="ibox" style="background:var(--accent-soft);color:var(--accent-text)">${ic('food')}</div><div style="flex:1"><div style="font-weight:700">${g.ids.length>1?groupTitle(g.ids.map(i=>it[i].n)):x.n}</div><div class="small muted">${g.p>=.5?'очень похоже':g.p>=.2?'похоже':'возможно'} · ${sub}</div>${vars}</div><span class="chev">${ic('chev')}</span></button>`}).join(''):'';
@@ -766,14 +773,14 @@ async function photoFlow(){
     ${top===null?`<div class="card small muted">Модель распознавания не загрузилась (при первом запуске нужен интернет, ~37 МБ, лучше по Wi-Fi; дальше работает без сети). Найдите продукт в базе вручную.</div>`:rows?`<div class="small muted" style="margin:0 4px 8px">Похоже на это из нашей базы — выберите, что на самом деле</div>${rows}`:`<div class="card small muted">Не узнали. Снимите ближе и при хорошем свете или найдите в базе — ваш выбор запомнится.</div>`}
     <button class="btn sec" onclick="openSearch()">${ic('search')} Найти в базе по названию</button>
     <button class="btn ghost" onclick="openBarcode()">Это упаковка? Штрихкод</button>
-    <div class="concept">Модель MobileCLIP (Apple, открытая) сравнивает снимок со всеми ${CLIPDB?CLIPDB.db.items.length:'500+'} позициями нашей базы — ничего чужого предложить не может. Каждый ваш выбор запоминается в телефоне${nref?` (уже ${nref})`:''} и в следующий раз подсказка точнее. Состав и калории всегда из базы, а не «на глаз».</div>`);
+    <div class="concept">Модель MobileCLIP (Apple, открытая), дообученная на ${CLIPDB&&CLIPDB.db.nphoto?CLIPDB.db.nphoto.toLocaleString('ru-RU'):'тысячах'} фото еды, сравнивает снимок со всеми ${CLIPDB?CLIPDB.db.items.length:'500+'} позициями нашей базы — ничего чужого предложить не может. Каждый ваш выбор запоминается в телефоне${nref?` (уже ${nref})`:''} и в следующий раз подсказка точнее. Состав и калории всегда из базы, а не «на глаз».</div>`);
 }
 function groupTitle(names){ // общее начало названий близнецов до целого слова: «Кефир 1%», «Кефир 2,5%» → «Кефир»
   let p=names[0];for(const n of names){let k=0;while(k<p.length&&k<n.length&&p[k]===n[k])k++;p=p.slice(0,k)}
   p=p.replace(/[\s\d.,%«(—-]*$/,'').replace(/\s+\S{0,2}$/,'').trim();return p.length>=4?p:names[0]}
 function pickMatch(i){ // пользователь подтвердил позицию → запоминаем снимок как ваш эталон (дообучение без обучения, только в телефоне)
   const x=CLIPDB.db.items[i];
-  if(SC.emb){S.refs=S.refs||[];const e=Array.from(SC.emb,v=>Math.max(-127,Math.min(127,Math.round(v*CLIPDB.db.scale))));S.refs.push({id:x.id,e,d:today0()});if(S.refs.length>150)S.refs.splice(0,S.refs.length-150);save()}
+  if(SC.emb){S.refs=S.refs||[];const e=Array.from(SC.emb,v=>Math.max(-127,Math.min(127,Math.round(v*600))));S.refs.push({id:x.id,e,sc:600,d:today0(),m:CLIPDB.db.model});if(S.refs.length>150)S.refs.splice(0,S.refs.length-150);save()}
   if(x.t==='d')dishFromDB(x.id);else productPortion(x.id);
 }
 function recognize(id){
@@ -918,6 +925,7 @@ function exList(){
 function exSearch(v){EXQ=v;EXN=20;clearTimeout(exSearch.t);exSearch.t=setTimeout(()=>{const box=$('#exlist');if(box)box.innerHTML=exList()},120)}
 function exGroup(g){EXG=g;EXN=20;rerender()}
 let EXT=null;
+function exFromCard(id){const x=(EXL||[]).find(e=>e.id===id);if(TECHMAP[id])FV.ex=TECHMAP[id];else{FV.ex='lib:'+id;S.exNames=S.exNames||{};if(x)S.exNames[FV.ex]=x.n}openForm()}
 function openEx(id){
   const x=EXL.find(e=>e.id===id);if(!x)return;const groups=[...new Set(x.pm.map(m=>EXMAP[m]).filter(Boolean))],help=[...new Set(x.sm.map(m=>EXMAP[m]).filter(Boolean).filter(g=>!groups.includes(g)))];
   const lv={};groups.forEach(g=>lv[g]=1);help.forEach(g=>lv[g]=2);const gs=Object.keys(lv);
@@ -926,11 +934,12 @@ function openEx(id){
   sheet(x.n,`<div class="exhero" id="exhero" onclick="this.classList.toggle('alt')"><img src="${EXIMG(id)}0.jpg" alt="" class="a" onerror="this.parentNode.classList.add('noimg')"><img src="${EXIMG(id)}1.jpg" alt="" class="b" onerror="this.remove()"><div class="dots"><i class="on"></i><i></i></div></div>
    <div class="row" style="gap:6px;flex-wrap:wrap;margin:10px 0 2px"><span class="pill">${EXEQ[x.eq]||'Без инвентаря'}</span><span class="pill">${EXLVL[x.lvl]}</span><span class="pill">${EXCAT[x.cat]||x.cat}</span>${x.mech?`<span class="pill">${x.mech==='compound'?'базовое':'изолирующее'}</span>`:''}</div>
    <div class="tiny muted" style="margin:0 4px 10px">${x.en}</div>
-   ${tech?`<button class="btn" onclick="FV.ex='${tech}';openForm()">${ic('ruler')} Проверить технику по видео</button>`:`<button class="btn ${inPlan?'sec':''}" onclick="togglePlan('${id}')">${inPlan?'Убрать из плана на сегодня':'В план на сегодня'}</button>`}
-   ${tech?`<button class="btn ${inPlan?'sec':'ghost'}" onclick="togglePlan('${id}')">${inPlan?'Убрать из плана на сегодня':'В план на сегодня'}</button>`:''}
+   <button class="btn" onclick="exFromCard('${id}')">${ic('ruler')} Проверить технику по видео</button>
+   <button class="btn ${inPlan?'sec':'ghost'}" onclick="togglePlan('${id}')">${inPlan?'Убрать из плана на сегодня':'В план на сегодня'}</button>
    <h2>Какие мышцы работают</h2><div class="card">${gs.length?muscleMapLv(lv):'<div class="small muted">Для этого упражнения карта мышц не размечена</div>'}<div class="tiny muted" style="margin-top:8px">Основные: ${x.pm.map(m=>EXMUS[m]||m).join(', ')||'—'}${x.sm.length?' · помогают: '+x.sm.map(m=>EXMUS[m]||m).join(', '):''}</div></div>
    <h2>Как выполнять</h2><div class="card list">${x.steps.map((t,i)=>`<div class="li" style="align-items:flex-start"><span class="num" style="width:26px;color:var(--text3);font-size:17px">${i+1}</span><div style="flex:1;line-height:1.4">${t}</div></div>`).join('')}</div>
    <div class="concept">Картинки и описание — база free-exercise-db (свободная лицензия), перевод наш. При боли остановитесь · не медицинская консультация</div>`);
+  exVideoButton(id);
   EXT=setInterval(()=>{const h=$('#exhero');if(!h)return clearInterval(EXT);h.classList.toggle('alt');const d=h.querySelectorAll('.dots i');d.forEach((e,i)=>e.classList.toggle('on',h.classList.contains('alt')?i===1:i===0))},1400);
 }
 function muscleMapLv(lv){const gs=Object.keys(lv).sort((a,b)=>lv[a]-lv[b]);return `<div class="anat"><img class="base" src="img/anat/base.png" alt="Атлас мышц" loading="lazy">${gs.map(g=>`<img class="ly ${lv[g]===2?'s':''}" src="img/anat/${g}.png" alt="" loading="lazy">`).join('')}<span class="lbl l">спереди</span><span class="lbl r">сзади</span></div><div class="legend"><span><i style="background:#D8432A"></i>Основная нагрузка</span><span><i style="background:#C98A14"></i>Помогают</span></div>`}
@@ -945,11 +954,12 @@ const FORM={
  deadlift:{n:'Румынская тяга',img:'seatedrow',muscles:['hams','glutes','back'],steps:[["Стопы на ширине таза, гриф у ног", "start"], ["Спина прямая, лопатки сведены", "start"], ["Таз назад, гриф скользит по бёдрам", "down"], ["Опускаете до середины голени", "bottom"], ["Встаёте, выпрямляя таз, не круглите спину", "up"]]},
  press:{n:'Жим гантелей стоя',img:'shoulder',muscles:['shoulders','triceps','core'],steps:[["Гантели на уровне ушей, локти под кистями", "start"], ["Пресс напряжён, поясница без прогиба", "start"], ["Выжимайте вверх, гантели сходятся над головой", "bottom"], ["Опускайте под контролем до ушей", "up"]]}
 };
-const MUSCLES={quads:'Квадрицепсы',glutes:'Ягодичные',hams:'Задняя поверхность бедра',core:'Пресс и кор',chest:'Грудные',triceps:'Трицепсы',shoulders:'Плечи',back:'Спина'};
-let FV={ex:'squat',file:null};
+const MUSCLES={quads:'Квадрицепсы',glutes:'Ягодичные',hams:'Задняя поверхность бедра',core:'Пресс и кор',chest:'Грудные',triceps:'Трицепсы',shoulders:'Плечи',back:'Спина',biceps:'Бицепсы',calves:'Икры',traps:'Трапеции',adductors:'Приводящие'};
+let FV={ex:'auto',file:null};
 function openForm(){
   sheet('Разбор техники по видео',`<div class="card small muted">Снимите себя сбоку, целиком в кадре, 2–5 повторов. Телефон разберёт движение сам, без отправки видео на сервер: точки суставов, углы, повторы. Это подсказка по технике, не медицинская консультация.</div>
-   <div class="small muted" style="margin:0 4px 6px">Упражнение</div><div class="chips" style="margin-bottom:12px">${Object.entries(FORM).map(([k,f])=>`<button class="chip ${FV.ex===k?'on':''}" onclick="FV.ex='${k}';openForm()">${f.n}</button>`).join('')}</div>
+   <div class="small muted" style="margin:0 4px 6px">Упражнение</div><div class="chips" style="margin-bottom:12px"><button class="chip ${FV.ex==='auto'?'on':''}" onclick="FV.ex='auto';openForm()">Определит сам</button>${String(FV.ex).startsWith('lib:')?`<button class="chip on">${fName(FV.ex)}</button>`:''}${Object.entries(FORM).map(([k,f])=>`<button class="chip ${FV.ex===k?'on':''}" onclick="FV.ex='${k}';openForm()">${f.n}</button>`).join('')}</div>
+   ${FV.ex==='auto'?`<div class="small muted" style="margin:-4px 4px 12px">Камера сама поймёт, какое из 870+ упражнений библиотеки вы делаете, и сравнит с эталоном</div>`:''}
    <label class="card tap" style="display:block;text-align:center;padding:22px 16px;cursor:pointer"><div style="width:64px;height:64px;border-radius:20px;background:var(--ink);color:var(--paper);display:grid;place-items:center;margin:0 auto 10px">${ic('cam','style="width:30px;height:30px"')}</div><div class="title">Снять или выбрать видео</div><div class="small muted">до 20 секунд, сбоку, во весь рост</div><input type="file" accept="video/*" style="display:none" onchange="formFile(this)"></label>
    <button class="btn sec" onclick="formRun('squat.mp4','squat')">Показать на примере: присед</button>
    <div class="concept">Распознавание суставов — MediaPipe Pose, работает в телефоне · правила техники считает код</div>`);
@@ -957,7 +967,7 @@ function openForm(){
 function formFile(inp){const f=inp.files&&inp.files[0];if(!f)return;formRun(URL.createObjectURL(f),FV.ex)}
 const angle=(a,b,c)=>{const v1=[a.x-b.x,a.y-b.y],v2=[c.x-b.x,c.y-b.y];const d=v1[0]*v2[0]+v1[1]*v2[1],m=Math.hypot(...v1)*Math.hypot(...v2)||1;return Math.acos(Math.max(-1,Math.min(1,d/m)))*180/Math.PI};
 const EDGES=[[11,12],[11,13],[13,15],[12,14],[14,16],[11,23],[12,24],[23,24],[23,25],[25,27],[24,26],[26,28]];
-let POSE=null;
+let POSE=null,POSE_TS=0;
 async function loadPose(){
   if(POSE)return POSE;
   const m=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs');
@@ -974,12 +984,13 @@ async function formRun(src,ex){
     const pl=await loadPose();v.src=src;await new Promise((r,j)=>{v.onloadeddata=r;v.onerror=()=>j(new Error('видео не читается'));v.load()});
     c.width=v.videoWidth;c.height=v.videoHeight;const dur=Math.min(v.duration||0,20),step=1/10,S2=[];
     $('#fstat').textContent='Ищем суставы…';
-    for(let t=0;t<dur;t+=step){await seekTo(v,t);const r=pl.detectForVideo(v,Math.round(t*1000));const lm=r.landmarks&&r.landmarks[0];
-      if(lm)S2.push({t,lm:lm.map(p=>({x:p.x,y:p.y,v:p.visibility}))});
+    const base=POSE_TS+1000;POSE_TS=base+Math.ceil(dur*1000); // MediaPipe требует, чтобы время кадров только росло — иначе второй ролик за сеанс падает
+    for(let t=0;t<dur;t+=step){await seekTo(v,t);const r=pl.detectForVideo(v,base+Math.round(t*1000));const lm=r.landmarks&&r.landmarks[0];
+      if(lm)S2.push({t,lm:lm.map(p=>({x:p.x,y:p.y,v:p.visibility})),l:lm.map(p=>[p.x,p.y,p.visibility]),w:r.worldLandmarks&&r.worldLandmarks[0]?r.worldLandmarks[0].map(p=>[p.x,p.y,p.z]):null});
       const pct=Math.round(t/dur*100);$('#fpct').textContent=pct+'%';$('#fbar').style.width=pct+'%';
       if(lm){ctx.clearRect(0,0,c.width,c.height);drawSkel(ctx,lm,c.width,c.height)}}
     if(S2.length<10)throw new Error('человек не найден в кадре — снимите целиком, сбоку, при хорошем свете');
-    formResult(src,ex,S2,v);
+    if(ex==='auto'||String(ex).startsWith('lib:'))await exAfter(src,ex,S2,v);else formResult(src,ex,S2,v);
   }catch(e){sheet('Не получилось',`<div class="card">${e.message}</div><button class="btn" onclick="openForm()">Попробовать ещё</button>`)}
 }
 function drawSkel(ctx,lm,W,H,col='#FF4F45'){ctx.strokeStyle=col;ctx.lineWidth=Math.max(3,W/160);ctx.lineCap='round';EDGES.forEach(([a,b])=>{if(lm[a].v<.4||lm[b].v<.4)return;ctx.beginPath();ctx.moveTo(lm[a].x*W,lm[a].y*H);ctx.lineTo(lm[b].x*W,lm[b].y*H);ctx.stroke()});ctx.fillStyle='#fff';lm.slice(11,29).forEach(p=>{if(p.v<.4)return;ctx.beginPath();ctx.arc(p.x*W,p.y*H,Math.max(3,W/120),0,7);ctx.fill()})}
@@ -1095,6 +1106,180 @@ async function formResult(src,ex,S2,v){
    <button class="btn" style="margin-top:12px" onclick="openForm()">Разобрать другое видео</button>`);if(S.tab==='today'||S.tab==='tech')setTimeout(rerender,50);
 }
 
+/* ---------- Распознавание упражнения по видео: поза (3D-точки MediaPipe) + обученный классификатор 22 частых упражнений + MobileCLIP по кадрам.
+   Один в один с tools/expose (feat3d.py, recog2.py, seqfeat.py, recog3.py, fuse.py); проверено «оставь один» на 28 роликах Commons ---------- */
+const EXR={d:null,clip:null};
+const NEED3=[[11,13,15],[12,14,16],[23,11,13],[24,12,14],[11,23,25],[12,24,26],[23,25,27],[24,26,28],[11,12,23,24],[23,25],[24,26],[11,13],[12,14],[11,15],[12,16],[25,27],[26,28],[11,12,23,24]];
+const MIR3=[1,0,3,2,5,4,7,6,8,10,9,12,11,14,13,16,15,17];
+const J3N=['локоть','локоть','плечо','плечо','таз','таз','колено','колено','наклон корпуса','бедро','бедро','плечо','плечо','рука','рука','голень','голень','корпус'];
+const npMedian=a=>{const s=Float64Array.from(a).sort(),n=s.length;return n?(n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2):NaN};
+const npPct=(a,q)=>{const s=Float64Array.from(a).sort(),n=s.length;if(!n)return NaN;const p=(n-1)*q/100,lo=Math.floor(p),hi=Math.ceil(p);return s[lo]+(s[hi]-s[lo])*(p-lo)};
+const npStd=a=>{const m=a.reduce((x,y)=>x+y,0)/a.length;return Math.sqrt(a.reduce((x,y)=>x+(y-m)*(y-m),0)/a.length)};
+const col=(M,k)=>M.map(r=>r[k]);
+function ang3(u,v){const n=Math.hypot(u[0],u[1],u[2])*Math.hypot(v[0],v[1],v[2]);if(!(n>0))return 90;return Math.acos(Math.max(-1,Math.min(1,(u[0]*v[0]+u[1]*v[1]+u[2]*v[2])/n)))*180/Math.PI}
+function feat3d(P){const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],D=[0,1,0],U=[0,-1,0],j=(a,b,c)=>ang3(sub(P[a],P[b]),sub(P[c],P[b])),t=(a,b,r)=>ang3(sub(P[b],P[a]),r);
+  const sh=[0,1,2].map(k=>(P[11][k]+P[12][k])/2),hp=[0,1,2].map(k=>(P[23][k]+P[24][k])/2),u=sub(P[11],hp),v=sub(P[12],hp),n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];
+  return [j(11,13,15),j(12,14,16),j(23,11,13),j(24,12,14),j(11,23,25),j(12,24,26),j(23,25,27),j(24,26,28),ang3(sub(sh,hp),U),t(23,25,D),t(24,26,D),t(11,13,D),t(12,14,D),t(11,15,D),t(12,16,D),t(25,27,D),t(26,28,D),ang3(n,U)]}
+const vis3=(l,thr=.5)=>NEED3.map(nd=>nd.every(i=>l[i][2]>=thr));
+function place3(l){const sh=[(l[11][0]+l[12][0])/2,(l[11][1]+l[12][1])/2],hp=[(l[23][0]+l[24][0])/2,(l[23][1]+l[24][1])/2],tl=Math.hypot(sh[0]-hp[0],sh[1]-hp[1])+1e-6;
+  return [[hp[1],sh[1],(l[15][1]+l[16][1])/2,(l[27][1]+l[28][1])/2].map(x=>x/tl),tl]}
+function pc1(Fs,cols){ // главная ось движения (как SVD в numpy): степенной метод по ковариации
+  const X=Fs.map(r=>cols.map(k=>r[k])),m=cols.map((_,k)=>X.reduce((s,r)=>s+r[k],0)/X.length);X.forEach(r=>r.forEach((v,k)=>r[k]=v-m[k]));
+  const d=cols.length,C=Array.from({length:d},()=>new Float64Array(d));X.forEach(r=>{for(let i=0;i<d;i++)for(let j=0;j<d;j++)C[i][j]+=r[i]*r[j]});
+  let v=new Float64Array(d).fill(1/Math.sqrt(d));for(let it=0;it<200;it++){const w=new Float64Array(d);for(let i=0;i<d;i++)for(let j=0;j<d;j++)w[i]+=C[i][j]*v[j];const n=Math.hypot(...w)||1;v=w.map(x=>x/n)}
+  return X.map(r=>r.reduce((s,x,k)=>s+x*v[k],0))}
+function smooth3(Fm){return Fm.map((_,i)=>Fm[0].map((__,k)=>npMedian(Fm.slice(Math.max(0,i-1),i+2).map(r=>r[k]))))}
+function exWindow(fr){ // самый подвижный отрезок (fr — по слотам 0,1 с, null — человека нет)
+  const P=EXR.d.P,n=fr.length,w=P.win*10;const nn=a=>a.filter(Boolean);if(n<=w)return nn(fr);
+  const Fa=fr.map(x=>x?feat3d(x.w):null);let best=-1,bi=0;
+  for(let s=0;s<=n-w;s+=10){const seg=Fa.slice(s,s+w).filter(Boolean);if(seg.length<.6*w)continue;let e=0;for(let k=0;k<18;k++)e+=npStd(col(seg,k));e*=seg.length/w;if(e>best){best=e;bi=s}}
+  return nn(fr.slice(bi,bi+w))}
+function exExtremes(fr){
+  const Fm=fr.map(x=>feat3d(x.w)),V=fr.map(x=>vis3(x.l)),vm=[...Array(18).keys()].map(k=>V.filter(v=>v[k]).length/V.length>=.5),cols=vm.map((b,k)=>b?k:-1).filter(k=>k>=0);
+  if(!cols.length||fr.length<3)return null;
+  const Fs=smooth3(Fm),pc=pc1(Fs,cols),lo=npPct(pc,12),hi=npPct(pc,88),L=Fs.filter((_,i)=>pc[i]<=lo),H=Fs.filter((_,i)=>pc[i]>=hi);
+  const a=[...Array(18).keys()].map(k=>npMedian(col(L,k))),b=[...Array(18).keys()].map(k=>npMedian(col(H,k)));
+  const mlo=npMedian(pc.filter(x=>x<=lo)),mhi=npMedian(pc.filter(x=>x>=hi)),arg=t=>pc.reduce((bi,x,i)=>Math.abs(x-t)<Math.abs(pc[bi]-t)?i:bi,0),ia=arg(mlo),ib=arg(mhi);
+  const PL=fr.map(x=>{const [p,t]=place3(x.l);return p.map(v=>v*t)}),tl=npMedian(fr.map(x=>place3(x.l)[1]));
+  const du=[0,1,2,3].map(k=>(npMedian(PL.filter((_,i)=>pc[i]>=hi).map(r=>r[k]))-npMedian(PL.filter((_,i)=>pc[i]<=lo).map(r=>r[k])))/tl);
+  const amp=Math.max(...cols.map(k=>Math.abs(b[k]-a[k])));
+  return {a,b,vm,amp,du,pc,ia,ib,times:[fr[ia].t,fr[ib].t,fr[Math.floor(fr.length/2)].t]}}
+function exPoseScores(e){ // поза против эталонов всех упражнений (меньше — лучше)
+  const D=EXR.d,P=D.P,OW=Array(18).fill(1);OW[8]=OW[17]=P.wo;const N=D.ids.length,best=new Float64Array(N).fill(Infinity);
+  for(let r=0;r<N;r++){for(const mir of [false,true]){const g=k=>mir?MIR3[k]:k;
+    const Ar=k=>D.A[r][g(k)],Br=k=>D.B[r][g(k)],Va=k=>D.va[r][g(k)]==='1'&&e.vm[k],Vb=k=>D.vb[r][g(k)]==='1'&&e.vm[k];
+    for(const [sgn,p,q,mp,mq] of [[1,Ar,Br,Va,Vb],[-1,Br,Ar,Vb,Va]]){
+      let s1=0,m1=0,s2=0,m2=0,num=0,da=0,db=0,stat=0,tr=0;
+      for(let k=0;k<18;k++){const w1=mp(k)?OW[k]:0,w2=mq(k)?OW[k]:0,d1=Math.min(Math.abs(e.a[k]-p(k)),P.cap)/P.scale,d2=Math.min(Math.abs(e.b[k]-q(k)),P.cap)/P.scale;
+        s1+=d1*d1*w1;m1+=w1;s2+=d2*d2*w2;m2+=w2;const mm=Va(k)&&Vb(k)?1:0,du=e.b[k]-e.a[k],dr=q(k)-p(k);num+=du*dr*mm;da+=du*du*mm;db+=dr*dr*mm;stat=Math.max(stat,Math.abs(dr)*mm)}
+      for(let k=0;k<4;k++)tr+=Math.min(Math.abs(e.du[k]-sgn*D.dr[r][k]),1.5);tr/=4;
+      const pose=s1/Math.max(m1,1)+s2/Math.max(m2,1),cos=num/(Math.sqrt(da*db)+1e-6),mov=stat<P.minamp?(e.amp>=P.minamp*2?1:0):1-cos;
+      best[r]=Math.min(best[r],pose+P.wm*mov+P.wt*tr)}}}
+  return best}
+function exSeqFeat(fr,ar){ // признаки всего ролика для классификатора (= seqfeat.py)
+  const T=fr.length,Fm0=fr.map(x=>feat3d(x.w)),Vm=fr.map(x=>vis3(x.l)),vf=[...Array(18).keys()].map(k=>Vm.filter(v=>v[k]).length/T);
+  const med=[...Array(18).keys()].map(k=>{const a=Fm0.filter((_,i)=>Vm[i][k]).map(r=>r[k]);return a.length?npMedian(a):90});
+  const Fm=Fm0.map((r,i)=>r.map((v,k)=>Vm[i][k]?v:med[k])),Fs=T>=3?smooth3(Fm):Fm;let a,b;
+  if(T>=3){const pc=pc1(Fs,[...Array(18).keys()]),lo=npPct(pc,12),hi=npPct(pc,88);a=[...Array(18).keys()].map(k=>npMedian(Fs.filter((_,i)=>pc[i]<=lo).map(r=>r[k])));b=[...Array(18).keys()].map(k=>npMedian(Fs.filter((_,i)=>pc[i]>=hi).map(r=>r[k])))}
+  else{a=b=[...Array(18).keys()].map(k=>col(Fs,k).reduce((s,x)=>s+x,0)/T)}
+  const K=[...Array(18).keys()],out=[...K.map(k=>npPct(col(Fs,k),10)),...K.map(k=>npPct(col(Fs,k),50)),...K.map(k=>npPct(col(Fs,k),90)),...K.map(k=>npStd(col(Fs,k))),...K.map(k=>Math.min(a[k],b[k])),...K.map(k=>Math.max(a[k],b[k])),...K.map(k=>Math.abs(b[k]-a[k])),...vf];
+  const Pt=fr.map(x=>x.l.map(p=>[p[0]*ar,p[1]])),m2=(p,q)=>[(p[0]+q[0])/2,(p[1]+q[1])/2];
+  const sh=Pt.map(p=>m2(p[11],p[12])),hp=Pt.map(p=>m2(p[23],p[24])),wr=Pt.map(p=>m2(p[15],p[16])),an=Pt.map(p=>m2(p[27],p[28]));
+  const tl=npMedian(sh.map((s,i)=>Math.hypot(s[0]-hp[i][0],s[1]-hp[i][1])))+1e-6;
+  let pos=fr.map((_,i)=>[hp[i][1],sh[i][1],wr[i][1],an[i][1]].map(v=>v/tl));const pm=[0,1,2,3].map(k=>npMedian(col(pos,k)));pos=pos.map(r=>r.map((v,k)=>v-pm[k]));
+  const rel=fr.map((_,i)=>[wr[i][1]-sh[i][1],wr[i][1]-hp[i][1],an[i][1]-hp[i][1],hp[i][1]-sh[i][1]].map(v=>v/tl)),Q=[0,1,2,3];
+  return out.concat(Q.map(k=>npStd(col(pos,k))),Q.map(k=>npPct(col(pos,k),90)-npPct(col(pos,k),10)),Q.map(k=>npPct(col(rel,k),10)),Q.map(k=>npPct(col(rel,k),50)),Q.map(k=>npPct(col(rel,k),90)))}
+function exClassify(x){const C=EXR.d.cls;let h=x.map((v,i)=>(v-C.mu[i])/C.sd[i]);
+  C.layers.forEach((L,li)=>{h=L.W.map((w,o)=>w.reduce((s,wi,i)=>s+wi*h[i],L.b[o]));if(li<C.layers.length-1)h=h.map(v=>Math.max(0,v))});
+  const m=Math.max(...h),e=h.map(v=>Math.exp(v-m)),z=e.reduce((s,v)=>s+v,0);return e.map(v=>v/z)}
+async function loadExRecog(){
+  if(EXR.d)return EXR.d;const d=await fetch('data/ex-recog.json').then(r=>r.json());d.stretchSet=new Set(d.stretch);EXR.d=d;return d}
+async function loadExClip(){ // эмбеддинги эталонных фото и названий — под ту же модель, что распознаёт еду
+  if(EXR.clip)return EXR.clip;await loadClip();const d=EXR.d,buf=await fetch(d.clip.file).then(r=>r.arrayBuffer()),u=new Uint16Array(buf),N=d.clip.ids.length,dim=u.length/N/3;
+  const get=(i,s)=>{const v=new Float32Array(dim),o=(i*3+s)*dim;for(let j=0;j<dim;j++)v[j]=f16(u[o+j]);return v};
+  EXR.clip={I0:d.clip.ids.map((_,i)=>get(i,0)),I1:d.clip.ids.map((_,i)=>get(i,1)),T:d.clip.ids.map((_,i)=>get(i,2))};return EXR.clip}
+function zs(x){const f=x.filter(Number.isFinite),mx=Math.max(...f),y=x.map(v=>Number.isFinite(v)?v:mx),m=y.reduce((s,v)=>s+v,0)/y.length,sd=Math.sqrt(y.reduce((s,v)=>s+(v-m)*(v-m),0)/y.length);return y.map(v=>(v-m)/(sd+1e-9))}
+/* fr: кадры по слотам 0,1 с ({t,w,l}|null); frameEmb(times) → эмбеддинги MobileCLIP трёх кадров (или null без модели) */
+async function exRecognize(fr,ar,frameEmb){
+  const D=await loadExRecog(),win=exWindow(fr);if(win.length<8)return null;const e=exExtremes(win);if(!e)return null;
+  const ps=exPoseScores(e),byId=Object.fromEntries(D.ids.map((id,i)=>[id,i])),cid=D.clip.ids;
+  const psc=cid.map(id=>id in byId?ps[byId[id]]:Infinity);
+  let img=null,txt=null;
+  try{const fe=frameEmb?await frameEmb(e.times):null;if(fe){const C=await loadExClip();
+    img=cid.map((_,k)=>Math.max(...fe.map(f=>Math.max(dotf(f,C.I0[k]),dotf(f,C.I1[k])))));const md=npMedian(img);img=img.map((v,k)=>D.clip.has[k]?v:md);
+    txt=cid.map((_,k)=>fe.reduce((s,f)=>s+dotf(f,C.T[k]),0)/fe.length)}}catch(err){console.warn('кадры для MobileCLIP не получились',err)}
+  const W=D.fuse,zp=zs(psc),zi=img?zs(img):null,zt=txt?zs(txt):null;
+  const p=exClassify(exSeqFeat(win,ar));
+  const sc=cid.map((id,k)=>{let s=zp[k]-(zi?W.wi*zi[k]:0)-(zt?W.wt*zt[k]:0);if(e.amp>=30&&D.stretchSet.has(id))s+=W.ws;const c=D.cmap[id];s-=W.wc*Math.log(c!=null?p[c]+1e-6:W.tau);return s});
+  const order=sc.map((_,k)=>k).sort((a,b)=>sc[a]-sc[b]).slice(0,8);
+  return {top:order.map(k=>({id:cid[k],s:sc[k]})),e,win,cls:D.cls.classes.map((c,i)=>[c,p[i]]).sort((a,b)=>b[1]-a[1]).slice(0,3),ref:id=>byId[id]}}
+
+/* ---------- Разбор любого упражнения: камера сама определяет, что вы делаете, и сравнивает с эталоном ---------- */
+const fName=ex=>FORM[ex]?FORM[ex].n:(S.exNames&&S.exNames[ex])||'Упражнение';
+const fMus=ex=>FORM[ex]?FORM[ex].muscles:(S.exMus&&S.exMus[ex])||[];
+const EX2MUS={abs:'core',obliques:'core',lowerback:'back',chest:'chest',shoulders:'shoulders',triceps:'triceps',biceps:'biceps',back:'back',traps:'traps',quads:'quads',hams:'hams',glutes:'glutes',calves:'calves',adductors:'adductors'};
+let EXV=null; // видео разбора держим вне шторки, пока человек выбирает упражнение
+function exHold(v){let h=$('#exhold');if(!h){h=document.createElement('div');h.id='exhold';h.style.cssText='position:fixed;left:-9999px;top:0;width:2px;height:2px;overflow:hidden;opacity:0;pointer-events:none';document.body.appendChild(h)}h.innerHTML='';h.appendChild(v);EXV=v}
+async function exFrameEmb(v,times){ // кадры видео → MobileCLIP (видит снаряд: штанга, блок, тренажёр)
+  try{const embed=await loadClip();const out=[];for(const t of times){await seekTo(v,t);const c=document.createElement('canvas'),k=Math.min(1,480/v.videoHeight);c.width=Math.round(v.videoWidth*k);c.height=Math.round(v.videoHeight*k);c.getContext('2d').drawImage(v,0,0,c.width,c.height);out.push(await embed(c.toDataURL('image/jpeg',.85)))}return out}
+  catch(e){console.warn('MobileCLIP недоступен, определяем только по позе',e);return null}}
+function exSlots(S2){const n=Math.round(Math.max(...S2.map(s=>s.t))*10)+1,fr=Array(n).fill(null);S2.forEach(s=>{if(s.w)fr[Math.round(s.t*10)]={t:s.t,w:s.w,l:s.l,lm:s.lm}});return fr}
+async function exAfter(src,ex,S2,v){
+  exHold(v);const st=t=>{const el=$('#fstat');if(el)el.textContent=t};st('Определяем упражнение…');
+  await loadEX();const fr=exSlots(S2),ar=v.videoWidth/v.videoHeight;
+  const res=await exRecognize(fr,ar,times=>exFrameEmb(v,times));
+  if(!res)return sheet('Не получилось',`<div class="card">Не удалось разобрать движение: снимите целиком, сбоку, 2–5 повторов.</div><button class="btn" onclick="openForm()">Попробовать ещё</button>`);
+  EXR.last={src,S2,res,ar,x:exSeqFeat(res.win,ar)};
+  // ваши прошлые подтверждения: похожий ролик — то же упражнение («дообучение» в телефоне)
+  const mine=(S.exPicks||[]).map(p=>[p.id,cosSim(p.x,EXR.last.x)]).filter(p=>p[1]>.985).sort((a,b)=>b[1]-a[1]);
+  if(mine.length){const id=mine[0][0];res.top=[{id,s:-99},...res.top.filter(x=>x.id!==id)]}
+  if(ex.startsWith('lib:'))return exPick(ex.slice(4),true);
+  const top=res.top.slice(0,5),names=Object.fromEntries((EXL||[]).map(x=>[x.id,x]));
+  sheet('Что вы делали?',`<div class="small muted" style="margin:0 4px 10px">Камера сравнила движение с ${EXR.d.ids.length} упражнениями библиотеки. Выберите своё — разбор будет по нему, а выбор запомнится.</div>
+   ${top.map((x,i)=>{const e=names[x.id];return e?`<button class="opt" onclick="exPick('${x.id}')"><div class="thumb" style="width:64px;height:64px;border-radius:12px;overflow:hidden;flex:none;background:var(--card2)"><img src="${EXIMG(x.id)}0.jpg" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.remove()"></div><div style="flex:1;min-width:0"><div style="font-weight:700">${e.n}</div><div class="small muted">${i===0?'скорее всего':i<3?'похоже':'возможно'} · ${EXEQ[e.eq]||'без инвентаря'}</div></div><span class="chev">${ic('chev')}</span></button>`:''}).join('')}
+   <button class="btn sec" onclick="exLibPick()">${ic('search')} Другое — найти в библиотеке</button>
+   <div class="concept">Определение: поза по 3D-точкам суставов + обученная модель 22 частых упражнений + MobileCLIP по кадрам (видит снаряд). На проверке 28 роликов верное упражнение в первой пятёрке в 23 случаях — поэтому выбор за вами.</div>`);
+}
+const cosSim=(a,b)=>{let s=0,x=0,y=0;const C=EXR.d.cls;for(let i=0;i<a.length;i++){const u=(a[i]-C.mu[i])/C.sd[i],v=(b[i]-C.mu[i])/C.sd[i];s+=u*v;x+=u*u;y+=v*v}return s/Math.sqrt(x*y||1)};
+function exLibPick(){sheet('Какое упражнение?',`<input class="search" type="search" placeholder="Например «жим лёжа»" oninput="exLibRender(this.value)" style="margin-bottom:10px"><div id="exlibres"></div>`);exLibRender('')}
+function exLibRender(q){const box=$('#exlibres');if(!box)return;const k=norm_(q);const r=(EXL||[]).filter(x=>!k||norm_(x.n).includes(k)||x.en.toLowerCase().includes(k)).slice(0,30);
+  box.innerHTML=r.map(x=>`<button class="opt" onclick="exPick('${x.id}')"><div class="thumb" style="width:52px;height:52px;border-radius:10px;overflow:hidden;flex:none;background:var(--card2)"><img src="${EXIMG(x.id)}0.jpg" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.remove()"></div><div style="flex:1;font-weight:600">${x.n}</div></button>`).join('')||'<div class="card small muted">Не нашли</div>'}
+function exPick(id,silent){
+  const L=EXR.last;if(!L||!EXV)return openForm();const x=(EXL||[]).find(e=>e.id===id);
+  if(!silent){S.exPicks=S.exPicks||[];S.exPicks.push({id,x:L.x.map(v=>Math.round(v*100)/100),d:today0()});if(S.exPicks.length>60)S.exPicks.shift()}
+  S.exNames=S.exNames||{};S.exMus=S.exMus||{};const key='lib:'+id;
+  if(x){S.exNames[key]=x.n;S.exMus[key]=[...new Set(x.pm.concat(x.sm).map(m=>EX2MUS[EXMAP[m]]).filter(Boolean))]}save();
+  if(TECHMAP[id]){FV.ex=TECHMAP[id];return formResult(L.src,TECHMAP[id],L.S2,EXV)} // для 6 упражнений — подробные правила техники
+  genericResult(id,key)
+}
+function exAlign(r,e){ // эталон, развёрнутый к вашему ролику (зеркало и порядок поз)
+  const D=EXR.d,best={d:Infinity};for(const mir of [false,true])for(const sw of [false,true]){const g=k=>mir?MIR3[k]:k,A=[...Array(18).keys()].map(k=>D.A[r][g(k)]),B=[...Array(18).keys()].map(k=>D.B[r][g(k)]),[p,q]=sw?[B,A]:[A,B];
+    let d=0;for(let k=0;k<18;k++)if(e.vm[k])d+=Math.abs(e.a[k]-p[k])+Math.abs(e.b[k]-q[k]);if(d<best.d)Object.assign(best,{d,p,q,sw})}return best}
+async function genericResult(id,key){
+  const L=EXR.last,v=EXV,e=L.res.e,win=L.res.win,x=(EXL||[]).find(z=>z.id===id)||{n:'Упражнение',pm:[],sm:[],steps:[]},r=L.res.ref(id);
+  // повторы: проходы по главной оси движения туда и обратно
+  const pc=e.pc,lo=Math.min(...pc),hi=Math.max(...pc),nrm=pc.map(p=>(p-lo)/((hi-lo)||1));let reps=0,st=nrm[0]<.5?0:1,start=0;const durs=[];
+  const first=st;nrm.forEach((p,i)=>{if(st===first&&(first===0?p>.7:p<.3)){st=1-first}else if(st!==first&&(first===0?p<.3:p>.7)){st=first;reps++;durs.push(win[i].t-win[start].t);start=i}});
+  const isStatic=r==null?e.amp<15:Math.max(...[...Array(18).keys()].map(k=>Math.abs(EXR.d.B[r][k]-EXR.d.A[r][k])))<12;
+  const findings=[],good=[];
+  if(r!=null){const al=exAlign(r,e),seen=new Set();
+    [...Array(18).keys()].filter(k=>e.vm[k]&&k!==17).map(k=>({k,ur:Math.abs(e.b[k]-e.a[k]),rr:Math.abs(al.q[k]-al.p[k])})).sort((a,b)=>b.rr-a.rr).forEach(({k,ur,rr})=>{
+      const nm=J3N[k];if(seen.has(nm)||findings.length>=3)return;
+      if(rr>=25&&ur<rr*.6){seen.add(nm);findings.push({k:'Неполная амплитуда: '+nm,d:`У вас ход ${Math.round(ur)}°, в эталоне ${Math.round(rr)}°. Пройдите движение полностью, без рывка.`})}
+      else if(rr>=25&&ur>=rr*.8){seen.add(nm);good.push(`${nm[0].toUpperCase()+nm.slice(1)}: полная амплитуда (${Math.round(ur)}° при эталоне ${Math.round(rr)}°)`)}});
+    if(Math.abs(e.a[8]-al.p[8])>30&&e.vm[8])findings.push({k:'Положение корпуса',d:`Наклон корпуса у вас ${Math.round(e.a[8])}°, в эталоне ${Math.round(al.p[8])}°. Проверьте исходное положение по картинке эталона.`})}
+  if(!isStatic&&reps<1)findings.push({k:'Не увидели повторов',d:'Снимите 2–5 полных повторов, целиком и сбоку.'});
+  const score=Math.max(40,Math.min(100,100-findings.length*15));
+  const fa=win[e.ia],fb=win[e.ib];await seekTo(v,fa.t);const sa=frameShot(v,fa.lm,null,'#FF4F45',360).src;await seekTo(v,fb.t);const shb=frameShot(v,fb.lm,null,findings.length?'#FF3B30':'#1FB57E',720),sb=shb.src;
+  S.lastForm={score,ex:key,t:Date.now(),reps,shot:frameShot(v,fb.lm,null,'#FF4F45',420).src};
+  S.forms=S.forms||[];S.forms.push({score,ex:key,t:Date.now(),reps,findings:findings.map(f=>f.k),shot:S.forms.length<40?frameShot(v,fb.lm,null,'#FF4F45',160).src:''});if(S.forms.length>40)S.forms.shift();save();
+  const groups=[...new Set(x.pm.map(m=>EXMAP[m]).filter(Boolean))],help=[...new Set(x.sm.map(m=>EXMAP[m]).filter(Boolean).filter(g=>!groups.includes(g)))],lv={};groups.forEach(g=>lv[g]=1);help.forEach(g=>lv[g]=2);
+  const colr=score>=80?'var(--ok-text)':score>=55?'var(--warn)':'var(--bad)',tempo=durs.slice(0,3).map(d=>d.toFixed(1));
+  const pair=(img,ref,cap)=>`<div class="row" style="gap:8px;align-items:stretch"><div style="flex:1;min-width:0"><img src="${img}" alt="" style="width:100%;border-radius:12px;background:#111;aspect-ratio:3/4;object-fit:cover"><div class="tiny muted" style="margin-top:4px">Вы · ${cap}</div></div><div style="flex:1;min-width:0"><img src="${ref}" alt="" style="width:100%;border-radius:12px;background:var(--card2);aspect-ratio:3/4;object-fit:cover" onerror="this.style.visibility='hidden'"><div class="tiny muted" style="margin-top:4px">Эталон</div></div></div>`;
+  const al=r!=null?exAlign(r,e):null,ref0=`${EXIMG(id)}${al&&al.sw?1:0}.jpg`,ref1=`${EXIMG(id)}${al&&al.sw?0:1}.jpg`;
+  sheet('Разбор: '+x.n,`<div class="plate" style="background:#111;aspect-ratio:${Math.max(.8,Math.min(1.45,shb.ar)).toFixed(3)}"><img src="${sb}" alt="" style="object-fit:contain"><div class="capt"><span>${findings.length?'Момент для правки':'Крайняя точка'}</span><span class="small" style="font-weight:600">${fb.t.toFixed(1)} с</span></div></div>
+   <div class="card" style="margin-top:12px;text-align:center"><div class="num" style="font-size:52px;color:${colr}">${CU(score)}</div><div class="muted">из 100 · ${isStatic?'удержание':pl(reps,'повтор','повтора','повторов')}${tempo.length?' · темп '+tempo.join(' / ')+' с':''}</div></div>
+   ${findings.map(f=>`<div class="card" style="border-left:4px solid var(--bad)"><div class="title" style="font-size:16px">${f.k}</div><div class="small muted" style="margin-top:4px">${f.d}</div></div>`).join('')}
+   ${good.map(g=>`<div class="card row" style="padding:12px 16px"><span style="color:var(--ok-text)">${ic('check')}</span><div style="flex:1">${g}</div></div>`).join('')}
+   <h2 style="margin-top:14px">Вы и эталон</h2><div class="card">${pair(sa,ref0,'начало, '+fa.t.toFixed(1)+' с')}<div style="height:10px"></div>${pair(shb.src,ref1,'крайняя точка, '+fb.t.toFixed(1)+' с')}</div>
+   ${x.steps&&x.steps.length?`<h2>Как правильно</h2><div class="card list">${x.steps.map((t,i)=>`<div class="li" style="align-items:flex-start"><span class="num" style="width:26px;color:var(--text3);font-size:17px">${i+1}</span><div style="flex:1;line-height:1.4">${t}</div></div>`).join('')}</div>`:''}
+   ${Object.keys(lv).length?`<h2>Какие мышцы работают</h2><div class="card">${muscleMapLv(lv)}</div>`:''}
+   <div class="concept">Амплитуду сравниваем с эталоном упражнения по 3D-углам суставов · подробные правила техники пока для 6 базовых упражнений · не медицинская консультация</div>
+   <button class="btn" style="margin-top:12px" onclick="openEx('${id}')">Карточка упражнения</button><button class="btn ghost" onclick="openForm()">Разобрать другое видео</button>`);
+  if(S.tab==='today'||S.tab==='tech')setTimeout(rerender,50);
+}
+
+/* ---------- Видео техники для каждого упражнения (Rutube — открывается в России, запасной YouTube); подбор — tools/exvideo/find.mjs ---------- */
+let EXVID=null;
+async function loadExVid(){if(EXVID)return EXVID;try{EXVID=await fetch('data/exercise-videos.json').then(r=>r.json())}catch(e){EXVID={}}return EXVID}
+const mmss=s=>s?Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0'):'';
+function exVideoButton(id){loadExVid().then(V=>{const v=V[id],h=$('#exhero');if(!v||!h||h.querySelector('.explay'))return;h.insertAdjacentHTML('beforeend',`<button class="explay" onclick="event.stopPropagation();exPlay('${id}',-1)">${ic('play')}<span>Видео техники${v.dur?' · '+mmss(v.dur):''}</span></button>`)})}
+function exPlay(id,k){const all=[EXVID[id],...(EXVID[id].alt||[])].filter(Boolean),i=((k+1)%all.length+all.length)%all.length,v=all[i],h=$('#exhero');if(!h)return;clearInterval(EXT);
+  const src=v.embed+(v.embed.includes('?')?'&':'?')+(v.src==='youtube'?'autoplay=1&playsinline=1&rel=0':'autoplay=1');
+  h.onclick=null;h.style.aspectRatio='16/9';h.style.background='#000';h.innerHTML=`<iframe src="${src}" title="${v.title.replace(/"/g,'')}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>`;
+  let cap=$('#excap');if(!cap){h.insertAdjacentHTML('afterend','<div id="excap" class="row between" style="gap:10px;margin:6px 4px 0"></div>');cap=$('#excap')}
+  cap.innerHTML=`<span class="tiny muted" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.src==='rutube'?'Rutube':'YouTube'} · ${v.title}</span>${all.length>1?`<button class="tiny" style="font-weight:700;color:var(--accent-text);flex:none" onclick="exPlay('${id}',${i})">Другое видео</button>`:''}`}
+
 /* ---------- Клуб ---------- */
 const LOAD=[8,12,18,26,30,28,24,22,26,34,48,72,86,80,58,36,18];
 function clubLoad(){const c=club(),k=0.8+([...c.id].reduce((s,ch)=>s+ch.charCodeAt(0),0)%5)*0.08;return LOAD.map(v=>Math.min(98,Math.round(v*k)))}
@@ -1107,7 +1292,7 @@ function vTech(){
   <div class="hscroll">${EXGROUPS.map(([k,l])=>`<button class="chip ${EXG===k?'on':''}" onclick="exGroup('${k}')">${l}</button>`).join('')}</div>
   <div id="exlist" style="margin-top:12px">${exList()}</div>
   <h2>Разбор техники по видео</h2>
-  ${lf?`<a class="ev" style="aspect-ratio:4/3;margin-bottom:10px" onclick="openForm()"><img src="${lf.shot}" alt="Ваш кадр"><span class="tag">${lf.score} / 100</span><span class="cap"><b>${FORM[lf.ex].n} · ${ago(lf.t)}</b>${lf.reps?pl(lf.reps,'повтор засчитан','повтора засчитаны','повторов засчитано'):'удержание'} · углы по точкам суставов</span></a>`
+  ${lf?`<a class="ev" style="aspect-ratio:4/3;margin-bottom:10px" onclick="openForm()"><img src="${lf.shot}" alt="Ваш кадр"><span class="tag">${lf.score} / 100</span><span class="cap"><b>${fName(lf.ex)} · ${ago(lf.t)}</b>${lf.reps?pl(lf.reps,'повтор засчитан','повтора засчитаны','повторов засчитано'):'удержание'} · углы по точкам суставов</span></a>`
      :`<a class="ev" style="aspect-ratio:4/3;margin-bottom:10px" onclick="formRun('squat.mp4','squat')"><img src="img/tech-demo.jpg" alt="Пример разбора"><span class="tag">пример</span><span class="cap"><b>Так выглядит разбор</b>кадр крупно, углы в суставах, что поправить — на ваших кадрах</span></a>`}
   <button class="btn" onclick="openForm()">${ic('cam')} Проверить технику по видео</button>
   <div class="small muted" style="text-align:center;margin:10px 4px 0">Пока умеем 6 упражнений: ${Object.values(FORM).map(f=>f.n.toLowerCase()).join(', ')}. Видео не уходит с телефона.</div>
@@ -1174,7 +1359,7 @@ function spark(vals){const W=300,H=56,mn=Math.min(...vals),mx=Math.max(...vals),
 function openHistory(){
   const f=S.forms.slice().reverse();
   sheet('История',`<div class="grid2"><div class="card" style="margin:0"><div class="small muted">Тренировок</div><div class="num" style="font-size:28px">${S.workouts||0}</div></div><div class="card" style="margin:0"><div class="small muted">Разборов техники</div><div class="num" style="font-size:28px">${S.forms.length}</div></div></div>
-   <h2>Разборы техники</h2>${f.length?f.map(x=>`<div class="card row" style="padding:10px"><img src="${x.shot||'img/tech-demo.jpg'}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:10px;flex:none;background:#111"><div style="flex:1"><div style="font-weight:600">${FORM[x.ex]?FORM[x.ex].n:x.ex}</div><div class="small muted">${new Date(x.t).toLocaleDateString('ru-RU',{day:'numeric',month:'short'})} · ${x.reps?pl(x.reps,'повтор','повтора','повторов'):'удержание'}${x.findings&&x.findings.length?' · '+x.findings[0]:''}</div></div><span class="num" style="font-size:22px;color:${x.score>=80?'var(--ok-text)':x.score>=55?'var(--warn)':'var(--bad)'}">${x.score}</span></div>`).join(''):`<div class="card small muted">Разборов пока нет. Снимите себя сбоку — вкладка «Атлас».</div>`}
+   <h2>Разборы техники</h2>${f.length?f.map(x=>`<div class="card row" style="padding:10px"><img src="${x.shot||'img/tech-demo.jpg'}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:10px;flex:none;background:#111"><div style="flex:1"><div style="font-weight:600">${fName(x.ex)}</div><div class="small muted">${new Date(x.t).toLocaleDateString('ru-RU',{day:'numeric',month:'short'})} · ${x.reps?pl(x.reps,'повтор','повтора','повторов'):'удержание'}${x.findings&&x.findings.length?' · '+x.findings[0]:''}</div></div><span class="num" style="font-size:22px;color:${x.score>=80?'var(--ok-text)':x.score>=55?'var(--warn)':'var(--bad)'}">${x.score}</span></div>`).join(''):`<div class="card small muted">Разборов пока нет. Снимите себя сбоку — вкладка «Атлас».</div>`}
    <h2>Дневник еды</h2><div class="card small muted">${S.log.length?pl(S.log.length,'запись','записи','записей')+' сегодня · '+fmt(eaten().k)+' ккал':'Сегодня ничего не записано'}</div>`);
 }
 function openData(){

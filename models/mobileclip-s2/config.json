@@ -9,11 +9,6 @@
         "free_dimension_overrides": {
           "batch_size": 1
         }
-      },
-      "webnn-gpu": {
-        "free_dimension_overrides": {
-          "batch_size": 1
-        }
       }
     }
   }
