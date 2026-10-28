@@ -1,11 +1,10 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#F4F2ED" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141311" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" id="themecolor" content="#F4F2ED">
 <title>Мой тренер — ИИ-тренер: питание по базе и техника по видео</title>
 <meta name="description" content="Мой тренер: калории по фото считает база продуктов, техника упражнений разбирается по вашему видео прямо в телефоне. Прототип, открывается на любом телефоне.">
 <meta property="og:title" content="Мой тренер — питание по базе, техника по видео">
@@ -33,10 +32,17 @@
   --serif:"Literata",Georgia,"Times New Roman",serif;
   --ease-out:cubic-bezier(.23,1,.32,1); --ease-io:cubic-bezier(.77,0,.175,1); --spring:cubic-bezier(.2,.8,.2,1);
 }
-@media (prefers-color-scheme: dark){:root{
-  --bg:#141311; --card:#1D1B18; --card2:#27241F; --card3:#332F28; --text:#F1EEE7; --text2:#A39E93; --text3:#6F6A60;
-  --ink:#F1EEE7; --paper:#141311; --line:rgba(255,250,240,.1); --line2:rgba(255,250,240,.2); --glass:rgba(20,19,17,.84);
-  --shadow:0 0 0 .5px rgba(255,250,240,.07); --sheet:#1A1916;
+:root[data-theme="dark"]{
+  --bg:#1B1A17; --card:#25231F; --card2:#2F2C27; --card3:#3A3630; --text:#F1EEE7; --text2:#A39E93; --text3:#7A756B;
+  --ink:#F1EEE7; --paper:#141311; --line:rgba(255,250,240,.1); --line2:rgba(255,250,240,.2); --glass:rgba(27,26,23,.86);
+  --shadow:0 0 0 .5px rgba(255,250,240,.07); --sheet:#211F1B;
+  --accent:#E8573D; --accent-text:#FF7A62; --accent-soft:rgba(232,87,61,.16); --grad:#E8573D;
+  --p-text:#8FB0F0; --f-text:#E8B65A; --ok-text:#5FCB8E;
+}
+@media (prefers-color-scheme: dark){:root[data-theme="auto"]{
+  --bg:#1B1A17; --card:#25231F; --card2:#2F2C27; --card3:#3A3630; --text:#F1EEE7; --text2:#A39E93; --text3:#7A756B;
+  --ink:#F1EEE7; --paper:#141311; --line:rgba(255,250,240,.1); --line2:rgba(255,250,240,.2); --glass:rgba(27,26,23,.86);
+  --shadow:0 0 0 .5px rgba(255,250,240,.07); --sheet:#211F1B;
   --accent:#E8573D; --accent-text:#FF7A62; --accent-soft:rgba(232,87,61,.16); --grad:#E8573D;
   --p-text:#8FB0F0; --f-text:#E8B65A; --ok-text:#5FCB8E;
 }}
@@ -46,7 +52,7 @@ body{display:flex;justify-content:center}
 button,input{font:inherit;color:inherit}
 button{border:0;background:none;cursor:pointer;padding:0;text-align:inherit}
 a{color:inherit}
-img{outline:1px solid rgba(0,0,0,.06);outline-offset:-1px} @media (prefers-color-scheme: dark){img{outline-color:rgba(255,255,255,.06)}}
+img{outline:1px solid rgba(0,0,0,.06);outline-offset:-1px} :root[data-theme="dark"] img{outline-color:rgba(255,255,255,.06)} @media (prefers-color-scheme: dark){:root[data-theme="auto"] img{outline-color:rgba(255,255,255,.06)}}
 .num{font-family:var(--num);font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:-.01em}
 .sf{font-family:var(--serif);font-weight:400;letter-spacing:0}
 #phone{position:relative;width:100%;max-width:430px;height:100vh;height:100dvh;overflow:hidden;background:var(--bg)}
@@ -54,7 +60,7 @@ img{outline:1px solid rgba(0,0,0,.06);outline-offset:-1px} @media (prefers-color
   body{align-items:center;background:#E7E3DA}
   #phone{height:min(880px,96dvh);border-radius:48px;box-shadow:0 40px 90px rgba(20,20,20,.3),0 0 0 11px #0B0B0F,0 0 0 12px #2a2a2e}
 }
-@media (min-width:560px) and (prefers-color-scheme: dark){body{background:#0A0A0A}}
+@media (min-width:560px){:root[data-theme="dark"] body{background:#0E0E0D}}
 #scroll{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 92px);scroll-behavior:smooth}
 .top{display:flex;align-items:center;justify-content:space-between;margin:4px 0 14px;min-height:38px}
 .eyebrow{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em}
@@ -95,10 +101,10 @@ h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.msg,.src,.lock,.calcrow span{
 @media (prefers-reduced-transparency: reduce){#tabs,#hdr{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}}
 #tabbtns{position:relative;z-index:1;display:flex;align-items:center;width:100%;height:100%}
 #tabpill{display:none}
-.tab{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;font-size:10px;font-weight:600;letter-spacing:.01em;color:var(--text3);transition:color .2s;padding-top:9px}
+.tab{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:5px;font-size:10px;font-weight:600;letter-spacing:.01em;color:var(--text3);transition:color .2s;padding-top:8px}
 .tab.on{color:var(--text)} .tab .ic{width:24px;height:24px;transition:transform .2s var(--ease-out)} .tab:active .ic{transform:scale(.88)}
-.tab.fab .circ{width:40px;height:40px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;margin:-8px 0;transition:transform .16s var(--ease-out)}
-.tab.fab:active .circ{transform:scale(.92)} .tab.fab .circ .ic{width:24px;height:24px;transform:none} .tab.fab{color:var(--text3)}
+.tab.fab .circ{width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;margin:-4px 0;transition:transform .16s var(--ease-out);box-sizing:border-box}
+.tab.fab:active .circ{transform:scale(.92)} .tab.fab .circ .ic{width:20px;height:20px;transform:none;stroke-width:2.2} .tab.fab{color:var(--text3)}
 #veil{position:absolute;inset:0;background:rgba(23,21,15,.35);opacity:0;pointer-events:none;transition:opacity .25s;z-index:10}
 #veil.on{opacity:1;pointer-events:auto} #veil.drag{transition:none}
 #sheet{position:absolute;left:0;right:0;bottom:0;max-height:92%;background:var(--sheet);box-shadow:0 -1px 0 var(--line);border-radius:24px 24px 0 0;transform:translateY(calc(100% + 40px));visibility:hidden;transition:transform .42s var(--spring),visibility 0s .42s;z-index:11;display:flex;flex-direction:column}
@@ -108,7 +114,7 @@ h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.msg,.src,.lock,.calcrow span{
 #sheet .shead{display:flex;align-items:center;justify-content:space-between;padding:4px 16px 6px}
 #sheet .sbody{overflow-y:auto;overscroll-behavior:contain;padding:4px 16px 16px}
 .cta{position:sticky;bottom:-16px;margin-bottom:-16px;padding:10px 0 calc(env(safe-area-inset-bottom) + 12px);background:linear-gradient(transparent,var(--sheet) 30%)}
-@media (prefers-color-scheme: dark){#veil{background:rgba(0,0,0,.55)}}
+[data-theme="dark"] #veil{background:rgba(0,0,0,.55)}
 .x{width:30px;height:30px;border-radius:50%;background:var(--card2);display:grid;place-items:center;color:var(--text2);position:relative;font-size:14px;transition:transform .15s var(--ease-out),background-color .15s} .x::before{content:"";position:absolute;inset:-8px} .x:active{transform:scale(.9);background:var(--card3)}
 #onb{position:absolute;inset:0;background:var(--bg);z-index:20;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 14px) 20px calc(env(safe-area-inset-bottom) + 18px);transition:opacity .35s,transform .35s var(--ease-out)}
 #onb.hide{opacity:0;transform:scale(1.02);pointer-events:none}
@@ -390,6 +396,10 @@ const ROMAN=['I','II','III','IV','V'];
 const DEMO={name:'Алексей',sex:'m',age:30,h:180,w:88,goal:'lose',pace:'mid',work:'sit',trains:3,level:'new',income:120000,people:1,share:.3,club:'izumrud',place:'both'};
 const fresh=()=>({onb:true,profile:{...DEMO},log:[],done:[0],sets:{},remind:{},tab:'today'});
 let S=load()||fresh();if(!['today','tech','me'].includes(S.tab))S.tab='today';
+S.theme=S.theme||'light';
+function applyTheme(){document.documentElement.dataset.theme=S.theme;const dark=S.theme==='dark'||(S.theme==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);const m=document.getElementById('themecolor');if(m)m.content=dark?'#1B1A17':'#F4F2ED'}
+applyTheme();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
+function setTheme(t){S.theme=t;save();applyTheme();haptic(6);rerender()}
 S.weights=S.weights||[];S.forms=S.forms||[];S.extra=S.extra||[];S.custom=S.custom||[]; // вес по датам, разборы техники, упражнения в план, свои продуктыwindow.__S=()=>S;window.__demoAllSets=()=>{program().ex.forEach((x,i)=>{for(let j=0;j<setsOf(x);j++)S.sets[i+'-'+j]=true});S.startedAt=Date.now()-46*60000;save();rerender()}; // для записи ролика
 if(!S.profile||!GOALS[S.profile.goal]||S.profile.income==null)S=fresh();
 function save(){try{localStorage.setItem('yb-demo2',JSON.stringify(S))}catch(e){}}
@@ -435,8 +445,8 @@ function openProgram(){sheet('Программа тренировок',vGym().re
 function openFoodPlan(){sheet('Питание и бюджет',vFood().replace(/^<div class="top">[\s\S]*?<\/h1>/,''));SHEET_FN=openFoodPlan}
 function openAdd(){
   sheet('Записать',`<button class="addopt" onclick="openScan()"><div class="ibox">${ic('cam')}</div><div style="flex:1"><div class="title">Сфотографировать блюдо</div><div class="small muted">Узнаем по базе, вы уточните граммы</div></div><span class="chev">${ic('chev')}</span></button>
-   <button class="addopt" onclick="openBarcode()"><div class="ibox">${ic('barcode')}</div><div style="flex:1"><div class="title">Штрихкод с упаковки</div><div class="small muted">Мировая база Open Food Facts · миллионы продуктов</div></div><span class="chev">${ic('chev')}</span></button>
-   <button class="addopt" onclick="openSearch()"><div class="ibox">${ic('search')}</div><div style="flex:1"><div class="title">Найти в базе продуктов</div><div class="small muted">наша база с источниками, ваши продукты и блюда · считает код</div></div><span class="chev">${ic('chev')}</span></button>
+   <button class="addopt" onclick="openBarcode()"><div class="ibox">${ic('barcode')}</div><div style="flex:1"><div class="title">Штрихкод с упаковки</div><div class="small muted">Open Food Facts, миллионы продуктов</div></div><span class="chev">${ic('chev')}</span></button>
+   <button class="addopt" onclick="openSearch()"><div class="ibox">${ic('search')}</div><div style="flex:1"><div class="title">Найти в базе продуктов</div><div class="small muted">Наша база, блюда и ваши продукты</div></div><span class="chev">${ic('chev')}</span></button>
    <button class="addopt" onclick="openForm()"><div class="ibox">${ic('ruler')}</div><div style="flex:1"><div class="title">Проверить технику по видео</div><div class="small muted">Снимите себя сбоку, 2–5 повторов</div></div><span class="chev">${ic('chev')}</span></button>
    <button class="addopt" onclick="openProgram()"><div class="ibox">${ic('gym')}</div><div style="flex:1"><div class="title">Отметить тренировку</div><div class="small muted">Сегодня · ${program().days[Math.min(1,program().days.length-1)]}</div></div><span class="chev">${ic('chev')}</span></button>`);
 }
@@ -485,6 +495,7 @@ function vToday(){
   const last=S.log[S.log.length-1],lf=S.lastForm,s=suggest(),nextMeal=s.list[0],mealTime=hr<11?'13:00':hr<16?'19:00':'';
   const done=S.done.includes(ti);
   return `<div class="top"><span class="date">${dateStr[0].toUpperCase()+dateStr.slice(1)}</span><button class="avatar tap" onclick="go('me')" aria-label="Личный кабинет">${pr.name[0]}</button></div>
+  ${S.demo?`<button class="card tap row" style="width:100%;text-align:left;padding:12px 14px;border:1.5px dashed var(--line2);background:transparent;box-shadow:none" onclick="resetAll()"><div class="ibox" style="background:var(--accent-soft);color:var(--accent-text)">${ic('spark')}</div><div style="flex:1"><div style="font-weight:600">Это пример — данные Алексея</div><div class="small muted">Нажмите, чтобы составить свой план: 2 минуты, норма под вас</div></div><span class="chev">${ic('chev')}</span></button>`:''}
   ${weekStrip()}
   <div class="big"><span class="num" style="color:${left<0?'var(--accent-text)':'inherit'}">${CU(Math.abs(left))}</span><span class="sub">${left>=0?'ккал осталось':'ккал сверх нормы'}<br>из ${fmt(n.kcal)} · цель «${g.n.toLowerCase()}»</span></div>
   <div class="macros">${[['Белки','p','var(--p)'],['Жиры','f','var(--f)'],['Углеводы','c','var(--c)']].map(([l,k,col])=>`<div class="mrow"><span class="nm">${l}</span><div class="bar">${bar(Math.min(e[k]/n[k]*100,100),'background:'+col)}</div><span class="v">${fmt(e[k])} <span>/ ${n[k]} г</span></span></div>`).join('')}</div>
@@ -1041,20 +1052,23 @@ function vTech(){
 function vMe(){
   const pr=S.profile,n=norm(pr),g=GOALS[pr.goal],pg=program(),w=S.weights,lastW=w.length?w[w.length-1].w:pr.w,firstW=w.length?w[0].w:pr.w,dW=lastW-firstW;
   const days=new Set(S.log.map(e=>e.d||today0())).size;
-  return `<div class="top"><span class="date">${pr.name}</span><button class="avatar tap" onclick="openEdit()" aria-label="Изменить профиль">${pr.name[0]}</button></div>
+  return `<div class="top"><span class="date">${pr.name==='Вы'?'Личный кабинет':pr.name}</span><button class="avatar tap" onclick="openEdit()" aria-label="Изменить профиль">${pr.name[0]}</button></div>
+  ${S.demo?`<button class="card tap row" style="width:100%;text-align:left;padding:12px 14px;border:1.5px dashed var(--line2);background:transparent;box-shadow:none" onclick="resetAll()"><div class="ibox" style="background:var(--accent-soft);color:var(--accent-text)">${ic('spark')}</div><div style="flex:1"><div style="font-weight:600">Это пример — данные Алексея</div><div class="small muted">Составить свой план и вести только себя</div></div><span class="chev">${ic('chev')}</span></button>`:''}
   <div class="card tap" onclick="openEdit()"><div class="row between"><div style="min-width:0"><div class="small muted">Цель · ${g.n.toLowerCase()}, ${PACE[pr.pace].toLowerCase()}</div><div class="num" style="font-size:34px;line-height:1.1;margin-top:2px">${fmt(n.kcal)} <span class="muted" style="font-size:15px;font-weight:500">ккал в день</span></div><div class="small muted" style="margin-top:4px">Б ${n.p} · Ж ${n.f} · У ${n.c} г · ${pr.h} см · ${lastW} кг · ${pr.age} лет</div></div><span class="chev">${ic('chev')}</span></div></div>
   <div class="grid2">
     <button class="card tap" style="margin:0;text-align:left" onclick="openWeight()"><div class="small muted">Вес</div><div class="num" style="font-size:28px;margin-top:2px">${(''+lastW).replace('.',',')} <span class="muted" style="font-size:14px;font-weight:500">кг</span></div><div class="small" style="color:${dW<0?'var(--ok-text)':dW>0?'var(--accent-text)':'var(--text2)'}">${w.length>1?(dW>0?'+':'')+dW.toFixed(1).replace('.',',')+' кг с начала':w.length&&w[w.length-1].d===today0()?'записано сегодня':'записать сегодня'}</div></button>
-    <button class="card tap" style="margin:0;text-align:left" onclick="openHistory()"><div class="small muted">История</div><div class="num" style="font-size:28px;margin-top:2px">${S.workouts||0}</div><div class="small muted">${pl(S.workouts||0,'тренировка','тренировки','тренировок')} · ${pl(S.forms.length,'разбор','разбора','разборов')}</div></button>
+    <button class="card tap" style="margin:0;text-align:left" onclick="openHistory()"><div class="small muted">История</div><div class="num" style="font-size:28px;margin-top:2px">${S.workouts||0}</div><div class="small muted">${pl(S.workouts||0,'тренировка','тренировки','тренировок')}, ${pl(S.forms.length,'разбор','разбора','разборов')}</div></button>
   </div>
   <div class="card list">
     <button class="rowbtn" onclick="openProgram()"><div class="ibox">${ic('gym')}</div><div class="t">Программа «${pg.name}»<small>${pl(pg.days.length,'тренировка','тренировки','тренировок')} в неделю · ${S.done.length} из ${pg.days.length} на этой неделе${S.extra.length?' · +'+pl(S.extra.length,'упражнение','упражнения','упражнений')+' в плане':''}</small></div><span class="chev">${ic('chev')}</span></button>
     <button class="rowbtn" onclick="openFoodPlan()"><div class="ibox">${ic('food')}</div><div class="t">Питание и бюджет<small>${fmt(budgetOf(pr))} ₽ в день · что съесть, магазины рядом</small></div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="openSearch()"><div class="ibox">${ic('search')}</div><div class="t">База продуктов<small>наша база с источниками + мировая Open Food Facts${S.custom.length?' · '+pl(S.custom.length,'ваш продукт','ваших продукта','ваших продуктов'):''}</small></div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="openSearch()"><div class="ibox">${ic('search')}</div><div class="t">База продуктов<small>наша с источниками и мировая Open Food Facts${S.custom.length?' · '+pl(S.custom.length,'ваш продукт','ваших продукта','ваших продуктов'):''}</small></div><span class="chev">${ic('chev')}</span></button>
     <button class="rowbtn" onclick="openProfile()"><div class="ibox">${ic('doc')}</div><div class="t">Как считаем норму<small>формулы, коэффициенты, источники</small></div><span class="chev">${ic('chev')}</span></button>
     <button class="rowbtn" onclick="openSub()"><div class="ibox">${ic('star')}</div><div class="t">Подписка<small>пока всё бесплатно · прототип</small></div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="openData()"><div class="ibox">${ic('lock')}</div><div class="t">Мои данные<small>всё хранится на телефоне · скачать или удалить</small></div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="openData()"><div class="ibox">${ic('lock')}</div><div class="t">Мои данные<small>на телефоне · скачать или удалить</small></div><span class="chev">${ic('chev')}</span></button>
   </div>
+  <div class="card"><div class="row between"><div><div style="font-weight:600">Оформление</div><div class="small muted">светлая — основная, тёмная — для вечера</div></div></div><div class="chips" style="margin-top:10px">${[['light','Светлая'],['dark','Тёмная'],['auto','Как на телефоне']].map(([k,l])=>`<button class="chip ${S.theme===k?'on':''}" onclick="setTheme('${k}')">${l}</button>`).join('')}</div></div>
+  <div class="card small muted" style="line-height:1.45"><b style="color:var(--text)">Это ваш личный кабинет.</b> Норма, план, дневник и вес считаются только по вашим данным и хранятся на этом телефоне. Вход по номеру и перенос на другой телефон появятся в рабочей версии с сервером.</div>
   <div class="concept">Не медицинская консультация. При травмах и заболеваниях посоветуйтесь с врачом.</div>`;
 }
 function today0(){return new Date().toISOString().slice(0,10)}
@@ -1169,7 +1183,7 @@ function resetAll(){try{localStorage.removeItem('yb-demo2')}catch(e){};S=fresh()
 /* ---------- Анкета ---------- */
 let OB=0,D={...DEMO},geoTried=false,obDir='',obPct=0;
 const STEPS=7;
-function showOnb(){OB=0;D={...DEMO};geoTried=false;obDir='';obPct=0;$('#onb').classList.remove('hide');renderOnb()}
+function showOnb(){OB=0;D={...DEMO,name:''};geoTried=false;obDir='';obPct=0;$('#onb').classList.remove('hide');renderOnb()}
 function renderOnb(){
   const nr=norm(D),bud=budgetOf(D);
   const steps=[
@@ -1184,6 +1198,7 @@ function renderOnb(){
       ${D.goal==='lose'||D.goal==='muscle'?`<div class="small muted" style="margin:6px 4px 8px">Темп</div><div class="chips">${Object.entries(PACE).map(([k,l])=>`<button class="chip ${D.pace===k?'on':''}" onclick="D.pace='${k}';renderOnb()">${l} · ${(GOALS[D.goal].adj[k]>0?'+':GOALS[D.goal].adj[k]<0?'−':'')+Math.abs(Math.round(GOALS[D.goal].adj[k]*100))}%</button>`).join('')}</div>`:''}</div>
       <button class="btn" style="margin-top:12px" onclick="obNext()">Дальше</button>`,
    ()=>`<div class="q">Расскажите о себе</div><div class="qs">Нужно для точного расчёта нормы</div>
+      <div class="card" style="padding:4px 14px;margin-bottom:12px"><div class="field"><label>Как вас зовут</label><input type="text" value="${(D.name||'').replace(/"/g,'&quot;')}" placeholder="Имя" maxlength="24" autocomplete="given-name" oninput="D.name=this.value"></div></div>
       <div class="small muted" style="margin:0 4px 6px">Пол</div><div class="chips" style="margin-bottom:12px">${[['m','Мужчина'],['f','Женщина']].map(([k,l])=>`<button class="chip ${D.sex===k?'on':''}" onclick="D.sex='${k}';renderOnb()">${l}</button>`).join('')}</div>
       <div class="small muted" style="margin:0 4px 6px">Опыт тренировок</div><div class="chips" style="margin-bottom:12px">${[['new','Новичок'],['mid','До года'],['pro','Больше года']].map(([k,l])=>`<button class="chip ${D.level===k?'on':''}" onclick="D.level='${k}';renderOnb()">${l}</button>`).join('')}</div>
       ${[['age','Возраст','лет',1,14,80],['h','Рост','см',1,140,210],['w','Вес','кг',1,40,180]].map(([k,l,u,st,mn,mx])=>`<div class="stepper"><div><div style="font-weight:650">${l}</div><div class="small muted">${u}</div></div><div class="ctl"><button class="rb" onclick="obAdj('${k}',-${st},${mn},${mx})">−</button><span class="num" style="font-size:24px;min-width:52px;text-align:center">${D[k]}</span><button class="rb" onclick="obAdj('${k}',${st},${mn},${mx})">+</button></div></div>`).join('')}
@@ -1224,8 +1239,8 @@ function updBud(){const b=budgetOf(D);const a=$('#incv'),bv=$('#budv'),sv=$('#st
 function obAdj(k,d,mn,mx){D[k]=Math.max(mn,Math.min(mx,D[k]+d));haptic(4);renderOnb()}
 function obNext(){obDir='sl';OB=Math.min(OB+1,STEPS-1);haptic(8);renderOnb()}
 function obBack(){obDir='sr';OB=Math.max(0,OB-1);haptic(5);renderOnb()}
-function obDemo(){D={...DEMO};obFinish()}
-function obFinish(){const p={...D};delete p._geo;S.profile=p;S.onb=false;S.done=[0];S.sets={};S.log=[];seedDay();save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+GOALS[p.goal].prog+'» готов'),450)}
+function obDemo(){D={...DEMO};obFinish(true)}
+function obFinish(demo){const p={...D};delete p._geo;p.name=(p.name||'').trim()||'Вы';S.profile=p;S.demo=!!demo;S.onb=false;S.done=demo?[0]:[];S.sets={};S.log=[];S.weights=[];S.forms=[];S.extra=[];S.workouts=0;S.lastForm=null;if(demo)seedDay();save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+GOALS[p.goal].prog+'» готов'),450)}
 
 /* ---------- старт ---------- */
 if(S.onb)showOnb();else $('#onb').classList.add('hide');
