@@ -28,6 +28,6 @@
 ## Добавлено вручную 24.10 (из кандидатов агентов, точные страницы источников уточнить перед коммерческим использованием)
 - grechka — файл gr_px_7307354: Pexels, фото 7307354 (Pexels License)
 - grechka_kurica — файл grech_a: Wikimedia Commons, свободная лицензия
-- tvorog_banan — файл tv_commons_alexindigo: Wikimedia Commons (CC BY)
+- tvorog_banan — файл tv_commons_alexindigo: Wikimedia Commons (CC BY). 29.10: на снимке творог, банан и черника — блюдо переименовано в «Творог с бананом и черникой», черника 50 г добавлена в состав, чтобы фото и калории совпадали.
 - kefir_hlebcy — файл kef_a: Openverse/Wikimedia Commons, свободная лицензия
 - tvorog_orehi — файл tv_commons_quarknuts: Wikimedia Commons, свободная лицензия
