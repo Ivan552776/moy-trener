@@ -76,6 +76,29 @@
    }
   ]
  },
+ "Adductor": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/Nqol0T6rKDg",
+  "title": "How to Foam Roll: Adductors",
+  "dur": 41,
+  "author": "National Academy of Sports Medicine (NASM)",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/h1xQabdHdes",
+    "title": "Foam Roller: Adductors",
+    "dur": 27,
+    "author": "Runner's World"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/n5g0rjsTT1k",
+    "title": "How To Foam Roll Adductors with TriggerPoint RUSH",
+    "dur": 73,
+    "author": "TriggerPoint"
+   }
+  ]
+ },
  "Adductor_Groin": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/BO-iTgTPh_s",
@@ -270,6 +293,22 @@
    }
   ]
  },
+ "Alternating_Floor_Press": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/PEG74hlxo04",
+  "title": "Alternating Kettlebell Floor Press | 98 Training Movement Library",
+  "dur": 17,
+  "author": "98 Training",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/Uf1jY-575lo",
+    "title": "Alternating Kettlebell Floor Press",
+    "dur": 15,
+    "author": "Functional Bodybuilding"
+   }
+  ]
+ },
  "Alternating_Hang_Clean": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/bIjmXiTVUN0",
@@ -385,6 +424,29 @@
    }
   ]
  },
+ "Ankle_On_The_Knee": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/fd426bac6b15b4942ec593d9b8852f1b",
+  "title": "Растяжка ягодичных и грушевидной лёжа на полу обхватив бедро",
+  "dur": 31,
+  "author": "INSPIRE тренируйся с умом",
+  "alt": [
+   {
+    "src": "rutube",
+    "embed": "https://rutube.ru/play/embed/d4462cf956ccd3a187939f33719d39bf",
+    "title": "Растягивание ягодичных мышц и грушевидной лёжа на спине",
+    "dur": 19,
+    "author": "INSPIRE тренируйся с умом"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/Xb5gHdYtHnk",
+    "title": "Figure 4 stretching",
+    "dur": 48,
+    "author": "Canadian Chiropractic Guideline Initiative (CCGI)"
+   }
+  ]
+ },
  "Anterior_Tibialis-SMR": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/QpWQ4RzEo8g",
@@ -470,6 +532,29 @@
   "author": "Документальные, научные и развлекательное видео.",
   "alt": []
  },
+ "Atlas_Stone_Trainer": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/862dKDapEoU",
+  "title": "How to Train Atlas Stones without Atlas Stones",
+  "dur": 451,
+  "author": "The Atlas Strength Shop",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/vAkGOIO1heE",
+    "title": "How to Stone Load without Stones",
+    "dur": 45,
+    "author": "Alan Thrall (Untamed Strength)"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/3-AhyQaq4ZQ",
+    "title": "How To train Atlas Stones without Stones",
+    "dur": 128,
+    "author": "Kalle Beck"
+   }
+  ]
+ },
  "Atlas_Stones": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/eccf076c39863eb2c52da9fd2de2ad12",
@@ -516,6 +601,22 @@
    }
   ]
  },
+ "Back_Flyes_-_With_Bands": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/cyihFNmsq-A",
+  "title": "How To: Resistance Band Reverse Fly",
+  "dur": 170,
+  "author": "ScottHermanFitness",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/38leTE2y1I8",
+    "title": "Band Reverse Fly",
+    "dur": 42,
+    "author": "FitnessBlender"
+   }
+  ]
+ },
  "Backward_Drag": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/NaQt6IYoAgw",
@@ -536,6 +637,29 @@
     "title": "Тяга саней ( спиной вперёд)",
     "dur": 21,
     "author": "U’Train"
+   }
+  ]
+ },
+ "Backward_Medicine_Ball_Throw": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/j2iNY9aLmys",
+  "title": "Backward Med Ball Throw",
+  "dur": 40,
+  "author": "Elite Performance Institute",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/JJoL9RDK7aM",
+    "title": "Med Ball Overhead Backwards Throw",
+    "dur": 19,
+    "author": "Foran Strength"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/ZB8AOSODrIY",
+    "title": "Backward Medicine Ball Throw",
+    "dur": 45,
+    "author": "Explosive Strength Academy"
    }
   ]
  },
@@ -1722,6 +1846,52 @@
    }
   ]
  },
+ "Body-Up": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/6b6c08b3ad9a608c94cb8ead29106904",
+  "title": "Упражнение \"Планка на локтях м подъёмом на прямые руки\"",
+  "dur": 61,
+  "author": "longlifestrategy",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/hLVG_PSgNuk",
+    "title": "Plank Up-Downs Tutorial",
+    "dur": 19,
+    "author": "Drew Griesel"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/3Wn0-JyAZm8",
+    "title": "Up and Down Plank Exercise | How to Tutorial by Urbacise",
+    "dur": 83,
+    "author": "Urbacise"
+   }
+  ]
+ },
+ "Body_Tricep_Press": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/UKxwlsqmoBg",
+  "title": "How to do a Barbell Bodyweight Triceps Extension | Rowlett Transformation Center",
+  "dur": 21,
+  "author": "Rowlett Transformation Center",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/pvLXhShp-l8",
+    "title": "Triceps & Core - Barbell Bodyweight Tricep extension - Exercise Library",
+    "dur": 35,
+    "author": "Sean Chen"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/KuYSmK8F1gs",
+    "title": "Barbell Bodyweight Triceps Extension",
+    "dur": 23,
+    "author": "The Millennial Sports Dropout"
+   }
+  ]
+ },
  "Bodyweight_Flyes": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/FNJvnek2LJw",
@@ -2184,6 +2354,29 @@
    }
   ]
  },
+ "Cable_Hip_Adduction": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/0c15f6d10cd93d962eb5fbb8f054efcb",
+  "title": "Приведение бедра в кроссовере: техника и нюансы",
+  "dur": 135,
+  "author": "ТВОЙ ТРЕНЕР: энциклопедия фитнеса",
+  "alt": [
+   {
+    "src": "rutube",
+    "embed": "https://rutube.ru/play/embed/7c354a0e7ae808d777c8f17502a2afe0",
+    "title": "Приведение ноги в нижнем блоке. Техника выполнения.",
+    "dur": 36,
+    "author": "Спортивные Тренировки на Беговой Дорожке"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/SIQrpq6YnT8",
+    "title": "How To Do A STANDING CABLE HIP ADDUCTION | Exercise Demonstration Video and Guide",
+    "dur": 42,
+    "author": "Live Lean TV Daily Exercises"
+   }
+  ]
+ },
  "Cable_Incline_Pushdown": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/O9vty3Grpu8",
@@ -2370,6 +2563,29 @@
    }
   ]
  },
+ "Cable_Rope_Overhead_Triceps_Extension": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/7aa5926df28adda32302fe4aa1d03be4",
+  "title": "Разгибание рук из за головы с веревочной рукоятью нижний блок",
+  "dur": 65,
+  "author": "Быстрые упражнения для укрепления спины",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/MegBRxtR14I",
+    "title": "OVERHEAD LOW ROPE TRICEP EXTENSION",
+    "dur": 64,
+    "author": "James Harrison"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/l4i7iDLiMXs",
+    "title": "Rope Overhead Tricep Extension — (FORM & TUTORIAL)",
+    "dur": 154,
+    "author": "Fit Father Project - Fitness For Busy Fathers"
+   }
+  ]
+ },
  "Cable_Rope_Rear-Delt_Rows": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/QPzdXm3osCk",
@@ -2383,6 +2599,29 @@
     "title": "Cable Rope Rear-Delt Rows",
     "dur": 24,
     "author": "Musqle"
+   }
+  ]
+ },
+ "Cable_Russian_Twists": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/M3qA79xn4VE",
+  "title": "Cable Russian Twists on Stability Ball | SFS Exercise Library",
+  "dur": 35,
+  "author": "SET FOR SET",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/Gm0KbW6Od30",
+    "title": "Cable Russian twist",
+    "dur": 56,
+    "author": "Jason Nelson"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/N7csJ8D-lZM",
+    "title": "Core Obliques Russian Twist 1 Cable Machine Stability Ball",
+    "dur": 33,
+    "author": "Fortress Rock Fitness"
    }
   ]
  },
@@ -2822,6 +3061,14 @@
    }
   ]
  },
+ "Chest_And_Front_Of_Shoulder_Stretch": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/wk2p4UDe2Yo",
+  "title": "Double Shoulder Flexion Stretch (dowel)",
+  "dur": 41,
+  "author": "PhysiHub Library",
+  "alt": []
+ },
  "Chest_Push_from_3_point_stance": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/9mxn6nliL68",
@@ -2988,6 +3235,29 @@
     "title": "Chin To Chest Stretch, Tutorial, Exercise Video, Workout, SEXioFIT",
     "dur": 30,
     "author": "SEXioFIT"
+   }
+  ]
+ },
+ "Circus_Bell": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/hYfAsBONjVA",
+  "title": "How To Circus DB Press (Strongman Tutorial)",
+  "dur": 119,
+  "author": "Cooney Strength Conditioning",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/5p3SVREJp_A",
+    "title": "HOW TO PRESS A CIRCUS DUMBBELL Fet. Alan Thrall",
+    "dur": 171,
+    "author": "Kalle Beck"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/V3qzCpQN9Bw",
+    "title": "How to Clean and Press a Giant Dumbbell - Technique for One Arm Circus Dumbbell Press",
+    "dur": 473,
+    "author": "Alexander Bromley"
    }
   ]
  },
@@ -3457,6 +3727,29 @@
     "title": "Cross Body Hammer Curls",
     "dur": 44,
     "author": "mountaindog1"
+   }
+  ]
+ },
+ "Cross_Over_-_With_Bands": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/8f8c66726eb7e4eb565bcd693ee60cb4",
+  "title": "Сведение рук с резиной стоя: техника и нюансы",
+  "dur": 237,
+  "author": "ТВОЙ ТРЕНЕР: энциклопедия фитнеса",
+  "alt": [
+   {
+    "src": "rutube",
+    "embed": "https://rutube.ru/play/embed/7fcb9d146a62fb73a2a767867fd9535f",
+    "title": "Упражнения для развития грудных мышц: сведение рук с резинкой стоя, полный разбор упражнения",
+    "dur": 42,
+    "author": "FITFILIP"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/P_7lIeeFois",
+    "title": "Awesome Resistance Bands Chest Exercise: Straight Arm Flye",
+    "dur": 152,
+    "author": "Undersun Fitness"
    }
   ]
  },
@@ -4198,6 +4491,22 @@
    }
   ]
  },
+ "Drop_Push": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/vJ_WloQpjuE",
+  "title": "Box Drop Plyo Push-Up",
+  "dur": 17,
+  "author": "Alex Bunt",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/o79bpZBkjQk",
+    "title": "Plyometric Drop Push Up",
+    "dur": 37,
+    "author": "RE4ORM Fitness"
+   }
+  ]
+ },
  "Dumbbell_Alternate_Bicep_Curl": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/f1a90b5752ae4c7c09a23d14f206c6d0",
@@ -4763,6 +5072,22 @@
    }
   ]
  },
+ "Dumbbell_Tricep_Extension_-Pronated_Grip": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/2GtAcrzUAYo",
+  "title": "Dumbbell Tricep Extension  Pronated Grip Exercise Guide and Video",
+  "dur": 47,
+  "author": "Mohamed Attia",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/pcG7V5qvEHA",
+    "title": "Lying Dumbbell Triceps Extension with Pronating Grip",
+    "dur": 66,
+    "author": "Mind and Muscle Coaching"
+   }
+  ]
+ },
  "Dynamic_Back_Stretch": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/tC3ZHGcgbWs",
@@ -4877,12 +5202,28 @@
    }
   ]
  },
+ "Elbows_Back": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/rhtadqkrWo0",
+  "title": "How to Do：ELBOWS BACK",
+  "dur": 52,
+  "author": "Leap Fitness",
+  "alt": []
+ },
  "Elevated_Back_Lunge": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/GHNAIYdl3CQ",
   "title": "Elevated Back Lunge",
   "dur": 144,
   "author": "Lifestyle Fitness Studio",
+  "alt": []
+ },
+ "Elevated_Cable_Rows": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/1dY7ovFjLmE",
+  "title": "Elevated Cable Row",
+  "dur": 119,
+  "author": "Forge Personal Training",
   "alt": []
  },
  "Elliptical_Trainer": {
@@ -5246,6 +5587,22 @@
     "title": "JM Floor Press With Chain",
     "dur": 35,
     "author": "Elitefts Archives"
+   }
+  ]
+ },
+ "Flutter_Kicks": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/PZKEDWjUmJA",
+  "title": "Prone Flutter Kicks",
+  "dur": 48,
+  "author": "Body Inc.",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/dDNq-Bsjh5w",
+    "title": "Prone Flutter Kicks",
+    "dur": 40,
+    "author": "The Anatomy Lab Fitness"
    }
   ]
  },
@@ -6145,6 +6502,14 @@
    }
   ]
  },
+ "Heavy_Bag_Thrust": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/e69120457551de8aea00f38033ede761",
+  "title": "Толчки боксёрского мешка двумя и одной рукой (Heavy bag push)",
+  "dur": 42,
+  "author": "INSPIRE тренируйся с умом",
+  "alt": []
+ },
  "High_Cable_Curls": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/fbcb5451b0015205ecfc30eb27f676e6",
@@ -6211,6 +6576,29 @@
     "title": "New band hip extension exercise",
     "dur": 315,
     "author": "BandTrainingWorkouts"
+   }
+  ]
+ },
+ "Hip_Flexion_with_Band": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/f6ece3eb333720a5160d3e8a4818990c",
+  "title": "Подъем колена перед собой с резинкой - техника выполнения",
+  "dur": 27,
+  "author": "Тренировка силы",
+  "alt": [
+   {
+    "src": "rutube",
+    "embed": "https://rutube.ru/play/embed/39f84ccd1a44d968a87103fcf9dc4cb6",
+    "title": "Подъем колена вверх с резинкой, стоя у опоры",
+    "dur": 26,
+    "author": "Энерго Тепло Уют"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/-wSTNPVgF0Q",
+    "title": "Standing Hip Flexion with Resistive Band - Ask Doctor Jo",
+    "dur": 27,
+    "author": "AskDoctorJo"
    }
   ]
  },
@@ -6337,6 +6725,22 @@
   "dur": 247,
   "author": "Dr. Josh Axe",
   "alt": []
+ },
+ "Iliotibial_Tract-SMR": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/f75ed69cd0899308316afa278d76c4c1",
+  "title": "МФР илиотибиального тракта",
+  "dur": 67,
+  "author": "INSPIRE тренируйся с умом",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/Zt7GPR2GvTo",
+    "title": "Foam Roll IT Band Roll Out",
+    "dur": 82,
+    "author": "Coury & Buehler Physical Therapy"
+   }
+  ]
  },
  "Inchworm": {
   "src": "rutube",
@@ -6721,6 +7125,52 @@
   "author": "how to lose weight with the keto diet",
   "alt": []
  },
+ "Intermediate_Groin_Stretch": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/T8zGPMgja6I",
+  "title": "Supine Adductor Stretch (with strap)",
+  "dur": 29,
+  "author": "FitLife Fitness, Aquatics and Physical Therapy",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/BO_z6cSOJvA",
+    "title": "Supine Hip Adductor Stretch with Strap",
+    "dur": 41,
+    "author": "Body Better Physical Therapy"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/GORicmWW6dw",
+    "title": "Supine Adductor Stretch with Strap",
+    "dur": 57,
+    "author": "The Back Pain Trainer"
+   }
+  ]
+ },
+ "Intermediate_Hip_Flexor_and_Quad_Stretch": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/lJ5Raevn8js",
+  "title": "Prone Quad Stretch (with strap)",
+  "dur": 45,
+  "author": "FitLife Fitness, Aquatics and Physical Therapy",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/w9UIQ0jk7qI",
+    "title": "Prone Quad Stretch",
+    "dur": 27,
+    "author": "Hope Physical Therapy and Aquatics"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/x_-w1DC6TQ8",
+    "title": "Prone Quad Stretch with Strap",
+    "dur": 44,
+    "author": "AJ Physical Therapy and Performance "
+   }
+  ]
+ },
  "Internal_Rotation_with_Band": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/MfjCK5_Ss5g",
@@ -6838,6 +7288,29 @@
   "dur": 35,
   "author": "U.S. Forces Fitness",
   "alt": []
+ },
+ "Isometric_Wipers": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/HwtOyxT6-jo",
+  "title": "Isometric Wipers",
+  "dur": 18,
+  "author": "Jase Stuart - Better Body Academy",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/XtQ-Kx_1OVs",
+    "title": "Isometric wipers",
+    "dur": 29,
+    "author": "Uncommon Man Project"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/mEd3ndBfqHg",
+    "title": "Isometric Wipers Push-Up",
+    "dur": 24,
+    "author": "Георги Николаев"
+   }
+  ]
  },
  "JM_Press": {
   "src": "rutube",
@@ -7079,6 +7552,29 @@
    }
   ]
  },
+ "Kettlebell_Halo_With_Overhead_Extension": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/1ErTsvRtJmA",
+  "title": "Kettlebell Halo + Tricep Extension",
+  "dur": 137,
+  "author": "Grit Fitness",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/jFNvSRExs-w",
+    "title": "Kettlebell Halo with Tricep Extension Progression",
+    "dur": 125,
+    "author": "Laura Gorycki"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/r_aXjyzIJJw",
+    "title": "Halo With Tricep Extension",
+    "dur": 45,
+    "author": "Kettleburn Training System"
+   }
+  ]
+ },
  "Kettlebell_Hang_Clean": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/mK-nuNnUPBk",
@@ -7147,6 +7643,29 @@
     "title": "Kettlebell Pass Between The Legs",
     "dur": 38,
     "author": "Total Wellness Trainers"
+   }
+  ]
+ },
+ "Kettlebell_Pirate_Ships": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/eGv_qYDyJTM",
+  "title": "How To Do Kettlebell Pirate Ships | Exercise Demo",
+  "dur": 43,
+  "author": "OriGym",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/Q9t1xZRFnow",
+    "title": "Kettlebell Pirate Ships",
+    "dur": 16,
+    "author": "My PT Hub"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/tso0JI5W0yY",
+    "title": "Pirate Ships",
+    "dur": 53,
+    "author": "Elite Training Facility"
    }
   ]
  },
@@ -7335,6 +7854,22 @@
    }
   ]
  },
+ "Knee_Across_The_Body": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/9-z7lh6RHAo",
+  "title": "KNEE ACROSS BODY",
+  "dur": 17,
+  "author": "Luskin Orthopaedic Institute for Children",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/bM34Ir2QxCE",
+    "title": "Lying Knee Twist Stretch",
+    "dur": 68,
+    "author": "Cesar Ponce"
+   }
+  ]
+ },
  "Knee_Circles": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/cYDkPDqeY5E",
@@ -7378,6 +7913,29 @@
     "title": "TopWorkout.Start. Подъем согнутых ног в упоре на брусьях",
     "dur": 61,
     "author": "Легкие тренировки с минимумом усилий"
+   }
+  ]
+ },
+ "Knee_Tuck_Jump": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/3b023fd28c4f0eb992d3fa5ba05ffc92",
+  "title": "7. Прыжки колени до груди.",
+  "dur": 53,
+  "author": "Искусство декорирования дома к праздникам",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/4hXaSh2WlyE",
+    "title": "How to Tuck Jump (Technique Guide)",
+    "dur": 37,
+    "author": "Les Mills UK"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/-bnJGikRGsM",
+    "title": "How to do a Tuck Jump | Proper Form & Technique | NASM",
+    "dur": 27,
+    "author": "National Academy of Sports Medicine (NASM)"
    }
   ]
  },
@@ -7486,6 +8044,29 @@
     "title": "Kneeling High Pulley Row  Exercise Videos & Guides  Bodybuilding com",
     "dur": 57,
     "author": "how to lose weight with the keto diet"
+   }
+  ]
+ },
+ "Kneeling_Hip_Flexor": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/41abea0d789126db959cb7414b09a103",
+  "title": "Растяжка сгибателей бедра в позиции колено-стопа (KNEELING HIP FLEXOR STRETCH)",
+  "dur": 33,
+  "author": "INSPIRE тренируйся с умом",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/34SlL-PPCWQ",
+    "title": "Kneeling Hip Flexor Stretch",
+    "dur": 44,
+    "author": "MGHOrthopaedics"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/iZ1eZBY4fwM",
+    "title": "How To Do Kneeling Lunge (Hip Flexor Stretch)",
+    "dur": 41,
+    "author": "PureGym"
    }
   ]
  },
@@ -7704,6 +8285,29 @@
     "title": "Floor Press",
     "dur": 194,
     "author": "Mission MVMT"
+   }
+  ]
+ },
+ "Leg-Up_Hamstring_Stretch": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/508ffb8ba6f0fec9f3f725005e031850",
+  "title": "bodymaster : Растяжка задней поверхности бедра лежа на полу, с подъёмом ноги (женская версия)",
+  "dur": 32,
+  "author": "Волшебная Техника",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/5P3E8Pec_L8",
+    "title": "How To Do Lying Hamstring Stretch",
+    "dur": 25,
+    "author": "PureGym"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/MCMWkks_fq0",
+    "title": "Supine Passive Hamstring Stretch",
+    "dur": 30,
+    "author": "MGHOrthopaedics"
    }
   ]
  },
@@ -7954,6 +8558,45 @@
    }
   ]
  },
+ "Linear_3-Part_Start_Technique": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/WrWqZbdYE00",
+  "title": "3-Point Start Tutorial",
+  "dur": 61,
+  "author": "Meta Athletics",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/9hwkjdLoMB4",
+    "title": "AAi Coach Sprints - 3 Point Start",
+    "dur": 39,
+    "author": "AAi Coach"
+   }
+  ]
+ },
+ "Linear_Acceleration_Wall_Drill": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/Qt6q--Lx4KM",
+  "title": "Acceleration Wall Drill",
+  "dur": 55,
+  "author": "VSP South Bay",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/aowHaKFuc3c",
+    "title": "How To Perform The Wall Drill | How To Run Faster | Speed Training",
+    "dur": 45,
+    "author": "ONEighty Athletics"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/rZ2TpUc1I9M",
+    "title": "Use these simple wall drills to learn about sprint positions, and teach acceleration concepts.",
+    "dur": 48,
+    "author": "ALTIS World"
+   }
+  ]
+ },
  "Linear_Depth_Jump": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/QHXHEuqg4JE",
@@ -8171,6 +8814,14 @@
    }
   ]
  },
+ "Lying_Bent_Leg_Groin": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/icBRuhxlhkI",
+  "title": "Partner Supine Butterfly Stretch",
+  "dur": 16,
+  "author": "Dustin Raul",
+  "alt": []
+ },
  "Lying_Cable_Curl": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/bf2c1e66b856a5862d2c7eb8ad57d250",
@@ -8330,6 +8981,29 @@
     "title": "Разгибание шеи лежа на животе с блином",
     "dur": 51,
     "author": "YouForce TochkaRu"
+   }
+  ]
+ },
+ "Lying_Face_Up_Plate_Neck_Resistance": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/a26558a6729e715b4bbf9f3881489301",
+  "title": "Сгибание шеи лёжа: техника и нюансы",
+  "dur": 175,
+  "author": "ТВОЙ ТРЕНЕР: энциклопедия фитнеса",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/SQVoh4wnPUA",
+    "title": "Neck Flexion with Plate",
+    "dur": 19,
+    "author": "Trinity S&C"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/37DixNnSVzo",
+    "title": "Weighted Supine Neck Flexion",
+    "dur": 22,
+    "author": "Move by DocTim"
    }
   ]
  },
@@ -8497,6 +9171,29 @@
    }
   ]
  },
+ "Lying_T-Bar_Row": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/a13196c4aff9c6279c5bd7447f06241f",
+  "title": "Тяга Т грифа лёжа: техника и нюансы",
+  "dur": 293,
+  "author": "ТВОЙ ТРЕНЕР: энциклопедия фитнеса",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/w0KnlQ-b7jw",
+    "title": "Lying T-Bar Row - Back Exercise - Bodybuilding.com",
+    "dur": 46,
+    "author": "Bodybuilding.com"
+   },
+   {
+    "src": "rutube",
+    "embed": "https://rutube.ru/play/embed/239959dd74769360531ef75a8bd98342",
+    "title": "Т-ТЯГА В ТРЕНАЖЁРЕ С УПОРОМ В ГРУДЬ (Chest Supported T-Bar Row)",
+    "dur": 66,
+    "author": "INSPIRE тренируйся с умом"
+   }
+  ]
+ },
  "Lying_Triceps_Press": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/cd73929bc743d5e98012f3adaaa0c6a4",
@@ -8658,6 +9355,14 @@
    }
   ]
  },
+ "Medicine_Ball_Full_Twist": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/qj06hV-ncC8",
+  "title": "Back to Back Medicine Ball Pass",
+  "dur": 20,
+  "author": "University of Northern Colorado Cancer Rehabilitation Institute",
+  "alt": []
+ },
  "Medicine_Ball_Scoop_Throw": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/oe0MQ6Lvxf0",
@@ -8710,6 +9415,29 @@
     "title": "Подтягивания разноименным хватом",
     "dur": 39,
     "author": "Спортивные Связи и Партнерства"
+   }
+  ]
+ },
+ "Monster_Walk": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/8a6df4941b40cd8e632259104a4a8834",
+  "title": "Ходьба монстра с резиной (Monster walk, Lateral walk)",
+  "dur": 46,
+  "author": "INSPIRE тренируйся с умом",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/snbNxUIUQPc",
+    "title": "Monster Walk Exercise Demonstration",
+    "dur": 17,
+    "author": "MedStar Health"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/kfm8QOPfD9k",
+    "title": "Monster Walk (Band Above Knees)",
+    "dur": 22,
+    "author": "E3 Rehab Exercise Library"
    }
   ]
  },
@@ -8891,6 +9619,29 @@
    }
   ]
  },
+ "Neck_Press": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/a807cb0e5c26c01085f990e1ddc45ed7",
+  "title": "Жим штанги лежа на горизонтальной скамье «Гильотина»",
+  "dur": 36,
+  "author": "Веселый Спорт",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/a1UjqEKzZVk",
+    "title": "How to do a Guillotine Bench Press",
+    "dur": 26,
+    "author": "Tiger Fitness"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/FiNCOHsdiMc",
+    "title": "How To Properly Perform Guillotine Press! (Must do!!)",
+    "dur": 141,
+    "author": "Body Factory Bali"
+   }
+  ]
+ },
  "Oblique_Crunches": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/3f7008dad2fa97cbb8fda4d5275af299",
@@ -9034,6 +9785,29 @@
     "title": "One-Arm Flat Bench Dumbbell Flye",
     "dur": 20,
     "author": "My PT Hub"
+   }
+  ]
+ },
+ "One-Arm_High-Pulley_Cable_Side_Bends": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/DVtysAuRreA",
+  "title": "One Arm High Pulley Side Bend",
+  "dur": 50,
+  "author": "Body Inc.",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/ro8GeHugF4o",
+    "title": "How To Do One Arm High Pulley Cable Side Bends | Exercise Demo",
+    "dur": 47,
+    "author": "OriGym"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/j95o6qAbpGs",
+    "title": "One Arm High Pulley Cable Side Bends - Abs Exercise",
+    "dur": 44,
+    "author": "Yahya AK"
    }
   ]
  },
@@ -9504,6 +10278,14 @@
    }
   ]
  },
+ "One_Arm_Floor_Press": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/2aXWWy25Ty8",
+  "title": "Single arm Barbell Floor Press",
+  "dur": 23,
+  "author": "IMOC FITNESS",
+  "alt": []
+ },
  "One_Arm_Lat_Pulldown": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/538f499c1d27d81e9a54cefc16db18ec",
@@ -9620,6 +10402,29 @@
    }
   ]
  },
+ "One_Leg_Barbell_Squat": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/3820c5f7b2c15084d0cd1d3e10b45181",
+  "title": "Болгарские сплит приседания со штангой",
+  "dur": 64,
+  "author": "Приседания: путь к лучшему телу",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/DPR7ZXXEFns",
+    "title": "How To: Barbell Bulgarian Split Squat",
+    "dur": 69,
+    "author": "Live Lean TV Daily Exercises"
+   },
+   {
+    "src": "rutube",
+    "embed": "https://rutube.ru/play/embed/86428e75fd8e446dcecb5d26efac1cc3",
+    "title": "Болгарские приседания со штангой.",
+    "dur": 104,
+    "author": "Спортивные Передачи"
+   }
+  ]
+ },
  "Open_Palm_Kettlebell_Clean": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/9c55b412beca95604e829dec6d4b4fce",
@@ -9640,6 +10445,29 @@
     "title": "Open Palm Kettlebell Clean Exercise Guide and Video.mp4",
     "dur": 46,
     "author": "MrPeterJordan90"
+   }
+  ]
+ },
+ "Otis-Up": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/gcL9q3ssXLQ",
+  "title": "Sit Up Plate Press",
+  "dur": 39,
+  "author": "G-Force Fitness",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/lNipH9vaaxU",
+    "title": "Plate Sit-up with overhead press exercise",
+    "dur": 23,
+    "author": "Body Basics"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/cV_CxOM5bGo",
+    "title": "Weight plate sit up to OH press",
+    "dur": 16,
+    "author": "Ashley Parfrey"
    }
   ]
  },
@@ -9734,6 +10562,14 @@
     "author": "KCFITCLUB"
    }
   ]
+ },
+ "Overhead_Triceps": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/EQaqm7ycY5s",
+  "title": "Partner Assisted Stretching - tricep stretch for shoulder rehabilitation",
+  "dur": 27,
+  "author": "www.sportsinjuryclinic.net",
+  "alt": []
  },
  "Pallof_Press": {
   "src": "rutube",
@@ -10229,6 +11065,22 @@
    }
   ]
  },
+ "Power_Partials": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/B79-mLozX-Y",
+  "title": "How to do Power Partials!",
+  "dur": 60,
+  "author": "Joe Bach Fitness",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/v8J6PQ1iLBg",
+    "title": "Power Partials",
+    "dur": 18,
+    "author": "Fitho Wellness"
+   }
+  ]
+ },
  "Power_Snatch": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/cfd0f7316753ef5b1a14df9b1e040f5f",
@@ -10334,6 +11186,52 @@
     "title": "Упражнение на БИЦЕПС. Сгибание рук с гантелями (МОЛОТ) на скамье Скотта",
     "dur": 80,
     "author": "Woofstory - собака бультерьер"
+   }
+  ]
+ },
+ "Press_Sit-Up": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/ZDu82j3krFU",
+  "title": "Barbell Press Sit up",
+  "dur": 30,
+  "author": "TrainFTW",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/CrM9fcsUbI0",
+    "title": "Barbell Press Sit Ups",
+    "dur": 15,
+    "author": "My PT Hub"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/j7PTH_ex2TI",
+    "title": "Barbell Press Sit-Up",
+    "dur": 27,
+    "author": "Andrei Andrei Fitness"
+   }
+  ]
+ },
+ "Prone_Manual_Hamstring": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/4Pw7nZvFepI",
+  "title": "SMI Strength Training: Prone Manual Leg Curls",
+  "dur": 19,
+  "author": "Spartanburg Regional Healthcare System",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/Kka4_FVE1VQ",
+    "title": "Manual Hamstring Curl",
+    "dur": 26,
+    "author": "Innovative Performance Institute"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/vFZ5ob7xgFw",
+    "title": "23. Exercises - Manual Resisted Hamstrings",
+    "dur": 72,
+    "author": "Aspetar سبيتار"
    }
   ]
  },
@@ -11394,6 +12292,29 @@
   "author": "how to lose weight with the keto diet",
   "alt": []
  },
+ "Rowing_Stationary": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/b26d38ae1113aca3a9a4299da9ae0aee",
+  "title": "Техника упражнений на Гребном тренажёре | Тренер: Артемий Грачёв",
+  "dur": 234,
+  "author": "Простые тренировки с минимумом усилий",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/4zWu1yuJ0_g",
+    "title": "Correct Rowing Machine Technique, Improve Your Rowing  | Concept2",
+    "dur": 113,
+    "author": "concept2usa"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/H0r_ZPXJLtg",
+    "title": "How to Properly Use a Rowing Machine",
+    "dur": 98,
+    "author": "GHF Training"
+   }
+  ]
+ },
  "Runners_Stretch": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/c73451a8a016785110c140eea6f3aa67",
@@ -11460,6 +12381,22 @@
     "title": "Русский твист упражнение / Русские скручивания для пресса",
     "dur": 35,
     "author": "Домашние тренировки для всех"
+   }
+  ]
+ },
+ "Sandbag_Load": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/dnb01n-mzyE",
+  "title": "Rob Kearney - Rogue Strongman Sandbag Load | 2020 Arnold Pro Strongman USA Qualifier - Event 4",
+  "dur": 69,
+  "author": "Rogue Fitness",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/U6bTCSentQw",
+    "title": "SANDBAG/D-BALL TO PLATFORM",
+    "dur": 25,
+    "author": "Thedailygrind"
    }
   ]
  },
@@ -11910,6 +12847,14 @@
    }
   ]
  },
+ "Seated_Front_Deltoid": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/YPytFgEuh3M",
+  "title": "Chest Stretches, Partner Assisted Chest Stretch Video, Best Chest Stretching Exercises",
+  "dur": 53,
+  "author": "Stretch Coach",
+  "alt": []
+ },
  "Seated_Good_Mornings": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/97665e7cc11da13b5fc2bfc4f4140719",
@@ -11939,6 +12884,14 @@
   "title": "Seated Hamstring Calf Stretch",
   "dur": 47,
   "author": "University Orthopedics",
+  "alt": []
+ },
+ "Seated_Head_Harness_Neck_Resistance": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/VLdIkr2Gfdc",
+  "title": "How To: Seated Head Harness Neck Extension",
+  "dur": 72,
+  "author": "Live Lean TV Daily Exercises",
   "alt": []
  },
  "Seated_Leg_Curl": {
@@ -12023,6 +12976,22 @@
     "title": "Seated One-Arm Dumbbell Palms-Up Wrist Curl",
     "dur": 24,
     "author": "Musqle"
+   }
+  ]
+ },
+ "Seated_One-arm_Cable_Pulley_Rows": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/Adzm8LYrZOo",
+  "title": "How To: Single Arm Seated Cable Row",
+  "dur": 34,
+  "author": "Fitness Lab",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/p4ktYrGfLjg",
+    "title": "How to : Perform the Single Arm Seated Cable Row",
+    "dur": 40,
+    "author": "Bailey Lau"
    }
   ]
  },
@@ -12438,6 +13407,22 @@
   "author": "how to lose weight with the keto diet",
   "alt": []
  },
+ "Side_To_Side_Chins": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/KC2B5CWe9XI",
+  "title": "Side to side pull-ups",
+  "dur": 20,
+  "author": "Ashley Kalym",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/_2TllW38F24",
+    "title": "How To Do Type Writer Pull Ups (Side To Side)",
+    "dur": 205,
+    "author": "OfficialBarstarzz"
+   }
+  ]
+ },
  "Side_Wrist_Pull": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/G0XPmf8qW88",
@@ -12477,6 +13462,37 @@
    }
   ]
  },
+ "Single-Arm_Cable_Crossover": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/c4cef14e4bd921dbf5cb2fa9848d6f9c",
+  "title": "Сведение одной рукой в кроссовере",
+  "dur": 78,
+  "author": "Волейбольный Чемпион",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/pU2P9gCIyRM",
+    "title": "Exercise Demonstration: Single-Arm Cable Crossover",
+    "dur": 157,
+    "author": "Gym Professor"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/Ob5vbpJShKU",
+    "title": "Single Arm Cable Crossover",
+    "dur": 18,
+    "author": "My PT Hub"
+   }
+  ]
+ },
+ "Single-Arm_Linear_Jammer": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/g2Ylyd_eKpE",
+  "title": "Single Arm Landmine Pushpress Tutorial",
+  "dur": 105,
+  "author": "Stark.Health",
+  "alt": []
+ },
  "Single-Arm_Push-Up": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/58b4848329d21aa20480ee31f7298eac",
@@ -12499,6 +13515,14 @@
     "author": "Клуб FitLife"
    }
   ]
+ },
+ "Single-Cone_Sprint_Drill": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/80bd61988040d026ddd4051e1de30c92",
+  "title": "bodymaster : Быстрый бег с высоким подниманием бедра вокруг конуса",
+  "dur": 42,
+  "author": "Делай То, Что Воплощает Мечты",
+  "alt": []
  },
  "Single-Leg_High_Box_Squat": {
   "src": "youtube",
@@ -12701,6 +13725,14 @@
     "author": "Garik"
    }
   ]
+ },
+ "Sit_Squats": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/jaPzvgZFQBI",
+  "title": "Partial Squat Exercise",
+  "dur": 54,
+  "author": "MGHOrthopaedics",
+  "alt": []
  },
  "Skating": {
   "src": "rutube",
@@ -13418,6 +14450,29 @@
    }
   ]
  },
+ "Speed_Band_Overhead_Triceps": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/6ea92082d0a77e007e0ca5c24660bab2",
+  "title": "Разгибание рук с резиной из за головы",
+  "dur": 21,
+  "author": "Тренируйся молодым",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/Yi_zNoIsNcc",
+    "title": "Band Overhead Tricep Extension",
+    "dur": 43,
+    "author": "FitnessBlender"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/Ewqe_z1HKno",
+    "title": "How to Do Overhead Tricep Extensions with Resistance Bands",
+    "dur": 56,
+    "author": "YuryFit"
+   }
+  ]
+ },
  "Speed_Box_Squat": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/WtPQSSKtgNA",
@@ -13484,6 +14539,29 @@
     "title": "Spell Caster - Tập bụng",
     "dur": 49,
     "author": "HDgyms.com - Hướng Dẫn Tập Gym"
+   }
+  ]
+ },
+ "Spider_Crawl": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/FYc8dUkW9h8",
+  "title": "How To: Spiderman Crawl Exercise",
+  "dur": 54,
+  "author": "Live Lean TV Daily Exercises",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/2Jczv6yuV_Y",
+    "title": "How to do a Spiderman Crawl",
+    "dur": 55,
+    "author": "Adaptive Signal Fitness"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/_K7rv_vFOWM",
+    "title": "The Spiderman Crawl Exercise",
+    "dur": 52,
+    "author": "3VFitness"
    }
   ]
  },
@@ -13936,6 +15014,29 @@
    }
   ]
  },
+ "Standing_Cable_Lift": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/VtLAtFkZWQE",
+  "title": "Standing Low to High Cable Lift",
+  "dur": 43,
+  "author": "Miguel Aragoncillo",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/CzCWvgh0jis",
+    "title": "EricCressey.com: Standing Low-to-High Cable Lift",
+    "dur": 16,
+    "author": "Eric Cressey"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/dDYLiE2tOFM",
+    "title": "Standing cable lift",
+    "dur": 19,
+    "author": "Tim Crowley"
+   }
+  ]
+ },
  "Standing_Cable_Wood_Chop": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/he4IhLc1d5k",
@@ -14129,6 +15230,22 @@
    }
   ]
  },
+ "Standing_Elevated_Quad_Stretch": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/naY9kjdnmjA",
+  "title": "Standing Quad Stretch (foot on bench)",
+  "dur": 15,
+  "author": "Strong by Science Bulgaria",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/MF88t--IWoc",
+    "title": "Quad stretch foot on chair/step",
+    "dur": 153,
+    "author": "Conservative Orthopedics"
+   }
+  ]
+ },
  "Standing_Front_Barbell_Raise_Over_Head": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/72ce0c506a4a0fc41c5cfd1798d2571b",
@@ -14167,6 +15284,14 @@
     "author": "Онлайн тренировки с Оксаной Поповой"
    }
   ]
+ },
+ "Standing_Hamstring_and_Calf_Stretch": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/Kpe_Y9kEQbY",
+  "title": "Standing Hamstring and Calf Stretch with Strap Demo",
+  "dur": 37,
+  "author": "WORLDFITNESS.ONLINE",
+  "alt": []
  },
  "Standing_Hip_Circles": {
   "src": "youtube",
@@ -14529,6 +15654,29 @@
     "title": "Наклон таза стоя у стены",
     "dur": 16,
     "author": "Мышцы и правильная техника тренировки"
+   }
+  ]
+ },
+ "Standing_Rope_Crunch": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/69a51f1d969ed82fa25578ae900789a5",
+  "title": "Как выполнять скручивания для пресса стоя у верхнего блока",
+  "dur": 199,
+  "author": "Garik",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/wBzU6_YJPEU",
+    "title": "Standing Cable Crunch",
+    "dur": 30,
+    "author": "Testosterone Nation"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/N8wGCKUut6o",
+    "title": "STANDING CABLE ABDOMINAL CRUNCH",
+    "dur": 90,
+    "author": "BEN MIGHTY"
    }
   ]
  },
@@ -15091,6 +16239,29 @@
    }
   ]
  },
+ "T-Bar_Row_with_Handle": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/c9c9b5e64bf02aa98970ad73f03eee6c",
+  "title": "Тяга Т-Грифа",
+  "dur": 121,
+  "author": "Geography Fitness",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/r6zOZ7EfUD0",
+    "title": "Barbell V-Bar Attachment Landmine Row",
+    "dur": 35,
+    "author": "ECT NATION"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/ABosC7vpbg8",
+    "title": "Landmine T Bar Row",
+    "dur": 19,
+    "author": "Asphodel Fitness, Strength & Conditioning"
+   }
+  ]
+ },
  "Tate_Press": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/507b2c3147319ae0a23102487772a09d",
@@ -15111,6 +16282,29 @@
     "title": "Техника JM жима, рассказывает Дэйв Тейт",
     "dur": 499,
     "author": "grenrch"
+   }
+  ]
+ },
+ "The_Straddle": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/73322fa13c3e727ec5253b7484e590ae",
+  "title": "наклон сидя с разведенными ногами",
+  "dur": 58,
+  "author": "Центр развития культуры и спорта Туапсе",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/vbIk1XjDeL0",
+    "title": "How To: Seated Straddle Stretch",
+    "dur": 101,
+    "author": "Train Like a Ranger"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/uKg1rqo9YrE",
+    "title": "Seated Straddle Stretch",
+    "dur": 16,
+    "author": "The Active Life"
    }
   ]
  },
@@ -15211,6 +16405,22 @@
     "title": "How To Perform: Floor & Standing Torso Rotation Exercises | Dynamic Warm Up Series",
     "dur": 40,
     "author": "JAG Physical Therapy"
+   }
+  ]
+ },
+ "Trail_Running_Walking": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/SdIfc3FL6kU",
+  "title": "Trail Running: Techniques || REI",
+  "dur": 186,
+  "author": "REI",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/Tq9_kuqGVWg",
+    "title": "Beginner Trail Running  | Tips From The Pros",
+    "dur": 568,
+    "author": "The Run Experience"
    }
   ]
  },
@@ -15629,6 +16839,14 @@
    }
   ]
  },
+ "Upward_Stretch": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/RY8hWUe538Y",
+  "title": "How to Do an Overhead Reach Stretch",
+  "dur": 57,
+  "author": "Blind Athletes Exercise",
+  "alt": []
+ },
  "V-Bar_Pulldown": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/-HA56qLRK84",
@@ -15842,6 +17060,22 @@
     "title": "Weighted Sit-Ups with Band: Abs, Core Exercise Demo How-to",
     "dur": 26,
     "author": "FitSW Fitness Software"
+   }
+  ]
+ },
+ "Weighted_Squat": {
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/316911be49a43eb613e51b1e81fbdb64",
+  "title": "Приседания с поясом (\"Колодец\")",
+  "dur": 142,
+  "author": "Тренировки для снятия напряжения",
+  "alt": [
+   {
+    "src": "rutube",
+    "embed": "https://rutube.ru/play/embed/ff6cd83bfb12da9a2824fbe0a560883a",
+    "title": "Приседания с поясом в колодец",
+    "dur": 291,
+    "author": "Космический транспорт"
    }
   ]
  },
