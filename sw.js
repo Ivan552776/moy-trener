@@ -4,16 +4,24 @@
    видео не трогаем (нужны частичные ответы 206), кроме короткого примера squat.mp4: страница берёт его целиком через fetch.
    Версия кэша меняется при выкладке — скачанное (библиотеки, базы, картинки) переносится в новую копию, старые страницы не переносятся.
    lib/ отдаётся из памяти без проверки: новую версию библиотеки класть по новому пути, иначе останется старая. */
-const V='mt-2026-10-29-r3';
+const V='mt-2026-10-30-r1';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(['./','index.html'].map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 // страница просит сохранить себя (её адрес заранее неизвестен: index.html на сервере, yobody.html в превью)
 self.addEventListener('message',e=>{const u=e.data&&e.data.cachePage;if(u)e.waitUntil(caches.open(V).then(c=>c.add(new Request(u,{cache:'reload'}))).catch(()=>{}))});
-// новая версия: переносим скачанное для работы без сети (иначе каждая выкладка стирала бы ~40 МБ библиотек и базы), страницы — нет, их кладёт install
-self.addEventListener('activate',e=>{e.waitUntil((async()=>{
-  try{const nw=await caches.open(V);for(const k of (await caches.keys()).filter(k=>k.startsWith('mt-')&&k!==V)){const old=await caches.open(k);
-    for(const q of await old.keys()){const p=new URL(q.url).pathname;if(p.endsWith('/')||p.endsWith('.html'))continue;if(!(await nw.match(q))){const r=await old.match(q);if(r)await nw.put(q,r)}}
-    await caches.delete(k)}}catch(err){}
-  await self.clients.claim()})())});
+// новая версия: сначала кладём открытые вкладки (иначе после выкладки без сети приложение не открывалось), потом переносим скачанное
+// (~40 МБ библиотек и базы), старую копию удаляем, только когда всё из неё есть в новой. Повторяется при каждом запуске страницы (сообщение tidy):
+// телефон может прервать воркер посреди переноса — тогда старая копия лежала рядом (+100 МБ), а новая была неполной
+const timeout0=(p,ms)=>Promise.race([p,new Promise((_,j)=>setTimeout(()=>j(new Error('timeout')),ms))]);
+async function tidy(){
+  try{const nw=await caches.open(V);
+    for(const w of await self.clients.matchAll({type:'window'})){const u=w.url.split('#')[0];if(!(await nw.match(u,{ignoreSearch:true})))await timeout0(nw.add(new Request(u,{cache:'reload'})),4000).catch(()=>{})}
+    for(const k of (await caches.keys()).filter(k=>k.startsWith('mt-')&&k!==V)){const old=await caches.open(k);let all=true;
+      for(const q of await old.keys()){if(await nw.match(q))continue;const p=new URL(q.url).pathname,r=await old.match(q);
+        if(r){try{await nw.put(q,r)}catch(e){all=false}}} // страницы тоже: свежая копия перезапишет их, когда скачается
+      if(all)await caches.delete(k)}}catch(err){}}
+self.addEventListener('activate',e=>{e.waitUntil((async()=>{await self.clients.claim();await tidy()})())});
+self.addEventListener('message',e=>{if(e.data&&e.data.tidy)e.waitUntil(tidy())});
+const fresh=new Set();
 const put=(req,res)=>{if(res&&res.ok&&res.status===200&&res.type==='basic'){const c=res.clone();caches.open(V).then(ca=>ca.put(req,c)).catch(()=>{})}return res};
 const timeout=(p,ms)=>Promise.race([p,new Promise((_,j)=>setTimeout(()=>j(new Error('timeout')),ms))]);
 self.addEventListener('fetch',e=>{
@@ -24,6 +32,9 @@ self.addEventListener('fetch',e=>{
   if(r.mode==='navigate'||p.endsWith('.html')||p.endsWith('/')){
     e.respondWith(timeout(fetch(r),4000).then(res=>put(r,res)).catch(()=>caches.match(r,{ignoreSearch:true}).then(m=>m||caches.match('./',{ignoreSearch:true}))));return}
   if(/\/(data|models)\//.test(p)){
-    e.respondWith(caches.match(r,{ignoreSearch:true}).then(m=>{const net=fetch(r).then(res=>put(r,res)).catch(()=>m);return m||net}));return}
-  e.respondWith(caches.match(r,{ignoreSearch:true}).then(m=>m||fetch(r).then(res=>put(r,res))));
+    // из памяти; обновляем в фоне не чаще раза за жизнь воркера (раньше — при каждом обращении, лишний трафик на мобильной сети)
+    if(r.cache==='reload'||r.cache==='no-cache'){fresh.add(p);e.respondWith(timeout(fetch(r),8000).then(res=>res.ok?put(r,res):caches.match(r,{ignoreSearch:true}).then(m=>m||res)).catch(()=>caches.match(r,{ignoreSearch:true}).then(m=>m||Response.error())));return} // страница входа в Wi-Fi или 5xx — отдаём сохранённое
+    e.respondWith(caches.match(r,{ignoreSearch:true}).then(m=>{if(m){if(!fresh.has(p)){fresh.add(p);fetch(r).then(res=>put(r,res)).catch(()=>{})}return m}return fetch(r).then(res=>{fresh.add(p);return put(r,res)})}));return}
+  // без сети несохранённая картинка — пустая заглушка, а не ошибка
+  e.respondWith(caches.match(r,{ignoreSearch:true}).then(m=>m||fetch(r).then(res=>put(r,res)).catch(err=>/\.(jpe?g|png|webp|gif)$/i.test(p)&&!p.includes('/ex/')?new Response('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>',{headers:{'content-type':'image/svg+xml'}}):Promise.reject(err))));
 });

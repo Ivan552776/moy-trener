@@ -616,7 +616,7 @@ S.theme=S.theme||'light';
 function applyTheme(){const r=document.documentElement;r.dataset.theme=S.theme;const dark=S.theme==='dark'||(S.theme==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.scheme=dark?'dark':'light';const m=document.getElementById('themecolor');if(m)m.content=dark?'#0F1117':'#F2F3F7'}
 applyTheme();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
 function setTheme(t){const run=()=>{S.theme=t;save();applyTheme();rerender()};haptic(6);if(document.startViewTransition&&!RM&&S.theme!==t){const r=document.documentElement;r.classList.add('theme-vt');const vt=document.startViewTransition(run);vt.ready.catch(()=>{});vt.finished.catch(()=>{}).then(()=>r.classList.remove('theme-vt'))}else run()}
-S.weights=S.weights||[];S.forms=S.forms||[];S.extra=S.extra||[];S.custom=S.custom||[];S.refs=S.refs||[]; // вес по датам, разборы техники, упражнения в план, свои продукты
+S.weights=S.weights||[];S.forms=S.forms||[];S.extra=S.extra||[];S.custom=S.custom||[];S.refs=S.refs||[];(S.log||[]).forEach(x=>{if(typeof x.img==='string'&&x.img.length>200000)x.img=null}); // старые записи с фото во весь размер тормозили каждую перерисовку  // вес по датам, разборы техники, упражнения в план, свои продукты
 window.__S=()=>S;window.__demoAllSets=()=>{program().ex.forEach((x,i)=>{for(let j=0;j<setsOf(x);j++)S.sets[i+'-'+j]=true});S.startedAt=Date.now()-46*60000;save();rerender()}; // для записи ролика
 if(!S.profile||!GOALS[S.profile.goal]||S.profile.income==null)S=fresh();
 S.profile.name=cleanName(S.profile.name);
@@ -629,7 +629,12 @@ function rollDay(){const td=today0(),wk=monday0();let ch=false;if(!S.day){const 
   S.day=td;S.week=wk;S.doneOn=S.doneOn||{};save();return ch}
 rollDay();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.day!==today0()&&rollDay()){closeSheet();render()}});
-function save(){try{localStorage.setItem('yb-demo2',JSON.stringify(S))}catch(e){}}
+function save(){
+  try{localStorage.setItem('yb-demo2',JSON.stringify(S));return true}catch(e){}
+  // память браузера переполнена (чаще всего — большие фото в дневнике): убираем тяжёлые снимки, записи и цифры сохраняем
+  try{(S.log||[]).forEach(x=>{if(typeof x.img==='string'&&x.img.length>120000)x.img=null});(S.refs||[]).splice(0,Math.max(0,(S.refs||[]).length-40));localStorage.setItem('yb-demo2',JSON.stringify(S));return true}
+  catch(e){if(!save.warned){save.warned=1;setTimeout(()=>{try{toast('Память телефона для приложения заполнена — последние изменения могут не сохраниться',true)}catch(_){}},0)}return false}
+}
 function load(){try{return JSON.parse(localStorage.getItem('yb-demo2'))}catch(e){return null}}
 
 function budgetOf(pr){return Math.max(0,Math.round(pr.income*pr.share/pr.people/30/10)*10)} // реальная сумма; если мала — честно говорим, что норму на неё не собрать
@@ -700,12 +705,13 @@ const TITLES={today:'Сегодня',tech:'Атлас',me:'Личный каби
 function renderTabs(){const box=$('#tabbtns');if(!box.children.length)box.innerHTML=TABS.map(([id,l,i])=>id==='scan'?`<button class="tab fab" onclick="openAdd()" aria-label="Записать"><span class="circ">${ic('plus')}</span><span>Записать</span></button>`:`<button class="tab" data-id="${id}" onclick="go('${id}')">${ic(i)}<span>${l}</span></button>`).join('');box.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.id===S.tab));movePill()}
 function movePill(){const on=$('#tabbtns .tab.on'),p=$('#tabpill');if(!on)return;if(!p.dataset.init){p.style.transition='none';p.dataset.init=1;requestAnimationFrame(()=>{p.style.transition=''})}p.style.left=(on.offsetLeft+on.offsetWidth/2-32)+'px';p.style.opacity=1}
 function toTop(){const sc=$('#scroll');sc.style.scrollBehavior='auto';sc.scrollTop=0;sc.style.scrollBehavior=''}
-function go(t){if(t==='food'){openFoodPlan();return}if(t==='gym'){openProgram();return}if(t==='club'){t='me'}if(!['today','tech','me'].includes(t))t='today';if(t===S.tab){$('#scroll').scrollTo({top:0,behavior:'smooth'});return}DIR=TABS.findIndex(x=>x[0]===t)>TABS.findIndex(x=>x[0]===S.tab)?'sl':'sr';S.tab=t;save();const sw=()=>{render();toTop()};if(document.startViewTransition&&!RM){document.documentElement.dataset.vt=DIR==='sl'?'l':'r';document.startViewTransition(sw).ready.catch(()=>{})}else sw();haptic(8)}
+function go(t){if(t==='food'){openFoodPlan();return}if(t==='gym'){openProgram();return}if(t==='club'){t='me'}if(!['today','tech','me'].includes(t))t='today';if(t===S.tab){$('#scroll').scrollTo({top:0,behavior:'smooth'});return}DIR=TABS.findIndex(x=>x[0]===t)>TABS.findIndex(x=>x[0]===S.tab)?'sl':'sr';if(S.tab==='tech')EXN=20;S.tab=t;save();const sw=()=>{render();toTop()};if(document.startViewTransition&&!RM){document.documentElement.dataset.vt=DIR==='sl'?'l':'r';document.startViewTransition(sw).ready.catch(()=>{})}else sw();haptic(8)}
 function screen(){if(!['today','tech','me'].includes(S.tab))S.tab='today';return {today:vToday,tech:vTech,me:vMe}[S.tab]()}
 let SHEET_FN=null; // какая шторка открыта (чтобы перерисовать после изменения состояния)
 function openProgram(){if(S.day&&S.day!==today0()&&!S.startedAt&&rollDay())render();sheet('Программа тренировок',vGym().replace(/^<div class="top">[\s\S]*?<\/h1>/,''));SHEET_FN=openProgram}
 function openFoodPlan(){sheet('Питание и бюджет',vFood().replace(/^<div class="top">[\s\S]*?<\/h1>/,''));SHEET_FN=openFoodPlan}
 function openAdd(){
+  if(!CLIP&&!CLIPLOAD)setTimeout(async()=>{try{if((await (await caches.open('transformers-cache')).keys()).some(r=>/mobileclip/i.test(r.url)))loadClip().catch(()=>{})}catch(e){}},0); // первое фото после запуска не ждёт 7–15 с
   sheet('Записать',`<button class="addopt big" onclick="openScan()"><div class="ibox primary">${ic('cam')}</div><div style="flex:1"><div class="title">Сфотографировать блюдо</div><div class="small muted">Узнаем по базе, вы уточните граммы</div></div><span class="chev">${ic('chev')}</span></button>
    <button class="addopt" onclick="openBarcode()"><div class="ibox accent">${ic('barcode')}</div><div style="flex:1"><div class="title">Штрихкод с упаковки</div><div class="small muted">Open Food Facts, миллионы продуктов</div></div><span class="chev">${ic('chev')}</span></button>
    <button class="addopt" onclick="SC=null;openSearch()"><div class="ibox c">${ic('search')}</div><div style="flex:1"><div class="title">Найти в&nbsp;базе продуктов</div><div class="small muted">Наша база, блюда и ваши продукты</div></div><span class="chev">${ic('chev')}</span></button>
@@ -715,12 +721,14 @@ function openAdd(){
 function render(){if(S.day&&S.day!==today0())rollDay();ANIM=!RM;renderTabs();let html;try{html=screen()}catch(e){console.error(e);html=`<div class="card"><div class="title">Экран не открылся</div><div class="small muted" style="margin-top:6px">${(e&&e.message)||e}</div><button class="btn sec" style="margin-top:12px" onclick="S.tab='today';save();render()">На главную</button><button class="btn ghost" onclick="confirmReset()">Начать заново</button></div>`}$('#scroll').innerHTML=`<div class="stg ${DIR}">${html}</div>`;DIR='';$('#hdr').textContent=TITLES[S.tab];after($('#scroll'),ANIM,true)}
 window.addEventListener('error',e=>{console.error(e.error||e.message);try{toast('Что-то пошло не так — попробуйте ещё раз',true)}catch(_){}});
 window.addEventListener('unhandledrejection',e=>{console.error(e.reason);try{toast('Что-то пошло не так — попробуйте ещё раз',true)}catch(_){}});
-function rerender(){const y=$('#scroll').scrollTop;ANIM=false;renderTabs();$('#scroll').innerHTML=`<div>${screen()}</div>`;after($('#scroll'),false,false);ANIM=!RM;$('#scroll').scrollTo({top:y,behavior:'instant'});if(SHEET_FN&&$('#sheet').classList.contains('on')){const fn=SHEET_FN;keepScroll(()=>{ANIM=false;fn();ANIM=!RM})}}
+function rerender(){
+  if(SHEET_FN&&$('#sheet').classList.contains('on')){rerender.dirty=1;const fn=SHEET_FN;keepScroll(()=>{ANIM=false;fn();ANIM=!RM});return} // фон под шторкой не виден — перестроим его при закрытии (раньше до 876 строк Атласа на каждую отметку подхода)
+  rerender.dirty=0;const y=$('#scroll').scrollTop;ANIM=false;renderTabs();$('#scroll').innerHTML=`<div>${screen()}</div>`;after($('#scroll'),false,false);ANIM=!RM;$('#scroll').scrollTo({top:y,behavior:'instant'});if(SHEET_FN&&$('#sheet').classList.contains('on')){const fn=SHEET_FN;keepScroll(()=>{ANIM=false;fn();ANIM=!RM})}}
 document.addEventListener('touchstart',()=>{},{passive:true}); // :active на iPhone
 function haptic(ms){try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
 function toast(t,err){const el=$('#toast');el.innerHTML=`<span style="color:${err?'var(--accent)':'var(--ok)'};font-weight:800;min-width:18px;text-align:center;flex:none">${err?'!':ic('check')}</span><span>${t}</span>`;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2200)}
 function sheet(title,html){SHEET_FN=null;clearTimeout(closeSheet.t);if(!$('#sheet').classList.contains('on')||$('#stitle').textContent!==title)tapBlock();const sb=$('#sbody'),swap=$('#sheet').classList.contains('on')&&$('#stitle').textContent!==title&&!RM;$('#stitle').textContent=title;sb.innerHTML=html;sb.classList.remove('swap');if(swap){void sb.offsetWidth;sb.classList.add('swap')}$('#sheet').classList.add('on');$('#veil').classList.add('on');$('#phone').classList.add('modal');$('#sbody').scrollTop=0;after($('#sbody'),!RM,false)}
-function closeSheet(){tapBlock();SHEET_FN=null;WT=null;$('#sheet').classList.remove('on');$('#veil').classList.remove('on');$('#phone').classList.remove('modal');stopRest();clearInterval(EXT);
+function closeSheet(){tapBlock();SHEET_FN=null;if(rerender.dirty)setTimeout(()=>{if(rerender.dirty&&!$('#sheet').classList.contains('on'))rerender()},260);WT=null;$('#sheet').classList.remove('on');$('#veil').classList.remove('on');$('#phone').classList.remove('modal');stopRest();clearInterval(EXT);
   $('#sbody').querySelectorAll('iframe,video').forEach(el=>{try{el.pause&&el.pause()}catch(e){}el.remove()});if(typeof bcStop==='function')bcStop();
   clearTimeout(closeSheet.t);closeSheet.t=setTimeout(()=>{if(!$('#sheet').classList.contains('on'))$('#sbody').innerHTML=''},400)}
 function tapBlock(){clearTimeout(tapBlock.t);tapBlock.on=1;tapBlock.t=setTimeout(()=>tapBlock.on=0,350)} // двойное касание не проходит во вторую шторку
@@ -796,7 +804,7 @@ function vToday(){
   <button class="card tap" style="display:block;width:100%;text-align:left" onclick="openChat()"><div class="row" style="align-items:flex-start"><div class="ibox accent">${ic('spark')}</div><div style="flex:1;min-width:0"><div style="font-size:16px;line-height:1.4;text-wrap:pretty">${tip(n,e)}</div><div class="small" style="margin-top:6px;color:var(--accent-text);font-weight:600">Спросить тренера</div></div><span class="chev">${ic('chev')}</span></div></button>
   <h2>Хроника дня <small onclick="openAdd()">+ Записать</small></h2>
   <div class="card list tl">
-    ${S.log.map(en=>`<div class="li"><time>${en.t}</time><div style="flex:1;min-width:0"><div style="font-weight:600">${en.n}</div><div class="tiny muted">Б ${fmt(en.p)} · Ж ${fmt(en.f)} · У ${fmt(en.c)} · ${en.src==='этикетка'?'по этикетке':'по базе'}${en.acc==='средняя'?', граммы уточнены':''}</div></div><span class="kc" style="white-space:nowrap">${fmt(en.k)}<small style="font:500 12px var(--font);color:var(--text2)"> ккал</small></span></div>`).join('')}
+    ${S.log.map((en,i)=>`<div class="li" role="button" onclick="openEntry(${i})"><time>${en.t}</time><div style="flex:1;min-width:0"><div style="font-weight:600">${en.n}</div><div class="tiny muted">Б ${fmt(en.p)} · Ж ${fmt(en.f)} · У ${fmt(en.c)} · ${en.src==='этикетка'?'по этикетке':'по базе'}${en.acc==='средняя'?', граммы уточнены':''}</div></div><span class="kc" style="white-space:nowrap">${fmt(en.k)}<small style="font:500 12px var(--font);color:var(--text2)"> ккал</small></span></div>`).join('')}
     ${nextMeal&&mealTime?`<button class="li next" style="width:100%" onclick="openMeal(${MEALS.findIndex(x=>x.n===nextMeal.n)})"><time>${mealTime}</time><div style="flex:1;min-width:0"><b>${nextMeal.n}</b><div class="tiny">подобрано под остаток и бюджет · ${u(nextMeal.nut.k,'ккал')} · ≈${nextMeal.price} ₽</div></div><span class="chev">${ic('chev')}</span></button>`:''}
     <button class="li ${done||wfull||lateW||!planToday?'':'next'}" style="width:100%" onclick="openProgram()"><time>${done?'готово':wfull?'неделя':rest?'отдых':!planToday?'потом':lateW?'поздно':'вечер'}</time><div style="flex:1;min-width:0"><b>${pg.days[ti]}</b><div class="tiny">${pl(pg.ex.length,'упражнение','упражнения','упражнений')} · ~45 мин · «${pg.name}»${rest?' · вчера была тренировка, сегодня отдых':lateW?' · лучше перенести на завтра':''}</div></div><span class="chev">${ic('chev')}</span></button>
     ${!S.log.length?`<div class="li muted small" style="justify-content:center">Пока ничего не записано</div>`:''}
@@ -857,7 +865,7 @@ function vFood(){
   <h2>Магазины под ваш бюджет</h2>
   <div class="card list">${st.map(([n2,d])=>`<a class="li" style="text-decoration:none" href="https://yandex.ru/maps/?text=${encodeURIComponent(n2)}" target="_blank" rel="noopener"><div class="ibox accent">${ic('cart')}</div><div style="flex:1"><div style="font-weight:650">${n2}</div><div class="small muted">${d}</div></div><span class="small" style="color:var(--accent-text);font-weight:650">На карте ›</span></a>`).join('')}</div>
   <div class="small muted" style="margin:0 4px">Подобрано под ${fmt(budgetOf(pr))} ₽ в день. Ищем рядом с вами в Яндекс Картах.</div>
-  <h2>Дневник</h2><div class="card list">${S.log.map(en=>`<div class="li">${en.img?`<div class="thumb" style="width:44px;height:44px;border-radius:12px">${pic(en.img,'')}</div>`:`<div class="ibox c" style="width:44px;height:44px;border-radius:12px">${ic(en.src==='этикетка'?'barcode':'food')}</div>`}<div style="flex:1;min-width:0"><div style="font-weight:600">${en.n}</div><div class="tiny muted">${en.t}</div></div><div class="num" style="white-space:nowrap">${fmt(en.k)}<small style="font:500 12px var(--font);color:var(--text2)"> ккал</small></div></div>`).join('')||`<button class="li" style="width:100%;justify-content:center;gap:8px;color:var(--accent-text);font-weight:600" onclick="openScan()">${ic('cam','style="width:18px;height:18px"')} Сфотографировать первое блюдо</button>`}</div>`;
+  <h2>Дневник</h2><div class="card list">${S.log.map((en,i)=>`<div class="li" role="button" onclick="openEntry(${i})">${en.img?`<div class="thumb" style="width:44px;height:44px;border-radius:12px">${pic(en.img,'')}</div>`:`<div class="ibox c" style="width:44px;height:44px;border-radius:12px">${ic(en.src==='этикетка'?'barcode':'food')}</div>`}<div style="flex:1;min-width:0"><div style="font-weight:600">${en.n}</div><div class="tiny muted">${en.t}</div></div><div class="num" style="white-space:nowrap">${fmt(en.k)}<small style="font:500 12px var(--font);color:var(--text2)"> ккал</small></div></div>`).join('')||`<button class="li" style="width:100%;justify-content:center;gap:8px;color:var(--accent-text);font-weight:600" onclick="openScan()">${ic('cam','style="width:18px;height:18px"')} Сфотографировать первое блюдо</button>`}</div>`;
 }
 function openMeal(i){
   const m=MEALS[i],st=stores(budgetOf(S.profile))[0][0];
@@ -897,9 +905,9 @@ function searchRender(q){
   if(DB.failed&&!norm_(q)){box.innerHTML=`<div class="card small muted">База продуктов не загрузилась — проверьте интернет и откройте поиск ещё раз. Штрихкод и свои продукты работают.</div>`;return}
   if(!norm_(q)){const own=DB.products.filter(x=>!x.id.startsWith('off_')&&!x.mine),chk=own.filter(x=>/по памяти/.test(x.src||'')).length,sb=DB.dishes.filter(d=>/Сборник/.test(d.src||'')&&!/оценка/.test(d.src||'')).length;
     box.innerHTML=`<div class="card small muted">Наша база: ${pl(own.length,'продукт','продукта','продуктов')} (USDA, таблицы Скурихина${chk?`; у ${chk} цифры ещё сверяем`:''}) и ${pl(DB.dishes.length,'блюдо','блюда','блюд')}: ${sb} — по Сборнику рецептур, остальные — типичный домашний рецепт (оценка). Дальше — мировая база Open Food Facts по названию или штрихкоду.</div><button class="addopt" onclick="openBarcode()"><div class="ibox">${ic('barcode')}</div><div style="flex:1"><div class="title">Штрихкод с упаковки</div><div class="small muted">Мировая база · миллионы продуктов</div></div><span class="chev">${ic('chev')}</span></button>`;return}
-  const r=searchDB(q);clearTimeout(searchRender.t);searchRender.t=setTimeout(()=>offSearchRender(q),500);
+  const r=searchDB(q);clearTimeout(searchRender.t);if(norm_(q).replace(/\s/g,'').length>=3)searchRender.t=setTimeout(()=>offSearchRender(q),800); // мировую базу спрашиваем от 3 букв и после паузы в наборе
   box.innerHTML=(r.dishes.length?`<div class="small muted" style="margin:4px 4px 6px">Блюда</div>`+r.dishes.map(d=>`<button class="opt" onclick="dishFromDB('${d.id}')"><div class="ibox" style="background:var(--accent-soft);color:var(--accent-text)">${ic('food')}</div><div style="flex:1"><div style="font-weight:700">${d.n}</div><div class="small muted">${d.parts.length} ${d.parts.length===1?'часть':'части'} · порция ${d.portion_g} г</div></div><span class="chev">${ic('chev')}</span></button>`).join(''):'')+
-   (r.products.length?`<div class="small muted" style="margin:10px 4px 6px">Наша база · на 100 г</div>`+r.products.map(x=>`<button class="opt" onclick="productPortion('${x.id}')"><div class="ibox c">${ic('food')}</div><div style="flex:1"><div style="font-weight:700">${x.n}</div><div class="small muted">${Math.round(x.kcal||kcalOf(x))} ккал · Б ${f1(x.p)} · Ж ${f1(x.f)} · У ${f1(x.c)}${x.mine?' · ваш':''}</div></div><span class="chev">${ic('chev')}</span></button>`).join(''):'<div class="card small muted">В нашей базе нет. Смотрим в мировой…</div>')+`<div id="qoff"></div>`;
+   (r.products.length?`<div class="small muted" style="margin:10px 4px 6px">Наша база · на 100 г</div>`+r.products.map(x=>`<button class="opt" onclick="productPortion('${x.id}')"><div class="ibox c">${ic('food')}</div><div style="flex:1"><div style="font-weight:700">${x.n}</div><div class="small muted">${Math.round(x.kcal||kcalOf(x))} ккал · Б ${f1(x.p)} · Ж ${f1(x.f)} · У ${f1(x.c)}${x.mine?' · ваш':''}</div></div><span class="chev">${ic('chev')}</span></button>`).join(''):('<div class="card small muted">'+(norm_(q).replace(/\s/g,'').length>=3?'В нашей базе нет. Смотрим в мировой…':'В нашей базе нет. Допишите название — от 3 букв поищем и в мировой базе')+'</div>'))+`<div id="qoff"></div>`;
 }
 let PP=null;
 function productPortion(id,g){
@@ -939,22 +947,22 @@ function offToProduct(pr){const n=pr.nutriments||{},num=v=>v==null||v===''?null:
   const calc=p*4+f*9+c*4,odd=kcal>0&&Math.abs(calc-kcal)/Math.max(kcal,calc)>0.35;
   return {odd,calcK:Math.round(calc),id:'off_'+String(pr.code||'').replace(/[^0-9A-Za-z_-]/g,''),n:brand&&!name.toLowerCase().includes(brand.toLowerCase())?name+' · '+brand:name,cat:'мировая база',p,f,c,kcal,portion:qg>0&&qg<=600?{g:qg,name:'упаковка '+clean(pr.quantity)}:{g:100,name:'100 г'},src:'Open Food Facts, этикетка производителя · код '+clean(pr.code),img:/^https:\/\//.test(pr.image_small_url||'')?pr.image_small_url:'',code:clean(pr.code),qty:clean(pr.quantity)}}
 async function offProduct(code){
-  const r=await fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}?fields=${OFF_FIELDS}`);if(!r.ok)throw new Error('сервер базы не отвечает');
+  const r=await fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}?fields=${OFF_FIELDS}`);if(r.status===404)return null;if(!r.ok)throw new Error('сервер базы не отвечает');
   const j=await r.json();if(j.status!==1||!j.product)return null;return offToProduct(j.product);
 }
-async function offSearch(q){
+async function offSearch(q,signal){
   const url=`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=20&fields=${OFF_FIELDS}`;
-  const r=await fetch(url);if(!r.ok)throw new Error('503');const j=await r.json();return (j.products||[]).filter(x=>x.nutriments&&(x.nutriments['energy-kcal_100g']!=null||x.nutriments.proteins_100g!=null)).map(offToProduct);
+  const r=await fetch(url,{signal});if(!r.ok)throw new Error('503');const j=await r.json();return (j.products||[]).filter(x=>x.nutriments&&(x.nutriments['energy-kcal_100g']!=null||x.nutriments.proteins_100g!=null)).map(offToProduct);
 }
 function useOff(x){await0=null;if(!DB)DB={products:[],dishes:[]};if(!DB.products.find(p=>p.id===x.id))DB.products.push(x);productPortion(x.id,x.portion&&x.portion.g>0&&x.portion.g<=400?x.portion.g:100)}
 let await0=null;
 const NONET='<div class="card small muted" style="margin-top:10px">Нет интернета. Показали нашу базу — она хранится в телефоне. Мировая база и штрихкод заработают, когда появится связь.</div>';
 async function offSearchRender(q){
   const box=$('#qoff');if(!box)return;if(!navigator.onLine){box.innerHTML=NONET;return}box.innerHTML=`<div class="card small muted" style="margin-top:10px">Ищем в мировой базе…</div>`;
-  try{const list=(await offSearch(q)).filter(x=>!x.odd);if(!$('#qoff'))return;
+  try{offSearchRender.ac&&offSearchRender.ac.abort();const ac=offSearchRender.ac=new AbortController();const list=(await offSearch(q,ac.signal)).filter(x=>!x.odd);if(!$('#qoff')||($('#q')&&$('#q').value!==q))return; // ответ на старый запрос не рисуем
     box.innerHTML=list.length?`<div class="small muted" style="margin:14px 4px 6px">Мировая база · Open Food Facts · на 100 г</div>`+list.map(x=>{const id=x.id;if(!DB.products.find(p=>p.id===id))DB.products.push(x);return `<button class="opt" onclick="productPortion('${id}',100)"><div class="thumb" style="width:44px;height:44px;border-radius:10px">${x.img?`<img src="${x.img}" alt="" style="object-fit:contain;background:#fff" onerror="this.remove()">`:''}</div><div style="flex:1;min-width:0"><div style="font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x.n}</div><div class="small muted">${Math.round(x.kcal)} ккал · Б ${f1(x.p)} · Ж ${f1(x.f)} · У ${f1(x.c)}${x.qty?' · '+x.qty:''}</div></div><span class="chev">${ic('chev')}</span></button>`}).join('')
       :`<div class="card small muted" style="margin-top:10px">В мировой базе ничего не нашлось. Попробуйте штрихкод с упаковки.</div>`;
-  }catch(e){if(!$('#qoff'))return;box.innerHTML=!navigator.onLine?NONET:`<div class="card small muted" style="margin-top:10px">Мировая база сейчас не отвечает (так бывает: сервер Open Food Facts перегружен). Штрихкод с упаковки обычно работает — кнопка «+» → «Штрихкод».</div>`}
+  }catch(e){if(!$('#qoff')||(e&&e.name==='AbortError')||($('#q')&&$('#q').value!==q))return;box.innerHTML=!navigator.onLine?NONET:`<div class="card small muted" style="margin-top:10px">Мировая база сейчас не отвечает (так бывает: сервер Open Food Facts перегружен). Штрихкод с упаковки обычно работает — кнопка «+» → «Штрихкод».</div>`}
 }
 let BC=null;
 function openBarcode(){
@@ -1023,23 +1031,29 @@ async function loadClip(onStatus){
   const say=s=>{loadClip.last=s;subs.forEach(f=>{try{f(s)}catch(e){}})};
   // без движения 45 с во время скачивания (оборвалась мобильная связь) — честная ошибка с «Повторить», а не вечное ожидание
   let tick=Date.now(),dl=true,imp=false,dog=null;const stall=new Promise((_,rej)=>{dog=setInterval(()=>{if(dl&&Date.now()-tick>(imp?45000:150000))rej(new Error('нет связи: загрузка модели остановилась'))},3000)});
-  CLIPLOAD=Promise.race([stall,(async()=>{say('Загружаем движок нейросети (один раз)…');const T=await import(TFJS_URL);tick=Date.now();imp=true;T.env.allowRemoteModels=false;T.env.allowLocalModels=true;T.env.localModelPath=new URL('models/',location.href).href;T.env.backends.onnx.wasm.wasmPaths=LIB('ort/');
+  CLIPLOAD=Promise.race([stall,(async()=>{say('Загружаем движок нейросети (один раз)…');const T=await import(TFJS_URL);tick=Date.now();imp=true;T.env.allowRemoteModels=false;T.env.allowLocalModels=true;T.env.localModelPath=new URL('models/',location.href).href;T.env.backends.onnx.wasm.wasmPaths=LIB('ort/');T.env.backends.onnx.wasm.proxy=true; // считает в отдельном потоке — экран не замирает на 2–4 с при каждом фото
+    // движок нейросети (wasm, ~27 МБ) качаем сами с честными мегабайтами — иначе после «100%» модели ещё полминуты тишины; потом он берётся из кэша
+    const WASM=LIB('ort/ort-wasm-simd-threaded.asyncify.wasm');let wmb=26.8;
+    let hit=false;try{hit=!!(window.caches&&await caches.match(WASM))}catch(e){}
+    if(hit){say('Запускаем распознавание…');wmb=0}else try{const r=await fetch(WASM);if(r.ok&&r.body){wmb=(+r.headers.get('content-length')||26.8e6)/1e6;const rd=r.body.getReader();let got=0,sh=-1;
+      for(;;){const {done,value}=await rd.read();if(done)break;got+=value.length;tick=Date.now();const g=Math.floor(got/1e6);if(g>sh){sh=g;say(`Скачиваем распознавание: ${g} из ${Math.round(wmb+(loadClip.mb||72))} МБ (${Math.floor(g/(wmb+(loadClip.mb||72))*100)}%) — один раз, дальше без интернета`)}}}}catch(e){}
+    loadClip.wmb=wmb;
     // база распознавания: дообученные веса по группам (clipdb.bin, float16) + список позиций; модель берём ту, на которой обучали
     const [db,bin]=await Promise.all([fetch('models/clipdb.json',{cache:'no-cache'}).then(r=>r.json()),fetch('models/clipdb.bin',{cache:'no-cache'}).then(r=>r.arrayBuffer())]);
     if(db.v!==2||!Array.isArray(db.bias)||bin.byteLength!==db.groups*db.dim*2)throw new Error('база распознавания старого формата — обновите приложение');
     const dir=db.dir||'mobileclip',mb=db.mb||72;
     // проценты — по сумме всех файлов модели (событие progress_total библиотеки); если его нет — по самому файлу .onnx. Маленький config.json первым не даёт «100%»
     let last=-9,tot=false;const cb=p=>{let pc;if(p.status==='progress_total'){tot=true;pc=p.progress}else if(p.status==='progress'&&!tot&&/\.onnx$/.test(p.file||''))pc=p.progress;else return;
-      if(!(pc>=0))return;tick=Date.now();if(pc>=99.9){if(last<100){last=100;dl=false;say('Готовим модель… это быстро')}return}
-      if(pc-last>=1){last=pc;const all=tot&&p.total>1e6?p.total/1e6:mb,got=tot&&p.loaded>=0?p.loaded/1e6:all*pc/100;
-        say(`Скачиваем модель распознавания: ${Math.floor(got)} из ${Math.round(all)} МБ (${Math.floor(pc)}%) — один раз, дальше без интернета`)}};
+      if(!(pc>=0))return;tick=Date.now();if(pc>=99.9){if(last<100){last=100;dl=false;say('Скачано. Запускаем нейросеть в телефоне — обычно 5–15 секунд, один раз за запуск приложения')}return}
+      if(pc-last>=1){last=pc;const all=tot&&p.total>1e6?p.total/1e6:mb,got=tot&&p.loaded>=0?p.loaded/1e6:all*pc/100,w=loadClip.wmb||0;
+        say(`Скачиваем распознавание: ${Math.floor(w+got)} из ${Math.round(w+all)} МБ (${Math.floor((w+got)/(w+all)*100)}%) — один раз, дальше без интернета`)}};
     const load=dt=>T.CLIPVisionModelWithProjection.from_pretrained(dir,{dtype:dt,device:'wasm',progress_callback:cb});
     const dts=db.dtypes||['q4','fp16'];let model=null,err=null;for(const dt of dts){try{model=await load(dt);break}catch(e){err=e;last=-9;tot=false;console.warn('модель '+dt+' не пошла',e)}}if(!model)throw err;
     const proc=await T.AutoProcessor.from_pretrained(dir);
     const u16=new Uint16Array(bin),dim=db.dim,G=db.groups,W=[];for(let g=0;g<G;g++){const v=new Float32Array(dim);for(let j=0;j<dim;j++)v[j]=f16(u16[g*dim+j]);W.push(v)}
     const byG=Array.from({length:G},()=>[]);db.items.forEach((x,i)=>byG[x.k].push(i));
     CLIPDB={db,W,byG,bias:db.bias};
-    try{const S0=db.size||256,warm=await proc(new T.RawImage(new Uint8ClampedArray(S0*S0*3).fill(128),S0,S0,3));await model(warm);await model(warm)}catch(e){} // прогрев: первые прогоны в несколько раз медленнее
+    // прогрев убран: в Safari он не ускорял первый снимок, а добавлял ~2,5 с ожидания
     CLIP=async src=>{const img=await T.RawImage.read(src);const out=await model(await proc(img));const e=Float32Array.from(out.image_embeds.data);let s=0;for(const x of e)s+=x*x;s=Math.sqrt(s)||1;return e.map(x=>x/s)};
     return CLIP})()]);
   try{return await CLIPLOAD}catch(e){CLIPLOAD=null;throw e}finally{clearInterval(dog);subs.clear();loadClip.last=''}
@@ -1055,9 +1069,15 @@ function clipMatch(e){ // дообученный классификатор по
   return order.map(g=>{const ids=byG[g],mine=ids.find(i=>(S.refs||[]).some(r=>r.id===db.items[i].id));return {g,s:lg[g],i:mine!=null?mine:ids[0],ids,p:Math.exp(lg[g]-m)/z}});
 }
 function gotPhoto(inp){
-  const f=inp.files&&inp.files[0];if(!f)return;const r=new FileReader();
-  r.onload=()=>{SC.photo=r.result;photoFlow()};
-  r.readAsDataURL(f);
+  const f=inp.files&&inp.files[0];if(!f)return;SC.photo=null;SC.thumb=null;
+  // снимок с телефона (12 Мп, 3–8 МБ) сразу уменьшаем: модели хватает 800 px, в дневник — миниатюра 320 px (её рисуем из 800, не из оригинала).
+  // Иначе дневник переполнял память браузера и записи пропадали после перезагрузки, а вкладки тормозили
+  const url=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{try{const draw=(src,w,h,L,q)=>{const k=Math.min(1,L/Math.max(w,h)),c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);c.getContext('2d').drawImage(src,0,0,c.width,c.height);return c};
+      const big=draw(im,im.naturalWidth,im.naturalHeight,800);SC.photo=big.toDataURL('image/jpeg',.85);SC.thumb=draw(big,big.width,big.height,320).toDataURL('image/jpeg',.72)}catch(e){}
+    URL.revokeObjectURL(url);if(SC.photo)photoFlow();else fallback()};
+  const fallback=()=>{const r=new FileReader();r.onload=()=>{SC.photo=r.result;photoFlow()};r.readAsDataURL(f)}; // формат, который телефон не показывает (HEIC), — photoFlow честно скажет
+  im.onerror=()=>{URL.revokeObjectURL(url);fallback()};im.src=url;
 }
 async function photoFlow(){
   const tok=photoFlow.n=(photoFlow.n||0)+1,sc=SC,alive=()=>tok===photoFlow.n&&SC===sc&&$('#sheet').classList.contains('on');
@@ -1139,7 +1159,16 @@ function result(){
    <div class="card row"><div class="ibox ${after>=0?'ok':'warn'}">${ic('today')}</div><div style="flex:1">${after>=0?`После этого блюда останется <b>${fmt(after)} ккал</b> на сегодня`:`Это блюдо выводит за норму на <b>${fmt(-after)} ккал</b>`}</div></div>
    <button class="btn" onclick="addLog()">Записать в дневник</button><button class="btn ghost" onclick="clarify()">Поправить граммы</button>`);
 }
-function addLog(){if(S.day!==today0())rollDay();const d=SC.d,t=total();S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:d.name,img:SC.photo||d.img,k:t.k,p:t.p,f:t.f,c:t.c,cost:d.cost,acc:d.store?'высокая':'средняя',src:d.store?'этикетка':d.fromDB?'база':'база'});save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(t.k,'ккал'))}
+// запись дневника: поправить порцию или удалить (раньше ошибочную запись нельзя было убрать)
+function openEntry(i,ask){const en=S.log[i];if(!en)return;if(!ask)openEntry.back=$('#sheet').classList.contains('on')&&SHEET_FN&&SHEET_FN!==openEntry?SHEET_FN:null;const k=[.5,.75,1.25,1.5,2];
+  sheet('Запись в дневнике',`<div class="card"><div class="title" style="font-size:17px">${en.n}</div><div class="small muted" style="margin-top:4px">${en.t} · ${fmt(en.k)} ккал · Б ${fmt(en.p)} · Ж ${fmt(en.f)} · У ${fmt(en.c)}</div></div>
+   <div class="small muted" style="margin:14px 4px 6px">Съели больше или меньше? Поправим порцию</div>
+   <div class="chips" style="margin-bottom:14px">${k.map(x=>`<button class="chip" onclick="scaleEntry(${i},${x})">×${String(x).replace('.',',')}</button>`).join('')}</div>
+   ${ask?`<button class="btn" style="background:var(--bad,#E5484D)" onclick="delEntry(${i})">Да, удалить запись</button><button class="btn ghost" style="margin-top:8px" onclick="openEntry(${i})">Не удалять</button>`
+     :`<button class="btn ghost" onclick="openEntry(${i},1)">Удалить запись</button>`}`)}
+function scaleEntry(i,x){const en=S.log[i];if(!en)return;['k','p','f','c','cost'].forEach(f=>{if(typeof en[f]==='number')en[f]=Math.round(en[f]*x*10)/10});en.k=Math.round(en.k);save();const bk=openEntry.back;openEntry.back=null;if(bk)bk();else{closeSheet();rerender()}rerender.dirty=1;toast('Порция поправлена · '+u(en.k,'ккал'))}
+function delEntry(i){const en=S.log[i];if(!en)return;S.log.splice(i,1);save();const bk=openEntry.back;openEntry.back=null;if(bk)bk();else{closeSheet();rerender()}rerender.dirty=1;haptic(10);toast('Запись удалена')}
+function addLog(){if(S.day!==today0())rollDay();const d=SC.d,t=total();S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:d.name,img:SC.thumb||(SC.photo&&SC.photo.length<200000?SC.photo:null)||d.img,k:t.k,p:t.p,f:t.f,c:t.c,cost:d.cost,acc:d.store?'высокая':'средняя',src:d.store?'этикетка':d.fromDB?'база':'база'});save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(t.k,'ккал'))}
 
 /* ---------- Тренировки ---------- */
 const STAGES=[['Старт','8 недель'],['Прогресс','4 недели'],['Результат','6 недель']];
@@ -1164,7 +1193,7 @@ function vGym(){
     <div style="margin-top:12px"><div class="row between"><div class="title">${x[0]}</div>${exDone(i,x)?'<span class="pill ok" style="padding:3px 9px;font-size:11px">готово</span>':''}</div><div class="small muted">${x[1]}</div></div><div class="small muted" style="margin-top:6px">${x[2]}</div>
     <div class="row" style="gap:10px;margin-top:12px">${Array.from({length:setsOf(x)},(_,j)=>`<button class="setdot ${S.sets[i+'-'+j]?'on':''}" onclick="toggleSet(${i},${j})">${S.sets[i+'-'+j]?ic('check','style="width:18px;height:18px"'):j+1}</button>`).join('')}
      <button class="btn sec sm" style="margin-left:auto" onclick="openTrainer('${x[0]}')">${ic('ruler','style="width:18px;height:18px"')} Как делать</button></div></div>`).join('')}
-  ${S.extra.length?`<h2>Добавлено из атласа</h2><div class="card list">${S.extra.map(id=>{const x=EXL&&EXL.find(e=>e.id===id);return `<button class="exrow" onclick="${x?`openEx('${id}')`:`loadEX().then(()=>openEx('${id}'))`}"><div class="th"><img src="${EXIMG(id)}0.jpg" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div><div class="t"><b>${x?x.n:id.replace(/_/g,' ')}</b><small>${x?(EXEQ[x.eq]||'Без инвентаря')+' · 3 подхода':'из атласа'}</small></div><span class="chev">${ic('chev')}</span></button><div class="row" style="gap:10px;padding:0 0 12px 72px">${[0,1,2].map(j=>`<button class="setdot ${S.sets['x'+id+'-'+j]?'on':''}" onclick="toggleX('${id}',${j})">${S.sets['x'+id+'-'+j]?ic('check','style="width:18px;height:18px"'):j+1}</button>`).join('')}</div>`}).join('')}</div>`:''}
+  ${S.extra.length?`<h2>Добавлено из атласа</h2><div class="card list">${S.extra.map(id=>{const x=EXL&&EXL.find(e=>e.id===id);return `<button class="exrow" onclick="${x?`openEx('${id}')`:`loadEX().then(()=>openEx('${id}'))`}"><div class="th"><img src="${EXIMG(id)}t.jpg" alt="" loading="lazy" decoding="async" onerror="if(!this.dataset.f){this.dataset.f=1;this.src=this.src.replace('t.jpg','0.jpg')}else this.style.visibility='hidden'"></div><div class="t"><b>${x?x.n:id.replace(/_/g,' ')}</b><small>${x?(EXEQ[x.eq]||'Без инвентаря')+' · 3 подхода':'из атласа'}</small></div><span class="chev">${ic('chev')}</span></button><div class="row" style="gap:10px;padding:0 0 12px 72px">${[0,1,2].map(j=>`<button class="setdot ${S.sets['x'+id+'-'+j]?'on':''}" onclick="toggleX('${id}',${j})">${S.sets['x'+id+'-'+j]?ic('check','style="width:18px;height:18px"'):j+1}</button>`).join('')}</div>`}).join('')}</div>`:''}
   ${restDay()&&!weekFull()?`<div class="lock" style="background:var(--warn-soft);margin-top:6px"><span style="color:var(--warn-text)">${ic('heart')}</span><div><b>Сегодня лучше отдохнуть.</b> Вчера была тренировка, а новичкам нужен день между занятиями. Подойдёт прогулка.</div></div>`:''}${doneToday()||weekFull()?`<div class="btn sec" style="margin-top:6px;pointer-events:none">${ic('check')} ${doneToday()?'Сделано сегодня':'Неделя выполнена'}</div>`:`<button class="btn ${restDay()?'sec':doneSets&&doneSets===allSets?'ready':''}" onclick="finishWorkout()" style="margin-top:6px">${restDay()?'Всё равно записать тренировку':'Завершить тренировку'}</button>`}
   <div class="card tap row" style="margin-top:14px" onclick="openForm()"><div class="ibox tech">${ic('ruler')}</div><div style="flex:1"><div class="title" style="font-size:16px">Проверить технику по видео</div><div class="small muted">Снимите себя сбоку — телефон найдёт ошибки и покажет, как надо</div></div><span class="chev">${ic('chev')}</span></div>
   <div class="card tap row" style="margin-top:0" onclick="openHome()"><div class="ibox ok">${ic('home')}</div><div style="flex:1"><div class="title" style="font-size:16px">${S.profile.place==='home'?'Мало времени?':'Не получается в зал?'}</div><div class="small muted">${S.profile.place==='home'?'Короткая тренировка на 20 минут без инвентаря':'Домашняя тренировка на 20 минут без инвентаря'}</div></div><span class="chev">${ic('chev')}</span></div>`;
@@ -1197,7 +1226,7 @@ function finishWorkout(force,homeMin){
   S.done.push(ti);S.doneOn=S.doneOn||{};S.doneOn[today0()]=ti;if(!S.demo&&S.plan&&!S.plan.includes((new Date().getDay()+6)%7))S.plan=planWeek(); // тренировка вне плана — остаток недели пересобирается
   const doneSets=setsDone(pg),allSets=pg.ex.reduce((s,x)=>s+setsOf(x),0)+S.extra.length*3,full=doneSets>=allSets;
   const timed=!!(homeMin||S.startedAt),mins=homeMin||(S.startedAt?Math.max(1,Math.round((Date.now()-S.startedAt)/60000)):0),kcal=Math.round(4*S.profile.w*mins/60); // 4 МЕТ сверх покоя × вес × часы — как в норме; без отмеченных подходов время не выдумываем
-  S.workouts=(S.workouts||0)+1;S.startedAt=null;save();SHEET_FN=null;rerender();haptic([10,50,10,50,20]);
+  S.workouts=(S.workouts||0)+1;S.startedAt=null;save();SHEET_FN=null;rerender.dirty=1;haptic([10,50,10,50,20]);
   sheet('Тренировка завершена',`<div style="text-align:center;padding:6px 0 10px">${OK}<div class="num" style="font-size:42px;margin-top:12px">${timed?CU(mins,' мин'):'Готово'}</div><div class="muted">${timed?'≈ '+u(kcal,'ккал')+' сверх покоя · ':''}${homeMin?'дома, без инвентаря':`подходов ${doneSets} из ${allSets}`}${timed?'':' · время и расход не считаем'}</div></div>
    <div class="grid2"><div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:26px">${Math.min(S.done.length,weekPlanCount())}/${weekPlanCount()}</div><div class="small muted">на этой неделе</div></div><div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:26px">${S.demo?'3 нед.':S.workouts}</div><div class="small muted">${S.demo?'серия без пропусков':pl(S.workouts,'тренировка','тренировки','тренировок').replace(/^\S+\s/,'')+' всего'}</div></div></div>
    <div class="card" style="margin-top:12px">${(()=>{const nx=pg.days.findIndex((d,i)=>i<weekPlanCount()&&!S.done.includes(i));return nx<0?'Все тренировки этой недели сделаны. Новая неделя — с понедельника.':'Следующая — «'+pg.days[nx]+'». Привычка закрепляется в среднем за 66 дней (Lally, 2010): держите ритм '+pl(pg.days.length,'тренировка','тренировки','тренировок')+' в неделю.'})()}</div>
@@ -1225,7 +1254,7 @@ const EXCAT={strength:'Сила',stretching:'Растяжка',plyometrics:'Пл
 const EXLVL={beginner:'новичок',intermediate:'средний',expert:'продвинутый'};
 const EXGROUPS=[['all','Все',null],['legs','Ноги',['quadriceps','hamstrings','calves','adductors','abductors']],['glutes','Ягодицы',['glutes']],['back','Спина',['lats','middle back','lower back','traps']],['chest','Грудь',['chest']],['shoulders','Плечи',['shoulders']],['arms','Руки',['biceps','triceps','forearms']],['core','Пресс',['abdominals']],['stretch','Растяжка',null],['cardio','Кардио',null]];
 const TECHMAP={Bodyweight_Squat:'squat',Barbell_Squat:'squat',Barbell_Full_Squat:'squat',Dumbbell_Squat:'squat',Dumbbell_Lunges:'lunge',Barbell_Lunge:'lunge',Bodyweight_Walking_Lunge:'lunge',Dumbbell_Rear_Lunge:'lunge',Pushups:'pushup',Plank:'plank',Romanian_Deadlift:'deadlift',Standing_Dumbbell_Press:'press',Dumbbell_Shoulder_Press:'press'};
-async function loadEX(){if(EXL)return EXL;try{const r=await fetch('data/exercises.json');if(!r.ok)throw new Error(r.status);EXL=await r.json()}catch(e){console.warn('библиотека упражнений не загрузилась',e);return []}return EXL}
+async function loadEX(){if(EXL)return EXL;return loadEX.p=loadEX.p||(async()=>{try{const r=await fetch('data/exercises.json');if(!r.ok)throw new Error(r.status);EXL=await r.json();return EXL}catch(e){console.warn('библиотека упражнений не загрузилась',e);loadEX.p=null;return []}})()}
 function exFilter(){
   const k=norm_(EXQ),words=k.split(' ').filter(Boolean),g=EXGROUPS.find(x=>x[0]===EXG);
   return EXL.filter(x=>{
@@ -1239,10 +1268,15 @@ function exList(){
   if(!EXL&&loadEX.failed)return `<div class="card"><div class="title" style="font-size:16px">Библиотека упражнений не загрузилась</div><div class="small muted" style="margin-top:4px">Проверьте интернет — или заранее скачайте всё в «Я» → «Работа без интернета».</div><button class="btn sec" style="margin:12px 0 0" onclick="loadEX.failed=0;rerender()">Повторить</button></div>`;
   if(!EXL)return `<div class="card"><div class="sk" style="width:60%"></div><div class="sk" style="width:85%;margin-top:10px"></div><div class="sk" style="width:40%;margin-top:10px"></div></div>`;
   const list=exFilter(),show=list.slice(0,EXN);
-  return `<div class="card list" style="padding:2px 16px">${show.map(x=>`<button class="exrow" onclick="openEx('${x.id}')"><div class="th"><img src="${EXIMG(x.id)}0.jpg" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div><div class="t"><b>${x.n}</b><small>${EXEQ[x.eq]||'Без инвентаря'} · ${EXLVL[x.lvl]} · ${x.pm.slice(0,2).map(m=>(EXMUS[m]||m).toLowerCase()).join(', ')}</small></div><span class="chev">${ic('chev')}</span></button>`).join('')||`<div class="li muted small" style="justify-content:center">Ничего не нашли. Попробуйте «жим», «тяга», «присед»</div>`}</div>
-  ${list.length>EXN?`<button class="btn sec" onclick="EXN+=30;rerender()">Показать ещё · осталось ${list.length-EXN}</button>`:''}
+  return `<div class="card list" style="padding:2px 16px">${show.map(exRow).join('')||`<div class="li muted small" style="justify-content:center">Ничего не нашли. Попробуйте «жим», «тяга», «присед»</div>`}</div>
+  ${list.length>EXN?`<button class="btn sec" id="exmore" onclick="exMore()">Показать ещё · осталось ${list.length-EXN}</button>`:''}
   <div class="tiny muted" style="margin:8px 4px 0">${pl(list.length,'упражнение','упражнения','упражнений')} · фото и описания — база free-exercise-db (свободная лицензия), перевод наш</div>`;
 }
+function exRow(x){return `<button class="exrow" onclick="openEx('${x.id}')"><div class="th"><img src="${EXIMG(x.id)}t.jpg" alt="" loading="lazy" decoding="async" width="56" height="45" onerror="if(!this.dataset.f){this.dataset.f=1;this.src=this.src.replace('t.jpg','0.jpg')}else this.style.visibility='hidden'"></div><div class="t"><b>${x.n}</b><small>${EXEQ[x.eq]||'Без инвентаря'} · ${EXLVL[x.lvl]} · ${x.pm.slice(0,2).map(m=>(EXMUS[m]||m).toLowerCase()).join(', ')}</small></div><span class="chev">${ic('chev')}</span></button>`}
+// «Показать ещё» — дописываем только 30 новых строк, а не перестраиваем весь экран с 876 упражнениями
+function exMore(){const list=exFilter(),box=$('#exlist .card.list'),b=$('#exmore');if(!box){EXN+=30;rerender();return}
+  box.insertAdjacentHTML('beforeend',list.slice(EXN,EXN+30).map(exRow).join(''));EXN+=30;
+  if(b){if(list.length>EXN)b.textContent='Показать ещё · осталось '+(list.length-EXN);else b.remove()}}
 function exSearch(v){EXQ=v;EXN=20;clearTimeout(exSearch.t);exSearch.t=setTimeout(()=>{const box=$('#exlist');if(box)box.innerHTML=exList()},120)}
 function exGroup(g){EXG=g;EXN=20;rerender()}
 let EXT=null;
@@ -1256,7 +1290,7 @@ function openEx(id){
    <div class="row" style="gap:6px;flex-wrap:wrap;margin:10px 0 2px"><span class="pill">${EXEQ[x.eq]||'Без инвентаря'}</span><span class="pill">${EXLVL[x.lvl]}</span><span class="pill">${EXCAT[x.cat]||x.cat}</span>${x.mech?`<span class="pill">${x.mech==='compound'?'базовое':'изолирующее'}</span>`:''}</div>
    <div class="tiny muted" style="margin:0 4px 10px">${x.en}</div>
    <button class="btn" onclick="exFromCard('${id}')">${ic('ruler')} Проверить технику по видео</button>
-   <button class="btn ${inPlan?'sec':'ghost'}" onclick="togglePlan('${id}')">${inPlan?'Убрать из плана на сегодня':'В план на сегодня'}</button>
+   <button class="btn ${inPlan?'sec':'ghost'}" onclick="togglePlan('${id}',this)">${inPlan?'Убрать из плана на сегодня':'В план на сегодня'}</button>
    <h2>Какие мышцы работают</h2><div class="card">${gs.length?muscleMapLv(lv):'<div class="small muted">Для этого упражнения карта мышц не размечена</div>'}<div class="tiny muted" style="margin-top:8px">Основные: ${x.pm.map(m=>EXMUS[m]||m).join(', ')||'—'}${x.sm.length?' · помогают: '+x.sm.map(m=>EXMUS[m]||m).join(', '):''}</div>${gs.length?ATLAS_CR:''}</div>
    <h2>Как выполнять</h2><div class="card list">${x.steps.map((t,i)=>`<div class="li" style="align-items:flex-start"><span class="num" style="width:26px;color:var(--text3);font-size:17px">${i+1}</span><div style="flex:1;line-height:1.4">${t}</div></div>`).join('')}</div>
    <div class="concept">Картинки и описание — база free-exercise-db (свободная лицензия), перевод наш. При боли остановитесь · не медицинская консультация</div>`);
@@ -1265,7 +1299,7 @@ function openEx(id){
 }
 const ATLAS_CR=`<div class="tiny muted" style="margin-top:8px">Атлас мышц: «Muscles front and back», OpenStax, Tomáš Kebert, umimeto.org · <a href="https://commons.wikimedia.org/wiki/File:Muscles_front_and_back.svg" target="_blank" rel="noopener" style="color:inherit">CC BY-SA 4.0, Wikimedia Commons</a></div>`; // CC BY-SA 4.0 требует автора и лицензию рядом с картинкой
 function muscleMapLv(lv){const gs=Object.keys(lv).sort((a,b)=>lv[a]-lv[b]);return `<div class="anat"><img class="base" src="img/anat/base.png" alt="Атлас мышц" loading="lazy">${gs.map(g=>`<img class="ly ${lv[g]===2?'s':''}" src="img/anat/${g}.png" alt="" loading="lazy">`).join('')}<span class="lbl l">спереди</span><span class="lbl r">сзади</span></div><div class="legend"><span><i style="background:#D8432A"></i>Основная нагрузка</span><span><i style="background:#C98A14"></i>Помогают</span></div>`}
-function togglePlan(id){const i=S.extra.indexOf(id);if(i>-1)S.extra.splice(i,1);else S.extra.push(id);save();haptic(8);toast(i>-1?'Убрано из плана':'Добавлено в план на сегодня');openEx(id)}
+function togglePlan(id,btn){const i=S.extra.indexOf(id);if(i>-1)S.extra.splice(i,1);else S.extra.push(id);save();haptic(8);toast(i>-1?'Убрано из плана':'Добавлено в план на сегодня');const inPlan=i<0;if(btn){btn.className='btn '+(inPlan?'sec':'ghost');btn.textContent=inPlan?'Убрать из плана на сегодня':'В план на сегодня';rerender.dirty=1}else openEx(id)}
 
 /* ---------- Разбор техники по видео (MediaPipe Pose в браузере, считает код) ---------- */
 const FORM={
@@ -1279,6 +1313,7 @@ const FORM={
 const MUSCLES={quads:'Квадрицепсы',glutes:'Ягодичные',hams:'Задняя поверхность бедра',core:'Пресс и кор',chest:'Грудные',triceps:'Трицепсы',shoulders:'Плечи',back:'Спина',biceps:'Бицепсы',calves:'Икры',traps:'Трапеции',adductors:'Приводящие'};
 let FV={ex:'auto',file:null};
 function openForm(){
+  if((FV.ex==='auto'||String(FV.ex).startsWith('lib:'))&&!EXR.clip)setTimeout(async()=>{try{if((await (await caches.open('transformers-cache')).keys()).some(r=>/mobileclip/i.test(r.url)))loadExRecog().then(()=>loadExClip()).catch(()=>{})}catch(e){}},0); // модель уже в телефоне — поднимаем, пока человек снимает
   sheet('Разбор техники по видео',`<div class="card small muted">Снимите себя сбоку, целиком в кадре, 2–5 повторов. Телефон разберёт движение сам, без отправки видео на сервер: точки суставов, углы, повторы. Это подсказка по технике, не медицинская консультация.</div>
    <div class="small muted" style="margin:0 4px 6px">Упражнение</div><div class="chips" style="margin-bottom:12px"><button class="chip ${FV.ex==='auto'?'on':''}" onclick="FV.ex='auto';openForm()">Определит сам</button>${String(FV.ex).startsWith('lib:')?`<button class="chip on">${fName(FV.ex)}</button>`:''}${Object.entries(FORM).map(([k,f])=>`<button class="chip ${FV.ex===k?'on':''}" onclick="FV.ex='${k}';openForm()">${f.n}</button>`).join('')}</div>
    ${FV.ex==='auto'?`<div class="small muted" style="margin:-4px 4px 12px">Камера предложит, какое из 870+ упражнений библиотеки похоже на ваше, — вы подтвердите, и мы сравним с эталоном</div>`:''}
@@ -1286,33 +1321,37 @@ function openForm(){
    <button class="btn sec" onclick="formRun('squat.mp4','squat')">Показать на примере: присед</button>
    <div class="concept">Распознавание суставов — MediaPipe Pose, работает в телефоне · правила техники считает код</div>`);
 }
-function formFile(inp){const f=inp.files&&inp.files[0];if(!f)return;formRun(URL.createObjectURL(f),FV.ex)}
+function formFile(inp){const f=inp.files&&inp.files[0];if(!f)return;if(FV.ex==='auto'&&!EXR.clip&&!(navigator.connection&&navigator.connection.saveData))loadExRecog().then(()=>loadExClip()).catch(()=>{}); // качается, пока идёт разбор движения
+  formRun(URL.createObjectURL(f),FV.ex)}
 const angle=(a,b,c)=>{const v1=[a.x-b.x,a.y-b.y],v2=[c.x-b.x,c.y-b.y];const d=v1[0]*v2[0]+v1[1]*v2[1],m=Math.hypot(...v1)*Math.hypot(...v2)||1;return Math.acos(Math.max(-1,Math.min(1,d/m)))*180/Math.PI};
 const EDGES=[[11,12],[11,13],[13,15],[12,14],[14,16],[11,23],[12,24],[23,24],[23,25],[25,27],[24,26],[26,28]];
 let POSE=null,POSE_TS=0;
 async function loadPose(){
-  if(POSE)return POSE;try{return await loadPose0()}catch(e){console.error(e);throw new Error(/fetch|import|network|load|Failed/i.test(e&&e.message||'')?'Не загрузилась модель разбора — при первом запуске нужен интернет (или заранее скачайте её в «Я» → «Работа без интернета»). Подключитесь и попробуйте ещё раз.':(e&&e.message)||'Модель разбора не запустилась')}
+  if(POSE)return POSE;try{return await (loadPose.p=loadPose.p||loadPose0())}catch(e){loadPose.p=null;console.error(e);throw new Error(/fetch|import|network|load|Failed/i.test(e&&e.message||'')?'Не загрузилась модель разбора — при первом запуске нужен интернет (или заранее скачайте её в «Я» → «Работа без интернета»). Подключитесь и попробуйте ещё раз.':(e&&e.message)||'Модель разбора не запустилась')}
 }
 async function loadPose0(){
   const m=await import(LIB('mediapipe/vision_bundle.mjs')) // @mediapipe/tasks-vision 0.10.14;
   const vision=await m.FilesetResolver.forVisionTasks(LIB('mediapipe/wasm'));
-  POSE=await m.PoseLandmarker.createFromOptions(vision,{baseOptions:{modelAssetPath:LIB('mediapipe/pose_landmarker_lite.task'),delegate:'GPU'},runningMode:'VIDEO',numPoses:1});
-  return POSE;
+  const pl=await m.PoseLandmarker.createFromOptions(vision,{baseOptions:{modelAssetPath:LIB('mediapipe/pose_landmarker_lite.task'),delegate:'CPU'},runningMode:'VIDEO',numPoses:1});
+  // на процессоре: на видеокарте первый кадр компилировал шейдеры и замораживал экран на 2–13 с; лёгкой модели процессора хватает (~50 мс на кадр).
+  // короткий прогрев (~0,3 с) — сейчас, под «Запускаем модель разбора…»
+  try{const c=document.createElement('canvas');c.width=c.height=64;c.getContext('2d').fillRect(0,0,64,64);POSE_TS+=1000;pl.detectForVideo(c,POSE_TS)}catch(e){}
+  POSE=pl;return POSE;
 }
 // файлы MediaPipe (~15 МБ) качаем сами, чтобы показать проценты; потом MediaPipe берёт их из памяти. Сбой не страшен — сообщение даст loadPose
 async function posePrefetch(on){
   const fs=[['mediapipe/wasm/vision_wasm_internal.wasm',9423986],['mediapipe/pose_landmarker_lite.task',5777746]],n=fs.reduce((a,f)=>a+f[1],0);
   let hit=false;try{hit=!!(window.caches&&await caches.match(LIB(fs[1][0])))}catch(e){}
-  if(hit){on('Запускаем модель разбора…',null);return}
-  if(!(navigator.serviceWorker&&navigator.serviceWorker.controller)){on('Загружаем модель разбора (один раз, ~15 МБ)…',null);return} // без сервис-воркера наша копия не сохранится — не качаем дважды
-  on('Загружаем модель разбора (один раз, ~15 МБ)…',0);let got=0,shown=0;
-  await Promise.all(fs.map(async([f])=>{try{const r=await fetch(LIB(f));if(!r.ok||!r.body)return;const rd=r.body.getReader();
-    for(;;){const {done,value}=await rd.read();if(done)break;got+=value.length;const p=Math.floor(Math.min(1,got/n)*100);if(p-shown>=2){shown=p;on('Загружаем модель разбора (один раз, ~15 МБ)…',Math.min(p,99))}}}catch(e){}}));
-  on('Запускаем модель разбора…',null)}
+  if(hit){on('Запускаем модель разбора…',null);return true}
+  if(!(navigator.serviceWorker&&navigator.serviceWorker.controller)){on('Загружаем модель разбора (один раз, ~15 МБ)…',null);return true} // без сервис-воркера наша копия не сохранится — не качаем дважды
+  on('Загружаем модель разбора (один раз, ~15 МБ)…',0);let got=0,shown=0,ok=0;
+  await Promise.all(fs.map(async([f,sz])=>{try{const r=await fetch(LIB(f));if(!r.ok||!r.body)return;let mine=0;const rd=r.body.getReader();
+    for(;;){const {done,value}=await rd.read();if(done){if(mine>=sz*.98)ok++;break}got+=value.length;mine+=value.length;const p=Math.floor(Math.min(1,got/n)*100);if(p-shown>=1){shown=p;on(`Скачиваем модель разбора: ${(got/1e6).toFixed(1).replace('.',',')} из ${(n/1e6).toFixed(1).replace('.',',')} МБ — один раз`,Math.min(p,99))}}}catch(e){}}));
+  on('Запускаем модель разбора…',null);return ok===fs.length}
 async function formRun(src,ex){
   FV.ex=ex;const f=FORM[ex],tok=formRun.n=(formRun.n||0)+1;
   sheet('Разбираем…',`<div class="plate" style="background:#111"><video id="fv" playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain"></video><canvas id="fc" style="position:absolute;inset:0;width:100%;height:100%;z-index:2"></canvas></div>
-   <div class="card" style="margin-top:12px"><div class="row between"><span class="small muted" id="fstat">Загружаем модель…</span><span class="num" id="fpct">0%</span></div><div class="bar" style="margin-top:8px"><i id="fbar" style="width:0;background:var(--accent)"></i></div></div>`);
+   <div class="card" style="margin-top:12px"><div class="row between"><span class="small muted" id="fstat">${POSE?'Открываем видео…':'Загружаем модель…'}</span><span class="num" id="fpct">0%</span></div><div class="bar" style="margin-top:8px"><i id="fbar" style="width:0;background:var(--accent)"></i></div></div>`);
   const v=$('#fv'),c=$('#fc'),ctx=c.getContext('2d'),alive=()=>tok===formRun.n&&$('#fv')===v&&$('#sheet').classList.contains('on'),put=(id,f)=>{const el=$(id);if(el)f(el)};
   try{
     if(!POSE)await posePrefetch((t,p)=>{if(!alive())return;put('#fstat',el=>el.textContent=t);put('#fpct',el=>el.textContent=p==null?'':p+'%');put('#fbar',el=>el.style.width=(p||0)+'%')});
@@ -1320,7 +1359,8 @@ async function formRun(src,ex){
     if(src==='squat.mp4'){if(!formRun.sq)try{const r=await fetch('squat.mp4');if(!r.ok)throw new Error(r.status);formRun.sq=URL.createObjectURL(await r.blob())}catch(e){if(!navigator.onLine)throw new Error('Пример приседа ещё не сохранён в телефоне — откройте его один раз с интернетом или скачайте всё в «Я» → «Работа без интернета». Своё видео разберём и без сети.')}
       if(formRun.sq)src=formRun.sq;if(!alive())return}
     // первое видео за сеанс браузер не перерисовывает при перемотке — разбор шёл бы по одному кадру. Один раз «прогреваем» видеосистему пустым роликом
-    if(!formRun.primed){formRun.primed=1;try{const pv=document.createElement('video');pv.muted=true;pv.playsInline=true;pv.src=src;await Promise.race([new Promise(r=>pv.onloadeddata=r),new Promise(r=>setTimeout(r,3000))]);await Promise.race([new Promise(r=>{pv.onseeked=r;pv.currentTime=Math.min(.5,(pv.duration||1)/2)}),new Promise(r=>setTimeout(r,1500))]);pv.pause()}catch(e){}}
+    if(!formRun.primed&&!('requestVideoFrameCallback' in HTMLVideoElement.prototype)){formRun.primed=1; // нужно только старому разбору перемоткой
+      try{const pv=document.createElement('video');pv.muted=true;pv.playsInline=true;pv.src=src;await Promise.race([new Promise(r=>pv.onloadeddata=r),new Promise(r=>setTimeout(r,3000))]);await Promise.race([new Promise(r=>{pv.onseeked=r;pv.currentTime=Math.min(.5,(pv.duration||1)/2)}),new Promise(r=>setTimeout(r,1500))]);pv.pause()}catch(e){}}
     if(!alive())return;v.src=src;await new Promise((r,j)=>{v.onloadeddata=r;v.onerror=()=>j(new Error('видео не читается'));v.load()});
     c.width=v.videoWidth;c.height=v.videoHeight;const dur=Math.min(v.duration||0,20),step=1/10;let S2=[];
     if(!alive())return;put('#fstat',el=>el.textContent='Ищем суставы…');
@@ -1330,10 +1370,12 @@ async function formRun(src,ex){
         const pct=Math.round((pass+t/dur)/(pass+1)*100);put('#fpct',el=>el.textContent=pct+'%');put('#fbar',el=>el.style.width=pct+'%');
         if(lm){ctx.clearRect(0,0,c.width,c.height);drawSkel(ctx,lm,c.width,c.height)}}
       out.seen=seen/Math.max(tot,1);return out};
-    S2=await scan(0);if(!S2)return;if(S2.seen<.2)console.warn('при перемотке показано '+Math.round(S2.seen*100)+'% кадров — точки могут быть с одного кадра');
+    S2=await scanPlay(v,pl,dur,(fr,lm)=>{const pct=Math.round(fr*100);put('#fpct',el=>el.textContent=pct+'%');put('#fbar',el=>el.style.width=pct+'%');if(lm){ctx.clearRect(0,0,c.width,c.height);drawSkel(ctx,lm,c.width,c.height)}},alive);
+    if(S2===false)return;if(!S2||S2.length<10)S2=await scan(0);if(!S2)return; // проигрывание не пошло — по-старому, перемоткойif(S2.seen<.2)console.warn('при перемотке показано '+Math.round(S2.seen*100)+'% кадров — точки могут быть с одного кадра');
     if(!alive())return;
     if(S2.length<10)throw new Error('человек не найден в кадре — снимите целиком, сбоку, при хорошем свете');
     const live=()=>tok===formRun.n&&$('#sheet').classList.contains('on')&&$('#stitle').textContent==='Разбираем…';
+    put('#fstat',el=>el.textContent='Готовим кадры разбора…');put('#fpct',el=>el.textContent='');
     if(ex==='auto'||String(ex).startsWith('lib:'))await exAfter(src,ex,S2,v,live);else await formResult(src,ex,S2,v,live);
   }catch(e){if(!alive())return;console.error(e);sheet('Не получилось',`<div class="card">${e.message}</div><button class="btn" onclick="openForm()">Попробовать ещё</button>`)}
 }
@@ -1346,7 +1388,7 @@ function analyze(ex,S2){
   const sig=ex==='pushup'?elbow:ex==='press'?elbow.map(a=>180-a):knee; // что считаем «движением»
   // повторы: минимумы сигнала ниже порога
   const reps=[];let inRep=false,start=0,minI=0;const hi=Math.max(...sig),lo=Math.min(...sig),thr=lo+(hi-lo)*.4;
-  if(hi-lo>=25)sig.forEach((a,i)=>{if(!inRep&&a<thr){inRep=true;start=i;minI=i}else if(inRep){if(a<sig[minI])minI=i;if(a>=thr+(hi-lo)*.2){if(i-start>=4)reps.push({start,bottom:minI,end:i});inRep=false}}}); // амплитуда меньше 25° или короче 0,4 с — не движение
+  if(hi-lo>=25)sig.forEach((a,i)=>{if(!inRep&&a<thr){inRep=true;start=i;minI=i}else if(inRep){if(a<sig[minI])minI=i;if(a>=thr+(hi-lo)*.2){if(S2[i].t-S2[start].t>=0.4)reps.push({start,bottom:minI,end:i});inRep=false}}}); // амплитуда меньше 25° или короче 0,4 с — не движение
   const findings=[],good=[];let score=100;
   const bottoms=reps.map(r=>r.bottom);
   const ratios=S2.map(s=>Math.abs(s.lm[11].x-s.lm[12].x)/(Math.abs((s.lm[11].y+s.lm[12].y)/2-(s.lm[23].y+s.lm[24].y)/2)||.01)).sort((a,b)=>a-b),frontal=ratios[Math.floor(ratios.length/2)]>.85; // вид спереди: плечи шире длины корпуса
@@ -1381,7 +1423,7 @@ function analyze(ex,S2){
     const top=Math.max(...elbow);if(top<160){findings.push({j:['локоть'],k:'Не дожимаете вверх',d:`Локоть распрямляется только до ${Math.round(top)}°. Выжимайте до полного выпрямления.`,at:elbow.indexOf(top)});score-=15}
   }
   if(!reps.length&&ex!=='plank'){findings.push({k:'Повторы не распознаны',d:'Не нашли ни одного полного движения: снимите сбоку, чтобы были видны колени и таз, 2–5 повторов.',at:0});score-=30}
-  const tempo=reps.length?reps.map(r=>((r.end-r.start)*0.1).toFixed(1)):[];
+  const tempo=reps.length?reps.map(r=>(S2[r.end].t-S2[r.start].t).toFixed(1)):[];
   return {reps:reps.length,repList:reps,findings,good,score:Math.max(0,score),tempo,frontal,bottomIdx:bottoms[0]??Math.floor(S2.length/2),knee,hip,elbow,torso};
 }
 // Слои атласа мышц: img/anat/base.png (весь атлас, в приложении серый) + слой на каждую группу (вырезан из того же SVG, Wikimedia Commons CC BY-SA 4.0)
@@ -1416,6 +1458,29 @@ function bodyCrop(lm,vw,vh){const pts=lm.filter(p=>p.v>.4);if(pts.length<6)retur
   w=Math.min(w,vw);h=Math.min(h,vh);x0=Math.max(0,Math.min(x0,vw-w));y0=Math.max(0,Math.min(y0,vh-h));return{x:x0,y:y0,w,h}}
 function frameShot(v,lm,ex,col,w=420,bad){const cr=bodyCrop(lm,v.videoWidth,v.videoHeight),c=document.createElement('canvas');const k=w/cr.w;c.width=w;c.height=Math.round(cr.h*k);const ctx=c.getContext('2d');ctx.drawImage(v,cr.x,cr.y,cr.w,cr.h,0,0,c.width,c.height);
   const lm2=lm.map(p=>({x:(p.x*v.videoWidth-cr.x)/cr.w,y:(p.y*v.videoHeight-cr.y)/cr.h,v:p.v}));drawSkel(ctx,lm2,c.width,c.height,col);if(ex)drawAngles(ctx,lm2,c.width,c.height,ex,bad);return{src:c.toDataURL('image/jpeg',.82),ar:c.width/c.height}}
+// разбор на лету: ролик проигрывается без звука, кадры берём по ходу (~10 в секунду). Перемотка на каждый кадр на телефоне
+// стоила 30–100 с и замораживала экран; так — примерно длина ролика. null — проигрывание не пошло, false — разбор отменён
+async function scanPlay(v,pl,dur,prog,alive){
+  if(!('requestVideoFrameCallback' in v))return null;
+  const out=[];const base=POSE_TS+1000;POSE_TS=base+Math.ceil(dur*1000)+1000;let lastT=-1,lastS=-1;v._snaps=[];const snap=FV.ex==='auto'; // для «Определит сам» кадры пригодятся распознаванию снаряда
+  v.muted=true;v.playsInline=true;
+  if(v.currentTime>0.01)await new Promise(r=>{v.onseeked=r;v.currentTime=0;setTimeout(r,1500)});
+  return await new Promise(res=>{
+    let done=false;const fin=x=>{if(done)return;done=true;v.pause();v.onended=null;res(x===undefined?out:x)};
+    const cb=(now,md)=>{
+      if(done)return;if(!alive())return fin(false);
+      const t=md.mediaTime;if(t>dur+0.05)return fin();
+      if(t-lastT>=0.095){lastT=t;try{const r=pl.detectForVideo(v,base+Math.round(t*1000));const lm=r.landmarks&&r.landmarks[0];
+        if(lm)out.push({t,lm:lm.map(p=>({x:p.x,y:p.y,v:p.visibility})),l:lm.map(p=>[p.x,p.y,p.visibility]),w:r.worldLandmarks&&r.worldLandmarks[0]?r.worldLandmarks[0].map(p=>[p.x,p.y,p.z]):null});
+        prog(Math.min(1,t/dur),lm)}catch(e){console.warn(e)}
+        if(snap&&t-lastS>=0.24){lastS=t;try{const c=document.createElement('canvas'),k=Math.min(1,480/v.videoHeight);c.width=Math.round(v.videoWidth*k);c.height=Math.round(v.videoHeight*k);c.getContext('2d').drawImage(v,0,0,c.width,c.height);v._snaps.push({t,url:c.toDataURL('image/jpeg',.85)})}catch(e){}}}
+      v.requestVideoFrameCallback(cb)};
+    v.requestVideoFrameCallback(cb);v.onended=()=>fin();
+    const vis=()=>{if(done)return document.removeEventListener('visibilitychange',vis);if(!document.hidden&&v.paused&&alive())v.play().catch(()=>{})};document.addEventListener('visibilitychange',vis);
+    setTimeout(()=>fin(),(dur+20)*1000);
+    v.play().catch(()=>fin(null));
+  }).then(r=>{if(r&&r.length)r.seen=1;return r});
+}
 async function seekTo(v,t){ // ждём не только seeked, но и реально отрисованный кадр (иначе в фоне все кадры одинаковые)
   await new Promise(r=>{if(Math.abs(v.currentTime-t)<1e-3&&v.readyState>=2)return r();v.onseeked=r;v.currentTime=t});
   if(!('requestVideoFrameCallback' in v))return true;
@@ -1550,7 +1615,11 @@ const EX2MUS={abs:'core',obliques:'core',lowerback:'back',chest:'chest',shoulder
 let EXV=null; // видео разбора держим вне шторки, пока человек выбирает упражнение
 function exHold(v){let h=$('#exhold');if(!h){h=document.createElement('div');h.id='exhold';h.style.cssText='position:fixed;left:-9999px;top:0;width:2px;height:2px;overflow:hidden;opacity:0;pointer-events:none';document.body.appendChild(h)}h.innerHTML='';h.appendChild(v);EXV=v}
 async function exFrameEmb(v,times,onStatus,stop){ // кадры видео → MobileCLIP (видит снаряд: штанга, блок, тренажёр); stop() — человек нажал «Без снаряда» или ушёл: видео разбора больше не трогаем
-  try{const embed=await loadClip(onStatus);if(stop&&stop())return null;const out=[];for(const t of times){if(stop&&stop())return null;await seekTo(v,t);const c=document.createElement('canvas'),k=Math.min(1,480/v.videoHeight);c.width=Math.round(v.videoWidth*k);c.height=Math.round(v.videoHeight*k);c.getContext('2d').drawImage(v,0,0,c.width,c.height);out.push(await embed(c.toDataURL('image/jpeg',.85)))}return out}
+  try{const embed=await loadClip(onStatus);if(stop&&stop())return null;const out=[];for(const t of times){if(stop&&stop())return null;
+      // кадр, запомненный во время проигрывания (scanPlay), — без перемотки; иначе по-старому
+      const sn=(v._snaps||[]).reduce((b,x)=>!b||Math.abs(x.t-t)<Math.abs(b.t-t)?x:b,null);let url;
+      if(sn&&Math.abs(sn.t-t)<=0.35)url=sn.url;else{await seekTo(v,t);const c=document.createElement('canvas'),k=Math.min(1,480/v.videoHeight);c.width=Math.round(v.videoWidth*k);c.height=Math.round(v.videoHeight*k);c.getContext('2d').drawImage(v,0,0,c.width,c.height);url=c.toDataURL('image/jpeg',.85)}
+      out.push(await embed(url))}return out}
   catch(e){console.warn('MobileCLIP недоступен, определяем только по позе',e);return null}}
 function exSlots(S2){const n=Math.round(Math.max(...S2.map(s=>s.t))*10)+1,fr=Array(n).fill(null);S2.forEach(s=>{if(s.w)fr[Math.round(s.t*10)]={t:s.t,w:s.w,l:s.l,lm:s.lm}});return fr}
 async function exAfter(src,ex,S2,v,live){
@@ -1566,7 +1635,7 @@ async function exAfter(src,ex,S2,v,live){
     if(!cached){const card=$('#fstat')&&$('#fstat').closest('.card');if(card)card.insertAdjacentHTML('afterend',`<button class="btn sec" id="exskip" style="margin-top:10px">Без снаряда — быстрее</button><div class="small muted" id="exskipn" style="text-align:center;margin:0 8px">Модель распознавания снаряда качается один раз; по позе тоже определим, но реже угадаем штангу или блок</div>`);const b=$('#exskip');if(b)b.onclick=()=>{skipped=true;skip(null);b.remove();const n=$('#exskipn');if(n)n.remove();st('Определяем упражнение по позе…')}}
     const bar=p=>{const a=$('#fpct'),bb=$('#fbar');if(a)a.textContent=p==null?'':p+'%';if(bb)bb.style.width=(p||0)+'%'};
     frameEmb=times=>{if(!cached&&$('#exskip')){st('Загружаем распознавание снаряда (один раз, ~72 МБ)…');bar(null)}
-      return Promise.race([exFrameEmb(v,times,t=>{if(!$('#exskip'))return;const m=/(\d+)%/.exec(t);if(m){st('Загружаем распознавание снаряда (один раз, ~72 МБ)…');bar(+m[1])}else{st(t);bar(100)}},()=>skipped||(live&&!live())),skipP])};
+      return Promise.race([exFrameEmb(v,times,t=>{if(!$('#exskip'))return;const m=/(\d+)%/.exec(t);if(m){const mb=/(\d+) из (\d+) МБ/.exec(t);st(mb?`Скачиваем распознавание снаряда: ${mb[1]} из ${mb[2]} МБ — один раз`:'Скачиваем распознавание снаряда (один раз, ~72 МБ)…');bar(+m[1])}else{st(t);bar(100)}},()=>skipped||(live&&!live())),skipP])};
   }
   const res=await exRecognize(fr,ar,frameEmb);if(live&&!live())return;
   {const b=$('#exskip'),n=$('#exskipn');if(b)b.remove();if(n)n.remove()}
@@ -1578,22 +1647,26 @@ async function exAfter(src,ex,S2,v,live){
   if(ex.startsWith('lib:'))return exPick(ex.slice(4),true,live);
   const top=res.top.slice(0,5),names=Object.fromEntries((EXL||[]).map(x=>[x.id,x]));
   sheet('Что вы делали?',`<div class="small muted" style="margin:0 4px 10px">Камера сравнила движение с ${EXR.d.ids.length} упражнениями библиотеки. Выберите своё — разбор будет по нему, а выбор запомнится.</div>
-   ${top.map((x,i)=>{const e=names[x.id];return e?`<button class="opt" onclick="exPick('${x.id}')"><div class="thumb" style="width:64px;height:64px;border-radius:12px;overflow:hidden;flex:none;background:var(--card2)"><img src="${EXIMG(x.id)}0.jpg" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.remove()"></div><div style="flex:1;min-width:0"><div style="font-weight:700">${e.n}</div><div class="small muted">${i===0?'скорее всего':i<3?'похоже':'возможно'} · ${EXEQ[e.eq]||'без инвентаря'}</div></div><span class="chev">${ic('chev')}</span></button>`:''}).join('')}
+   ${top.map((x,i)=>{const e=names[x.id];return e?`<button class="opt" onclick="exPick('${x.id}')"><div class="thumb" style="width:64px;height:64px;border-radius:12px;overflow:hidden;flex:none;background:var(--card2)"><img src="${EXIMG(x.id)}t.jpg" alt="" decoding="async" style="width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.f){this.dataset.f=1;this.src=this.src.replace('t.jpg','0.jpg')}else this.remove()"></div><div style="flex:1;min-width:0"><div style="font-weight:700">${e.n}</div><div class="small muted">${i===0?'скорее всего':i<3?'похоже':'возможно'} · ${EXEQ[e.eq]||'без инвентаря'}</div></div><span class="chev">${ic('chev')}</span></button>`:''}).join('')}
    <button class="btn sec" onclick="exLibPick()">${ic('search')} Другое — найти в библиотеке</button>
    <div class="concept">Определение: поза по 3D-точкам суставов + обученная модель 22 частых упражнений + MobileCLIP по кадрам (видит снаряд). На проверке 28 роликов верное упражнение в первой пятёрке в 23 случаях — поэтому выбор за вами.</div>`);
 }
 const cosSim=(a,b)=>{let s=0,x=0,y=0;const C=EXR.d.cls;for(let i=0;i<a.length;i++){const u=(a[i]-C.mu[i])/C.sd[i],v=(b[i]-C.mu[i])/C.sd[i];s+=u*v;x+=u*u;y+=v*v}return s/Math.sqrt(x*y||1)};
 function exLibPick(){sheet('Какое упражнение?',`<input class="search" type="search" placeholder="Например «жим лёжа»" oninput="exLibRender(this.value)" style="margin-bottom:10px"><div id="exlibres"></div>`);exLibRender('');if(!EXL)loadEX().then(()=>{const q=$('#exlibres')&&$('#sbody .search');if(q)exLibRender(q.value)})}
 function exLibRender(q){const box=$('#exlibres');if(!box)return;const k=norm_(q);const r=(EXL||[]).filter(x=>!k||norm_(x.n).includes(k)||norm_(x.en).includes(k)).slice(0,30);
-  box.innerHTML=r.map(x=>`<button class="opt" onclick="exPick('${x.id}')"><div class="thumb" style="width:52px;height:52px;border-radius:10px;overflow:hidden;flex:none;background:var(--card2)"><img src="${EXIMG(x.id)}0.jpg" alt="" style="width:100%;height:100%;object-fit:cover" onerror="this.remove()"></div><div style="flex:1;font-weight:600">${x.n}</div></button>`).join('')||'<div class="card small muted">Не нашли</div>'}
+  box.innerHTML=r.map(x=>`<button class="opt" onclick="exPick('${x.id}')"><div class="thumb" style="width:52px;height:52px;border-radius:10px;overflow:hidden;flex:none;background:var(--card2)"><img src="${EXIMG(x.id)}t.jpg" alt="" decoding="async" style="width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.f){this.dataset.f=1;this.src=this.src.replace('t.jpg','0.jpg')}else this.remove()"></div><div style="flex:1;font-weight:600">${x.n}</div></button>`).join('')||'<div class="card small muted">Не нашли</div>'}
 function exPick(id,silent,live){
   const L=EXR.last;if(!L||!EXV)return openForm();const x=(EXL||[]).find(e=>e.id===id);
-  if(!silent){S.exPicks=S.exPicks||[];S.exPicks.push({id,x:L.x.map(v=>Math.round(v*100)/100),d:today0()});if(S.exPicks.length>60)S.exPicks.shift()}
+  if(!silent){if(exPick.busy)return; // второе нажатие, пока готовится разбор, — не запускаем ещё один
+    exPick.busy=1;setTimeout(()=>exPick.busy=0,1500);
+    const sb=$('#sbody');if(sb){sb.querySelectorAll('.opt').forEach(b=>{b.disabled=true;b.style.opacity=.55});sb.insertAdjacentHTML('afterbegin','<div class="card small muted" style="text-align:center;margin-bottom:10px">Готовим разбор…</div>')}
+    S.exPicks=S.exPicks||[];const rec={id,x:L.x.map(v=>Math.round(v*100)/100),d:today0()};
+    if(L.pick!=null&&S.exPicks[L.pick]&&S.exPicks[L.pick].x.join()===rec.x.join())S.exPicks[L.pick]=rec;else{S.exPicks.push(rec);if(S.exPicks.length>60)S.exPicks.shift();L.pick=S.exPicks.length-1}} // передумал — заменяем выбор, а не копим
   S.exNames=S.exNames||{};S.exMus=S.exMus||{};const key='lib:'+id;
   if(x){S.exNames[key]=x.n;S.exMus[key]=[...new Set(x.pm.concat(x.sm).map(m=>EX2MUS[EXMAP[m]]).filter(Boolean))]}save();
   const t0=$('#stitle').textContent,tk=exPick.n=(exPick.n||0)+1,lv=live||(()=>tk===exPick.n&&$('#sheet').classList.contains('on')&&$('#stitle').textContent===t0);
-  if(TECHMAP[id])return formResult(L.src,TECHMAP[id],L.S2,EXV,lv); // для 6 упражнений — подробные правила техники
-  genericResult(id,key,lv)
+  const fail=e=>{console.error(e);exPick.busy=0;if(lv())sheet('Не получилось',`<div class="card">${e&&e.message||'Разбор не удался'}</div><button class="btn" onclick="openForm()">Попробовать ещё</button>`)};
+  try{Promise.resolve(TECHMAP[id]?formResult(L.src,TECHMAP[id],L.S2,EXV,lv):genericResult(id,key,lv)).catch(fail)}catch(e){fail(e)} // для 6 упражнений — подробные правила техники
 }
 function exAlign(r,e){ // эталон, развёрнутый к вашему ролику (зеркало и порядок поз); невидимые на фото эталона суставы не считаем
   const D=EXR.d,best={d:Infinity},vis=(m,k)=>!m||!m[r]||m[r][k]==='1';for(const mir of [false,true])for(const sw of [false,true]){const g=k=>mir?MIR3[k]:k,K=[...Array(18).keys()],A=K.map(k=>D.A[r][g(k)]),B=K.map(k=>D.B[r][g(k)]),MA=K.map(k=>vis(D.va,g(k))),MB=K.map(k=>vis(D.vb,g(k))),[p,q]=sw?[B,A]:[A,B],[pm,qm]=sw?[MB,MA]:[MA,MB];
@@ -1638,7 +1711,7 @@ async function genericResult(id,key,live){
 
 /* ---------- Видео техники для каждого упражнения (Rutube — открывается в России, запасной YouTube); подбор — tools/exvideo/find.mjs ---------- */
 let EXVID=null;
-async function loadExVid(){if(EXVID)return EXVID;try{const r=await fetch('data/exercise-videos.json');if(!r.ok)throw new Error(r.status);EXVID=await r.json()}catch(e){console.warn('видео упражнений не загрузились',e);return {}}return EXVID}
+async function loadExVid(){if(EXVID)return EXVID;return loadExVid.p=loadExVid.p||(async()=>{try{const r=await fetch('data/exercise-videos.json');if(!r.ok)throw new Error(r.status);EXVID=await r.json();return EXVID}catch(e){console.warn('видео упражнений не загрузились',e);loadExVid.p=null;return {}}})()}
 const mmss=s=>s?Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0'):'';
 function exVideoButton(id){loadExVid().then(V=>{const v=V[id],h=$('#exhero');if(!v||!h||h.dataset.id!==id||h.querySelector('.explay'))return;h.insertAdjacentHTML('beforeend',`<button class="explay" onclick="event.stopPropagation();exPlay('${id}',-1)">${ic('play')}<span>Видео техники${v.dur?' · '+mmss(v.dur):''}</span></button>`)})}
 function exPlay(id,k){if(!navigator.onLine){toast('Видео техники открывается только с интернетом. Описание, мышцы и разбор вашего видео работают и без сети',true);return}if(!EXVID||!EXVID[id])return;const all=[EXVID[id],...(EXVID[id].alt||[])].filter(Boolean),i=((k+1)%all.length+all.length)%all.length,v=all[i],h=$('#exhero');if(!h)return;clearInterval(EXT);
@@ -1651,7 +1724,7 @@ function exPlay(id,k){if(!navigator.onLine){toast('Видео техники о�
 /* Русские субтитры к англоязычным роликам YouTube: data/subs/<id>.json {v:1,segs:[[с,по,"текст"]]}; время берём у плеера через postMessage (enablejsapi=1) */
 async function exSubs(vid,fr){const n=exSubs.n,live=()=>n===exSubs.n&&fr.isConnected;
   exSubs.idx=exSubs.idx||fetch('data/subs/index.json').then(r=>r.ok?r.json():null).then(j=>new Set(j&&j.ids||[])).catch(()=>{exSubs.idx=null;return new Set()}); // список готовых: лишних запросов (и 404) нет
-  let segs=null;if((await exSubs.idx).has(vid))try{const r=await fetch('data/subs/'+encodeURIComponent(vid)+'.json');if(r.ok){const j=await r.json();if(j&&Array.isArray(j.segs))segs=j.segs}}catch(e){}
+  let segs=null;exSubs.c=exSubs.c||{};if((await exSubs.idx).has(vid)){if(!(vid in exSubs.c))try{const r=await fetch('data/subs/'+encodeURIComponent(vid)+'.json');if(r.ok){const j=await r.json();if(j&&Array.isArray(j.segs))exSubs.c[vid]=j.segs}}catch(e){}segs=exSubs.c[vid]||null}
   if(!live())return;const chip=$('#exsubchip'),box=$('#exsub');
   if(!segs){const cap=$('#excap');if(cap)cap.insertAdjacentHTML('afterend','<div id="exsubnote" class="tiny muted" style="margin:4px 4px 0">Видео на английском — смотрите движение, шаги на русском ниже</div>');return}
   if(!segs.length)return; // в ролике нет речи
@@ -1667,7 +1740,7 @@ async function exSubs(vid,fr){const n=exSubs.n,live=()=>n===exSubs.n&&fr.isConne
   const ping=setInterval(()=>{if(!live())return stop();hello()},1000)}
 
 /* ---------- Работа без интернета и на мобильной сети: всё своё на нашем сервере, сохраняется в телефоне (сервис-воркер sw.js + кэш моделей) ---------- */
-if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))try{navigator.serviceWorker.register('sw.js').then(()=>navigator.serviceWorker.ready).then(reg=>reg.active&&reg.active.postMessage({cachePage:location.href.split('#')[0]})).catch(()=>{})}catch(e){}
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))try{navigator.serviceWorker.register('sw.js').then(()=>navigator.serviceWorker.ready).then(reg=>{reg.active&&reg.active.postMessage({cachePage:location.href.split('#')[0]});setTimeout(()=>{try{reg.active&&reg.active.postMessage({tidy:1})}catch(e){}},6000)} /* и через 6 с — доперенести скачанное в новую версию и убрать старую копию */).catch(()=>{})}catch(e){}
 try{if(sessionStorage.getItem('mt-dl')){sessionStorage.removeItem('mt-dl');setTimeout(()=>{openOffline();prefetchAll()},800)}}catch(e){} // продолжаем «Скачать» после перезагрузки
 function openOffline(){
   const cell=navigator.connection&&/cellular/.test(navigator.connection.type||'');
@@ -1691,9 +1764,12 @@ async function prefetchAll(){
     await Promise.all(['data/products.json','data/dishes.json','data/aliases.json','data/exercises.json','data/exercise-videos.json','data/ex-recog.json','models/clipdb.json','models/clipdb.bin'].map(u=>fetch(u,{cache:'reload'}).then(r=>{if(!r.ok)throw new Error(u+' — '+r.status)})));
     await Promise.all([loadDB(),loadEX(),loadExRecog(),loadExVid()]);
     if(!DB||DB.failed||!DB.products.length||!EXL||!EXL.length||!EXVID||!Object.keys(EXVID).length||!EXR.d)throw new Error('не скачались базы продуктов и упражнений');
-    st('Распознавание блюд…',15);await loadClip(t=>{const m=/(\d+)%/.exec(t);st('Распознавание блюд… '+(m?m[1]+'%':'запускаем'),m?15+(+m[1])*.6:75)});
-    st('Камера упражнений…',80);await loadExClip();await loadPose();
-    st('Картинки…',95);await Promise.all([...new Set([...Object.values(DISHES).map(d=>d.img),...MEALS.map(m=>m.img),'img/tech-demo.jpg','img/anat/base.png','squat.mp4',...(S.log||[]).map(e=>e.img).filter(u=>u&&!u.startsWith('data:'))])].filter(Boolean).map(u=>fetch(u).catch(()=>{}))); // примеры блюд и иллюстрации — чтобы без сети не было пустых мест
+    st('Распознавание блюд…',15);await loadClip(t=>{const m=/(\d+)%/.exec(t);st('Распознавание блюд… '+(m?m[1]+'%':'запускаем'),m?15+(+m[1])*.6:null)});
+    st('Камера упражнений…',80);await loadExClip();
+    // модель позы только скачиваем (сама запустится при разборе) — раньше здесь экран замирал на её запуске
+    if(!await posePrefetch((t,p)=>st('Камера упражнений… '+(p==null?'':p+'%'),p==null?null:80+p*.15)))throw new Error('модель разбора скачалась не полностью');
+    await Promise.all(['mediapipe/vision_bundle.mjs','mediapipe/wasm/vision_wasm_internal.js'].map(f=>fetch(LIB(f)).then(r=>{if(!r.ok)throw new Error(f+' — '+r.status)})));
+    st('Картинки…',95);{const ids=(EXL||[]).map(x=>x.id);for(let i=0;i<ids.length;i+=24)await Promise.all(ids.slice(i,i+24).map(id=>fetch(EXIMG(id)+'t.jpg').catch(()=>{})))}await Promise.all([...new Set([...Object.values(DISHES).map(d=>d.img),...MEALS.map(m=>m.img),'img/tech-demo.jpg','img/anat/base.png','squat.mp4',...(S.log||[]).map(e=>e.img).filter(u=>u&&!u.startsWith('data:'))])].filter(Boolean).map(u=>fetch(u).catch(()=>{}))); // примеры блюд и иллюстрации — чтобы без сети не было пустых мест
     try{const reg=navigator.serviceWorker&&await Promise.race([navigator.serviceWorker.ready,new Promise(r=>setTimeout(()=>r(null),3000))]);reg&&reg.active&&reg.active.postMessage({cachePage:location.href.split('#')[0]})}catch(e){} // без сервис-воркера (http, старый браузер) ready не наступает — не ждём вечно
     S.offline=Date.now();save();st('Готово — работает без интернета',100);haptic([10,40,10]);toast('Скачано: работает без интернета');if(S.tab==='me')setTimeout(rerender,300)}
   catch(e){console.error(e);st('Не получилось: '+(/fetch|network|load failed/i.test(e.message||'')?'нет связи':(e.message||e))+'. Проверьте связь и попробуйте ещё раз',null)}}
