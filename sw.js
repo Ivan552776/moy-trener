@@ -2,7 +2,7 @@
    Страница — сначала сеть (с таймаутом 4 с), иначе сохранённая копия. Данные (data/, models/clipdb*, exclip*) — сразу из памяти, обновление в фоне.
    Библиотеки, картинки, шрифты — из памяти, при первом обращении сохраняются. Модели распознавания кэширует сама библиотека (transformers-cache),
    видео не трогаем (нужны частичные ответы 206). Версия кэша меняется при выкладке — старые копии удаляются. */
-const V='mt-2026-10-29a';
+const V='mt-2026-10-29-release';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(['./','index.html'].map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 // страница просит сохранить себя (её адрес заранее неизвестен: index.html на сервере, yobody.html в превью)
 self.addEventListener('message',e=>{const u=e.data&&e.data.cachePage;if(u)e.waitUntil(caches.open(V).then(c=>c.add(new Request(u,{cache:'reload'}))).catch(()=>{}))});
