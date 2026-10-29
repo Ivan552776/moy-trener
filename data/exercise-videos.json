@@ -3061,6 +3061,22 @@
    }
   ]
  },
+ "Chair_Upper_Body_Stretch": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/GSErLGhMBUw",
+  "title": "Basic Chair Stretches | UCLA Rehabilitation Services",
+  "dur": 236,
+  "author": "UCLA Health",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/klSZbRBL6jw",
+    "title": "Растяжка плеч сидя",
+    "dur": 68,
+    "author": "Viktoria Monchenko"
+   }
+  ]
+ },
  "Chest_And_Front_Of_Shoulder_Stretch": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/wk2p4UDe2Yo",
@@ -5199,6 +5215,29 @@
     "title": "Elbow Circles - Mobility Exercise",
     "dur": 81,
     "author": "Shapeshifter Media"
+   }
+  ]
+ },
+ "Elbow_to_Knee": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/_OLcKTP4uHc",
+  "title": "Скручивания локтем к колену (Elbow To Knee Crunches)",
+  "dur": 20,
+  "author": "PHYSICAL TRAINING",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/eDpkD4MQ19I",
+    "title": "How To Do A LYING KNEE TO ELBOW OBLIQUE CRUNCH | Exercise Demonstration Video and Guide",
+    "dur": 32,
+    "author": "Live Lean TV Daily Exercises"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/cBG7FFFu-K4",
+    "title": "Скручивания на пресс \"локоть к колену\".",
+    "dur": 44,
+    "author": " Ivan Kiselev Coach"
    }
   ]
  },
@@ -10494,6 +10533,29 @@
    }
   ]
  },
+ "Overhead_Lat": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/R0V4ldEg5ug",
+  "title": "Overhead Lat & Tricep Stretch",
+  "dur": 38,
+  "author": "Garrett McLaughlin",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/vDycBTl8j8o",
+    "title": "Overhead Tricep and Lat Stretch",
+    "dur": 40,
+    "author": "UNBROKEN FITNESS SOLUTIONS"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/N0XKnKigZPs",
+    "title": "PARTNER SA TRICEP STRETCH",
+    "dur": 18,
+    "author": "Kentucky Strength & Conditioning"
+   }
+  ]
+ },
  "Overhead_Slam": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/95nT63JbjhM",
@@ -12600,6 +12662,29 @@
    }
   ]
  },
+ "Seated_Biceps": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/RGX077f3bEc",
+  "title": "Partner Assist Biceps Stretch/Compression",
+  "dur": 67,
+  "author": "Mark Dugdale",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/28fsv2jsQp0",
+    "title": "Chest and Bicep Stretch - Arms Behind Back",
+    "dur": 26,
+    "author": "MedHabVideos"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/iRwgs7kTqJo",
+    "title": "How To Do Seated Bicep Stretch | Stretching Demo",
+    "dur": 45,
+    "author": "OriGym"
+   }
+  ]
+ },
  "Seated_Cable_Rows": {
   "src": "youtube",
   "embed": "https://www.youtube-nocookie.com/embed/IzoCF_b3cIY",
@@ -12855,6 +12940,29 @@
   "author": "Stretch Coach",
   "alt": []
  },
+ "Seated_Glute": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/w-ktVNGHTuo",
+  "title": "Seated Figure Four Stretch",
+  "dur": 55,
+  "author": "Body Within, Inc",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/_RITGdX5mEY",
+    "title": "Partner Hip Stretch (Glutes and Piriformis)",
+    "dur": 15,
+    "author": "Rehab Science"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/2VE_NLcNMvQ",
+    "title": "Glute Figure 4 Stretch - Ask Doctor Jo",
+    "dur": 29,
+    "author": "AskDoctorJo"
+   }
+  ]
+ },
  "Seated_Good_Mornings": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/97665e7cc11da13b5fc2bfc4f4140719",
@@ -12875,6 +12983,29 @@
     "title": "Наклоны со штангой на плечах: техника и нюансы",
     "dur": 401,
     "author": "ТВОЙ ТРЕНЕР: энциклопедия фитнеса"
+   }
+  ]
+ },
+ "Seated_Hamstring": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/HFPbNaMzW3M",
+  "title": "Stretching exercises - Seated hamstring stretch",
+  "dur": 15,
+  "author": "www.sportsinjuryclinic.net",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/_Dx-_n30mww",
+    "title": "Partner Assisted Hamstring Stretch",
+    "dur": 32,
+    "author": "Nielsen Fitness Premium In-Home (and Virtual) Personal Training"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/feG47pGxJKQ",
+    "title": "Stretching Sunday - Partner Assisted PNF Hamstring Stretch",
+    "dur": 61,
+    "author": "Julie's Garage Gym"
    }
   ]
  },
@@ -14578,6 +14709,29 @@
     "title": "Паучьи сгибания на бицепс со штангой",
     "dur": 45,
     "author": "Тонусный Стиль"
+   }
+  ]
+ },
+ "Spinal_Stretch": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/nHXtu8dsULU",
+  "title": "Chaircise StretchIng Tutorial Seated Spinal Twist",
+  "dur": 24,
+  "author": "Wonder Core US",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/qEylCZuK55c",
+    "title": "Seated Chair Twist",
+    "dur": 117,
+    "author": "Yoga Chuck by Chuck Burmeister"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/6URMDkf2Uxk",
+    "title": "Seated Spinal Twist",
+    "dur": 18,
+    "author": "Whole Body Health Physical Therapy"
    }
   ]
  },
@@ -16754,6 +16908,22 @@
    }
   ]
  },
+ "Upper_Back-Leg_Grab": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/PUVTGBARpoo",
+  "title": "Stretches and Exercises for Lower Back Pain (Seated Forward Bends) | HSS",
+  "dur": 17,
+  "author": "Hospital for Special Surgery",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/DGqhnAVhVpk",
+    "title": "Rhomboid stretch for pain relief 🤩🧘‍♂️💙 #rhomboids #neckpain #osteopathy #balancedmotionclinic",
+    "dur": 20,
+    "author": "OsteoTia"
+   }
+  ]
+ },
  "Upper_Back_Stretch": {
   "src": "rutube",
   "embed": "https://rutube.ru/play/embed/bdf93cf561a123e3c0301a4269a0007c",
@@ -16877,6 +17047,29 @@
   "dur": 39,
   "author": "Тренировки для Подготовки к Волейболу",
   "alt": []
+ },
+ "Vertical_Swing": {
+  "src": "youtube",
+  "embed": "https://www.youtube-nocookie.com/embed/et0FMM5ZNiI",
+  "title": "How to perform a dumbbell vertical swing",
+  "dur": 74,
+  "author": "Human Kinetics",
+  "alt": [
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/-6HY0bucx2Q",
+    "title": "Dumbbell Swing V-Jump",
+    "dur": 85,
+    "author": "The Fat Loss Dr"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/9sqZE7bPSh4",
+    "title": "DB SWING TO JUMP SQUAT",
+    "dur": 55,
+    "author": "Hybrid Strong"
+   }
+  ]
  },
  "Walking_Treadmill": {
   "src": "rutube",
