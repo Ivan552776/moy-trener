@@ -1,0 +1,1570 @@
+[
+ {
+  "id": "grechka_suhaya",
+  "n": "Гречка сухая",
+  "cat": "крупы",
+  "p": 11.7,
+  "f": 2.7,
+  "c": 75.0,
+  "kcal": 346,
+  "portion": {
+   "g": 50,
+   "name": "порция сухой крупы на 1 гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Buckwheat groats, roasted, dry»; сверено 28.10.2026 по зеркалу nutritionvalue.org"
+ },
+ {
+  "id": "grechka_varenaya",
+  "n": "Гречка варёная",
+  "cat": "крупы",
+  "p": 3.4,
+  "f": 0.6,
+  "c": 19.9,
+  "kcal": 92,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Buckwheat groats, roasted, cooked» (FDC 170287); сверено 28.10.2026 по зеркалу nutritionvalue.org"
+ },
+ {
+  "id": "ris_suhoy",
+  "n": "Рис сухой",
+  "cat": "крупы",
+  "p": 7.1,
+  "f": 0.7,
+  "c": 80.0,
+  "kcal": 365,
+  "portion": {
+   "g": 50,
+   "name": "порция сухой крупы на 1 гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Rice, white, long-grain, regular, raw, unenriched»; цифры по памяти, проверить"
+ },
+ {
+  "id": "ris_varenyy",
+  "n": "Рис варёный",
+  "cat": "крупы",
+  "p": 2.7,
+  "f": 0.3,
+  "c": 28.2,
+  "kcal": 130,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Rice, white, long-grain, regular, enriched, cooked»; цифры по памяти, проверить"
+ },
+ {
+  "id": "ris_kruglozernyy_varenyy",
+  "n": "Рис круглозёрный варёный",
+  "cat": "крупы",
+  "p": 2.4,
+  "f": 0.2,
+  "c": 28.7,
+  "kcal": 130,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Rice, white, short-grain, cooked»; цифры по памяти, проверить"
+ },
+ {
+  "id": "ris_buryy_suhoy",
+  "n": "Рис бурый сухой",
+  "cat": "крупы",
+  "p": 7.9,
+  "f": 2.9,
+  "c": 77.2,
+  "kcal": 370,
+  "portion": {
+   "g": 50,
+   "name": "порция сухой крупы на 1 гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Rice, brown, long-grain, raw»; цифры по памяти, проверить"
+ },
+ {
+  "id": "ris_buryy_varenyy",
+  "n": "Рис бурый варёный",
+  "cat": "крупы",
+  "p": 2.6,
+  "f": 0.9,
+  "c": 23.0,
+  "kcal": 111,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Rice, brown, long-grain, cooked»; цифры по памяти, проверить"
+ },
+ {
+  "id": "ovsyanye_hlopya_suhie",
+  "n": "Овсяные хлопья сухие",
+  "cat": "крупы",
+  "p": 13.2,
+  "f": 6.5,
+  "c": 67.7,
+  "kcal": 379,
+  "portion": {
+   "g": 40,
+   "name": "порция хлопьев на 1 каша"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cereals, oats, regular and quick, not fortified, dry»; цифры по памяти, проверить"
+ },
+ {
+  "id": "ovsyanaya_kasha_na_vode",
+  "n": "Овсяная каша на воде",
+  "cat": "крупы",
+  "p": 2.5,
+  "f": 1.5,
+  "c": 12.0,
+  "kcal": 71,
+  "portion": {
+   "g": 250,
+   "name": "тарелка"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cereals, oats, regular and quick, unenriched, cooked with water, without salt»; цифры по памяти, проверить"
+ },
+ {
+  "id": "mannaya_krupa_suhaya",
+  "n": "Манная крупа сухая",
+  "cat": "крупы",
+  "p": 12.7,
+  "f": 1.1,
+  "c": 72.8,
+  "kcal": 360,
+  "portion": {
+   "g": 40,
+   "name": "порция крупы на 1 каша"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Semolina, unenriched»; сверено 28.10.2026 по зеркалу nutritionvalue.org"
+ },
+ {
+  "id": "perlovka_suhaya",
+  "n": "Перловка сухая",
+  "cat": "крупы",
+  "p": 9.9,
+  "f": 1.2,
+  "c": 77.7,
+  "kcal": 352,
+  "portion": {
+   "g": 50,
+   "name": "порция сухой крупы на 1 гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Barley, pearled, raw»; цифры по памяти, проверить"
+ },
+ {
+  "id": "perlovka_varenaya",
+  "n": "Перловка варёная",
+  "cat": "крупы",
+  "p": 2.3,
+  "f": 0.4,
+  "c": 28.2,
+  "kcal": 123,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Barley, pearled, cooked»; цифры по памяти, проверить"
+ },
+ {
+  "id": "psheno_suhoe",
+  "n": "Пшено сухое",
+  "cat": "крупы",
+  "p": 11.0,
+  "f": 4.2,
+  "c": 72.9,
+  "kcal": 378,
+  "portion": {
+   "g": 50,
+   "name": "порция сухой крупы на 1 каша"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Millet, raw»; цифры по памяти, проверить"
+ },
+ {
+  "id": "psheno_varenoe",
+  "n": "Пшённая каша на воде",
+  "cat": "крупы",
+  "p": 3.5,
+  "f": 1.0,
+  "c": 23.7,
+  "kcal": 119,
+  "portion": {
+   "g": 200,
+   "name": "тарелка"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Millet, cooked»; цифры по памяти, проверить"
+ },
+ {
+  "id": "bulgur_suhoy",
+  "n": "Булгур сухой",
+  "cat": "крупы",
+  "p": 12.3,
+  "f": 1.3,
+  "c": 75.9,
+  "kcal": 342,
+  "portion": {
+   "g": 50,
+   "name": "порция сухой крупы на 1 гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Bulgur, dry»; цифры по памяти, проверить"
+ },
+ {
+  "id": "bulgur_varenyy",
+  "n": "Булгур варёный",
+  "cat": "крупы",
+  "p": 3.1,
+  "f": 0.2,
+  "c": 18.6,
+  "kcal": 83,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Bulgur, cooked»; цифры по памяти, проверить"
+ },
+ {
+  "id": "kinoa_suhaya",
+  "n": "Киноа сухая",
+  "cat": "крупы",
+  "p": 14.1,
+  "f": 6.1,
+  "c": 64.2,
+  "kcal": 368,
+  "portion": {
+   "g": 50,
+   "name": "порция сухой крупы на 1 гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Quinoa, uncooked»; цифры по памяти, проверить"
+ },
+ {
+  "id": "kinoa_varenaya",
+  "n": "Киноа варёная",
+  "cat": "крупы",
+  "p": 4.4,
+  "f": 1.9,
+  "c": 21.3,
+  "kcal": 120,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Quinoa, cooked»; цифры по памяти, проверить"
+ },
+ {
+  "id": "kuskus_suhoy",
+  "n": "Кускус сухой",
+  "cat": "крупы",
+  "p": 12.8,
+  "f": 0.6,
+  "c": 77.4,
+  "kcal": 376,
+  "portion": {
+   "g": 50,
+   "name": "порция сухой крупы на 1 гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Couscous, dry»; цифры по памяти, проверить"
+ },
+ {
+  "id": "kuskus_varenyy",
+  "n": "Кускус варёный",
+  "cat": "крупы",
+  "p": 3.8,
+  "f": 0.2,
+  "c": 23.2,
+  "kcal": 112,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Couscous, cooked»; цифры по памяти, проверить"
+ },
+ {
+  "id": "kukuruznaya_krupa_suhaya",
+  "n": "Кукурузная крупа сухая",
+  "cat": "крупы",
+  "p": 7.1,
+  "f": 1.4,
+  "c": 79.6,
+  "kcal": 371,
+  "portion": {
+   "g": 50,
+   "name": "порция сухой крупы на 1 каша"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cereals, corn grits, yellow, regular and quick, enriched, dry»; цифры по памяти, проверить"
+ },
+ {
+  "id": "kukuruznaya_kasha_na_vode",
+  "n": "Кукурузная каша на воде",
+  "cat": "крупы",
+  "p": 1.4,
+  "f": 0.2,
+  "c": 12.8,
+  "kcal": 59,
+  "portion": {
+   "g": 200,
+   "name": "тарелка"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cereals, corn grits, yellow, regular and quick, enriched, cooked with water, without salt»; цифры по памяти, проверить"
+ },
+ {
+  "id": "kukuruznye_hlopya",
+  "n": "Кукурузные хлопья (готовый завтрак)",
+  "cat": "крупы",
+  "p": 7.5,
+  "f": 0.4,
+  "c": 84.0,
+  "kcal": 357,
+  "portion": {
+   "g": 30,
+   "name": "порция (30 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cereals ready-to-eat, KELLOGG, KELLOGG'S Corn Flakes»; цифры по памяти, проверить"
+ },
+ {
+  "id": "granola",
+  "n": "Гранола",
+  "cat": "крупы",
+  "p": 13.7,
+  "f": 24.3,
+  "c": 53.9,
+  "kcal": 489,
+  "portion": {
+   "g": 50,
+   "name": "порция (50 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cereals ready-to-eat, granola, homemade»; цифры по памяти, проверить"
+ },
+ {
+  "id": "hleb_belyy",
+  "n": "Хлеб белый",
+  "cat": "хлеб",
+  "p": 7.6,
+  "f": 3.3,
+  "c": 50.6,
+  "kcal": 266,
+  "portion": {
+   "g": 30,
+   "name": "ломтик"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Bread, white, commercially prepared (includes soft bread crumbs)»; цифры по памяти, проверить"
+ },
+ {
+  "id": "baton_nareznoy",
+  "n": "Батон нарезной",
+  "cat": "хлеб",
+  "p": 7.5,
+  "f": 2.9,
+  "c": 50.9,
+  "kcal": 262,
+  "portion": {
+   "g": 25,
+   "name": "ломтик"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Батон нарезной из муки в/с»; цифры по памяти, проверить"
+ },
+ {
+  "id": "hleb_rzhanoy",
+  "n": "Хлеб ржаной",
+  "cat": "хлеб",
+  "p": 6.6,
+  "f": 1.2,
+  "c": 33.4,
+  "kcal": 174,
+  "portion": {
+   "g": 35,
+   "name": "ломтик"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Хлеб ржаной формовой (из обойной муки)»; цифры по памяти, проверить"
+ },
+ {
+  "id": "hleb_darnitskiy",
+  "n": "Хлеб ржано-пшеничный («Дарницкий»)",
+  "cat": "хлеб",
+  "p": 6.6,
+  "f": 1.1,
+  "c": 41.0,
+  "kcal": 206,
+  "portion": {
+   "g": 35,
+   "name": "ломтик"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Хлеб дарницкий формовой»; цифры по памяти, проверить"
+ },
+ {
+  "id": "hleb_borodinskiy",
+  "n": "Хлеб бородинский",
+  "cat": "хлеб",
+  "p": 6.9,
+  "f": 1.3,
+  "c": 40.9,
+  "kcal": 208,
+  "portion": {
+   "g": 35,
+   "name": "ломтик"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Хлеб бородинский»; цифры по памяти, проверить"
+ },
+ {
+  "id": "hleb_tselnozernovoy",
+  "n": "Хлеб цельнозерновой",
+  "cat": "хлеб",
+  "p": 12.5,
+  "f": 3.5,
+  "c": 42.7,
+  "kcal": 252,
+  "portion": {
+   "g": 30,
+   "name": "ломтик"
+  },
+  "src": "USDA FoodData Central, Foundation «Bread, whole-wheat, commercially prepared» (FDC 335240); цифры по памяти, проверить"
+ },
+ {
+  "id": "baget",
+  "n": "Багет",
+  "cat": "хлеб",
+  "p": 10.8,
+  "f": 2.4,
+  "c": 51.9,
+  "kcal": 272,
+  "portion": {
+   "g": 40,
+   "name": "кусок (40 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Bread, french or vienna (includes sourdough)»; цифры по памяти, проверить"
+ },
+ {
+  "id": "lavash_tonkiy",
+  "n": "Лаваш тонкий",
+  "cat": "хлеб",
+  "p": 9.1,
+  "f": 1.2,
+  "c": 55.7,
+  "kcal": 275,
+  "portion": {
+   "g": 90,
+   "name": "1 лист тонкого лаваша"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Bread, pita, white, enriched» — ближайший аналог тонкого (армянского) лаваша: мука, вода, соль; цифры по памяти, проверить"
+ },
+ {
+  "id": "lavash_syrnyy",
+  "n": "Лаваш сырный",
+  "cat": "хлеб",
+  "p": 11.9,
+  "f": 6.4,
+  "c": 41.9,
+  "kcal": 278,
+  "portion": {
+   "g": 120,
+   "name": "1 рулет/конверт"
+  },
+  "src": "РАСЧЁТ, не справочник: 75% лаваш тонкий (USDA pita) + 25% сыр сулугуни (Скурихин 20,5/22,0/0,4); проверить по реальному рецепту"
+ },
+ {
+  "id": "bulochka_dlya_burgera",
+  "n": "Булочка для бургера",
+  "cat": "хлеб",
+  "p": 9.5,
+  "f": 4.4,
+  "c": 49.5,
+  "kcal": 279,
+  "portion": {
+   "g": 60,
+   "name": "1 булочка для бургера"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Rolls, hamburger or hotdog, plain»; цифры по памяти, проверить"
+ },
+ {
+  "id": "bulochka_dlya_hot_doga",
+  "n": "Булочка для хот-дога",
+  "cat": "хлеб",
+  "p": 9.5,
+  "f": 4.4,
+  "c": 49.5,
+  "kcal": 279,
+  "portion": {
+   "g": 43,
+   "name": "1 булочка для хот-дога"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Rolls, hamburger or hotdog, plain»; цифры по памяти, проверить"
+ },
+ {
+  "id": "bulochka_sdobnaya",
+  "n": "Булочка сдобная",
+  "cat": "хлеб",
+  "p": 7.6,
+  "f": 5.0,
+  "c": 56.4,
+  "kcal": 299,
+  "portion": {
+   "g": 60,
+   "name": "1 булочка"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Сдоба обыкновенная»; цифры по памяти, проверить"
+ },
+ {
+  "id": "bulochka_s_izyumom",
+  "n": "Булочка с изюмом (сдобная, с корицей)",
+  "cat": "хлеб",
+  "p": 6.2,
+  "f": 15.2,
+  "c": 52.5,
+  "kcal": 372,
+  "portion": {
+   "g": 60,
+   "name": "1 булочка"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Sweet rolls, cinnamon, commercially prepared with raisins»; цифры по памяти, проверить"
+ },
+ {
+  "id": "kruassan",
+  "n": "Круассан",
+  "cat": "хлеб",
+  "p": 8.2,
+  "f": 21.0,
+  "c": 45.8,
+  "kcal": 406,
+  "portion": {
+   "g": 60,
+   "name": "1 круассан"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Croissants, butter»; цифры по памяти, проверить"
+ },
+ {
+  "id": "hlebtsy_rzhanye",
+  "n": "Хлебцы ржаные",
+  "cat": "хлеб",
+  "p": 7.9,
+  "f": 1.3,
+  "c": 82.2,
+  "kcal": 366,
+  "portion": {
+   "g": 10,
+   "name": "1 хлебец"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Crackers, crispbread, rye»; цифры по памяти, проверить"
+ },
+ {
+  "id": "suhari_panirovochnye",
+  "n": "Сухари панировочные",
+  "cat": "хлеб",
+  "p": 13.4,
+  "f": 5.3,
+  "c": 72.0,
+  "kcal": 395,
+  "portion": {
+   "g": 15,
+   "name": "1 столовая ложка с горкой"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Bread crumbs, dry, grated, plain»; цифры по памяти, проверить"
+ },
+ {
+  "id": "suhariki_pshenichnye",
+  "n": "Сухарики пшеничные",
+  "cat": "хлеб",
+  "p": 11.9,
+  "f": 6.6,
+  "c": 73.5,
+  "kcal": 407,
+  "portion": {
+   "g": 40,
+   "name": "1 пачка (40 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Croutons, plain» — аналог ржано-пшеничных сухариков без ароматизаторов; цифры по памяти, проверить"
+ },
+ {
+  "id": "suhari_slivochnye",
+  "n": "Сухари сдобные (ванильные)",
+  "cat": "хлеб",
+  "p": 8.5,
+  "f": 10.6,
+  "c": 71.3,
+  "kcal": 398,
+  "portion": {
+   "g": 15,
+   "name": "1 сухарь"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Сухари сливочные высшего сорта»; цифры по памяти, проверить"
+ },
+ {
+  "id": "sushki",
+  "n": "Сушки простые",
+  "cat": "хлеб",
+  "p": 11.0,
+  "f": 1.3,
+  "c": 73.0,
+  "kcal": 347,
+  "portion": {
+   "g": 10,
+   "name": "1 сушка"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Сушки простые»; цифры по памяти, проверить"
+ },
+ {
+  "id": "luk_zharenyy_hrustyaschiy",
+  "n": "Лук жареный хрустящий",
+  "cat": "хлеб",
+  "p": 4.6,
+  "f": 36.0,
+  "c": 52.0,
+  "kcal": 560,
+  "portion": {
+   "g": 10,
+   "name": "1 столовая ложка"
+  },
+  "src": "Этикетка Santa Maria «Crispy Onion» (лук жареный хрустящий): 560 ккал, Ж 36, У 52, Б 4,6 на 100 г; по памяти, проверить"
+ },
+ {
+  "id": "makarony_suhie",
+  "n": "Макароны сухие",
+  "cat": "макароны",
+  "p": 13.0,
+  "f": 1.5,
+  "c": 74.7,
+  "kcal": 371,
+  "portion": {
+   "g": 80,
+   "name": "порция сухих на 1 гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Pasta, dry, enriched»; цифры по памяти, проверить"
+ },
+ {
+  "id": "makarony_otvarnye",
+  "n": "Макароны отварные",
+  "cat": "макароны",
+  "p": 5.8,
+  "f": 0.9,
+  "c": 30.9,
+  "kcal": 158,
+  "portion": {
+   "g": 200,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Pasta, cooked, enriched, without added salt»; цифры по памяти, проверить"
+ },
+ {
+  "id": "vermishel_otvarnaya",
+  "n": "Вермишель отварная",
+  "cat": "макароны",
+  "p": 5.8,
+  "f": 0.9,
+  "c": 30.9,
+  "kcal": 158,
+  "portion": {
+   "g": 100,
+   "name": "порция в суп или гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Pasta, cooked, enriched, without added salt» (вермишель — те же макаронные изделия из пшеничной муки); цифры по памяти, проверить"
+ },
+ {
+  "id": "makarony_tselnozernovye_otvarnye",
+  "n": "Макароны цельнозерновые отварные",
+  "cat": "макароны",
+  "p": 5.3,
+  "f": 0.5,
+  "c": 26.5,
+  "kcal": 124,
+  "portion": {
+   "g": 200,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Pasta, whole-wheat, cooked»; цифры по памяти, проверить"
+ },
+ {
+  "id": "lapsha_yaichnaya_varenaya",
+  "n": "Лапша яичная варёная",
+  "cat": "макароны",
+  "p": 4.5,
+  "f": 2.1,
+  "c": 25.2,
+  "kcal": 138,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Noodles, egg, cooked, enriched»; цифры по памяти, проверить"
+ },
+ {
+  "id": "lapsha_risovaya_suhaya",
+  "n": "Лапша рисовая сухая",
+  "cat": "макароны",
+  "p": 6.0,
+  "f": 0.6,
+  "c": 80.2,
+  "kcal": 364,
+  "portion": {
+   "g": 60,
+   "name": "порция сухой лапши"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Rice noodles, dry»; цифры по памяти, проверить"
+ },
+ {
+  "id": "lapsha_risovaya_varenaya",
+  "n": "Лапша рисовая варёная",
+  "cat": "макароны",
+  "p": 0.9,
+  "f": 0.2,
+  "c": 24.9,
+  "kcal": 108,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Rice noodles, cooked»; цифры по памяти, проверить"
+ },
+ {
+  "id": "lapsha_soba_varenaya",
+  "n": "Лапша соба (гречневая) варёная",
+  "cat": "макароны",
+  "p": 5.1,
+  "f": 0.1,
+  "c": 21.4,
+  "kcal": 99,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Noodles, japanese, soba, cooked»; цифры по памяти, проверить"
+ },
+ {
+  "id": "funchoza_suhaya",
+  "n": "Фунчоза (стеклянная лапша) сухая",
+  "cat": "макароны",
+  "p": 0.2,
+  "f": 0.1,
+  "c": 86.1,
+  "kcal": 351,
+  "portion": {
+   "g": 50,
+   "name": "порция сухой лапши"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Noodles, chinese, cellophane or long rice (mung beans), dehydrated»; цифры по памяти, проверить"
+ },
+ {
+  "id": "lapsha_bystrogo_prigotovleniya",
+  "n": "Лапша быстрого приготовления (сухой брикет)",
+  "cat": "макароны",
+  "p": 10.3,
+  "f": 17.6,
+  "c": 62.2,
+  "kcal": 440,
+  "portion": {
+   "g": 60,
+   "name": "1 брикет"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Soup, ramen noodle, any flavor, dry»; цифры по памяти, проверить"
+ },
+ {
+  "id": "muka_pshenichnaya",
+  "n": "Мука пшеничная",
+  "cat": "мука и тесто",
+  "p": 10.3,
+  "f": 1.0,
+  "c": 76.3,
+  "kcal": 364,
+  "portion": {
+   "g": 130,
+   "name": "стакан (130 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Wheat flour, white, all-purpose, enriched, bleached»; цифры по памяти, проверить"
+ },
+ {
+  "id": "muka_pshenichnaya_tselnozernovaya",
+  "n": "Мука пшеничная цельнозерновая",
+  "cat": "мука и тесто",
+  "p": 13.2,
+  "f": 2.5,
+  "c": 72.0,
+  "kcal": 340,
+  "portion": {
+   "g": 130,
+   "name": "стакан (130 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Wheat flour, whole-grain»; цифры по памяти, проверить"
+ },
+ {
+  "id": "muka_rzhanaya",
+  "n": "Мука ржаная",
+  "cat": "мука и тесто",
+  "p": 10.9,
+  "f": 1.5,
+  "c": 75.4,
+  "kcal": 349,
+  "portion": {
+   "g": 130,
+   "name": "стакан (130 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Rye flour, medium»; цифры по памяти, проверить"
+ },
+ {
+  "id": "muka_risovaya",
+  "n": "Мука рисовая",
+  "cat": "мука и тесто",
+  "p": 6.0,
+  "f": 1.4,
+  "c": 80.1,
+  "kcal": 366,
+  "portion": {
+   "g": 130,
+   "name": "стакан (130 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Rice flour, white»; цифры по памяти, проверить"
+ },
+ {
+  "id": "muka_ovsyanaya",
+  "n": "Мука овсяная",
+  "cat": "мука и тесто",
+  "p": 14.7,
+  "f": 9.1,
+  "c": 65.7,
+  "kcal": 404,
+  "portion": {
+   "g": 100,
+   "name": "стакан (100 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Oat flour, partially debranned»; цифры по памяти, проверить"
+ },
+ {
+  "id": "muka_kukuruznaya",
+  "n": "Мука кукурузная",
+  "cat": "мука и тесто",
+  "p": 6.9,
+  "f": 3.9,
+  "c": 76.9,
+  "kcal": 361,
+  "portion": {
+   "g": 130,
+   "name": "стакан (130 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Corn flour, whole-grain, yellow»; цифры по памяти, проверить"
+ },
+ {
+  "id": "krahmal_kukuruznyy",
+  "n": "Крахмал кукурузный",
+  "cat": "мука и тесто",
+  "p": 0.3,
+  "f": 0.1,
+  "c": 91.3,
+  "kcal": 381,
+  "portion": {
+   "g": 10,
+   "name": "1 столовая ложка"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cornstarch»; цифры по памяти, проверить"
+ },
+ {
+  "id": "krahmal_kartofelnyy",
+  "n": "Крахмал картофельный",
+  "cat": "мука и тесто",
+  "p": 0.1,
+  "f": 0.0,
+  "c": 79.6,
+  "kcal": 313,
+  "portion": {
+   "g": 10,
+   "name": "1 столовая ложка"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Крахмал картофельный»; цифры по памяти, проверить"
+ },
+ {
+  "id": "testo_drozhzhevoe",
+  "n": "Тесто дрожжевое",
+  "cat": "мука и тесто",
+  "p": 6.4,
+  "f": 4.1,
+  "c": 46.1,
+  "kcal": 247,
+  "portion": {
+   "g": 100,
+   "name": "порция теста (100 г)"
+  },
+  "src": "РАСЧЁТ, не справочник: классический рецепт — мука 500 г (USDA all-purpose), вода 300 г, масло 30 г, сахар 10 г, дрожжи сухие 7 г, соль 8 г; проверить по этикетке готового теста"
+ },
+ {
+  "id": "testo_sloenoe",
+  "n": "Тесто слоёное",
+  "cat": "мука и тесто",
+  "p": 7.3,
+  "f": 38.1,
+  "c": 45.1,
+  "kcal": 551,
+  "portion": {
+   "g": 100,
+   "name": "порция теста (100 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Puff pastry, frozen, ready-to-bake»; цифры по памяти, проверить"
+ },
+ {
+  "id": "testo_filo",
+  "n": "Тесто фило",
+  "cat": "мука и тесто",
+  "p": 7.1,
+  "f": 6.0,
+  "c": 52.6,
+  "kcal": 299,
+  "portion": {
+   "g": 50,
+   "name": "3 листа (50 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Phyllo dough»; цифры по памяти, проверить"
+ },
+ {
+  "id": "myod",
+  "n": "Мёд",
+  "cat": "сладкое",
+  "p": 0.3,
+  "f": 0.0,
+  "c": 82.4,
+  "kcal": 304,
+  "portion": {
+   "g": 15,
+   "name": "1 столовая ложка"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Honey» (FDC 169640); цифры по памяти, проверить"
+ },
+ {
+  "id": "varenye",
+  "n": "Варенье",
+  "cat": "сладкое",
+  "p": 0.4,
+  "f": 0.1,
+  "c": 68.9,
+  "kcal": 278,
+  "portion": {
+   "g": 20,
+   "name": "1 столовая ложка"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Jams and preserves»; сверено 28.10.2026 по зеркалу nutritionvalue.org"
+ },
+ {
+  "id": "saharnaya_pudra",
+  "n": "Сахарная пудра",
+  "cat": "сладкое",
+  "p": 0.0,
+  "f": 0.0,
+  "c": 99.8,
+  "kcal": 389,
+  "portion": {
+   "g": 10,
+   "name": "1 столовая ложка"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Sugars, powdered»; цифры по памяти, проверить"
+ },
+ {
+  "id": "kakao_poroshok",
+  "n": "Какао-порошок",
+  "cat": "сладкое",
+  "p": 24.2,
+  "f": 17.5,
+  "c": 27.9,
+  "kcal": 373,
+  "portion": {
+   "g": 10,
+   "name": "2 чайные ложки"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Какао-порошок»; цифры по памяти, проверить"
+ },
+ {
+  "id": "shokolad_molochnyy",
+  "n": "Шоколад молочный",
+  "cat": "сладкое",
+  "p": 7.7,
+  "f": 29.7,
+  "c": 59.4,
+  "kcal": 535,
+  "portion": {
+   "g": 25,
+   "name": "1/4 плитки (25 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Candies, milk chocolate»; цифры по памяти, проверить"
+ },
+ {
+  "id": "shokolad_molochnyy_s_orehami",
+  "n": "Шоколад молочный с орехами",
+  "cat": "сладкое",
+  "p": 8.8,
+  "f": 33.6,
+  "c": 52.3,
+  "kcal": 526,
+  "portion": {
+   "g": 25,
+   "name": "1/4 плитки (25 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Candies, milk chocolate, with almonds»; цифры по памяти, проверить"
+ },
+ {
+  "id": "shokolad_temnyy",
+  "n": "Шоколад тёмный",
+  "cat": "сладкое",
+  "p": 4.9,
+  "f": 31.3,
+  "c": 61.2,
+  "kcal": 546,
+  "portion": {
+   "g": 25,
+   "name": "1/4 плитки (25 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Chocolate, dark, 45- 59% cacao solids»; цифры по памяти, проверить"
+ },
+ {
+  "id": "shokolad_gorkiy",
+  "n": "Шоколад горький (70–85% какао)",
+  "cat": "сладкое",
+  "p": 7.8,
+  "f": 42.6,
+  "c": 45.9,
+  "kcal": 598,
+  "portion": {
+   "g": 25,
+   "name": "1/4 плитки (25 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Chocolate, dark, 70-85% cacao solids»; цифры по памяти, проверить"
+ },
+ {
+  "id": "shokolad_belyy",
+  "n": "Шоколад белый",
+  "cat": "сладкое",
+  "p": 5.9,
+  "f": 32.1,
+  "c": 59.2,
+  "kcal": 539,
+  "portion": {
+   "g": 25,
+   "name": "1/4 плитки (25 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Candies, white chocolate»; цифры по памяти, проверить"
+ },
+ {
+  "id": "shokoladnaya_pasta",
+  "n": "Шоколадно-ореховая паста",
+  "cat": "сладкое",
+  "p": 6.3,
+  "f": 30.9,
+  "c": 57.5,
+  "kcal": 539,
+  "portion": {
+   "g": 15,
+   "name": "1 столовая ложка"
+  },
+  "src": "Этикетка Nutella (Ferrero): 539 ккал, Б 6,3, Ж 30,9, У 57,5 на 100 г; по памяти, проверить"
+ },
+ {
+  "id": "shokoladnyy_batonchik_s_nugoy",
+  "n": "Шоколадный батончик с нугой",
+  "cat": "сладкое",
+  "p": 7.5,
+  "f": 23.9,
+  "c": 62.9,
+  "kcal": 488,
+  "portion": {
+   "g": 50,
+   "name": "1 батончик (50 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Candies, MARS SNACKFOOD US, SNICKERS Bar»; цифры по памяти, проверить"
+ },
+ {
+  "id": "karamel_ledentsovaya",
+  "n": "Карамель леденцовая",
+  "cat": "сладкое",
+  "p": 0.0,
+  "f": 0.2,
+  "c": 98.0,
+  "kcal": 394,
+  "portion": {
+   "g": 6,
+   "name": "1 конфета"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Candies, hard»; цифры по памяти, проверить"
+ },
+ {
+  "id": "iris",
+  "n": "Ирис (карамель молочная)",
+  "cat": "сладкое",
+  "p": 4.6,
+  "f": 8.1,
+  "c": 77.0,
+  "kcal": 382,
+  "portion": {
+   "g": 8,
+   "name": "1 конфета"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Candies, caramels»; цифры по памяти, проверить"
+ },
+ {
+  "id": "konfety_shokoladnye",
+  "n": "Конфеты шоколадные с помадной начинкой",
+  "cat": "сладкое",
+  "p": 3.7,
+  "f": 10.2,
+  "c": 78.4,
+  "kcal": 396,
+  "portion": {
+   "g": 13,
+   "name": "1 конфета"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Конфеты, глазированные шоколадом, с помадным корпусом»; цифры по памяти, проверить"
+ },
+ {
+  "id": "zefir",
+  "n": "Зефир",
+  "cat": "сладкое",
+  "p": 0.8,
+  "f": 0.1,
+  "c": 78.3,
+  "kcal": 304,
+  "portion": {
+   "g": 35,
+   "name": "1 штука"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Зефир бело-розовый»; цифры по памяти, проверить"
+ },
+ {
+  "id": "pastila",
+  "n": "Пастила",
+  "cat": "сладкое",
+  "p": 0.5,
+  "f": 0.0,
+  "c": 80.4,
+  "kcal": 324,
+  "portion": {
+   "g": 15,
+   "name": "1 брусок"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Пастила»; цифры по памяти, проверить"
+ },
+ {
+  "id": "marmelad",
+  "n": "Мармелад желейный",
+  "cat": "сладкое",
+  "p": 0.1,
+  "f": 0.1,
+  "c": 79.4,
+  "kcal": 321,
+  "portion": {
+   "g": 12,
+   "name": "1 штука"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Мармелад желейный формовой»; цифры по памяти, проверить"
+ },
+ {
+  "id": "halva_podsolnechnaya",
+  "n": "Халва подсолнечная",
+  "cat": "сладкое",
+  "p": 11.6,
+  "f": 29.7,
+  "c": 54.0,
+  "kcal": 516,
+  "portion": {
+   "g": 50,
+   "name": "кусок (50 г)"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Халва подсолнечная ванильная»; цифры по памяти, проверить"
+ },
+ {
+  "id": "pechenye_pesochnoe",
+  "n": "Печенье песочное",
+  "cat": "сладкое",
+  "p": 6.1,
+  "f": 24.1,
+  "c": 64.5,
+  "kcal": 502,
+  "portion": {
+   "g": 15,
+   "name": "1 печенье"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cookies, shortbread, commercially prepared, plain»; цифры по памяти, проверить"
+ },
+ {
+  "id": "pechenye_savoyardi",
+  "n": "Печенье савоярди",
+  "cat": "сладкое",
+  "p": 9.0,
+  "f": 4.5,
+  "c": 75.0,
+  "kcal": 380,
+  "portion": {
+   "g": 12,
+   "name": "1 печенье"
+  },
+  "src": "Этикетка Forno Bonomi «Savoiardi» (Италия, продаётся в РФ): ≈380 ккал, Б 9, Ж 4,5, У 75 на 100 г; по памяти, проверить"
+ },
+ {
+  "id": "pechenye_ovsyanoe",
+  "n": "Печенье овсяное",
+  "cat": "сладкое",
+  "p": 6.2,
+  "f": 18.1,
+  "c": 68.7,
+  "kcal": 450,
+  "portion": {
+   "g": 25,
+   "name": "1 печенье"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cookies, oatmeal, commercially prepared, regular»; цифры по памяти, проверить"
+ },
+ {
+  "id": "pechenye_saharnoe",
+  "n": "Печенье сахарное («Юбилейное»)",
+  "cat": "сладкое",
+  "p": 7.5,
+  "f": 11.8,
+  "c": 74.4,
+  "kcal": 436,
+  "portion": {
+   "g": 15,
+   "name": "1 печенье"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Печенье сахарное из муки в/с»; цифры по памяти, проверить"
+ },
+ {
+  "id": "pechenye_galetnoe",
+  "n": "Печенье галетное («Мария»)",
+  "cat": "сладкое",
+  "p": 9.7,
+  "f": 10.2,
+  "c": 68.4,
+  "kcal": 393,
+  "portion": {
+   "g": 8,
+   "name": "1 печенье"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Галеты из муки в/с»; цифры по памяти, проверить"
+ },
+ {
+  "id": "kreker",
+  "n": "Крекер солёный",
+  "cat": "сладкое",
+  "p": 9.5,
+  "f": 9.0,
+  "c": 74.3,
+  "kcal": 418,
+  "portion": {
+   "g": 5,
+   "name": "1 крекер"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Crackers, saltines (includes oyster, soda, soup)»; цифры по памяти, проверить"
+ },
+ {
+  "id": "vafli",
+  "n": "Вафли с жировой начинкой",
+  "cat": "сладкое",
+  "p": 3.4,
+  "f": 30.2,
+  "c": 64.7,
+  "kcal": 539,
+  "portion": {
+   "g": 30,
+   "name": "1 вафля"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Вафли с жиросодержащими начинками»; цифры по памяти, проверить"
+ },
+ {
+  "id": "pryaniki",
+  "n": "Пряники",
+  "cat": "сладкое",
+  "p": 4.8,
+  "f": 2.8,
+  "c": 77.7,
+  "kcal": 350,
+  "portion": {
+   "g": 40,
+   "name": "1 пряник"
+  },
+  "src": "Скурихин И.М., Тутельян В.А. «Таблицы химического состава и калорийности российских продуктов питания» (2008), «Пряники заварные»; цифры по памяти, проверить"
+ },
+ {
+  "id": "keks",
+  "n": "Кекс (столичный)",
+  "cat": "сладкое",
+  "p": 5.5,
+  "f": 19.9,
+  "c": 48.6,
+  "kcal": 388,
+  "portion": {
+   "g": 50,
+   "name": "кусок (50 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cake, pound, commercially prepared, butter»; цифры по памяти, проверить"
+ },
+ {
+  "id": "ponchik",
+  "n": "Пончик глазированный",
+  "cat": "сладкое",
+  "p": 6.4,
+  "f": 22.8,
+  "c": 48.4,
+  "kcal": 421,
+  "portion": {
+   "g": 60,
+   "name": "1 пончик"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Doughnuts, yeast-leavened, glazed, enriched (includes honey buns)»; цифры по памяти, проверить"
+ },
+ {
+  "id": "ekler",
+  "n": "Пирожное эклер",
+  "cat": "сладкое",
+  "p": 6.4,
+  "f": 15.7,
+  "c": 24.2,
+  "kcal": 262,
+  "portion": {
+   "g": 60,
+   "name": "1 эклер"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Eclairs, custard-filled with chocolate glaze, prepared from recipe»; цифры по памяти, проверить"
+ },
+ {
+  "id": "vafelnyy_rozhok",
+  "n": "Вафельный рожок",
+  "cat": "сладкое",
+  "p": 8.1,
+  "f": 6.9,
+  "c": 79.0,
+  "kcal": 417,
+  "portion": {
+   "g": 10,
+   "name": "1 рожок"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Ice cream cones, cake or wafer-type»; цифры по памяти, проверить"
+ },
+ {
+  "id": "morozhenoe_shokoladnoe",
+  "n": "Мороженое шоколадное",
+  "cat": "сладкое",
+  "p": 3.8,
+  "f": 11.0,
+  "c": 28.2,
+  "kcal": 216,
+  "portion": {
+   "g": 70,
+   "name": "1 шарик/стаканчик (70 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Ice creams, chocolate»; цифры по памяти, проверить"
+ },
+ {
+  "id": "goroh_suhoy",
+  "n": "Горох сухой",
+  "cat": "бобовые",
+  "p": 24.6,
+  "f": 1.2,
+  "c": 60.4,
+  "kcal": 341,
+  "portion": {
+   "g": 60,
+   "name": "порция сухого на 1 тарелку"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Peas, split, mature seeds, raw»; цифры по памяти, проверить"
+ },
+ {
+  "id": "goroh_varenyy",
+  "n": "Горох варёный",
+  "cat": "бобовые",
+  "p": 8.3,
+  "f": 0.4,
+  "c": 21.1,
+  "kcal": 118,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Peas, split, mature seeds, cooked, boiled, without salt»; цифры по памяти, проверить"
+ },
+ {
+  "id": "fasol_krasnaya_suhaya",
+  "n": "Фасоль красная сухая",
+  "cat": "бобовые",
+  "p": 22.5,
+  "f": 1.1,
+  "c": 61.3,
+  "kcal": 337,
+  "portion": {
+   "g": 60,
+   "name": "порция сухой на 1 гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Beans, kidney, red, mature seeds, raw»; цифры по памяти, проверить"
+ },
+ {
+  "id": "fasol_krasnaya_varenaya",
+  "n": "Фасоль красная варёная",
+  "cat": "бобовые",
+  "p": 8.7,
+  "f": 0.5,
+  "c": 22.8,
+  "kcal": 127,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Beans, kidney, red, mature seeds, cooked, boiled, without salt»; цифры по памяти, проверить"
+ },
+ {
+  "id": "fasol_belaya_suhaya",
+  "n": "Фасоль белая сухая",
+  "cat": "бобовые",
+  "p": 23.4,
+  "f": 0.9,
+  "c": 60.3,
+  "kcal": 333,
+  "portion": {
+   "g": 60,
+   "name": "порция сухой на 1 гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Beans, white, mature seeds, raw»; цифры по памяти, проверить"
+ },
+ {
+  "id": "fasol_belaya_varenaya",
+  "n": "Фасоль белая варёная",
+  "cat": "бобовые",
+  "p": 9.7,
+  "f": 0.4,
+  "c": 25.1,
+  "kcal": 139,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Beans, white, mature seeds, cooked, boiled, without salt»; цифры по памяти, проверить"
+ },
+ {
+  "id": "fasol_konservirovannaya",
+  "n": "Фасоль консервированная",
+  "cat": "бобовые",
+  "p": 5.2,
+  "f": 0.6,
+  "c": 15.1,
+  "kcal": 84,
+  "portion": {
+   "g": 100,
+   "name": "1/2 банки (с жидкостью)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Beans, kidney, red, mature seeds, canned, solids and liquids»; цифры по памяти, проверить"
+ },
+ {
+  "id": "chechevitsa_suhaya",
+  "n": "Чечевица сухая",
+  "cat": "бобовые",
+  "p": 24.6,
+  "f": 1.1,
+  "c": 63.4,
+  "kcal": 352,
+  "portion": {
+   "g": 60,
+   "name": "порция сухой на 1 гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Lentils, raw»; цифры по памяти, проверить"
+ },
+ {
+  "id": "chechevitsa_varenaya",
+  "n": "Чечевица варёная",
+  "cat": "бобовые",
+  "p": 9.0,
+  "f": 0.4,
+  "c": 20.1,
+  "kcal": 116,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Lentils, mature seeds, cooked, boiled, without salt»; цифры по памяти, проверить"
+ },
+ {
+  "id": "nut_suhoy",
+  "n": "Нут сухой",
+  "cat": "бобовые",
+  "p": 20.5,
+  "f": 6.0,
+  "c": 63.0,
+  "kcal": 378,
+  "portion": {
+   "g": 60,
+   "name": "порция сухого на 1 гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Chickpeas (garbanzo beans, bengal gram), mature seeds, raw»; цифры по памяти, проверить"
+ },
+ {
+  "id": "nut_varenyy",
+  "n": "Нут варёный",
+  "cat": "бобовые",
+  "p": 8.9,
+  "f": 2.6,
+  "c": 27.4,
+  "kcal": 164,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Chickpeas (garbanzo beans, bengal gram), mature seeds, cooked, boiled, without salt»; цифры по памяти, проверить"
+ },
+ {
+  "id": "nut_konservirovannyy",
+  "n": "Нут консервированный (без жидкости)",
+  "cat": "бобовые",
+  "p": 7.1,
+  "f": 2.8,
+  "c": 22.5,
+  "kcal": 139,
+  "portion": {
+   "g": 120,
+   "name": "1/2 банки без жидкости"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Chickpeas (garbanzo beans, bengal gram), mature seeds, canned, drained solids»; цифры по памяти, проверить"
+ },
+ {
+  "id": "mash_suhoy",
+  "n": "Маш сухой",
+  "cat": "бобовые",
+  "p": 23.9,
+  "f": 1.2,
+  "c": 62.6,
+  "kcal": 347,
+  "portion": {
+   "g": 60,
+   "name": "порция сухого на 1 гарнир"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Mung beans, mature seeds, raw»; цифры по памяти, проверить"
+ },
+ {
+  "id": "mash_varenyy",
+  "n": "Маш варёный",
+  "cat": "бобовые",
+  "p": 7.0,
+  "f": 0.4,
+  "c": 19.2,
+  "kcal": 105,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Mung beans, mature seeds, cooked, boiled, without salt»; цифры по памяти, проверить"
+ },
+ {
+  "id": "soya_suhaya",
+  "n": "Соя (бобы сухие)",
+  "cat": "бобовые",
+  "p": 36.5,
+  "f": 19.9,
+  "c": 30.2,
+  "kcal": 446,
+  "portion": {
+   "g": 50,
+   "name": "порция сухих бобов"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Soybeans, mature seeds, raw»; цифры по памяти, проверить"
+ },
+ {
+  "id": "hummus",
+  "n": "Хумус",
+  "cat": "бобовые",
+  "p": 7.9,
+  "f": 9.6,
+  "c": 14.3,
+  "kcal": 166,
+  "portion": {
+   "g": 50,
+   "name": "порция (50 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Hummus, commercial»; цифры по памяти, проверить"
+ }
+]

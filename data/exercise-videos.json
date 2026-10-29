@@ -1962,25 +1962,25 @@
   ]
  },
  "Bodyweight_Walking_Lunge": {
-  "src": "youtube",
-  "embed": "https://www.youtube-nocookie.com/embed/hxGI9alxEk4",
-  "title": "bodyweight walking lunge w en",
-  "dur": 56,
-  "author": "Mood Luck",
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/7bb01e8b6c552f4e8d2d8e822024e8eb",
+  "title": "Выпады с ходьбой: техника выполнения",
+  "dur": 284,
+  "author": "ТВОЙ ТРЕНЕР: энциклопедия фитнеса",
   "alt": [
    {
-    "src": "youtube",
-    "embed": "https://www.youtube-nocookie.com/embed/mAgbXQdd4LM",
-    "title": "How To Do Walking Lunges",
-    "dur": 15,
-    "author": "PureGym"
+    "src": "rutube",
+    "embed": "https://rutube.ru/play/embed/01f92dc5eea0e535c6669a4c9cc6a81a",
+    "title": "Выпады с ходьбой: техника и нюансы",
+    "dur": 219,
+    "author": "ТВОЙ ТРЕНЕР: энциклопедия фитнеса"
    },
    {
     "src": "youtube",
-    "embed": "https://www.youtube-nocookie.com/embed/_GqxkGp7NAA",
-    "title": "How To Do A WALKING LUNGE | Exercise Demonstration Video and Guide",
-    "dur": 29,
-    "author": "Live Lean TV Daily Exercises"
+    "embed": "https://www.youtube-nocookie.com/embed/hxGI9alxEk4",
+    "title": "bodyweight walking lunge w en",
+    "dur": 56,
+    "author": "Mood Luck"
    }
   ]
  },
@@ -5406,25 +5406,25 @@
   ]
  },
  "Face_Pull": {
-  "src": "youtube",
-  "embed": "https://www.youtube-nocookie.com/embed/rep-qVOkqgk",
-  "title": "How To: Face Pull",
-  "dur": 163,
-  "author": "ScottHermanFitness",
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/294d0b7d15b8bd003f8940b8766191dd",
+  "title": "Тяга каната к лицу",
+  "dur": 70,
+  "author": "TrainerVolkova",
   "alt": [
    {
-    "src": "youtube",
-    "embed": "https://www.youtube-nocookie.com/embed/0Po47vvj9g4",
-    "title": "How To Do Cable Face Pulls",
-    "dur": 15,
-    "author": "PureGym"
+    "src": "rutube",
+    "embed": "https://rutube.ru/play/embed/ee8271f8ae8583637a469e6190656894",
+    "title": "Facepull. Тяга к лицу для задней дельты",
+    "dur": 377,
+    "author": "kocmoc121"
    },
    {
     "src": "youtube",
-    "embed": "https://www.youtube-nocookie.com/embed/eFxMixk_qPQ",
-    "title": "Rope Face Pull",
-    "dur": 86,
-    "author": "Men's Health"
+    "embed": "https://www.youtube-nocookie.com/embed/rep-qVOkqgk",
+    "title": "How To: Face Pull",
+    "dur": 163,
+    "author": "ScottHermanFitness"
    }
   ]
  },
@@ -7483,12 +7483,27 @@
   ]
  },
  "Jogging_Treadmill": {
-  "src": "youtube",
-  "embed": "https://www.youtube-nocookie.com/embed/UU5VyxZ3D9I",
-  "title": "bodymaster : Бег трусцой на беговой дорожке",
-  "dur": 25,
-  "author": "Bodymaster - полная база упражнений",
-  "alt": []
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/f58dbfe8bc799b6a27080b6e75b87899",
+  "title": "Техника бега на беговой дорожке",
+  "dur": 287,
+  "author": "ZonaSporta.com",
+  "alt": [
+   {
+    "src": "rutube",
+    "embed": "https://rutube.ru/play/embed/113994819b71b4231b0246621a86b767",
+    "title": "Как Бегать на Беговой Дорожке? Сколько Заниматься Правильно?",
+    "dur": 176,
+    "author": "Делай Лучше"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/UU5VyxZ3D9I",
+    "title": "bodymaster : Бег трусцой на беговой дорожке",
+    "dur": 25,
+    "author": "Bodymaster - полная база упражнений"
+   }
+  ]
  },
  "Keg_Load": {
   "src": "rutube",
@@ -12686,12 +12701,27 @@
   ]
  },
  "Seated_Cable_Rows": {
-  "src": "youtube",
-  "embed": "https://www.youtube-nocookie.com/embed/IzoCF_b3cIY",
-  "title": "Seated Cable Rows - Back Exercise - Bodybuilding.com",
-  "dur": 70,
-  "author": "Bodybuilding.com",
-  "alt": []
+  "src": "rutube",
+  "embed": "https://rutube.ru/play/embed/3068eeb209049bcd704db5e0f711fbd7",
+  "title": "Тяга горизонтального блока: техника выполнения",
+  "dur": 246,
+  "author": "ТВОЙ ТРЕНЕР: энциклопедия фитнеса",
+  "alt": [
+   {
+    "src": "rutube",
+    "embed": "https://rutube.ru/play/embed/6bce3fbe8a98ac6ef5cdfcb481eab548",
+    "title": "Тяга горизонтального блока: техника и нюансы",
+    "dur": 337,
+    "author": "ТВОЙ ТРЕНЕР: энциклопедия фитнеса"
+   },
+   {
+    "src": "youtube",
+    "embed": "https://www.youtube-nocookie.com/embed/IzoCF_b3cIY",
+    "title": "Seated Cable Rows - Back Exercise - Bodybuilding.com",
+    "dur": 70,
+    "author": "Bodybuilding.com"
+   }
+  ]
  },
  "Seated_Cable_Shoulder_Press": {
   "src": "youtube",

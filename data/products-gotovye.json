@@ -1,0 +1,744 @@
+[
+ {
+  "id": "baranina_zharenaya",
+  "n": "Баранина жареная",
+  "cat": "мясо",
+  "p": 24.5,
+  "f": 20.9,
+  "c": 0.0,
+  "kcal": 294,
+  "portion": {
+   "g": 120,
+   "name": "порция"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Lamb, domestic, composite of trimmed retail cuts, separable lean and fat, trimmed to 1/4\" fat, choice, cooked», NDB 17007; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "baranina_tushenaya",
+  "n": "Баранина тушёная",
+  "cat": "мясо",
+  "p": 28.7,
+  "f": 24.6,
+  "c": 0.0,
+  "kcal": 344,
+  "portion": {
+   "g": 120,
+   "name": "порция"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Lamb, domestic, shoulder, whole (arm and blade), separable lean and fat, trimmed to 1/4\" fat, choice, cooked, braised»; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "bekon_zharenyy",
+  "n": "Бекон жареный",
+  "cat": "мясо",
+  "p": 33.9,
+  "f": 35.1,
+  "c": 1.7,
+  "kcal": 468,
+  "portion": {
+   "g": 16,
+   "name": "2 ломтика"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Pork, cured, bacon, pre-sliced, cooked, pan-fried», NDB 10862; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "bulon_govyazhiy",
+  "n": "Бульон говяжий",
+  "cat": "бульоны",
+  "p": 2.0,
+  "f": 0.1,
+  "c": 1.2,
+  "kcal": 13,
+  "portion": {
+   "g": 250,
+   "name": "тарелка"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Soup, stock, beef, home-prepared», NDB 06170; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "bulon_kurinyy",
+  "n": "Бульон куриный",
+  "cat": "бульоны",
+  "p": 2.5,
+  "f": 1.2,
+  "c": 3.5,
+  "kcal": 36,
+  "portion": {
+   "g": 250,
+   "name": "тарелка"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Soup, stock, chicken, home-prepared», NDB 06172; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "bulon_rybnyy",
+  "n": "Бульон рыбный",
+  "cat": "бульоны",
+  "p": 2.3,
+  "f": 0.8,
+  "c": 0.0,
+  "kcal": 16,
+  "portion": {
+   "g": 250,
+   "name": "тарелка"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Soup, stock, fish, home-prepared», NDB 06174; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "voda",
+  "n": "Вода",
+  "cat": "напитки",
+  "p": 0.0,
+  "f": 0.0,
+  "c": 0.0,
+  "kcal": 0,
+  "portion": {
+   "g": 250,
+   "name": "стакан"
+  },
+  "src": "вода не содержит белков, жиров и углеводов; 0 ккал по определению"
+ },
+ {
+  "id": "govyadina_mramornaya_zharenaya",
+  "n": "Говядина мраморная жареная",
+  "cat": "мясо",
+  "p": 22.9,
+  "f": 23.5,
+  "c": 0.0,
+  "kcal": 303,
+  "portion": {
+   "g": 200,
+   "name": "стейк"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Beef, rib eye steak, boneless, lip-on, separable lean and fat, trimmed to 1/8\" fat, choice, cooked, grilled»; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "govyadina_tushenaya",
+  "n": "Говядина тушёная",
+  "cat": "мясо",
+  "p": 32.4,
+  "f": 6.8,
+  "c": 0.0,
+  "kcal": 191,
+  "portion": {
+   "g": 100,
+   "name": "порция"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Beef, chuck for stew, separable lean and fat, all grades, cooked, braised»; сверено по nutritionvalue.org (зеркало USDA); мясо без соуса; соус и масло в рецептах считаются отдельно"
+ },
+ {
+  "id": "gorbusha_zapechennaya",
+  "n": "Горбуша запечённая",
+  "cat": "рыба",
+  "p": 24.6,
+  "f": 5.3,
+  "c": 0.0,
+  "kcal": 153,
+  "portion": {
+   "g": 120,
+   "name": "кусок"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Fish, salmon, pink, cooked, dry heat», NDB 15085; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "karp_syroy",
+  "n": "Карп сырой",
+  "cat": "рыба",
+  "p": 17.8,
+  "f": 5.6,
+  "c": 0.0,
+  "kcal": 127,
+  "portion": {
+   "g": 150,
+   "name": "кусок"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Fish, carp, raw», NDB 15008; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "karp_varenyy",
+  "n": "Карп варёный",
+  "cat": "рыба",
+  "p": 22.9,
+  "f": 7.2,
+  "c": 0.0,
+  "kcal": 162,
+  "portion": {
+   "g": 120,
+   "name": "кусок"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Fish, carp, cooked, dry heat», NDB 15009; сверено по nutritionvalue.org (зеркало USDA); у USDA только готовый сухим жаром; для варёного карпа отдельных данных нет, разница в пределах погрешности"
+ },
+ {
+  "id": "kartofel_otvarnoy",
+  "n": "Картофель отварной",
+  "cat": "овощи",
+  "p": 1.7,
+  "f": 0.1,
+  "c": 20.0,
+  "kcal": 86,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Potatoes, boiled, cooked without skin, flesh, without salt», NDB 11367; сверено по nutritionvalue.org (зеркало USDA); FDC 170438"
+ },
+ {
+  "id": "kartofel_syroy",
+  "n": "Картофель сырой",
+  "cat": "овощи",
+  "p": 2.1,
+  "f": 0.1,
+  "c": 17.5,
+  "kcal": 77,
+  "portion": {
+   "g": 100,
+   "name": "1 средняя картофелина"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Potatoes, flesh and skin, raw», NDB 11352; сверено по nutritionvalue.org (зеркало USDA); FDC 170026"
+ },
+ {
+  "id": "kartofel_fri",
+  "n": "Картофель фри",
+  "cat": "готовое",
+  "p": 3.4,
+  "f": 14.7,
+  "c": 41.4,
+  "kcal": 312,
+  "portion": {
+   "g": 110,
+   "name": "средняя порция"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Fast foods, potato, french fried in vegetable oil», NDB 21138; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "kofe_espresso",
+  "n": "Кофе эспрессо",
+  "cat": "напитки",
+  "p": 0.1,
+  "f": 0.2,
+  "c": 1.7,
+  "kcal": 9,
+  "portion": {
+   "g": 30,
+   "name": "1 шот"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Beverages, coffee, brewed, espresso, restaurant-prepared», NDB 14209; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "kukuruza_konservirovannaya",
+  "n": "Кукуруза консервированная",
+  "cat": "овощи",
+  "p": 2.3,
+  "f": 1.2,
+  "c": 14.3,
+  "kcal": 67,
+  "portion": {
+   "g": 80,
+   "name": "порция в салат"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Corn, sweet, yellow, canned, whole kernel, drained solids», NDB 11172; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "kurdyuchnyy_zhir",
+  "n": "Курдючный жир",
+  "cat": "мясо",
+  "p": 6.3,
+  "f": 69.0,
+  "c": 0.0,
+  "kcal": 648,
+  "portion": {
+   "g": 20,
+   "name": "кусочек"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Lamb, Australian, imported, fresh, separable fat, raw»; сверено по nutritionvalue.org (зеркало USDA); сырой бараний жир; курдюк отдельно в USDA нет"
+ },
+ {
+  "id": "kurinoe_bedro_zharenoe",
+  "n": "Куриное бедро жареное",
+  "cat": "птица",
+  "p": 28.2,
+  "f": 10.3,
+  "c": 1.2,
+  "kcal": 218,
+  "portion": {
+   "g": 100,
+   "name": "1 бедро без кости"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Chicken, broilers or fryers, thigh, meat only, cooked, fried», NDB 05096; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "kuritsa_zapechennaya_s_kozhey",
+  "n": "Курица запечённая с кожей",
+  "cat": "птица",
+  "p": 27.3,
+  "f": 13.6,
+  "c": 0.0,
+  "kcal": 239,
+  "portion": {
+   "g": 120,
+   "name": "порция"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Chicken, broilers or fryers, meat and skin, cooked, roasted», NDB 05009; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "morkov_otvarnaya",
+  "n": "Морковь отварная",
+  "cat": "овощи",
+  "p": 0.8,
+  "f": 0.2,
+  "c": 8.2,
+  "kcal": 35,
+  "portion": {
+   "g": 50,
+   "name": "1 морковь"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Carrots, cooked, boiled, drained, without salt», NDB 11125; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "morkov_po_koreyski",
+  "n": "Морковь по-корейски",
+  "cat": "готовое",
+  "p": 1.1,
+  "f": 5.1,
+  "c": 12.0,
+  "kcal": 100,
+  "portion": {
+   "g": 100,
+   "name": "порция"
+  },
+  "src": "по памяти, проверить: типичные значения магазинной моркови по-корейски (health-diet.ru, пользовательская таблица; у производителей 100–136 ккал в зависимости от масла и сахара)"
+ },
+ {
+  "id": "nori",
+  "n": "Нори",
+  "cat": "овощи",
+  "p": 46.1,
+  "f": 0.1,
+  "c": 41.0,
+  "kcal": 349,
+  "portion": {
+   "g": 3,
+   "name": "1 лист"
+  },
+  "src": "по памяти, проверить: сушёные листы нори, типичная этикетка (health-diet.ru даёт 46,1/0,1/41, 349 ккал; этикетки производителей 338–349 ккал)"
+ },
+ {
+  "id": "ovoschnaya_smes_zamorozhennaya",
+  "n": "Овощная смесь замороженная",
+  "cat": "овощи",
+  "p": 3.3,
+  "f": 0.5,
+  "c": 13.5,
+  "kcal": 72,
+  "portion": {
+   "g": 150,
+   "name": "порция"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Vegetables, mixed, frozen, unprepared», NDB 11583; сверено по nutritionvalue.org (зеркало USDA); смесь кукуруза–горошек–морковь–фасоль"
+ },
+ {
+  "id": "pepperoni",
+  "n": "Пепперони",
+  "cat": "колбасы",
+  "p": 19.3,
+  "f": 46.3,
+  "c": 1.2,
+  "kcal": 504,
+  "portion": {
+   "g": 30,
+   "name": "на 1 пиццу"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Pepperoni, beef and pork, sliced», NDB 07057; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "sayra_konservirovannaya",
+  "n": "Сайра консервированная",
+  "cat": "рыба",
+  "p": 18.0,
+  "f": 21.0,
+  "c": 0.0,
+  "kcal": 261,
+  "portion": {
+   "g": 125,
+   "name": "полбанки"
+  },
+  "src": "этикетка «Сайра тихоокеанская натуральная», 5 морей, Open Food Facts код 4607075851306 (world.openfoodfacts.org/product/4607075851306)"
+ },
+ {
+  "id": "salo_svinoe",
+  "n": "Сало свиное",
+  "cat": "мясо",
+  "p": 2.9,
+  "f": 88.7,
+  "c": 0.0,
+  "kcal": 812,
+  "portion": {
+   "g": 20,
+   "name": "ломтик"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Pork, fresh, backfat, raw», NDB 10007; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "svinina_tushenaya",
+  "n": "Свинина тушёная",
+  "cat": "мясо",
+  "p": 25.1,
+  "f": 17.7,
+  "c": 0.0,
+  "kcal": 267,
+  "portion": {
+   "g": 100,
+   "name": "порция"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Pork, fresh, shoulder, blade, boston (steaks), separable lean and fat, cooked, braised»; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "svekla_otvarnaya",
+  "n": "Свёкла отварная",
+  "cat": "овощи",
+  "p": 1.7,
+  "f": 0.2,
+  "c": 10.0,
+  "kcal": 44,
+  "portion": {
+   "g": 100,
+   "name": "1 небольшая свёкла"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Beets, cooked, boiled, drained», NDB 11081; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "slivki_33",
+  "n": "Сливки 33%",
+  "cat": "молочное",
+  "p": 2.2,
+  "f": 33.0,
+  "c": 4.0,
+  "kcal": 322,
+  "portion": {
+   "g": 50,
+   "name": "для взбивания"
+  },
+  "src": "этикетка «Сливки Вкуснотеево 33%», Open Food Facts код 4601751018984 (world.openfoodfacts.org/product/4601751018984)"
+ },
+ {
+  "id": "sosiska_kurinaya",
+  "n": "Сосиска куриная",
+  "cat": "колбасы",
+  "p": 11.0,
+  "f": 20.0,
+  "c": 2.0,
+  "kcal": 232,
+  "portion": {
+   "g": 50,
+   "name": "1 сосиска"
+  },
+  "src": "по памяти, проверить: типичная этикетка куриных сосисок (Петелинка/Черкизово ~230 ккал)"
+ },
+ {
+  "id": "sous_teriyaki",
+  "n": "Соус терияки",
+  "cat": "масла и соусы",
+  "p": 5.9,
+  "f": 0.0,
+  "c": 15.6,
+  "kcal": 89,
+  "portion": {
+   "g": 18,
+   "name": "столовая ложка"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Sauce, teriyaki, ready-to-serve», NDB 06112; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "sous_tomatnyy",
+  "n": "Соус томатный",
+  "cat": "масла и соусы",
+  "p": 1.4,
+  "f": 1.6,
+  "c": 7.4,
+  "kcal": 50,
+  "portion": {
+   "g": 60,
+   "name": "для пасты/пиццы"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Sauce, pasta, spaghetti/marinara, ready-to-serve», NDB 06931; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "sous_tsezar",
+  "n": "Соус цезарь",
+  "cat": "масла и соусы",
+  "p": 2.2,
+  "f": 57.9,
+  "c": 3.3,
+  "kcal": 542,
+  "portion": {
+   "g": 30,
+   "name": "2 столовые ложки"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Salad dressing, caesar dressing, regular»; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "syr_maskarpone",
+  "n": "Сыр маскарпоне",
+  "cat": "сыр",
+  "p": 5.8,
+  "f": 36.0,
+  "c": 3.0,
+  "kcal": 355,
+  "portion": {
+   "g": 50,
+   "name": "для десерта"
+  },
+  "src": "этикетка Mascarpone Fine Life, Open Food Facts код 3800849211998 (world.openfoodfacts.org/product/3800849211998); у разных марок 355–410 ккал"
+ },
+ {
+  "id": "syr_motsarella",
+  "n": "Сыр моцарелла",
+  "cat": "сыр",
+  "p": 22.2,
+  "f": 22.4,
+  "c": 2.2,
+  "kcal": 300,
+  "portion": {
+   "g": 30,
+   "name": "ломтик"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cheese, mozzarella, whole milk», NDB 01026; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "syr_parmezan",
+  "n": "Сыр пармезан",
+  "cat": "сыр",
+  "p": 29.9,
+  "f": 28.8,
+  "c": 8.4,
+  "kcal": 412,
+  "portion": {
+   "g": 10,
+   "name": "тёртый, на порцию"
+  },
+  "src": "USDA FoodData Central, Foundation Foods «Cheese, parmesan, hard»; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "syr_slivochnyy",
+  "n": "Сыр сливочный",
+  "cat": "сыр",
+  "p": 6.2,
+  "f": 34.4,
+  "c": 5.5,
+  "kcal": 350,
+  "portion": {
+   "g": 30,
+   "name": "для роллов/намазки"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cheese, cream», NDB 01017; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "syr_feta",
+  "n": "Сыр фета",
+  "cat": "сыр",
+  "p": 14.2,
+  "f": 21.5,
+  "c": 3.9,
+  "kcal": 265,
+  "portion": {
+   "g": 40,
+   "name": "в салат"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cheese, feta», NDB 01019; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "syr_chedder",
+  "n": "Сыр чеддер",
+  "cat": "сыр",
+  "p": 22.9,
+  "f": 33.3,
+  "c": 3.4,
+  "kcal": 403,
+  "portion": {
+   "g": 25,
+   "name": "ломтик"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Cheese, cheddar», NDB 01009; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "tvorog_2",
+  "n": "Творог 2%",
+  "cat": "молочное",
+  "p": 17.0,
+  "f": 2.0,
+  "c": 3.3,
+  "kcal": 99,
+  "portion": {
+   "g": 150,
+   "name": "пачка/порция"
+  },
+  "src": "этикетка «Творог 2%» Простоквашино, Open Food Facts код 4600605029343 (world.openfoodfacts.org/product/4600605029343)"
+ },
+ {
+  "id": "treska_zapechennaya",
+  "n": "Треска запечённая",
+  "cat": "рыба",
+  "p": 22.8,
+  "f": 0.9,
+  "c": 0.0,
+  "kcal": 105,
+  "portion": {
+   "g": 120,
+   "name": "кусок"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Fish, cod, Atlantic, cooked, dry heat», NDB 15016; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "uksus_risovyy",
+  "n": "Уксус рисовый",
+  "cat": "масла и соусы",
+  "p": 0.0,
+  "f": 0.0,
+  "c": 26.7,
+  "kcal": 100,
+  "portion": {
+   "g": 15,
+   "name": "столовая ложка"
+  },
+  "src": "USDA FoodData Central, Branded «Rice vinegar, MIZKAN» (приправленный для суши: рисовый уксус, инвертный сахар, соль); сверено по nutritionvalue.org (зеркало USDA); неприправленный рисовый уксус ~20 ккал"
+ },
+ {
+  "id": "farsh_baraniy_syroy",
+  "n": "Фарш бараний сырой",
+  "cat": "мясо",
+  "p": 16.6,
+  "f": 23.4,
+  "c": 0.0,
+  "kcal": 282,
+  "portion": {
+   "g": 100,
+   "name": "на 1 котлету/порцию"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Lamb, ground, raw», NDB 17224; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "farsh_govyazhiy_syroy",
+  "n": "Фарш говяжий сырой",
+  "cat": "мясо",
+  "p": 17.2,
+  "f": 20.0,
+  "c": 0.0,
+  "kcal": 254,
+  "portion": {
+   "g": 100,
+   "name": "на 1 котлету/порцию"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Beef, ground, 80% lean meat / 20% fat, raw», NDB 23572; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "farsh_kurinyy_syroy",
+  "n": "Фарш куриный сырой",
+  "cat": "птица",
+  "p": 17.4,
+  "f": 8.1,
+  "c": 0.0,
+  "kcal": 143,
+  "portion": {
+   "g": 100,
+   "name": "на 1 котлету/порцию"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Chicken, ground, raw», NDB 05332; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "farsh_svino_govyazhiy_syroy",
+  "n": "Фарш свино-говяжий сырой",
+  "cat": "мясо",
+  "p": 17.0,
+  "f": 20.6,
+  "c": 0.0,
+  "kcal": 259,
+  "portion": {
+   "g": 100,
+   "name": "на 1 котлету/порцию"
+  },
+  "src": "расчёт 50/50 из USDA SR Legacy «Beef, ground, 80% lean meat / 20% fat, raw» (NDB 23572: 17,2/20,0, 254 ккал) и «Pork, fresh, ground, raw» (NDB 10219: 16,9/21,2, 263 ккал); сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "fasol_konservirovannaya",
+  "n": "Фасоль консервированная",
+  "cat": "овощи",
+  "p": 8.0,
+  "f": 1.1,
+  "c": 21.5,
+  "kcal": 124,
+  "portion": {
+   "g": 80,
+   "name": "в салат"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Beans, kidney, red, mature seeds, canned, drained solids»; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "fasol_struchkovaya",
+  "n": "Фасоль стручковая",
+  "cat": "овощи",
+  "p": 1.8,
+  "f": 0.2,
+  "c": 7.0,
+  "kcal": 31,
+  "portion": {
+   "g": 150,
+   "name": "порция гарнира"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Beans, snap, green, raw», NDB 11052; сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "shampinony_zharenye",
+  "n": "Шампиньоны жареные",
+  "cat": "овощи",
+  "p": 3.6,
+  "f": 0.3,
+  "c": 4.0,
+  "kcal": 26,
+  "portion": {
+   "g": 100,
+   "name": "порция"
+  },
+  "src": "USDA FoodData Central, SR Legacy «Mushrooms, white, stir-fried»; сверено по nutritionvalue.org (зеркало USDA); без масла; масло в рецептах считается отдельно"
+ },
+ {
+  "id": "yagody_zamorozhennye",
+  "n": "Ягоды замороженные",
+  "cat": "ягоды",
+  "p": 0.4,
+  "f": 0.4,
+  "c": 10.7,
+  "kcal": 43,
+  "portion": {
+   "g": 100,
+   "name": "порция"
+  },
+  "src": "расчёт: среднее USDA SR Legacy «Strawberries, frozen, unsweetened» (NDB 09318: 0,4/0,1/9,1, 35 ккал) и «Blueberries, frozen, unsweetened» (NDB 09054: 0,4/0,6/12,2, 51 ккал); сверено по nutritionvalue.org (зеркало USDA)"
+ },
+ {
+  "id": "ikra_tobiko",
+  "n": "Икра тобико",
+  "cat": "рыба",
+  "p": 14.0,
+  "f": 3.0,
+  "c": 4.0,
+  "kcal": 95,
+  "portion": {
+   "g": 15,
+   "name": "столовая ложка"
+  },
+  "src": "этикетка производителя (икра летучей рыбы, Россия); по памяти, проверить"
+ },
+ {
+  "id": "syr_s_plesenyu",
+  "n": "Сыр с плесенью",
+  "cat": "сыр",
+  "p": 21.4,
+  "f": 28.7,
+  "c": 2.3,
+  "kcal": 353,
+  "portion": {
+   "g": 30,
+   "name": "ломтик"
+  },
+  "src": "USDA SR Legacy «Cheese, blue» (NDB 01004); по памяти, проверить"
+ }
+]

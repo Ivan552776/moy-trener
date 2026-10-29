@@ -1,4 +1,4 @@
-# Фотографии для карточек тренировок (прототип «Тренер YoBody»)
+# Фотографии для карточек тренировок (прототип «Мой тренер»)
 
 Все снимки — настоящие фотографии с Pexels, лицензия **Pexels License**
 (https://www.pexels.com/license/): бесплатно для коммерческого использования, указание автора не обязательно, но мы его приводим.
@@ -27,4 +27,4 @@
 - Openverse и Wikimedia Commons просматривались (CC BY-кадры Nenad Stojkovic, Tyler Read, PTPioneer), но там на стенах/одежде читались надписи и логотипы — не взяты. Unsplash napi требовал авторизацию. Источник всех файлов — Pexels.
 - Фото с vkusvill.ru не использовались (для этого набора не требовались).
 
-- anatomy.png (../anatomy.png) — «Muscles front and back.svg», Wikimedia Commons, лицензия CC BY-SA 4.0; растеризовано для подсветки мышц в разборе техники. Атрибуция показана на экране.
+- Атлас мышц (img/anat/*.png, раньше anatomy.png) — «Muscles front and back.svg», авторы OpenStax, Tomáš Kebert и umimeto.org, лицензия CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/), https://commons.wikimedia.org/wiki/File:Muscles_front_and_back.svg. Растеризовано и разрезано на слои по группам мышц для подсветки — это производная работа, она распространяется на тех же условиях CC BY-SA 4.0. Подпись с авторами и лицензией стоит под каждой картой мышц (карточка упражнения, разбор техники).

@@ -10,7 +10,11 @@
 <meta name="description" content="Мой тренер: калории по фото считает база продуктов, техника упражнений разбирается по вашему видео прямо в телефоне. Прототип, открывается на любом телефоне.">
 <meta property="og:title" content="Мой тренер — питание по базе, техника по видео">
 <meta property="og:description" content="Калории по фото считает код по базе продуктов, техника — по вашему видео. Откройте на телефоне.">
-<meta property="og:image" content="https://ivan552776.github.io/moy-trener-demo/og.jpg">
+<meta property="og:image" content="https://ivan552776.github.io/moy-trener-demo/og-2.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Мой тренер — калории по фото и техника по видео">
+<meta property="og:site_name" content="Мой тренер"><meta property="og:locale" content="ru_RU">
+<meta name="twitter:card" content="summary_large_image">
 <meta property="og:url" content="https://ivan552776.github.io/moy-trener-demo/">
 <meta property="og:type" content="website">
 <link rel="icon" href="icon.png"><link rel="apple-touch-icon" href="icon.png">
@@ -408,6 +412,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .tl .kc{font:700 17px var(--num);font-variant-numeric:tabular-nums;padding-top:0}
 .explay{position:absolute;left:10px;bottom:10px;z-index:3;display:flex;align-items:center;gap:8px;padding:9px 14px 9px 10px;border-radius:999px;background:rgba(0,0,0,.68);color:#fff;font-weight:700;font-size:14px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}.explay svg{width:18px;height:18px}
 .exhero iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.exsub{position:absolute;left:8%;right:8%;bottom:14%;z-index:2;display:flex;justify-content:center;pointer-events:none;text-align:center} .exsub span{background:rgba(0,0,0,.72);color:#fff;font-size:14px;font-weight:600;line-height:1.3;padding:4px 9px;border-radius:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden} .exsub:empty{display:none}
 .tl .li.next{color:var(--text2)} .tl .li.next b{color:var(--text);font-weight:600}
 
 /* ---------- полоса недели ---------- */
@@ -549,7 +554,7 @@ const DISHES={
  grechka:{name:'Гречка с тушёной говядиной',cost:150,img:'img/food/grechka.jpg',tone:['#8B5A2B','#6B3A22','#5E8C3A'],parts:[
    {name:'Гречка',grams:180,min:50,max:350,step:10,quick:[120,180,250],recipe:[['buck',100]]},
    {name:'Говядина тушёная',grams:120,min:50,max:300,step:10,quick:[80,120,160],recipe:[['beef',100]]}]},
- caesar:{name:'«Цезарь» с курицей, ВкусВилл',cost:289,store:true,pack:220,img:'img/food/caesar.jpg',tone:['#7CB342','#F5F0E1','#E8C07D'],parts:[
+ caesar:{name:'«Цезарь» с курицей, ВкусВилл',cost:289,store:true,pack:220,tone:['#7CB342','#F5F0E1','#E8C07D'],parts:[
    {name:'Салат «Цезарь» с курицей',grams:220,min:20,max:220,step:10,quick:[110,165,220],recipe:[['caesar',100]]}]}
 };
 function partNutr(pt){
@@ -560,14 +565,14 @@ function partNutr(pt){
   return {p:per.p*k+ax.p,f:per.f*k+ax.f,c:per.c*k+ax.c,k:per.k*k+ax.k,g:grams+ax.g,items:[...items.map(([key,g])=>[key,g*k]),...abs]};
 }
 const MEALS=[
- {n:'Творог с бананом и черникой',img:'img/food/tvorog_banan.jpg',items:[['tvorog',200],['banana',100],['chernika',50]],price:140,time:'5 мин'},
- {n:'Гречка с куриной грудкой',img:'img/food/grechka_kurica.jpg',items:[['buck',200],['chick',150]],price:135,time:'20 мин'},
- {n:'Омлет из 3 яиц с помидорами',img:'img/food/omlet.jpg',items:[['egg',165],['tomato',150]],price:85,time:'10 мин'},
+ {n:'Творог с бананом и черникой',b:1,img:'img/food/tvorog_banan.jpg',cr:['Alex Indigo','CC BY 2.0','https://commons.wikimedia.org/wiki/File:Blueberries,_bananas,_sour_cream_and_cottage_cheese.jpg'],items:[['tvorog',200],['banana',100],['chernika',50]],price:140,time:'5 мин'},
+ {n:'Гречка с куриной грудкой',img:'img/food/grechka_kurica.jpg',cr:['Teemeah','CC BY-SA 3.0','https://commons.wikimedia.org/wiki/File:Tejf%C3%B6l%C3%B6s_csirke_hajdin%C3%A1val.jpg'],items:[['buck',200],['chick',150]],price:135,time:'20 мин'},
+ {n:'Омлет из 3 яиц с помидорами',b:1,img:'img/food/omlet.jpg',items:[['egg',165],['tomato',150]],price:85,time:'10 мин'},
  {n:'Рис с тунцом и огурцом',img:'img/food/ris_tunec.jpg',items:[['rice',180],['tuna',130],['cucumber',100]],price:195,time:'15 мин'},
- {n:'Кефир и цельнозерновые хлебцы',img:'',items:[['kefir',500],['crisp',30]],price:100,time:'1 мин'},
+ {n:'Кефир и цельнозерновые хлебцы',b:1,img:'',items:[['kefir',500],['crisp',30]],price:100,time:'1 мин'},
  {n:'Курица с запечённым картофелем',img:'img/food/kurica_kartofel.jpg',items:[['chick',150],['pbaked',200],['cucumber',75],['tomato',75]],price:170,time:'35 мин'},
  {n:'Макароны с тушёной говядиной',img:'img/food/makarony_govyadina.jpg',items:[['pasta',250],['beef',150]],price:210,time:'25 мин'},
- {n:'Творог с миндалём и клюквой',img:'img/food/tvorog_orehi.jpg',items:[['tvorog',200],['almond',20],['cranb',15]],price:160,time:'5 мин'}
+ {n:'Творог с миндалём и клюквой',b:1,img:'img/food/tvorog_orehi.jpg',cr:['Nevena Kukoljac','CC BY 2.0','https://commons.wikimedia.org/wiki/File:Breakfast_with_quark_and_nuts_2015.jpg'],items:[['tvorog',200],['almond',20],['cranb',15]],price:160,time:'5 мин'}
 ].map(m=>({...m,nut:mix(m.items)}));
 
 /* ---------- сеть клуба: 8 клубов ---------- */
@@ -643,16 +648,18 @@ function norm(pr){ // всё считает код, нейросеть цифр�
 const paceTxt=(pr,n)=>pr.goal==='lose'||pr.goal==='muscle'?(n.capped?'держим вес':PACE[n.minor&&pr.goal==='muscle'&&pr.pace==='fast'?'mid':pr.pace].toLowerCase()):n.adj===0?'держим вес':'';
 const progName=pr=>pr.goal==='lose'&&norm(pr).capped?GOALS.keep.prog:GOALS[pr.goal].prog; // подросткам и при недовесе «Жиросжигание» не предлагаем
 function eaten(){return S.log.reduce((t,e)=>({k:t.k+e.k,p:t.p+e.p,f:t.f+e.f,c:t.c+e.c,cost:t.cost+(e.cost||0)}),{k:0,p:0,f:0,c:0,cost:0})}
-function seedDay(){if(S.log.length)return;const b=mix([['oats',250],['banana',100]]);S.log.push({t:'09:10',n:'Овсянка с бананом',img:'img/food/ovsyanka.jpg',k:b.k,p:b.p,f:b.f,c:b.c,cost:45,acc:'средняя'})}
+function seedDay(){if(S.log.length)return;const now=new Date(),m=now.getHours()*60+now.getMinutes();if(m<360)return; // до 6 утра у Алексея день ещё пустой
+  const tm=Math.min(550,m-20),t=String(Math.floor(tm/60)).padStart(2,'0')+':'+String(tm%60).padStart(2,'0'); // завтрак не «из будущего»: 09:10 или 20 минут назад
+  const b=mix([['oats',250],['banana',100]]);S.log.push({d:today0(),t,n:'Овсянка с бананом',img:'img/food/ovsyanka.jpg',k:b.k,p:b.p,f:b.f,c:b.c,cost:45,acc:'средняя'})}
 function stores(b){return b<400?[['Пятёрочка','цены ниже среднего'],['Магнит','акции каждую неделю'],['Дикси','рядом с домом']]:b<800?[['Перекрёсток','широкий выбор'],['Лента','выгодно на неделю'],['ВкусВилл','готовая еда с КБЖУ']]:[['ВкусВилл','готовая еда с КБЖУ'],['Азбука Вкуса','фермерские продукты'],['Перекрёсток','широкий выбор']]}
 
 /* ---------- программа под цель ---------- */
-const HOME_EX=[['Приседания','3 × 15','Спина прямая, вес на пятках.',null,'Bodyweight_Squat'],['Выпады на месте','3 × 12 на ногу','Колено над стопой, шаг широкий.',null,'Bodyweight_Walking_Lunge'],['Отжимания от стула','3 × 10','Корпус прямой, локти назад.',null,'Bench_Dips'],['Ягодичный мост','3 × 15','Пятки ближе к тазу, сожмите ягодицы вверху.',null,'Butt_Lift_Bridge'],['Планка','3 × 40 сек','Тело — одна прямая линия.',null,'Plank',1]];
+const HOME_EX=[['Приседания','3 × 15','Спина прямая, вес на пятках.',null,'Bodyweight_Squat'],['Выпады вперёд','3 × 12 на ногу','Колено над стопой, шаг широкий.',null,'Bodyweight_Walking_Lunge'],['Отжимания от стула','3 × 10','Корпус прямой, локти назад.',null,'Bench_Dips'],['Ягодичный мост','3 × 15','Пятки ближе к тазу, сожмите ягодицы вверху.',null,'Butt_Lift_Bridge'],['Планка','3 × 40 сек','Тело — одна прямая линия.',null,'Plank',1]];
 // тренировки по дням: [название, упражнения]; упражнение — [название, подходы, подсказка, фото зала, id атласа (кадр и видео), кадр атласа]
 const SPLITS={
  lose:[['Круговая А',[['Приседания с гантелью','3 × 15','Спина прямая, вес на пятках.','squat','Dumbbell_Squat'],['Тяга верхнего блока','3 × 15','Тяните локтями вниз, плечи опущены.','latpull','Wide-Grip_Lat_Pulldown'],['Выпады на месте','3 × 12 на ногу','Колено над стопой, шаг широкий.','lunge','Dumbbell_Lunges'],['Гребной тренажёр','3 × 2 мин','Толчок ногами, потом руки.','rowing','Rowing_Stationary'],['Планка','3 × 40 сек','Тело — одна прямая линия.','plank','Plank',1]]],
        ['Круговая Б',[['Жим ногами в тренажёре','3 × 15','Колени смотрят туда же, куда носки.','legpress','Leg_Press'],['Тяга нижнего блока','3 × 15','Грудь вперёд, тяните к поясу.','seatedrow','Seated_Cable_Rows'],['Жим гантелей сидя','3 × 12','Без рывков, локти чуть впереди.','shoulder','Dumbbell_Shoulder_Press'],['Велотренажёр: интервалы','6 × 1 мин быстро / 1 мин спокойно','Быстро — 7 из 10 по ощущениям.','bike','Recumbent_Bike'],['Скручивания','3 × 15','Поясница прижата, шею не тяните.',null,'Crunches']]]],
- muscle:[['Всё тело А',[['Жим ногами в тренажёре','4 × 8','Добавляйте вес, когда 8 повторов даются легко.','legpress','Leg_Press'],['Жим штанги лёжа','4 × 8','Лопатки сведены, штанга к нижней части груди.','bench','Barbell_Bench_Press_-_Medium_Grip'],['Тяга горизонтального блока','4 × 10','Грудь вперёд, тяните к поясу.','seatedrow','Seated_Cable_Rows'],['Жим гантелей сидя','3 × 10','Без рывков, локти чуть впереди.','shoulder','Dumbbell_Shoulder_Press'],['Подъём гантелей на бицепс','3 × 12','Локти прижаты к корпусу.','curl','Dumbbell_Bicep_Curl']]],
+ muscle:[['Всё тело А',[['Жим ногами в тренажёре','4 × 8','Добавляйте вес, когда 8 повторов даются легко.','legpress','Leg_Press'],['Жим штанги лёжа','4 × 8','Лопатки сведены, штанга к нижней части груди.','bench','Barbell_Bench_Press_-_Medium_Grip'],['Тяга горизонтального блока','4 × 10','Грудь вперёд, тяните к поясу.','seatedrow','Seated_Cable_Rows'],['Жим гантелей сидя','3 × 10','Без рывков, локти чуть впереди.','shoulder','Dumbbell_Shoulder_Press'],['Подъём гантелей на бицепс','3 × 12','Локти прижаты к корпусу.',null,'Dumbbell_Bicep_Curl',1]]],
          ['Всё тело Б',[['Гоблет-приседания','4 × 8','Гантель у груди, садитесь между коленей.','squat','Goblet_Squat'],['Тяга верхнего блока','4 × 10','Плечи опущены, тяните к груди.','latpull','Wide-Grip_Lat_Pulldown'],['Жим гантелей на наклонной скамье','3 × 10','Лопатки сведены, гантели над грудью.',null,'Incline_Dumbbell_Press'],['Румынская тяга','3 × 10','Спина прямая, таз назад, гриф по бёдрам.',null,'Romanian_Deadlift'],['Тяга верхнего блока к лицу','3 × 15','Локти высоко, тяните к лицу.',null,'Face_Pull']]]],
  recomp:[['Всё тело А',[['Жим ногами в тренажёре','3 × 12','Колени смотрят туда же, куда носки.','legpress','Leg_Press'],['Тяга верхнего блока','3 × 12','Плечи опущены.','latpull','Wide-Grip_Lat_Pulldown'],['Жим гантелей сидя','3 × 10','Начните с лёгких гантелей.','shoulder','Dumbbell_Shoulder_Press'],['Планка','3 × 30 сек','Дышите ровно.','plank','Plank',1]]],
          ['Всё тело Б',[['Гоблет-приседания','3 × 12','Гантель у груди, спина прямая.','squat','Goblet_Squat'],['Тяга гантелей в наклоне','3 × 12','Спина прямая, тяните к поясу.',null,'Bent_Over_Two-Dumbbell_Row'],['Обратные выпады с гантелями','3 × 10 на ногу','Колено не уходит вперёд.',null,'Dumbbell_Rear_Lunge'],['Велотренажёр','1 × 15 мин','Можно говорить, не задыхаясь.','bike','Recumbent_Bike'],['Боковая планка','3 × 30 сек на сторону','Тело прямое, таз не проваливается.',null,'Side_Bridge']]]],
@@ -661,7 +668,7 @@ const SPLITS={
  endurance:[['Интервалы',[['Беговая дорожка: интервалы','6 × 1 мин быстро / 1 мин шагом','Быстро — это 7 из 10 по ощущениям.','treadmill','Jogging_Treadmill'],['Велотренажёр','1 × 15 мин','Пульс в зоне «могу говорить».','bike','Recumbent_Bike'],['Выпады на месте','3 × 12 на ногу','Колено над стопой.','lunge','Dumbbell_Lunges'],['Планка','3 × 45 сек','Тело прямое.','plank','Plank',1]]],
             ['Длинное кардио',[['Велотренажёр','1 × 40 мин','Пульс в зоне «могу говорить», ровный темп.','bike','Recumbent_Bike'],['Планка','3 × 45 сек','Тело прямое.','plank','Plank',1]]],
             ['Сила',[['Гоблет-приседания','3 × 12','Гантель у груди, спина прямая.','squat','Goblet_Squat'],['Выпады с гантелями','3 × 10 на ногу','Колено над стопой.','lunge','Dumbbell_Lunges'],['Тяга нижнего блока','3 × 12','Грудь вперёд, тяните к поясу.','seatedrow','Seated_Cable_Rows'],['Боковая планка','3 × 30 сек на сторону','Тело прямое.',null,'Side_Bridge']]]],
- home:[['Дома А',HOME_EX],['Дома Б',[['Отжимания (можно с колен)','3 × 10','Корпус прямой, локти под 45°.',null,'Pushups'],['Ягодичный мост','3 × 15','Сожмите ягодицы вверху.',null,'Butt_Lift_Bridge'],['Выпады назад','3 × 10 на ногу','Колено над стопой.',null,'Bodyweight_Walking_Lunge'],['Скалолаз','3 × 30 сек','Таз не поднимается, темп ровный.',null,'Mountain_Climbers'],['Боковая планка','3 × 20 сек на сторону','Тело прямое.',null,'Side_Bridge']]]]
+ home:[['Дома А',HOME_EX],['Дома Б',[['Отжимания (можно с колен)','3 × 10','Корпус прямой, локти под 45°.',null,'Pushups'],['Ягодичный мост','3 × 15','Сожмите ягодицы вверху.',null,'Butt_Lift_Bridge'],['Выпады назад','3 × 10 на ногу','Шаг назад, колено над стопой; можно без гантелей.',null,'Dumbbell_Rear_Lunge',1],['Скалолаз','3 × 30 сек','Таз не поднимается, темп ровный.',null,'Mountain_Climbers'],['Боковая планка','3 × 20 сек на сторону','Тело прямое.',null,'Side_Bridge']]]]
 };
 const program=()=>{const g=S.profile.goal,sp=SPLITS[S.profile.place==='home'?'home':g],n=effTrains(),d=curDay(),r=S.demo?0:(S.rot||0);return{name:progName(S.profile),days:Array.from({length:n},(_,i)=>sp[(i+r)%sp.length][0]),ex:sp[(d+r)%sp.length][1]}};
 const exPic=x=>x[3]&&x[3]!=='home'?gymPic(x[3]):x[4]?EXIMG(x[4])+(x[5]||0)+'.jpg':gymPic(x[3]); // фото зала, если есть; иначе — кадр атласа
@@ -828,7 +835,9 @@ function suggest(){
   const pr=S.profile,n=norm(pr),e=eaten(),hr=new Date().getHours();
   const remK=Math.max(n.kcal-e.k,0),remP=Math.max(n.p-Math.round(e.p),0),budget=Math.max(budgetOf(pr)-e.cost,0),late=hr>=21||hr<5,lunch=S.log.some(x=>+x.t.slice(0,2)>=11);
   const mealsLeft=hr<11?3:hr<16&&!lunch?2:1,target=Math.max(250,remK/mealsLeft),needP=remP/mealsLeft;
-  const list=late?[]:MEALS.filter(m=>m.price<=budget&&m.nut.k<=remK+150).map(m=>({...m,score:-Math.abs(m.nut.k-target)/target+0.6*Math.min(m.nut.p/Math.max(needP,1),1.2)-m.price/Math.max(budget,1)*.15})).sort((a,b)=>b.score-a.score).slice(0,3);
+  const brk=hr>=5&&hr<11&&!S.log.some(x=>+x.t.slice(0,2)>=5); // утром до первой записи — сначала завтраки (то же условие, что ateNow на «Сегодня»)
+  let pool=MEALS.filter(m=>m.price<=budget&&m.nut.k<=remK+150);if(brk&&pool.some(m=>m.b))pool=pool.filter(m=>m.b);
+  const list=late?[]:pool.map(m=>({...m,score:-Math.abs(m.nut.k-target)/target+0.6*Math.min(m.nut.p/Math.max(needP,1),1.2)-m.price/Math.max(budget,1)*.15})).sort((a,b)=>b.score-a.score).slice(0,3);
   const cheap=Math.min(...MEALS.map(m=>m.price));
   const why=list.length?'':e.k>n.kcal?'over':late?'late':remK<=250?'full':(budgetOf(pr)<cheap||!e.cost)?'small':'money'; // small — бюджет меньше готовых блюд, а не «закончился»
   return {remK,remP,budget,list,why,late,cheap};
@@ -852,7 +861,7 @@ function vFood(){
 }
 function openMeal(i){
   const m=MEALS[i],st=stores(budgetOf(S.profile))[0][0];
-  sheet(m.n,`${m.img?`<div class="plate" style="margin-bottom:12px">${pic(m.img,m.n)}<div class="capt"><span>${m.n}</span><span class="num">${u(m.nut.k,'ккал')}</span></div></div>`:''}<div class="card"><div class="row between"><div><div class="num" style="font-size:34px">${fmt(m.nut.k)}</div><div class="small muted">ккал · ${m.time}</div></div><div class="pill ok">≈ ${m.price} ₽</div></div>
+  sheet(m.n,`${m.img?`<div class="plate" style="margin-bottom:12px">${pic(m.img,m.n)}<div class="capt"><span>${m.n}</span><span class="num">${u(m.nut.k,'ккал')}</span></div></div>${m.cr?`<div class="tiny muted" style="margin:-6px 4px 12px">Фото: ${m.cr[0]} · ${m.cr[1]} · <a href="${m.cr[2]}" target="_blank" rel="noopener" style="color:inherit">Wikimedia Commons</a></div>`:''}`:''}<div class="card"><div class="row between"><div><div class="num" style="font-size:34px">${fmt(m.nut.k)}</div><div class="small muted">ккал · ${m.time}</div></div><div class="pill ok">≈ ${m.price} ₽</div></div>
    <div class="row" style="gap:14px;margin-top:14px">${macroBars(m.nut,norm(S.profile))}</div></div>
    <h2 style="margin-top:14px">Что купить</h2><div class="card list">${m.items.map(([k,g])=>`<div class="li"><div style="flex:1">${P[k].n}</div><div class="muted">${g} г</div></div>`).join('')}</div>
    <a class="btn sec" style="margin-bottom:10px" href="https://yandex.ru/maps/?text=${encodeURIComponent(st)}" target="_blank" rel="noopener">${ic('pin')} ${st} рядом</a>
@@ -991,13 +1000,14 @@ async function saveCustom(code){
 let SC=null;
 function openScan(){
   SC={photo:null};
+  if(!CLIP&&!(navigator.connection&&navigator.connection.saveData))setTimeout(()=>{loadClip().catch(()=>{})},0); // фото ещё не снято, а модель уже качается; photoFlow дождётся того же обещания
   sheet('Записать блюдо',`<label class="card tap" style="display:block;text-align:center;padding:26px 16px;cursor:pointer">
     <div class="bigicon">${ic('cam')}</div>
     <div class="title" style="margin-top:12px">Сфотографировать</div><div class="small muted">или выбрать фото из галереи</div>
     <input type="file" accept="image/*" style="display:none" onchange="gotPhoto(this)"></label>
    <button class="btn sec" style="margin-top:12px" onclick="openSearch()">${ic('search')} Найти в базе продуктов и блюд</button>
    <div class="small muted" style="margin:14px 4px 8px">Или пример для показа:</div>
-   ${Object.entries(DISHES).map(([id,d])=>`<button class="opt" onclick="recognize('${id}')">${plateMini(d)}<div style="flex:1"><div style="font-weight:700">${d.name}</div><div class="small muted">${d.store?'магазинное блюдо из нашей базы':'домашнее блюдо'}</div></div><span class="chev">${ic('chev')}</span></button>`).join('')}`);
+   ${Object.entries(DISHES).filter(([,d])=>d.img).map(([id,d])=>`<button class="opt" onclick="recognize('${id}')">${plateMini(d)}<div style="flex:1"><div style="font-weight:700">${d.name}</div><div class="small muted">${d.store?'магазинное блюдо из нашей базы':'домашнее блюдо'}</div></div><span class="chev">${ic('chev')}</span></button>`).join('')}`);
 }
 function plateMini(d){return `<div class="thumb"><i style="background:conic-gradient(${d.tone[0]} 0 45%,${d.tone[1]} 45% 80%,${d.tone[2]} 80% 100%)"></i>${pic(d.img,d.name)}</div>`}
 function plateInner(d,capt){const im=SC.photo?`<img src="${SC.photo}" alt="">`:d.img?pic(d.img,d.name):`<div class="blob" style="width:30%;height:38%;left:26%;top:30%;background:${d.tone[0]}"></div><div class="blob" style="width:22%;height:26%;left:50%;top:34%;background:${d.tone[1]}"></div><div class="blob" style="width:14%;height:18%;left:47%;top:58%;background:${d.tone[2]};opacity:.9"></div>`;return im+(capt?`<div class="capt"><span>${d.name}</span>${capt===true?'':`<span class="num">${capt}</span>`}</div>`:'')}
@@ -1007,23 +1017,32 @@ const TFJS_URL=LIB('transformers.min.js'); // @huggingface/transformers 4.3.2
 let CLIP=null,CLIPLOAD=null,CLIPDB=null;
 const f16=u=>{const s=u>>15,e=(u>>10)&31,m=u&1023;return (s?-1:1)*(e===0?m*5.960464477539063e-8:e===31?(m?NaN:Infinity):Math.pow(2,e-15)*(1+m/1024))};
 async function loadClip(onStatus){
-  if(CLIP)return CLIP;if(CLIPLOAD)return CLIPLOAD;
-  CLIPLOAD=(async()=>{const T=await import(TFJS_URL);T.env.allowRemoteModels=false;T.env.allowLocalModels=true;T.env.localModelPath=new URL('models/',location.href).href;T.env.backends.onnx.wasm.wasmPaths=LIB('ort/');
+  if(CLIP)return CLIP;
+  const subs=loadClip.subs||(loadClip.subs=new Set());if(onStatus){subs.add(onStatus);if(loadClip.last)onStatus(loadClip.last)}
+  if(CLIPLOAD)return CLIPLOAD;
+  const say=s=>{loadClip.last=s;subs.forEach(f=>{try{f(s)}catch(e){}})};
+  // без движения 45 с во время скачивания (оборвалась мобильная связь) — честная ошибка с «Повторить», а не вечное ожидание
+  let tick=Date.now(),dl=true,imp=false,dog=null;const stall=new Promise((_,rej)=>{dog=setInterval(()=>{if(dl&&Date.now()-tick>(imp?45000:150000))rej(new Error('нет связи: загрузка модели остановилась'))},3000)});
+  CLIPLOAD=Promise.race([stall,(async()=>{say('Загружаем движок нейросети (один раз)…');const T=await import(TFJS_URL);tick=Date.now();imp=true;T.env.allowRemoteModels=false;T.env.allowLocalModels=true;T.env.localModelPath=new URL('models/',location.href).href;T.env.backends.onnx.wasm.wasmPaths=LIB('ort/');
     // база распознавания: дообученные веса по группам (clipdb.bin, float16) + список позиций; модель берём ту, на которой обучали
     const [db,bin]=await Promise.all([fetch('models/clipdb.json',{cache:'no-cache'}).then(r=>r.json()),fetch('models/clipdb.bin',{cache:'no-cache'}).then(r=>r.arrayBuffer())]);
     if(db.v!==2||!Array.isArray(db.bias)||bin.byteLength!==db.groups*db.dim*2)throw new Error('база распознавания старого формата — обновите приложение');
-    const dir=db.dir||'mobileclip',mb=db.mb||37;
-    let last=0;const cb=p=>{if(p.status==='progress'&&p.progress-last>8){last=p.progress;onStatus&&onStatus(`Загружаем модель (один раз, ~${mb} МБ)… `+Math.round(p.progress)+'%')}};
+    const dir=db.dir||'mobileclip',mb=db.mb||72;
+    // проценты — по сумме всех файлов модели (событие progress_total библиотеки); если его нет — по самому файлу .onnx. Маленький config.json первым не даёт «100%»
+    let last=-9,tot=false;const cb=p=>{let pc;if(p.status==='progress_total'){tot=true;pc=p.progress}else if(p.status==='progress'&&!tot&&/\.onnx$/.test(p.file||''))pc=p.progress;else return;
+      if(!(pc>=0))return;tick=Date.now();if(pc>=99.9){if(last<100){last=100;dl=false;say('Готовим модель… это быстро')}return}
+      if(pc-last>=1){last=pc;const all=tot&&p.total>1e6?p.total/1e6:mb,got=tot&&p.loaded>=0?p.loaded/1e6:all*pc/100;
+        say(`Скачиваем модель распознавания: ${Math.floor(got)} из ${Math.round(all)} МБ (${Math.floor(pc)}%) — один раз, дальше без интернета`)}};
     const load=dt=>T.CLIPVisionModelWithProjection.from_pretrained(dir,{dtype:dt,device:'wasm',progress_callback:cb});
-    const dts=db.dtypes||['q4','fp16'];let model=null,err=null;for(const dt of dts){try{model=await load(dt);break}catch(e){err=e;last=0;console.warn('модель '+dt+' не пошла',e)}}if(!model)throw err;
+    const dts=db.dtypes||['q4','fp16'];let model=null,err=null;for(const dt of dts){try{model=await load(dt);break}catch(e){err=e;last=-9;tot=false;console.warn('модель '+dt+' не пошла',e)}}if(!model)throw err;
     const proc=await T.AutoProcessor.from_pretrained(dir);
     const u16=new Uint16Array(bin),dim=db.dim,G=db.groups,W=[];for(let g=0;g<G;g++){const v=new Float32Array(dim);for(let j=0;j<dim;j++)v[j]=f16(u16[g*dim+j]);W.push(v)}
     const byG=Array.from({length:G},()=>[]);db.items.forEach((x,i)=>byG[x.k].push(i));
     CLIPDB={db,W,byG,bias:db.bias};
     try{const S0=db.size||256,warm=await proc(new T.RawImage(new Uint8ClampedArray(S0*S0*3).fill(128),S0,S0,3));await model(warm);await model(warm)}catch(e){} // прогрев: первые прогоны в несколько раз медленнее
     CLIP=async src=>{const img=await T.RawImage.read(src);const out=await model(await proc(img));const e=Float32Array.from(out.image_embeds.data);let s=0;for(const x of e)s+=x*x;s=Math.sqrt(s)||1;return e.map(x=>x/s)};
-    return CLIP})();
-  try{return await CLIPLOAD}catch(e){CLIPLOAD=null;throw e}
+    return CLIP})()]);
+  try{return await CLIPLOAD}catch(e){CLIPLOAD=null;throw e}finally{clearInterval(dog);subs.clear();loadClip.last=''}
 }
 const dotf=(a,b)=>{let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s};
 function clipMatch(e){ // дообученный классификатор по группам «визуальных близнецов» (кефир 1% и 2,5% — одна) + ваши подтверждённые снимки
@@ -1050,8 +1069,8 @@ async function photoFlow(){
   if(!alive())return;
   if(!opens){sheet('Фото не открылось',`<div class="card small muted">Этот формат фото телефон не показывает (часто так бывает с HEIC). Снимите камерой из приложения или выберите фото в JPEG.</div><button class="btn sec" onclick="SC.photo=null;openSearch()">${ic('search')} Найти в базе по названию</button>`);return}
   const st=t=>{const el=$('#fdst');if(el)el.textContent=t};
-  let top=[];
-  try{const embed=await loadClip(st);st('Сравниваем с базой…');SC.emb=await embed(SC.photo);top=clipMatch(SC.emb)}catch(e){console.error(e);top=null}
+  let top=[],lerr='';
+  try{const embed=await loadClip(st);st('Сравниваем с базой…');SC.emb=await embed(SC.photo);top=clipMatch(SC.emb)}catch(e){console.error(e);top=null;lerr=String(e&&e.message||'')}
   if(!alive()||!$('#fdst'))return; // пользователь закрыл шторку или снял другое фото
   await loadDB();if(!alive())return;
   const sure=top&&top.length&&top[0].p>=0.08; // ниже — скорее не еда или совсем незнакомое
@@ -1061,7 +1080,7 @@ async function photoFlow(){
     return `<button class="opt" onclick="pickMatch(${g.i})"><div class="ibox" style="background:var(--accent-soft);color:var(--accent-text)">${ic('food')}</div><div style="flex:1"><div style="font-weight:700">${g.ids.length>1?groupTitle(g.ids.map(i=>it[i].n)):x.n}</div><div class="small muted">${g.p>=.9?'очень похоже':g.p>=.3?'похоже':'возможно'} · ${sub}</div>${vars}</div><span class="chev">${ic('chev')}</span></button>`}).join(''):'';
   const nref=(S.refs||[]).length;
   sheet('Что на фото?',`<div class="plate" style="margin-bottom:12px"><img src="${SC.photo}" alt=""></div>
-    ${top===null?`<div class="card small muted">Модель распознавания не загрузилась (при первом запуске нужен интернет, ~100 МБ, лучше по Wi-Fi; дальше работает без сети). Найдите продукт в базе вручную.</div>`:rows?`<div class="small muted" style="margin:0 4px 8px">Похоже на это из нашей базы — выберите, что на самом деле</div>${rows}`:`<div class="card small muted">Не узнали. Снимите ближе и при хорошем свете или найдите в базе — ваш выбор запомнится.</div>`}
+    ${top===null?`${/нет связи|fetch|network|load/i.test(lerr)&&!CLIP?`<div class="card small" style="margin-bottom:8px"><b>Загрузка модели оборвалась.</b> <span class="muted">Похоже, пропала связь. Скачанное не пропадает — «Повторить» продолжит.</span></div><button class="btn" style="margin-bottom:10px" onclick="photoFlow()">Повторить</button>`:`<div class="card small muted">Модель распознавания не загрузилась (при первом запуске нужен интернет, ~100 МБ, лучше по Wi-Fi; дальше работает без сети). Заранее можно скачать в «Я» → «Работа без интернета». Пока найдите продукт в базе вручную.</div>`}`:rows?`<div class="small muted" style="margin:0 4px 8px">Похоже на это из нашей базы — выберите, что на самом деле</div>${rows}`:`<div class="card small muted">Не узнали. Снимите ближе и при хорошем свете или найдите в базе — ваш выбор запомнится.</div>`}
     <button class="btn sec" onclick="openSearch()">${ic('search')} Найти в базе по названию</button>
     <button class="btn ghost" onclick="openBarcode()">Это упаковка? Штрихкод</button>
     <div class="concept">Модель MobileCLIP (Apple, открытая), дообученная на ${CLIPDB&&CLIPDB.db.nphoto?CLIPDB.db.nphoto.toLocaleString('ru-RU'):'тысячах'} фото еды, сравнивает снимок со всеми ${CLIPDB?CLIPDB.db.items.length:'500+'} позициями нашей базы — ничего чужого предложить не может. Каждый ваш выбор запоминается в телефоне${nref?` (уже ${nref})`:''} и в следующий раз подсказка точнее. Состав и калории всегда из базы, а не «на глаз».</div>`);
@@ -1171,15 +1190,15 @@ function startRest(){
 }
 function addRest(v){addRest.add&&addRest.add(v)}
 function stopRest(){if(restT){clearInterval(restT);restT=null}}
-function finishWorkout(force){
+function finishWorkout(force,homeMin){
   if(S.day!==today0())rollDay();
   const pg=program(),ti=curDay();if(doneToday()){toast('Сегодняшняя тренировка уже записана');return}if(S.done.includes(ti)){toast('Все тренировки этой недели уже сделаны');return}
-  if(!force&&restDay()){sheet('Сегодня день отдыха',`<div class="muted" style="margin:4px 0 14px;line-height:1.45">Вчера уже была тренировка. Новичкам нужен день между занятиями: мышцы и связки восстанавливаются, и следующая тренировка пройдёт лучше. Сегодня подойдёт прогулка.</div><button class="btn" onclick="closeSheet()">Отдохну сегодня</button><button class="btn ghost" onclick="finishWorkout(true)">Всё равно записать</button>`);return}
+  if(!force&&restDay()){sheet('Сегодня день отдыха',`<div class="muted" style="margin:4px 0 14px;line-height:1.45">Вчера уже была тренировка. Новичкам нужен день между занятиями: мышцы и связки восстанавливаются, и следующая тренировка пройдёт лучше. Сегодня подойдёт прогулка.</div><button class="btn" onclick="closeSheet()">Отдохну сегодня</button><button class="btn ghost" onclick="finishWorkout(true,${homeMin||0})">Всё равно записать</button>`);return}
   S.done.push(ti);S.doneOn=S.doneOn||{};S.doneOn[today0()]=ti;if(!S.demo&&S.plan&&!S.plan.includes((new Date().getDay()+6)%7))S.plan=planWeek(); // тренировка вне плана — остаток недели пересобирается
   const doneSets=setsDone(pg),allSets=pg.ex.reduce((s,x)=>s+setsOf(x),0)+S.extra.length*3,full=doneSets>=allSets;
-  const timed=!!S.startedAt,mins=timed?Math.max(1,Math.round((Date.now()-S.startedAt)/60000)):0,kcal=Math.round(4*S.profile.w*mins/60); // 4 МЕТ сверх покоя × вес × часы — как в норме; без отмеченных подходов время не выдумываем
+  const timed=!!(homeMin||S.startedAt),mins=homeMin||(S.startedAt?Math.max(1,Math.round((Date.now()-S.startedAt)/60000)):0),kcal=Math.round(4*S.profile.w*mins/60); // 4 МЕТ сверх покоя × вес × часы — как в норме; без отмеченных подходов время не выдумываем
   S.workouts=(S.workouts||0)+1;S.startedAt=null;save();SHEET_FN=null;rerender();haptic([10,50,10,50,20]);
-  sheet('Тренировка завершена',`<div style="text-align:center;padding:6px 0 10px">${OK}<div class="num" style="font-size:42px;margin-top:12px">${timed?CU(mins,' мин'):'Готово'}</div><div class="muted">${timed?'≈ '+u(kcal,'ккал')+' сверх покоя · ':''}подходов ${doneSets} из ${allSets}${timed?'':' · время и расход не считаем'}</div></div>
+  sheet('Тренировка завершена',`<div style="text-align:center;padding:6px 0 10px">${OK}<div class="num" style="font-size:42px;margin-top:12px">${timed?CU(mins,' мин'):'Готово'}</div><div class="muted">${timed?'≈ '+u(kcal,'ккал')+' сверх покоя · ':''}${homeMin?'дома, без инвентаря':`подходов ${doneSets} из ${allSets}`}${timed?'':' · время и расход не считаем'}</div></div>
    <div class="grid2"><div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:26px">${Math.min(S.done.length,weekPlanCount())}/${weekPlanCount()}</div><div class="small muted">на этой неделе</div></div><div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:26px">${S.demo?'3 нед.':S.workouts}</div><div class="small muted">${S.demo?'серия без пропусков':pl(S.workouts,'тренировка','тренировки','тренировок').replace(/^\S+\s/,'')+' всего'}</div></div></div>
    <div class="card" style="margin-top:12px">${(()=>{const nx=pg.days.findIndex((d,i)=>i<weekPlanCount()&&!S.done.includes(i));return nx<0?'Все тренировки этой недели сделаны. Новая неделя — с понедельника.':'Следующая — «'+pg.days[nx]+'». Привычка закрепляется в среднем за 66 дней (Lally, 2010): держите ритм '+pl(pg.days.length,'тренировка','тренировки','тренировок')+' в неделю.'})()}</div>
    <button class="btn" onclick="closeSheet();if(S.tab==='today'){rerender();toTop()}else go('today')">Отлично</button>`);
@@ -1193,7 +1212,7 @@ function openTrainer(ex){
 function openHome(){
   sheet('Дома · 20 минут',`<div class="vid">${pic(gymPic('home'),'Дома')}<div class="cap">Без инвентаря · видео — по нажатию на упражнение</div></div>
    <div class="card list" style="margin-top:12px">${[['Приседания','3 × 15','Bodyweight_Squat'],['Отжимания от стула','3 × 10','Bench_Dips'],['Ягодичный мост','3 × 15','Butt_Lift_Bridge'],['Планка','3 × 30 сек','Plank'],['Скалолаз','3 × 30 сек','Mountain_Climbers']].map(([n,r,id])=>`<button class="li" style="width:100%;text-align:left" onclick="loadEX().then(()=>openEx('${id}'))"><div style="flex:1;font-weight:600">${n}</div><div class="muted">${r}</div><span class="chev">${ic('chev')}</span></button>`).join('')}</div>
-   <button class="btn" onclick="closeSheet()">Понятно</button>`);
+   <button class="btn" onclick="finishWorkout(false,20)">Сделал — записать тренировку</button><button class="btn ghost" onclick="closeSheet()">Позже</button>`);
 }
 
 /* ---------- Библиотека упражнений (free-exercise-db, Unlicense; перевод наш) ---------- */
@@ -1205,7 +1224,7 @@ const EXEQ={barbell:'Штанга',dumbbell:'Гантели',other:'Другое
 const EXCAT={strength:'Сила',stretching:'Растяжка',plyometrics:'Плиометрика',powerlifting:'Пауэрлифтинг',"olympic weightlifting":'Тяжёлая атлетика',strongman:'Стронгмен',cardio:'Кардио'};
 const EXLVL={beginner:'новичок',intermediate:'средний',expert:'продвинутый'};
 const EXGROUPS=[['all','Все',null],['legs','Ноги',['quadriceps','hamstrings','calves','adductors','abductors']],['glutes','Ягодицы',['glutes']],['back','Спина',['lats','middle back','lower back','traps']],['chest','Грудь',['chest']],['shoulders','Плечи',['shoulders']],['arms','Руки',['biceps','triceps','forearms']],['core','Пресс',['abdominals']],['stretch','Растяжка',null],['cardio','Кардио',null]];
-const TECHMAP={Bodyweight_Squat:'squat',Barbell_Squat:'squat',Barbell_Full_Squat:'squat',Dumbbell_Squat:'squat',Dumbbell_Lunges:'lunge',Barbell_Lunge:'lunge',Bodyweight_Walking_Lunge:'lunge',Pushups:'pushup',Plank:'plank',Romanian_Deadlift:'deadlift',Standing_Dumbbell_Press:'press',Dumbbell_Shoulder_Press:'press'};
+const TECHMAP={Bodyweight_Squat:'squat',Barbell_Squat:'squat',Barbell_Full_Squat:'squat',Dumbbell_Squat:'squat',Dumbbell_Lunges:'lunge',Barbell_Lunge:'lunge',Bodyweight_Walking_Lunge:'lunge',Dumbbell_Rear_Lunge:'lunge',Pushups:'pushup',Plank:'plank',Romanian_Deadlift:'deadlift',Standing_Dumbbell_Press:'press',Dumbbell_Shoulder_Press:'press'};
 async function loadEX(){if(EXL)return EXL;try{const r=await fetch('data/exercises.json');if(!r.ok)throw new Error(r.status);EXL=await r.json()}catch(e){console.warn('библиотека упражнений не загрузилась',e);return []}return EXL}
 function exFilter(){
   const k=norm_(EXQ),words=k.split(' ').filter(Boolean),g=EXGROUPS.find(x=>x[0]===EXG);
@@ -1222,7 +1241,7 @@ function exList(){
   const list=exFilter(),show=list.slice(0,EXN);
   return `<div class="card list" style="padding:2px 16px">${show.map(x=>`<button class="exrow" onclick="openEx('${x.id}')"><div class="th"><img src="${EXIMG(x.id)}0.jpg" alt="" loading="lazy" onerror="this.style.visibility='hidden'"></div><div class="t"><b>${x.n}</b><small>${EXEQ[x.eq]||'Без инвентаря'} · ${EXLVL[x.lvl]} · ${x.pm.slice(0,2).map(m=>(EXMUS[m]||m).toLowerCase()).join(', ')}</small></div><span class="chev">${ic('chev')}</span></button>`).join('')||`<div class="li muted small" style="justify-content:center">Ничего не нашли. Попробуйте «жим», «тяга», «присед»</div>`}</div>
   ${list.length>EXN?`<button class="btn sec" onclick="EXN+=30;rerender()">Показать ещё · осталось ${list.length-EXN}</button>`:''}
-  <div class="tiny muted" style="margin:8px 4px 0">${pl(list.length,'упражнение','упражнения','упражнений')} · база free-exercise-db (свободная лицензия), перевод наш · картинки схематичные</div>`;
+  <div class="tiny muted" style="margin:8px 4px 0">${pl(list.length,'упражнение','упражнения','упражнений')} · фото и описания — база free-exercise-db (свободная лицензия), перевод наш</div>`;
 }
 function exSearch(v){EXQ=v;EXN=20;clearTimeout(exSearch.t);exSearch.t=setTimeout(()=>{const box=$('#exlist');if(box)box.innerHTML=exList()},120)}
 function exGroup(g){EXG=g;EXN=20;rerender()}
@@ -1238,12 +1257,13 @@ function openEx(id){
    <div class="tiny muted" style="margin:0 4px 10px">${x.en}</div>
    <button class="btn" onclick="exFromCard('${id}')">${ic('ruler')} Проверить технику по видео</button>
    <button class="btn ${inPlan?'sec':'ghost'}" onclick="togglePlan('${id}')">${inPlan?'Убрать из плана на сегодня':'В план на сегодня'}</button>
-   <h2>Какие мышцы работают</h2><div class="card">${gs.length?muscleMapLv(lv):'<div class="small muted">Для этого упражнения карта мышц не размечена</div>'}<div class="tiny muted" style="margin-top:8px">Основные: ${x.pm.map(m=>EXMUS[m]||m).join(', ')||'—'}${x.sm.length?' · помогают: '+x.sm.map(m=>EXMUS[m]||m).join(', '):''}</div></div>
+   <h2>Какие мышцы работают</h2><div class="card">${gs.length?muscleMapLv(lv):'<div class="small muted">Для этого упражнения карта мышц не размечена</div>'}<div class="tiny muted" style="margin-top:8px">Основные: ${x.pm.map(m=>EXMUS[m]||m).join(', ')||'—'}${x.sm.length?' · помогают: '+x.sm.map(m=>EXMUS[m]||m).join(', '):''}</div>${gs.length?ATLAS_CR:''}</div>
    <h2>Как выполнять</h2><div class="card list">${x.steps.map((t,i)=>`<div class="li" style="align-items:flex-start"><span class="num" style="width:26px;color:var(--text3);font-size:17px">${i+1}</span><div style="flex:1;line-height:1.4">${t}</div></div>`).join('')}</div>
    <div class="concept">Картинки и описание — база free-exercise-db (свободная лицензия), перевод наш. При боли остановитесь · не медицинская консультация</div>`);
   exVideoButton(id);
   EXT=setInterval(()=>{const h=$('#exhero');if(!h)return clearInterval(EXT);h.classList.toggle('alt');const d=h.querySelectorAll('.dots i');d.forEach((e,i)=>e.classList.toggle('on',h.classList.contains('alt')?i===1:i===0))},1400);
 }
+const ATLAS_CR=`<div class="tiny muted" style="margin-top:8px">Атлас мышц: «Muscles front and back», OpenStax, Tomáš Kebert, umimeto.org · <a href="https://commons.wikimedia.org/wiki/File:Muscles_front_and_back.svg" target="_blank" rel="noopener" style="color:inherit">CC BY-SA 4.0, Wikimedia Commons</a></div>`; // CC BY-SA 4.0 требует автора и лицензию рядом с картинкой
 function muscleMapLv(lv){const gs=Object.keys(lv).sort((a,b)=>lv[a]-lv[b]);return `<div class="anat"><img class="base" src="img/anat/base.png" alt="Атлас мышц" loading="lazy">${gs.map(g=>`<img class="ly ${lv[g]===2?'s':''}" src="img/anat/${g}.png" alt="" loading="lazy">`).join('')}<span class="lbl l">спереди</span><span class="lbl r">сзади</span></div><div class="legend"><span><i style="background:#D8432A"></i>Основная нагрузка</span><span><i style="background:#C98A14"></i>Помогают</span></div>`}
 function togglePlan(id){const i=S.extra.indexOf(id);if(i>-1)S.extra.splice(i,1);else S.extra.push(id);save();haptic(8);toast(i>-1?'Убрано из плана':'Добавлено в план на сегодня');openEx(id)}
 
@@ -1261,7 +1281,7 @@ let FV={ex:'auto',file:null};
 function openForm(){
   sheet('Разбор техники по видео',`<div class="card small muted">Снимите себя сбоку, целиком в кадре, 2–5 повторов. Телефон разберёт движение сам, без отправки видео на сервер: точки суставов, углы, повторы. Это подсказка по технике, не медицинская консультация.</div>
    <div class="small muted" style="margin:0 4px 6px">Упражнение</div><div class="chips" style="margin-bottom:12px"><button class="chip ${FV.ex==='auto'?'on':''}" onclick="FV.ex='auto';openForm()">Определит сам</button>${String(FV.ex).startsWith('lib:')?`<button class="chip on">${fName(FV.ex)}</button>`:''}${Object.entries(FORM).map(([k,f])=>`<button class="chip ${FV.ex===k?'on':''}" onclick="FV.ex='${k}';openForm()">${f.n}</button>`).join('')}</div>
-   ${FV.ex==='auto'?`<div class="small muted" style="margin:-4px 4px 12px">Камера сама поймёт, какое из 870+ упражнений библиотеки вы делаете, и сравнит с эталоном</div>`:''}
+   ${FV.ex==='auto'?`<div class="small muted" style="margin:-4px 4px 12px">Камера предложит, какое из 870+ упражнений библиотеки похоже на ваше, — вы подтвердите, и мы сравним с эталоном</div>`:''}
    <label class="card tap" style="display:block;text-align:center;padding:22px 16px;cursor:pointer"><div class="bigicon">${ic('cam')}</div><div class="title">Снять или выбрать видео</div><div class="small muted">до 20 секунд, сбоку, во весь рост</div><input type="file" accept="video/*" style="display:none" onchange="formFile(this)"></label>
    <button class="btn sec" onclick="formRun('squat.mp4','squat')">Показать на примере: присед</button>
    <div class="concept">Распознавание суставов — MediaPipe Pose, работает в телефоне · правила техники считает код</div>`);
@@ -1279,13 +1299,26 @@ async function loadPose0(){
   POSE=await m.PoseLandmarker.createFromOptions(vision,{baseOptions:{modelAssetPath:LIB('mediapipe/pose_landmarker_lite.task'),delegate:'GPU'},runningMode:'VIDEO',numPoses:1});
   return POSE;
 }
+// файлы MediaPipe (~15 МБ) качаем сами, чтобы показать проценты; потом MediaPipe берёт их из памяти. Сбой не страшен — сообщение даст loadPose
+async function posePrefetch(on){
+  const fs=[['mediapipe/wasm/vision_wasm_internal.wasm',9423986],['mediapipe/pose_landmarker_lite.task',5777746]],n=fs.reduce((a,f)=>a+f[1],0);
+  let hit=false;try{hit=!!(window.caches&&await caches.match(LIB(fs[1][0])))}catch(e){}
+  if(hit){on('Запускаем модель разбора…',null);return}
+  if(!(navigator.serviceWorker&&navigator.serviceWorker.controller)){on('Загружаем модель разбора (один раз, ~15 МБ)…',null);return} // без сервис-воркера наша копия не сохранится — не качаем дважды
+  on('Загружаем модель разбора (один раз, ~15 МБ)…',0);let got=0,shown=0;
+  await Promise.all(fs.map(async([f])=>{try{const r=await fetch(LIB(f));if(!r.ok||!r.body)return;const rd=r.body.getReader();
+    for(;;){const {done,value}=await rd.read();if(done)break;got+=value.length;const p=Math.floor(Math.min(1,got/n)*100);if(p-shown>=2){shown=p;on('Загружаем модель разбора (один раз, ~15 МБ)…',Math.min(p,99))}}}catch(e){}}));
+  on('Запускаем модель разбора…',null)}
 async function formRun(src,ex){
   FV.ex=ex;const f=FORM[ex],tok=formRun.n=(formRun.n||0)+1;
   sheet('Разбираем…',`<div class="plate" style="background:#111"><video id="fv" playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain"></video><canvas id="fc" style="position:absolute;inset:0;width:100%;height:100%;z-index:2"></canvas></div>
    <div class="card" style="margin-top:12px"><div class="row between"><span class="small muted" id="fstat">Загружаем модель…</span><span class="num" id="fpct">0%</span></div><div class="bar" style="margin-top:8px"><i id="fbar" style="width:0;background:var(--accent)"></i></div></div>`);
   const v=$('#fv'),c=$('#fc'),ctx=c.getContext('2d'),alive=()=>tok===formRun.n&&$('#fv')===v&&$('#sheet').classList.contains('on'),put=(id,f)=>{const el=$(id);if(el)f(el)};
   try{
+    if(!POSE)await posePrefetch((t,p)=>{if(!alive())return;put('#fstat',el=>el.textContent=t);put('#fpct',el=>el.textContent=p==null?'':p+'%');put('#fbar',el=>el.style.width=(p||0)+'%')});
     const pl=await loadPose();if(!alive())return;
+    if(src==='squat.mp4'){if(!formRun.sq)try{const r=await fetch('squat.mp4');if(!r.ok)throw new Error(r.status);formRun.sq=URL.createObjectURL(await r.blob())}catch(e){if(!navigator.onLine)throw new Error('Пример приседа ещё не сохранён в телефоне — откройте его один раз с интернетом или скачайте всё в «Я» → «Работа без интернета». Своё видео разберём и без сети.')}
+      if(formRun.sq)src=formRun.sq;if(!alive())return}
     // первое видео за сеанс браузер не перерисовывает при перемотке — разбор шёл бы по одному кадру. Один раз «прогреваем» видеосистему пустым роликом
     if(!formRun.primed){formRun.primed=1;try{const pv=document.createElement('video');pv.muted=true;pv.playsInline=true;pv.src=src;await Promise.race([new Promise(r=>pv.onloadeddata=r),new Promise(r=>setTimeout(r,3000))]);await Promise.race([new Promise(r=>{pv.onseeked=r;pv.currentTime=Math.min(.5,(pv.duration||1)/2)}),new Promise(r=>setTimeout(r,1500))]);pv.pause()}catch(e){}}
     if(!alive())return;v.src=src;await new Promise((r,j)=>{v.onloadeddata=r;v.onerror=()=>j(new Error('видео не читается'));v.load()});
@@ -1416,7 +1449,7 @@ async function formResult(src,ex,S2,v,live){
    ${a.findings.map(x=>`<div class="card" style="border-left:4px solid var(--bad)"><div class="title" style="font-size:16px">${x.k}</div><div class="small muted" style="margin-top:4px">${x.d}</div></div>`).join('')}
    ${a.good.map(g=>`<div class="card row" style="padding:12px 16px"><span style="color:var(--ok-text)">${ic('check')}</span><div style="flex:1">${g}</div></div>`).join('')}
    <h2 style="margin-top:14px">Шаг за шагом на ваших кадрах</h2>${stepsHtml.join('')}
-   <h2>Какие мышцы работают</h2><div class="card">${muscleMap(f.muscles)}<div class="tiny muted" style="margin-top:10px">Атлас мышц: Wikimedia Commons, CC BY-SA 4.0 · подсветка — по упражнению, не измерение активности</div></div>
+   <h2>Какие мышцы работают</h2><div class="card">${muscleMap(f.muscles)}<div class="tiny muted" style="margin-top:10px">Подсветка — по упражнению, не измерение активности</div>${ATLAS_CR}</div>
    <div class="vid" style="margin-top:12px" onclick="loadEX().then(()=>openEx('${({squat:'Bodyweight_Squat',lunge:'Bodyweight_Walking_Lunge',pushup:'Pushups',plank:'Plank',deadlift:'Romanian_Deadlift',press:'Dumbbell_Shoulder_Press'})[ex]}'))">${pic(gymPic(f.img),f.n)}<div class="play">${ic('play')}</div><div class="cap">эталон: видео техники в атласе</div></div>
    <div class="concept">Углы считаются по точкам суставов, точность зависит от ракурса и света · не медицинская консультация</div>
    <button class="btn" style="margin-top:12px" onclick="openForm()">Разобрать другое видео</button>`);if(S.tab==='today'||S.tab==='tech')setTimeout(rerender,50);
@@ -1516,8 +1549,8 @@ const fMus=ex=>FORM[ex]?FORM[ex].muscles:(S.exMus&&S.exMus[ex])||[];
 const EX2MUS={abs:'core',obliques:'core',lowerback:'back',chest:'chest',shoulders:'shoulders',triceps:'triceps',biceps:'biceps',back:'back',traps:'traps',quads:'quads',hams:'hams',glutes:'glutes',calves:'calves',adductors:'adductors'};
 let EXV=null; // видео разбора держим вне шторки, пока человек выбирает упражнение
 function exHold(v){let h=$('#exhold');if(!h){h=document.createElement('div');h.id='exhold';h.style.cssText='position:fixed;left:-9999px;top:0;width:2px;height:2px;overflow:hidden;opacity:0;pointer-events:none';document.body.appendChild(h)}h.innerHTML='';h.appendChild(v);EXV=v}
-async function exFrameEmb(v,times,onStatus){ // кадры видео → MobileCLIP (видит снаряд: штанга, блок, тренажёр)
-  try{const embed=await loadClip(onStatus);const out=[];for(const t of times){await seekTo(v,t);const c=document.createElement('canvas'),k=Math.min(1,480/v.videoHeight);c.width=Math.round(v.videoWidth*k);c.height=Math.round(v.videoHeight*k);c.getContext('2d').drawImage(v,0,0,c.width,c.height);out.push(await embed(c.toDataURL('image/jpeg',.85)))}return out}
+async function exFrameEmb(v,times,onStatus,stop){ // кадры видео → MobileCLIP (видит снаряд: штанга, блок, тренажёр); stop() — человек нажал «Без снаряда» или ушёл: видео разбора больше не трогаем
+  try{const embed=await loadClip(onStatus);if(stop&&stop())return null;const out=[];for(const t of times){if(stop&&stop())return null;await seekTo(v,t);const c=document.createElement('canvas'),k=Math.min(1,480/v.videoHeight);c.width=Math.round(v.videoWidth*k);c.height=Math.round(v.videoHeight*k);c.getContext('2d').drawImage(v,0,0,c.width,c.height);out.push(await embed(c.toDataURL('image/jpeg',.85)))}return out}
   catch(e){console.warn('MobileCLIP недоступен, определяем только по позе',e);return null}}
 function exSlots(S2){const n=Math.round(Math.max(...S2.map(s=>s.t))*10)+1,fr=Array(n).fill(null);S2.forEach(s=>{if(s.w)fr[Math.round(s.t*10)]={t:s.t,w:s.w,l:s.l,lm:s.lm}});return fr}
 async function exAfter(src,ex,S2,v,live){
@@ -1529,9 +1562,11 @@ async function exAfter(src,ex,S2,v,live){
   let frameEmb=null;
   if(!ex.startsWith('lib:')){
     let cached=!!CLIP;if(!cached)try{cached=(await (await caches.open('transformers-cache')).keys()).some(r=>/mobileclip/i.test(r.url))}catch(e){}
-    let skip;const skipP=new Promise(r=>skip=r);
-    if(!cached){const card=$('#fstat')&&$('#fstat').closest('.card');if(card)card.insertAdjacentHTML('afterend',`<button class="btn sec" id="exskip" style="margin-top:10px">Без снаряда — быстрее</button><div class="small muted" id="exskipn" style="text-align:center;margin:0 8px">Модель распознавания снаряда качается один раз; по позе тоже определим, но реже угадаем штангу или блок</div>`);const b=$('#exskip');if(b)b.onclick=()=>{skip(null);b.remove();const n=$('#exskipn');if(n)n.remove();st('Определяем упражнение по позе…')}}
-    frameEmb=times=>{if(!cached&&$('#exskip'))st('Загружаем распознавание снаряда (один раз, ~72 МБ)…');return Promise.race([exFrameEmb(v,times,t=>{const m=/(\d+)%/.exec(t);if($('#exskip'))st('Загружаем распознавание снаряда (один раз, ~72 МБ)… '+(m?m[1]+'%':''))}),skipP])};
+    let skip,skipped=false;const skipP=new Promise(r=>skip=r);
+    if(!cached){const card=$('#fstat')&&$('#fstat').closest('.card');if(card)card.insertAdjacentHTML('afterend',`<button class="btn sec" id="exskip" style="margin-top:10px">Без снаряда — быстрее</button><div class="small muted" id="exskipn" style="text-align:center;margin:0 8px">Модель распознавания снаряда качается один раз; по позе тоже определим, но реже угадаем штангу или блок</div>`);const b=$('#exskip');if(b)b.onclick=()=>{skipped=true;skip(null);b.remove();const n=$('#exskipn');if(n)n.remove();st('Определяем упражнение по позе…')}}
+    const bar=p=>{const a=$('#fpct'),bb=$('#fbar');if(a)a.textContent=p==null?'':p+'%';if(bb)bb.style.width=(p||0)+'%'};
+    frameEmb=times=>{if(!cached&&$('#exskip')){st('Загружаем распознавание снаряда (один раз, ~72 МБ)…');bar(null)}
+      return Promise.race([exFrameEmb(v,times,t=>{if(!$('#exskip'))return;const m=/(\d+)%/.exec(t);if(m){st('Загружаем распознавание снаряда (один раз, ~72 МБ)…');bar(+m[1])}else{st(t);bar(100)}},()=>skipped||(live&&!live())),skipP])};
   }
   const res=await exRecognize(fr,ar,frameEmb);if(live&&!live())return;
   {const b=$('#exskip'),n=$('#exskipn');if(b)b.remove();if(n)n.remove()}
@@ -1595,7 +1630,7 @@ async function genericResult(id,key,live){
    ${good.map(g=>`<div class="card row" style="padding:12px 16px"><span style="color:var(--ok-text)">${ic('check')}</span><div style="flex:1">${g}</div></div>`).join('')}
    <h2 style="margin-top:14px">Вы и эталон</h2><div class="card">${pair(sa,ref0,'начало, '+fa.t.toFixed(1).replace('.',',')+' с')}<div style="height:10px"></div>${pair(shb.src,ref1,'крайняя точка, '+fb.t.toFixed(1).replace('.',',')+' с')}</div>
    ${x.steps&&x.steps.length?`<h2>Как правильно</h2><div class="card list">${x.steps.map((t,i)=>`<div class="li" style="align-items:flex-start"><span class="num" style="width:26px;color:var(--text3);font-size:17px">${i+1}</span><div style="flex:1;line-height:1.4">${t}</div></div>`).join('')}</div>`:''}
-   ${Object.keys(lv).length?`<h2>Какие мышцы работают</h2><div class="card">${muscleMapLv(lv)}</div>`:''}
+   ${Object.keys(lv).length?`<h2>Какие мышцы работают</h2><div class="card">${muscleMapLv(lv)}${ATLAS_CR}</div>`:''}
    <div class="concept">Амплитуду сравниваем с эталоном упражнения по 3D-углам суставов · подробные правила техники пока для 6 базовых упражнений · не медицинская консультация</div>
    <button class="btn" style="margin-top:12px" onclick="openEx('${id}')">Карточка упражнения</button><button class="btn ghost" onclick="openForm()">Разобрать другое видео</button>`);
   if(S.tab==='today'||S.tab==='tech')setTimeout(rerender,50);
@@ -1606,14 +1641,34 @@ let EXVID=null;
 async function loadExVid(){if(EXVID)return EXVID;try{const r=await fetch('data/exercise-videos.json');if(!r.ok)throw new Error(r.status);EXVID=await r.json()}catch(e){console.warn('видео упражнений не загрузились',e);return {}}return EXVID}
 const mmss=s=>s?Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0'):'';
 function exVideoButton(id){loadExVid().then(V=>{const v=V[id],h=$('#exhero');if(!v||!h||h.dataset.id!==id||h.querySelector('.explay'))return;h.insertAdjacentHTML('beforeend',`<button class="explay" onclick="event.stopPropagation();exPlay('${id}',-1)">${ic('play')}<span>Видео техники${v.dur?' · '+mmss(v.dur):''}</span></button>`)})}
-function exPlay(id,k){if(!EXVID||!EXVID[id])return;const all=[EXVID[id],...(EXVID[id].alt||[])].filter(Boolean),i=((k+1)%all.length+all.length)%all.length,v=all[i],h=$('#exhero');if(!h)return;clearInterval(EXT);
-  const src=v.embed+(v.embed.includes('?')?'&':'?')+(v.src==='youtube'?'autoplay=1&playsinline=1&rel=0':'autoplay=1');
-  h.onclick=null;h.style.aspectRatio='16/9';h.style.background='#000';h.innerHTML=`<iframe src="${src}" title="${v.title.replace(/"/g,'')}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>`;
+function exPlay(id,k){if(!navigator.onLine){toast('Видео техники открывается только с интернетом. Описание, мышцы и разбор вашего видео работают и без сети',true);return}if(!EXVID||!EXVID[id])return;const all=[EXVID[id],...(EXVID[id].alt||[])].filter(Boolean),i=((k+1)%all.length+all.length)%all.length,v=all[i],h=$('#exhero');if(!h)return;clearInterval(EXT);
+  const yt=v.src==='youtube',vid=yt?v.embed.split('?')[0].split('/').pop():'',en=yt&&!/[а-яё]/i.test(v.title);exSubs.n=(exSubs.n||0)+1;
+  const src=v.embed+(v.embed.includes('?')?'&':'?')+(yt?'autoplay=1&playsinline=1&rel=0&enablejsapi=1&origin='+encodeURIComponent(location.origin):'autoplay=1');
+  h.onclick=null;h.style.aspectRatio='16/9';h.style.background='#000';h.innerHTML=`<iframe src="${src}" title="${v.title.replace(/"/g,'')}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe><div class="exsub" id="exsub"></div>`;
   let cap=$('#excap');if(!cap){h.insertAdjacentHTML('afterend','<div id="excap" class="row between" style="gap:10px;margin:6px 4px 0"></div>');cap=$('#excap')}
-  cap.innerHTML=`<span class="tiny muted" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.src==='rutube'?'Rutube':'YouTube'} · ${v.title}</span>${all.length>1?`<button class="tiny" style="font-weight:700;color:var(--accent-text);flex:none" onclick="exPlay('${id}',${i})">Другое видео</button>`:''}`}
+  cap.innerHTML=`<span class="tiny muted" style="flex:1;min-width:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${v.src==='rutube'?'Rutube':'YouTube — в России может не открыться без VPN'} · ${v.title}</span><span id="exsubchip" style="flex:none"></span>${all.length>1?`<button class="tiny" style="font-weight:700;color:var(--accent-text);flex:none" onclick="exPlay('${id}',${i})">Другое видео</button>`:''}`;
+  const old=$('#exsubnote');if(old)old.remove();if(en)exSubs(vid,h.querySelector('iframe'))}
+/* Русские субтитры к англоязычным роликам YouTube: data/subs/<id>.json {v:1,segs:[[с,по,"текст"]]}; время берём у плеера через postMessage (enablejsapi=1) */
+async function exSubs(vid,fr){const n=exSubs.n,live=()=>n===exSubs.n&&fr.isConnected;
+  exSubs.idx=exSubs.idx||fetch('data/subs/index.json').then(r=>r.ok?r.json():null).then(j=>new Set(j&&j.ids||[])).catch(()=>{exSubs.idx=null;return new Set()}); // список готовых: лишних запросов (и 404) нет
+  let segs=null;if((await exSubs.idx).has(vid))try{const r=await fetch('data/subs/'+encodeURIComponent(vid)+'.json');if(r.ok){const j=await r.json();if(j&&Array.isArray(j.segs))segs=j.segs}}catch(e){}
+  if(!live())return;const chip=$('#exsubchip'),box=$('#exsub');
+  if(!segs){const cap=$('#excap');if(cap)cap.insertAdjacentHTML('afterend','<div id="exsubnote" class="tiny muted" style="margin:4px 4px 0">Видео на английском — смотрите движение, шаги на русском ниже</div>');return}
+  if(!segs.length)return; // в ролике нет речи
+  const on=()=>S.subs!==false,paint=()=>{if(chip)chip.innerHTML=`<button class="tiny" style="font-weight:700;color:${on()?'var(--accent-text)':'var(--text2)'}" onclick="S.subs=${on()?'false':'true'};save();exSubs.paint&&exSubs.paint()">Рус. субтитры: ${on()?'вкл':'выкл'}</button>`;if(box){box.innerHTML='';cur=-1}};
+  let cur=-1;exSubs.paint=paint;paint();
+  const show=s=>{if(!on()||!box)return;const k=segs.findIndex(g=>s>=g[0]&&s<g[1]);if(k===cur)return;cur=k;box.innerHTML=k<0?'':`<span>${String(segs[k][2]).replace(/[<&]/g,c=>c==='<'?'&lt;':'&amp;')}</span>`};
+  const stop=()=>{removeEventListener('message',onMsg);clearInterval(ping)};
+  const onMsg=e=>{if(!live())return stop();if(e.source!==fr.contentWindow)return;let d=e.data;try{if(typeof d==='string')d=JSON.parse(d)}catch(x){return}
+    const t=d&&d.info&&d.info.currentTime;if(typeof t==='number')show(t)};
+  addEventListener('message',onMsg);
+  const hello=()=>{try{fr.contentWindow.postMessage(JSON.stringify({event:'listening',id:1,channel:'widget'}),'*')}catch(e){}};
+  fr.addEventListener('load',hello);hello();
+  const ping=setInterval(()=>{if(!live())return stop();hello()},1000)}
 
 /* ---------- Работа без интернета и на мобильной сети: всё своё на нашем сервере, сохраняется в телефоне (сервис-воркер sw.js + кэш моделей) ---------- */
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))try{navigator.serviceWorker.register('sw.js').then(()=>navigator.serviceWorker.ready).then(reg=>reg.active&&reg.active.postMessage({cachePage:location.href.split('#')[0]})).catch(()=>{})}catch(e){}
+try{if(sessionStorage.getItem('mt-dl')){sessionStorage.removeItem('mt-dl');setTimeout(()=>{openOffline();prefetchAll()},800)}}catch(e){} // продолжаем «Скачать» после перезагрузки
 function openOffline(){
   const cell=navigator.connection&&/cellular/.test(navigator.connection.type||'');
   sheet('Работа без интернета',`<div class="card"><div class="title" style="font-size:16px">${S.offline?'Всё уже в телефоне':'Скачать один раз — дальше без сети'}</div>
@@ -1627,15 +1682,18 @@ async function prefetchAll(){
     // файлы сохраняет сервис-воркер — только те, что прошли через него: если он ещё не взял страницу под себя, ждём (иначе «готово», а без сети не работает)
     if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){st('Готовим память телефона…',2);await Promise.race([navigator.serviceWorker.ready,new Promise(r=>setTimeout(r,5000))]);
       if(!navigator.serviceWorker.controller)await new Promise(r=>{navigator.serviceWorker.addEventListener('controllerchange',r,{once:true});setTimeout(r,4000)})}
+    // страницу перезагрузили, пока ставился сервис-воркер, — он уже работает, но эту вкладку не взял. Одна обычная перезагрузка это лечит (не больше раза за вкладку)
+    if('serviceWorker' in navigator&&!navigator.serviceWorker.controller){const reg=await navigator.serviceWorker.getRegistration().catch(()=>null);let tried=true;try{tried=!!sessionStorage.getItem('mt-dl-tried');if(!tried)sessionStorage.setItem('mt-dl-tried','1')}catch(e){}
+      if(reg&&reg.active&&!tried){st('Память готова — перезапускаем страницу, скачивание продолжится само…',2);try{sessionStorage.setItem('mt-dl','1')}catch(e){}location.reload();return}}
     if(!('serviceWorker' in navigator)||!navigator.serviceWorker.controller){st('Этот браузер не даёт сохранить приложение (частный режим или запрет данных сайта) — без сети оно не откроется. Откройте в обычном окне Safari или Chrome',null);return}
     st('Базы продуктов и упражнений…',5);
     // данные — заново и мимо кэша браузера: так они точно проходят через сервис-воркер и сохраняются, даже если первая загрузка была до него
     await Promise.all(['data/products.json','data/dishes.json','data/aliases.json','data/exercises.json','data/exercise-videos.json','data/ex-recog.json','models/clipdb.json','models/clipdb.bin'].map(u=>fetch(u,{cache:'reload'}).then(r=>{if(!r.ok)throw new Error(u+' — '+r.status)})));
     await Promise.all([loadDB(),loadEX(),loadExRecog(),loadExVid()]);
     if(!DB||DB.failed||!DB.products.length||!EXL||!EXL.length||!EXVID||!Object.keys(EXVID).length||!EXR.d)throw new Error('не скачались базы продуктов и упражнений');
-    st('Распознавание блюд…',15);await loadClip(t=>{const m=/(\d+)%/.exec(t);st('Распознавание блюд… '+(m?m[1]+'%':''),m?15+(+m[1])*.6:null)});
+    st('Распознавание блюд…',15);await loadClip(t=>{const m=/(\d+)%/.exec(t);st('Распознавание блюд… '+(m?m[1]+'%':'запускаем'),m?15+(+m[1])*.6:75)});
     st('Камера упражнений…',80);await loadExClip();await loadPose();
-    st('Картинки…',95);await Promise.all([...new Set([...Object.values(DISHES).map(d=>d.img),...MEALS.map(m=>m.img),'img/tech-demo.jpg','img/anat/base.png',...(S.log||[]).map(e=>e.img).filter(u=>u&&!u.startsWith('data:'))])].filter(Boolean).map(u=>fetch(u).catch(()=>{}))); // примеры блюд и иллюстрации — чтобы без сети не было пустых мест
+    st('Картинки…',95);await Promise.all([...new Set([...Object.values(DISHES).map(d=>d.img),...MEALS.map(m=>m.img),'img/tech-demo.jpg','img/anat/base.png','squat.mp4',...(S.log||[]).map(e=>e.img).filter(u=>u&&!u.startsWith('data:'))])].filter(Boolean).map(u=>fetch(u).catch(()=>{}))); // примеры блюд и иллюстрации — чтобы без сети не было пустых мест
     try{const reg=navigator.serviceWorker&&await Promise.race([navigator.serviceWorker.ready,new Promise(r=>setTimeout(()=>r(null),3000))]);reg&&reg.active&&reg.active.postMessage({cachePage:location.href.split('#')[0]})}catch(e){} // без сервис-воркера (http, старый браузер) ready не наступает — не ждём вечно
     S.offline=Date.now();save();st('Готово — работает без интернета',100);haptic([10,40,10]);toast('Скачано: работает без интернета');if(S.tab==='me')setTimeout(rerender,300)}
   catch(e){console.error(e);st('Не получилось: '+(/fetch|network|load failed/i.test(e.message||'')?'нет связи':(e.message||e))+'. Проверьте связь и попробуйте ещё раз',null)}}
@@ -1651,7 +1709,7 @@ function vTech(){
   ${lf?`<a class="ev wide" onclick="openForm()"><img src="${lf.shot}" alt="Ваш кадр"><span class="tag tech">${lf.score} / 100</span><span class="cap"><b>${fName(lf.ex)} · ${ago(lf.t)}</b>${lf.reps?pl(lf.reps,'повтор засчитан','повтора засчитаны','повторов засчитано'):lf.st||lf.ex==='plank'?'удержание':'повторов не увидели'} · углы по точкам суставов</span></a>`
      :`<a class="ev wide" onclick="formRun('squat.mp4','squat')"><img src="img/tech-demo.jpg" alt="Пример разбора" style="object-position:50% 35%"><span class="tag tech">пример</span><span class="cap"><b>Разбор техники по видео</b>кадр крупно, углы в суставах, что поправить — на ваших кадрах</span></a>`}
   <button class="btn" onclick="openForm()">${ic('cam')} Проверить технику по видео</button>
-  <div class="small muted" style="text-align:center;margin:2px 8px 0">Камера сама поймёт, какое из 870+ упражнений вы делаете, и сравнит с эталоном. Видео не уходит с телефона.</div>
+  <div class="small muted" style="text-align:center;margin:2px 8px 0">Камера предложит, какое из 870+ упражнений похоже на ваше, вы подтвердите — и мы сравним с эталоном. Видео не уходит с телефона.</div>
   <h2>Упражнения</h2>
   <input class="search" type="search" placeholder="Упражнение, мышца или инвентарь" value="${EXQ.replace(/"/g,'&quot;')}" oninput="exSearch(this.value)" style="margin-bottom:10px">
   <div class="hscroll">${EXGROUPS.map(([k,l])=>`<button class="chip ${EXG===k?'on':''}" onclick="exGroup('${k}')">${l}</button>`).join('')}</div>
@@ -1690,7 +1748,7 @@ function monday0(){const m=new Date();m.setDate(m.getDate()-(m.getDay()+6)%7);re
 function openEdit(){
   const pr=S.profile,set=(k,v)=>{pr[k]=v;save();rerender()};
   sheet('Профиль',`<div class="card">
-    <div class="field"><label>Имя</label><input type="text" value="${pr.name.replace(/"/g,'&quot;')}" maxlength="24" onchange="S.profile.name=cleanName(this.value);save();rerender()"></div>
+    <div class="field"><label>Имя</label><input type="text" value="${pr.name==='Вы'?'':pr.name.replace(/"/g,'&quot;')}" placeholder="Имя" maxlength="24" onchange="S.profile.name=cleanName(this.value);save();rerender()"></div>
     <div class="field"><label>Пол</label><div class="chips">${[['m','Мужчина'],['f','Женщина']].map(([k,l])=>`<button class="chip ${pr.sex===k?'on':''}" onclick="S.profile.sex='${k}';save();rerender()">${l}</button>`).join('')}</div></div>
     ${[['age','Возраст','лет',1,14,80],['h','Рост','см',1,140,210]].map(([k,l,u2,st,mn,mx])=>`<div class="field"><label>${l}</label><div class="ctl"><button class="rb" onclick="adjP('${k}',-${st},${mn},${mx})">−</button><span class="num" style="font-size:22px;min-width:84px;white-space:nowrap;text-align:center">${pr[k]} <span class="muted" style="font-size:12px;font-weight:500">${u2}</span></span><button class="rb" onclick="adjP('${k}',${st},${mn},${mx})">+</button></div></div>`).join('')}
     <div class="field"><label>Вес</label><div class="row" style="gap:10px"><span class="num" style="font-size:22px">${(''+pr.w).replace('.',',')} <span class="muted" style="font-size:12px;font-weight:500">кг</span></span><button class="btn sm sec" onclick="openWeight()">Записать</button></div></div>
@@ -1759,7 +1817,7 @@ function openClubs(){sheet('Клубы сети',`<button class="btn sec" style=
 
 /* ---------- Чат ---------- */
 function openChat(){
-  sheet('Мой тренер',`<div id="chat"><div class="msg bot">Привет, ${S.profile.name}! Ваша цель — ${GOALS[S.profile.goal].n.toLowerCase()}. Помогу с&nbsp;тренировками и питанием. О&nbsp;чём спросить?</div></div>
+  sheet('Мой тренер',`<div id="chat"><div class="msg bot">Привет${S.profile.name==='Вы'?'':', '+S.profile.name}! Ваша цель — ${GOALS[S.profile.goal].n.toLowerCase()}. Помогу с&nbsp;тренировками и питанием. О&nbsp;чём спросить?</div></div>
    <div class="chips ask" style="margin-top:12px">${['Что съесть вечером?',S.profile.place==='home'?'Не успеваю сегодня потренироваться':'Не успеваю сегодня в зал','Болит спина после тренировки'].map(q=>`<button class="chip" onclick="ask(this.textContent)">${q}</button>`).join('')}</div>
    <div class="concept">Ответы пока подготовлены заранее — это прототип · не&nbsp;медицинская консультация</div>`);
 }
@@ -1822,7 +1880,7 @@ function renderOnb(){
       <button class="btn" style="margin-top:10px" onclick="obNext()">Составить мой план</button><button class="btn ghost" onclick="obDemo()">Показать на примере</button>
       <div class="concept" style="margin-top:6px">Данные остаются на вашем телефоне · прототип, демо-данные · не медицинская консультация</div>`,
    ()=>`<div class="q">Чего хотите добиться?</div><div class="qs">План, калории и тренировки подстроятся под цель</div>
-      <div style="overflow-y:auto;flex:1;margin:0 -4px;padding:0 4px">${Object.entries(GOALS).map(([k,g])=>`<button class="opt ${D.goal===k?'on':''}" onclick="D.goal='${k}';renderOnb()"><div class="ibox">${ic(g.i)}</div><div style="flex:1"><div style="font-weight:700">${g.n}</div><div class="small muted">${g.d}</div></div></button>`).join('')}
+      <div class="fadeb" style="overflow-y:auto;flex:1;min-height:0;margin:0 -4px;padding:0 4px">${Object.entries(GOALS).map(([k,g])=>`<button class="opt ${D.goal===k?'on':''}" onclick="D.goal='${k}';renderOnb()"><div class="ibox">${ic(g.i)}</div><div style="flex:1"><div style="font-weight:700">${g.n}</div><div class="small muted">${g.d}</div></div></button>`).join('')}
       ${D.goal==='lose'||D.goal==='muscle'?`<div class="small muted" style="margin:6px 4px 8px">Темп</div><div class="chips pace">${Object.entries(PACE).map(([k,l])=>`<button class="chip ${D.pace===k?'on':''}" onclick="D.pace='${k}';renderOnb()">${l}<small>${(GOALS[D.goal].adj[k]>0?'+':GOALS[D.goal].adj[k]<0?'−':'')+Math.abs(Math.round(GOALS[D.goal].adj[k]*100))}%</small></button>`).join('')}</div>`:''}</div>
       <button class="btn" style="margin-top:12px" onclick="obNext()">Дальше</button>`,
    ()=>`<div class="fadeb" style="overflow-y:auto;flex:1;min-height:0;margin:0 -20px;padding:0 20px;display:flex;flex-direction:column"><div class="q">Расскажите о себе</div><div class="qs">Нужно для точного расчёта нормы</div>
@@ -1835,17 +1893,18 @@ function renderOnb(){
    ()=>`<div class="fadeb" style="overflow-y:auto;flex:1;min-height:0;margin:0 -20px;padding:0 20px;display:flex;flex-direction:column"><div class="q">Насколько вы активны?</div><div class="qs">Группа активности по нормам Роспотребнадзора</div>
       ${Object.entries(WORK).map(([k,w])=>`<button class="opt ${D.work===k?'on':''}" onclick="D.work='${k}';renderOnb()"><div class="ibox">${ic(w[3])}</div><div style="flex:1"><div style="font-weight:700">${w[0]}</div><div class="small muted">${w[1]}</div></div></button>`).join('')}
       <div class="small muted" style="margin:8px 4px">Тренировок в неделю</div><div class="chips">${[2,3,4,5].map(t=>`<button class="chip ${D.trains===t?'on':''}" onclick="D.trains=${t};renderOnb()">${t}</button>`).join('')}</div>${D.level==='new'&&D.trains>4?'<div class="small muted" style="margin:6px 4px 0">Новичкам начинаем с 4 — через день, мышцам нужен отдых</div>':''}
-      <div style="flex:1"></div><div class="card row" style="margin:12px 0 10px"><div style="flex:1" class="small muted">Группа активности ${ROMAN[nr.grp]} по работе, коэффициент ${dec(nr.kfa)} · тренировки добавят в среднем</div><div class="num" style="font-size:22px">+${fmt(nr.train)}</div></div></div>
+      <div style="flex:1"></div><div class="card row" style="margin:12px 0 10px"><div style="flex:1" class="small muted">Группа активности ${ROMAN[nr.grp]} по работе, коэффициент ${dec(nr.kfa)} · тренировки добавят в среднем${effTrains(D)<D.trains?' (считаем '+effTrains(D)+' в неделю)':''}</div><div style="text-align:right"><div class="num" style="font-size:22px">+${fmt(nr.train)}</div><div class="tiny muted" style="white-space:nowrap">ккал в день</div></div></div></div>
       <button class="btn" onclick="obNext()">Дальше</button>`,
    ()=>`<div class="q">Бюджет на питание</div><div class="qs">Подберём меню и магазины, которые вам по карману</div>
-      <div style="overflow-y:auto;flex:1;margin:0 -4px;padding:0 4px">
+      <div class="fadeb" style="overflow-y:auto;flex:1;min-height:0;margin:0 -4px;padding:0 4px">
       <div class="lock" style="margin-bottom:12px">${ic('lock')}<div><b>Конфиденциально.</b> Доход видите только вы — он хранится на вашем телефоне и никуда не передаётся.</div></div>
       <div class="card"><div class="small muted">Доход в месяц</div><div class="num" style="font-size:34px" id="incv">${fmt(D.income)} ₽</div>
        <input type="range" min="20000" max="500000" step="5000" value="${D.income}" oninput="D.income=+this.value;updBud()">
        <div class="row between" style="margin-top:8px"><span class="small muted">Сколько человек кормит этот доход</span><div class="ctl"><button class="rb" onclick="obAdj('people',-1,1,6)">−</button><span class="num" style="font-size:20px;min-width:20px;text-align:center">${D.people}</span><button class="rb" onclick="obAdj('people',1,1,6)">+</button></div></div>
        <div class="small muted" style="margin-top:12px">Доля на еду (в среднем по России — около трети расходов)</div>
        <div class="chips" style="margin-top:6px">${[[.2,'20%'],[.3,'30%'],[.4,'40%']].map(([v,l])=>`<button class="chip ${D.share===v?'on':''}" onclick="D.share=${v};renderOnb()">${l}</button>`).join('')}</div></div>
-      <div class="card row"><div class="ibox ok">${ic('wallet')}</div><div style="flex:1"><div class="small muted">Бюджет на еду</div><div class="num" style="font-size:26px" id="budv">${fmt(bud)} ₽ в день</div><div class="small muted" id="stv">${stores(bud).map(s=>s[0]).join(', ')}</div></div></div></div>
+      </div>
+      <div class="card row" style="margin:8px 0 0"><div class="ibox ok">${ic('wallet')}</div><div style="flex:1;min-width:0"><div class="small muted">Бюджет на еду</div><div class="num" style="font-size:26px" id="budv">${fmt(bud)} ₽ в день</div><div class="small muted" id="stv">${stores(bud).map(s=>s[0]).join(', ')}</div></div></div>
       <button class="btn" style="margin-top:12px" onclick="obNext()">Дальше</button>`,
    ()=>`<div class="q">Где тренируетесь?</div><div class="qs">Программа подстроится под инвентарь</div>
       ${[['gym','В зале','тренажёры, штанга, гантели','gym'],['home','Дома','без инвентаря или с гантелями','home'],['both','И там, и там','программа на оба случая','run']].map(([k,t,d,i])=>`<button class="opt ${D.place===k?'on':''}" onclick="D.place='${k}';renderOnb()"><div class="ibox">${ic(i)}</div><div style="flex:1"><div style="font-weight:700">${t}</div><div class="small muted">${d}</div></div></button>`).join('')}
