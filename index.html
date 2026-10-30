@@ -1005,7 +1005,7 @@ function productPortion(id,g){
    ${x.odd?`<div class="small" style="margin:0 4px 8px;color:var(--warn-text)">Цифры этикетки не сходятся (по составу ≈${fmt(x.calcK)} ккал на 100 г) — проверьте упаковку</div>`:''}<div class="src" style="margin:0 4px 10px">Источник: ${(x.src||'база приложения').replace(/;?\s*цифры по памяти,?\s*проверить/i,' · цифры ещё сверяем с таблицей')} · считает код: ${x.kcal?'ккал на 100 г × граммы':'Б×4 + Ж×9 + У×4'}</div>
    <button class="btn" onclick="logProduct()">Записать в дневник</button><button class="btn ghost" onclick="openSearch('${x.n.replace(/'/g,'')}')">Назад к поиску</button>`);
 }
-function logProduct(){if(S.day!==today0())rollDay();const x=DB.products.find(p=>p.id===PP.id),k=PP.g/100,kc=(x.kcal||kcalOf(x))*k;S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:x.n+' · '+PP.g+' г',img:x.img||'',k:kc,p:x.p*k,f:x.f*k,c:x.c*k,cost:0,acc:'высокая',src:x.id.startsWith('off_')||x.mine?'этикетка':'база'});S.entries=(S.entries||0)+1;save();closeSheet();DIR='';S.tab='today';render();toTop();kc>1500?toast('Записано '+u(kc,'ккал')+' за одну запись — проверьте граммы',true):toast('Записано · '+u(kc,'ккал'))}
+function logProduct(){S.foodN=(S.foodN||0)+1;if(S.day!==today0())rollDay();const x=DB.products.find(p=>p.id===PP.id),k=PP.g/100,kc=(x.kcal||kcalOf(x))*k;S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:x.n+' · '+PP.g+' г',img:x.img||'',k:kc,p:x.p*k,f:x.f*k,c:x.c*k,cost:0,acc:'высокая',src:x.id.startsWith('off_')||x.mine?'этикетка':'база'});S.entries=(S.entries||0)+1;save();closeSheet();DIR='';S.tab='today';render();toTop();kc>1500?toast('Записано '+u(kc,'ккал')+' за одну запись — проверьте граммы',true):toast('Записано · '+u(kc,'ккал'))}
 function dishFromDB(id){
   const d=DB.dishes.find(x=>x.id===id);if(!d)return;const miss=[];
   const parts=d.parts.map(pt=>{
@@ -1253,7 +1253,7 @@ function openEntry(i,ask){const en=S.log[i];if(!en)return;if(!ask)openEntry.back
      :`<button class="btn ghost" onclick="openEntry(${i},1)">Удалить запись</button>`}`)}
 function scaleEntry(i,x){const en=S.log[i];if(!en)return;['k','p','f','c','cost'].forEach(f=>{if(typeof en[f]==='number')en[f]=Math.round(en[f]*x*10)/10});en.k=Math.round(en.k);save();const bk=openEntry.back;openEntry.back=null;if(bk)bk();else{closeSheet();rerender()}rerender.dirty=1;toast('Порция поправлена · '+u(en.k,'ккал'))}
 function delEntry(i){const en=S.log[i];if(!en)return;S.log.splice(i,1);save();const bk=openEntry.back;openEntry.back=null;if(bk)bk();else{closeSheet();rerender()}rerender.dirty=1;haptic(10);toast('Запись удалена')}
-function addLog(){if(S.day!==today0())rollDay();const d=SC.d,t=total();S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:d.name,img:SC.thumb||(SC.photo&&SC.photo.length<200000?SC.photo:null)||d.img,k:t.k,p:t.p,f:t.f,c:t.c,cost:d.cost,acc:d.store?'высокая':'средняя',src:d.store?'этикетка':d.fromDB?'база':'база'});S.entries=(S.entries||0)+1;save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(t.k,'ккал'))}
+function addLog(){S.foodN=(S.foodN||0)+1;if(S.day!==today0())rollDay();const d=SC.d,t=total();S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:d.name,img:SC.thumb||(SC.photo&&SC.photo.length<200000?SC.photo:null)||d.img,k:t.k,p:t.p,f:t.f,c:t.c,cost:d.cost,acc:d.store?'высокая':'средняя',src:d.store?'этикетка':d.fromDB?'база':'база'});S.entries=(S.entries||0)+1;save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(t.k,'ккал'))}
 
 /* ---------- Тренировки ---------- */
 const STAGES=[['Старт','8 недель'],['Прогресс','4 недели'],['Результат','6 недель']];
@@ -2100,7 +2100,7 @@ async function api(path,body){const ac=new AbortController(),t=setTimeout(()=>ac
 const tzName=()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){return ''}};
 // счётчик заходов: раз за запуск (и при возвращении в приложение), не чаще раза в 30 минут; не ушло — повторим при следующем запуске
 function visit(){const now=Date.now();if(now-Math.max(S.visitAt||0,visit.tried||0)<30*60e3||!navigator.onLine)return;visit.tried=now;
-  api('/visit',{did:S.did,v:APPV,tz:tzName(),first:!S.visitOk}).then(r=>{if(r.ok){S.visitAt=Date.now();S.visitOk=true;save()}})}
+  (S.days=S.days||[]).includes(today0())||(S.days.push(today0()),S.days.length>400&&S.days.shift());api('/visit',{did:S.did,v:APPV,tz:tzName(),first:!S.visitOk,food:S.foodN||0,workouts:S.workouts||0,forms:(S.forms||[]).length,days:S.days.length}).then(r=>{if(r.ok){S.visitAt=Date.now();S.visitOk=true;save()}})}
 
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); // текст отзывов пишут люди — только как текст
 const STAR_D='M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8-5.3-2.8-5.3 2.8 1-5.8-4.2-4.1 5.9-.9z';
