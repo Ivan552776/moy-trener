@@ -118,6 +118,21 @@ h2{font:700 20px/1.2 var(--display);letter-spacing:-.015em;color:var(--text);mar
 h2 small{font:600 15px var(--font);letter-spacing:0;color:var(--accent-text);cursor:pointer;padding:8px 10px;margin:-8px -10px;border-radius:10px;transition:background-color .15s}
 h2 small:active{background:var(--accent-soft)}
 h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.src,.lock,.calcrow span{text-wrap:pretty}
+#obrv{margin-top:auto;padding-top:10px} .obrv{display:block;width:100%;text-align:left;margin:0 0 4px;padding:9px 0 0;border-radius:var(--r);background:var(--card);box-shadow:var(--shadow);overflow:hidden}
+.obrv-h{display:flex;align-items:center;gap:6px;padding:0 12px 8px;font-size:13px;white-space:nowrap} .obrv-h b{font:700 15px var(--num)} .obrv-h .stars{--f:#F5A524}
+.obrv-demo{margin-left:auto;font-size:11px;padding:2px 8px;background:var(--warn-soft);color:var(--warn-text)}
+.obrv-win{overflow:hidden;padding-bottom:10px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 14px),transparent)}
+.obrv-tr{display:flex;gap:12px;width:max-content;padding-left:14px;animation:obrv var(--obrv-d,40s) linear infinite;will-change:transform;backface-visibility:hidden}
+@keyframes obrv{to{transform:translate3d(calc(-50% - 6px),0,0)}}
+.obrv-tr.rm{animation:none;overflow-x:auto;width:auto;scroll-snap-type:x mandatory} .obrv-tr.rm .obrv-c{scroll-snap-align:start}
+.obrv-c{flex:none;width:240px;padding:8px 11px;border-radius:12px;background:var(--card2);display:flex;flex-direction:column;gap:3px} .obrv-c .stars{--f:#F5A524}
+.obrv-t{font-size:13.5px;line-height:1.3;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.7em}
+.obrv-n{font-size:12px;font-weight:600;color:var(--text2)}
+ #onb .has-rv .cover{aspect-ratio:auto;height:min(230px,27dvh);max-height:none} #onb .has-rv .feat{padding-top:4px;padding-bottom:4px}
+@media (max-height:760px){#onb .has-rv .cover{height:120px;aspect-ratio:auto} #onb .has-rv .cv-sub{font-size:15px!important;line-height:1.35!important;margin-top:6px!important}}
+@media (max-height:620px){#onb .has-rv .cover{height:96px}}
+#phone.modal .obrv-tr,.pg-hid .obrv-tr{animation-play-state:paused}
+@media (prefers-reduced-motion: reduce){.obrv-tr{animation:none}}
 .me-card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:16px} .me-ava{width:60px;height:60px;flex:none;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font:700 24px var(--display)} .me-ava .ic{width:28px;height:28px} .me-nm{font:700 20px/1.2 var(--display);letter-spacing:-.02em;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .me-ed{flex:none;font-size:15px;font-weight:600;color:var(--accent-text)}
 .avatar{width:38px;height:38px;flex:none;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:700;font-size:15px;box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--accent-soft)}
 .muted{color:var(--text2)} .small{font-size:13px} .tiny{font-size:12px}
@@ -681,10 +696,10 @@ const ROMAN=['I','II','III','IV','V'];
 
 /* ---------- состояние ---------- */
 const DEF={name:'',sex:'m',age:30,h:178,w:80,goal:'lose',pace:'mid',work:'sit',trains:3,level:'new',income:80000,people:1,share:.3,place:'both'}; // только стартовые значения анкеты — человек меняет их сам
-const fresh=()=>({onb:true,profile:{...DEF},log:[],done:[],sets:{},remind:{},tab:'today',theme:'light',weights:[],forms:[],extra:[],custom:[],refs:[],v:3,day:null,week:null,doneOn:{},plan:null});
+const fresh=()=>({onb:true,profile:{...DEF},log:[],done:[],sets:{},remind:{},tab:'today',theme:'auto',weights:[],forms:[],extra:[],custom:[],refs:[],v:3,day:null,week:null,doneOn:{},plan:null});
 let S=load()||fresh();if(S.demo||(S.profile&&S.profile.name==='Алексей'&&S.profile.club==='izumrud'&&S.profile.w===88)){const th=S.theme;S=fresh();S.theme=th} // старое сохранение «примера» — честно начинаем с анкеты
 if(!['today','tech','me'].includes(S.tab))S.tab='today';
-S.theme=S.theme||'light';
+S.theme=S.theme||'auto';
 function applyTheme(){const r=document.documentElement;r.dataset.theme=S.theme;const dark=S.theme==='dark'||(S.theme==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.scheme=dark?'dark':'light';const m=document.getElementById('themecolor');if(m)m.content=dark?'#0F1117':'#F2F3F7'}
 applyTheme();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
 function setTheme(t){const run=()=>{S.theme=t;save();applyTheme();rerender()};haptic(6);if(document.startViewTransition&&!RM&&S.theme!==t){const r=document.documentElement;r.classList.add('theme-vt');const vt=document.startViewTransition(run);vt.ready.catch(()=>{});vt.finished.catch(()=>{}).then(()=>r.classList.remove('theme-vt'))}else run()}
@@ -2020,21 +2035,22 @@ function resetAll(){if(S.remind&&(S.remind.on||S.remind.unsub))remDrop().then(()
 /* ---------- Анкета ---------- */
 let OB=0,D={...DEF},obDir='',obPct=0;
 const STEPS=7;
-function showOnb(){OB=0;D={...DEF};obDir='';obPct=0;$('#onb').classList.remove('hide');renderOnb()}
+function showOnb(){OB=0;D={...DEF};obDir='';obPct=0;$('#onb').classList.remove('hide');renderOnb();setTimeout(()=>rvLoad(),600)} // новенький сразу видит отзывы
 function renderOnb(){
   const nr=norm(D),bud=budgetOf(D);
   const steps=[
-   ()=>`<div class="fadeb" style="flex:1;overflow-y:auto;overflow-x:hidden;margin:calc(-1*env(safe-area-inset-top) - 36px) -20px 0;padding:0 20px;display:flex;flex-direction:column">
+   ()=>{const rv=obRv();return `<div id="obcv" class="fadeb${rv?' has-rv':''}" style="flex:1;overflow-y:auto;overflow-x:hidden;margin:calc(-1*env(safe-area-inset-top) - 36px) -20px 0;padding:0 20px;display:flex;flex-direction:column">
       <div class="cover"><img src="img/tech-demo.jpg" alt="Разбор техники на ваших кадрах"><span class="pill shade">${ic('ruler','style="width:15px;height:15px"')} Разбор техники на ваших кадрах</span></div>
       <div class="brand"><div class="bigicon">${ic('bolt')}</div><span class="pill accent">ИИ-тренер · прототип</span></div>
       <div class="cv-title">Мой тренер</div>
-      <div class="muted" style="font-size:17px;line-height:1.4;margin-top:10px;text-wrap:pretty">Считает честно: калории — по базе продуктов, технику — по вашему видео. План под цель, тело и бюджет.</div>
+      <div class="muted cv-sub" style="font-size:17px;line-height:1.4;margin-top:10px;text-wrap:pretty">Считает честно: калории — по базе продуктов, технику — по вашему видео. План под цель, тело и бюджет.</div>
       <div style="margin:14px 0 8px">
        <div class="feat"><div class="ibox accent">${ic('cam')}</div>Калории по фото и базе</div>
        <div class="feat"><div class="ibox tech">${ic('ruler')}</div>Техника по вашему видео</div>
-       <div class="feat"><div class="ibox volt">${ic('cart')}</div>Магазины под ваш бюджет</div></div></div>
+       <div class="feat"><div class="ibox volt">${ic('cart')}</div>Магазины под ваш бюджет</div></div>
+      <div id="obrv">${rv}</div></div>
       <button class="btn" style="margin-top:10px" onclick="obNext()">Составить мой план</button>
-      <div class="concept" style="margin-top:6px">Данные остаются на вашем телефоне · прототип · не медицинская консультация</div>`,
+      <div class="concept" style="margin-top:6px">Данные остаются на вашем телефоне · прототип · не медицинская консультация</div>`},
    ()=>`<div class="q">Чего хотите добиться?</div><div class="qs">План, калории и тренировки подстроятся под цель</div>
       <div class="fadeb" style="overflow-y:auto;flex:1;min-height:0;margin:0 -4px;padding:0 4px">${Object.entries(GOALS).map(([k,g])=>`<button class="opt ${D.goal===k?'on':''}" onclick="D.goal='${k}';renderOnb()"><div class="ibox">${ic(g.i)}</div><div style="flex:1"><div style="font-weight:700">${g.n}</div><div class="small muted">${g.d}</div></div></button>`).join('')}
       ${D.goal==='lose'||D.goal==='muscle'?`<div class="small muted" style="margin:6px 4px 8px">Темп</div><div class="chips pace">${Object.entries(PACE).map(([k,l])=>`<button class="chip ${D.pace===k?'on':''}" onclick="D.pace='${k}';renderOnb()">${l}<small>${(GOALS[D.goal].adj[k]>0?'+':GOALS[D.goal].adj[k]<0?'−':'')+Math.abs(Math.round(GOALS[D.goal].adj[k]*100))}%</small></button>`).join('')}</div>`:''}</div>
@@ -2116,10 +2132,12 @@ function stars(v,sz=16){const one=`<svg viewBox="0 0 24 24" width="${sz}" height
 function rvNorm(x){if(!x||typeof x!=='object')return null;const st=Math.round(+x.stars);if(!(st>=1&&st<=5))return null;
   let ts=x.ts;ts=typeof ts==='number'?(ts<1e12?ts*1000:ts):Date.parse(ts);
   return {id:String(x.id==null?'':x.id).slice(0,64),name:String(x.name||'').trim().slice(0,40),stars:st,text:String(x.text||'').trim().slice(0,600),ts:Number.isFinite(ts)?ts:0}}
-const rvList=()=>(S.rv&&Array.isArray(S.rv.list))?S.rv.list:[];
+// ?demo-reviews=1 — предпросмотр для Ивана: 5 примерных отзывов с плашкой «пример», запросов к серверу нет; по умолчанию — только настоящие
+const RVDEMO=/[?&]demo-reviews=1\b/.test(location.search),RVDEMO_L=RVDEMO?[['Марина',5,'За две недели минус 1,8 кг. Удобно, что калории считает по фото — не надо всё взвешивать.'],['Олег',4,'Разбор приседа по видео реально помог: колени больше не заваливаются.'],['',5,'Простое и красивое приложение, план под мой бюджет — то, что надо.'],['Анастасия',5,'Напоминания про белок — наконец-то добираю норму.'],['Дмитрий',4,'Хотелось бы больше блюд, но в целом очень удобно.']].map(([name,stars,text],i)=>({id:'demo'+i,name,stars,text,ts:Date.now()-(i+1)*864e5,demo:1})):null;
+const rvList=()=>RVDEMO_L||((S.rv&&Array.isArray(S.rv.list))?S.rv.list:[]);
 function rvDate(ts){if(!ts)return '';const d=new Date(ts),td=today0(),y=new Date();y.setDate(y.getDate()-1);
   return ymd(d)===td?'сегодня':ymd(d)===ymd(y)?'вчера':d.toLocaleDateString('ru-RU',d.getFullYear()===new Date().getFullYear()?{day:'numeric',month:'long'}:{day:'numeric',month:'long',year:'numeric'})}
-async function rvLoad(force){if(RV.busy||(!force&&RV.at&&Date.now()-RV.at<10*60e3))return;RV.at=Date.now();
+async function rvLoad(force){if(RVDEMO){RV.st='ok';return}if(RV.busy||(!force&&RV.at&&Date.now()-RV.at<10*60e3))return;RV.at=Date.now();
   if(!navigator.onLine){RV.st='offline';rvPaint();return}
   RV.busy=true;if(RV.st==='idle')RV.st='loading';const [r,st]=await Promise.all([api('/reviews?limit=50'),api('/stats')]);RV.busy=false;
   if(st.ok&&st.data&&typeof st.data==='object'){const num=v=>Number.isFinite(+v)&&+v>=0?Math.round(+v):0;S.rvStats={users:num(st.data.users_total),reviews:num(st.data.reviews_total),at:Date.now()}}
@@ -2130,8 +2148,8 @@ async function rvLoad(force){if(RV.busy||(!force&&RV.at&&Date.now()-RV.at<10*60e
     S.rv={list:[...mine,...got].sort((a,b)=>b.ts-a.ts).slice(0,50),at:Date.now()};RV.st='ok';save()}
   else RV.st=r.offline?'offline':'noserver';
   rvPaint()}
-function rvPaint(){document.querySelectorAll('.rvbox').forEach(el=>{el.innerHTML=rvInner()});rvtPaint();const a=$('#rvall');if(a)a.innerHTML=rvAllInner()}
-function rvNote(n){return RV.st==='offline'?(n?'Сохранённые отзывы · обновятся, когда появится интернет':''):RV.st==='noserver'?(n?'Сохранённые отзывы · сервер сейчас не отвечает':''):''}
+function rvPaint(){document.querySelectorAll('.rvbox').forEach(el=>{el.innerHTML=rvInner()});rvtPaint();obRvPaint();const a=$('#rvall');if(a)a.innerHTML=rvAllInner()}
+function rvNote(n){if(RVDEMO)return 'Пример: так отзывы будут выглядеть — это не настоящие отзывы';return RV.st==='offline'?(n?'Сохранённые отзывы · обновятся, когда появится интернет':''):RV.st==='noserver'?(n?'Сохранённые отзывы · сервер сейчас не отвечает':''):''}
 function rvEmpty(){const [t,s]=RV.st==='offline'?['Отзывы загрузятся, когда появится интернет','Свой можно написать и сейчас — черновик сохранится']
   :RV.st==='ok'?['Пока отзывов нет — будьте первым','Расскажите, что получилось и чего не хватает']
   :RV.st==='noserver'?['Отзывы скоро появятся — будьте первым','Расскажите, что получилось и чего не хватает']:['Загружаем отзывы…',''];
@@ -2159,7 +2177,7 @@ function rvtSig(L){return (RM?'rm|':'')+L.map(x=>x.id+':'+x.stars+':'+x.text.len
 function rvTicker(){const L=rvtList();if(!L.length){RVT.sig='';return ''}
   const all=rvList(),avg=rvAvg(all).toFixed(1).replace('.',','),sig=rvtSig(L);
   const lab=`Отзывы: средняя оценка ${avg} из 5, ${pl(Math.max(all.length,(S.rvStats&&S.rvStats.reviews)||0),'отзыв','отзыва','отзывов')}. Открыть все отзывы`;
-  const head=`<button class="rvt tap${RM?' rm':''}" onclick="openReviews()" aria-label="${lab}"><span class="rvt-avg" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="${STAR_D}"/></svg>${avg}</span><span class="rvt-win" aria-hidden="true">`;
+  const head=`<button class="rvt tap${RM?' rm':''}" onclick="openReviews()" aria-label="${lab}">${RVDEMO?'<span class="pill obrv-demo" style="margin-left:8px">пример</span>':''}<span class="rvt-avg" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="${STAR_D}"/></svg>${avg}</span><span class="rvt-win" aria-hidden="true">`;
   queueMicrotask(rvtFix); // после вставки в страницу: замер ленты (один раз на набор отзывов) и пауза за краем экрана
   if(RM){const i=RVT.i%L.length;return head+L.map((x,j)=>rvtItem(x).replace('class="rvt-it"',`class="rvt-it${j===i?' on':''}"`)).join('')+'</span></button>'}
   // лента повторяется, пока половина заметно шире окна (оценка по числу знаков, точный замер — в rvtFix)
@@ -2178,6 +2196,12 @@ function rvtFix(){const el=document.querySelector('.rvtbox .rvt');if(RVT.io){RVT
     if(w&&w<win+60){const k=Math.ceil((win+60)/w);[...tr.children].forEach(x=>{const src=x.innerHTML;x.innerHTML=src.repeat(k+1)});w=h.offsetWidth} // узкий набор — добавили повторов
     RVT.w=w;RVT.sig=sig;tr.setAttribute('style',rvtStyle(w))}
   if('IntersectionObserver' in window){RVT.io=new IntersectionObserver(es=>{es.forEach(e=>e.target.classList.toggle('off',!e.isIntersecting))});RVT.io.observe(el)}}
+function obRv(){const L=rvtList().slice(0,8);if(L.length<2)return '';const all=rvList(),avg=rvAvg(all).toFixed(1).replace('.',',');
+  const card=x=>`<div class="obrv-c">${stars(x.stars,13)}<div class="obrv-t">«${esc(x.text.replace(/\s+/g,' ').trim())}»</div><div class="obrv-n">${esc(x.name)||'Пользователь'}</div></div>`,one=L.map(card).join('');
+  const d=Math.max(20,L.length*7); // ~36 px/с при карточке 240 px + 12 px
+  return `<button class="obrv tap" onclick="openReviews()" aria-label="Отзывы: средняя оценка ${avg} из 5. Открыть все отзывы"><div class="obrv-h">${stars(rvAvg(all),14)}<b>${avg}</b><span class="muted" style="flex:none">·&nbsp;${pl(Math.max(all.length,(S.rvStats&&S.rvStats.reviews)||0),'отзыв','отзыва','отзывов')}</span>${RVDEMO?'<span class="pill obrv-demo">пример</span>':''}</div>
+   <div class="obrv-win" aria-hidden="true"><div class="obrv-tr${RM?' rm':''}" style="--obrv-d:${d}s">${one}${RM?'':one}</div></div></button>`}
+function obRvPaint(){const b=$('#obrv');if(!b||$('#onb').classList.contains('hide'))return;const h=obRv();b.innerHTML=h;const c=$('#obcv');if(c)c.classList.toggle('has-rv',!!h)}
 function rvtRot(){const el=document.querySelector('.rvtbox .rvt.rm');if(!el){clearInterval(RVT.iv);RVT.iv=0;return}
   if(document.hidden||$('#sheet').classList.contains('on'))return;
   const it=el.querySelectorAll('.rvt-it');if(it.length<2)return;RVT.i=(RVT.i+1)%it.length;it.forEach((x,j)=>x.classList.toggle('on',j===RVT.i))}
