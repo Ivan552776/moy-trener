@@ -7,7 +7,7 @@ window.REQ = {
   phone: '',
   tax: 'ИФНС России № 15 по г. Москве',
   since: '19.10.2026',
-  site: 'https://ivan552776.github.io/moy-trener/',
+  site: 'https://moytrener-app.ru/',
   app: 'Мой тренер',
   price: '700 ₽ в месяц',
   trial: '7 дней',
