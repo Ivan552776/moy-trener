@@ -17,7 +17,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:url" content="https://ivan552776.github.io/moy-trener-demo/">
 <meta property="og:type" content="website">
-<link rel="icon" href="icon.png"><link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png"><link rel="apple-touch-icon" href="icon.png"><link rel="manifest" href="manifest.webmanifest">
 <style>
 /* ===== Дизайн 2.0 «Пульс»: холодный светлый фон, белые карточки, малиновый акцент, лайм «сделано» =====
    Все цвета — переменные ниже. Тёмная тема — :root[data-scheme="dark"] (data-scheme ставит applyTheme). */
@@ -50,6 +50,7 @@
   --warn:#F59E0B; --warn-text:#9A5B00; --warn-soft:rgba(245,158,11,.14);
   --bad:#D92D20; --bad-text:#C42318; --bad-soft:rgba(217,45,32,.10);
   --mus-main:#FF2D55; --mus-help:#FFB21E;
+  --ntf-bg:rgba(255,255,255,.80); --ntf-text:#0B0D12; --ntf-text2:rgba(11,13,18,.55);
   /* форма */
   --r:22px; --r2:12px; --r3:18px; --r-hero:28px; --r-sheet:28px; --pill:999px;
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Segoe UI",Roboto,sans-serif;
@@ -84,6 +85,7 @@
   --warn:#FFC34D; --warn-text:#FFC34D; --warn-soft:rgba(255,195,77,.16);
   --bad:#FF453A; --bad-text:#FF6A5E; --bad-soft:rgba(255,69,58,.16);
   --mus-main:#FF3358; --mus-help:#FFC34D;
+  --ntf-bg:rgba(28,30,38,.78); --ntf-text:#F5F6FA; --ntf-text2:rgba(245,246,250,.6);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,button,a,input,label,.tap,.chip,.rb,.setdot,.tab,.opt,.exrow,.rowbtn,.addopt,.ev,.toggle,.li{touch-action:manipulation}
@@ -227,7 +229,7 @@ h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.src,.lock,.calcrow span{text-
 .qa{display:flex;flex-direction:column;align-items:flex-start;gap:10px;text-align:left;min-height:148px;margin:0}
 .qa .grow{flex:1}
 .qa .qt{font:700 17px/1.2 var(--display);letter-spacing:-.01em}
-.demo{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 12px} .demo .ibox{width:34px;height:34px;border-radius:10px} .demo .ibox .ic{width:18px;height:18px}
+
 
 /* ---------- таббар ---------- */
 #tabs{position:absolute;left:0;right:0;bottom:0;height:calc(env(safe-area-inset-bottom) + 62px);padding:0 4px env(safe-area-inset-bottom);background:var(--glass);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);box-shadow:0 -.5px 0 var(--line);display:flex;align-items:center;z-index:5;view-transition-name:tabs}
@@ -432,6 +434,88 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .big{display:flex;align-items:flex-end;gap:12px;margin:2px 0 10px} .big .num{font-size:60px;line-height:.9;letter-spacing:-.03em} .big .sub{color:var(--text2);font-size:13px;line-height:1.3;padding-bottom:4px}
 .macros{display:grid;gap:7px;margin-top:4px} .mrow{display:flex;align-items:center;gap:10px;font-size:13px} .mrow .nm{width:72px;color:var(--text2)} .mrow .bar{flex:1} .mrow .v{width:78px;text-align:right;font:700 14px var(--num)} .mrow .v span{color:var(--text3);font-weight:500}
 .n-hero [data-cu],.big .num{display:inline-block;animation:numin .5s var(--ease-out)} @keyframes numin{from{opacity:0;transform:translateY(8px)}}
+/* ---------- отзывы ---------- */
+.stars{position:relative;display:inline-flex;line-height:0;vertical-align:middle;color:var(--line2)}
+.stars>span{display:inline-flex;gap:2px}
+.stars .s1{position:absolute;left:0;top:0;bottom:0;overflow:hidden;color:var(--f)}
+.stars svg{flex:none;fill:currentColor;stroke:currentColor;stroke-width:1.2;stroke-linejoin:round}
+.rv-top{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:0 0 12px;box-shadow:inset 0 -.5px 0 var(--line);text-align:left}
+.rv-sum{display:flex;align-items:center;gap:14px;min-width:0} .rv-sum.big{padding:2px 0 8px}
+.rv .list .li:last-child{box-shadow:inset 0 -.5px 0 var(--line)} .rv .list{margin-bottom:2px}
+.rv-it{align-items:flex-start!important}
+.rv-nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.rv-tx{margin-top:6px;font-size:15px;line-height:1.4;white-space:pre-line;overflow-wrap:anywhere;text-wrap:pretty}
+.rv-short .rv-tx{display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.rv-note{margin-top:10px}
+.rv-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px} .rv-acts .btn{flex:1 1 130px;width:auto;padding:0 12px}
+.rv-bars{display:grid;gap:6px;margin-top:10px}
+.rv-bar{display:grid;grid-template-columns:12px 1fr 28px;align-items:center;gap:10px} .rv-bar span:last-child{text-align:right}
+.rv-bar .bar{height:6px;border-radius:99px;background:var(--card2);overflow:hidden} .rv-bar .bar i{display:block;height:100%;border-radius:inherit;background:var(--f)}
+#sheet .rv-bar .bar{background:var(--card3)}
+/* бегущая строка отзывов на «Сегодня»: едет только transform по продублированной ленте, без перерисовок из скрипта */
+.rvt{display:flex;align-items:center;width:100%;height:44px;margin:-4px 0 18px;padding:0;border-radius:var(--pill);background:var(--card);box-shadow:var(--shadow);overflow:hidden;text-align:left;color:var(--text);-webkit-tap-highlight-color:transparent}
+.rvt-avg{flex:none;display:flex;align-items:center;gap:4px;height:100%;padding:0 12px 0 14px;font:700 15px/1 var(--num);font-variant-numeric:tabular-nums;box-shadow:inset -.5px 0 0 var(--line)}
+.rvt-avg svg{width:15px;height:15px;fill:var(--f);stroke:var(--f);stroke-width:1.2;stroke-linejoin:round}
+.rvt-win{flex:1;min-width:0;height:100%;position:relative;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 24px),transparent)}
+.rvt-track{display:flex;width:max-content;height:100%;animation:rvt var(--rvt-d,40s) linear var(--rvt-o,0s) infinite;will-change:transform;backface-visibility:hidden}
+.rvt-half{display:flex;flex:none;height:100%}
+.rvt-it{flex:none;display:flex;align-items:center;gap:6px;height:100%;padding:0 26px 0 12px;font-size:14px;line-height:1;white-space:nowrap}
+.rvt-it b{font-weight:600}
+.rvt-st{color:var(--f);font-size:12px;letter-spacing:.5px} .rvt-st i{font-style:normal;color:var(--line2)}
+.rvt-tx{color:var(--text2)}
+@keyframes rvt{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+#phone.modal .rvt-track,.pg-hid .rvt-track,.rvt.off .rvt-track{animation-play-state:paused}
+@media (hover:hover){.rvt:hover .rvt-track{animation-play-state:paused}}
+.rvt.rm .rvt-it{position:absolute;inset:0;padding:0 14px 0 12px;opacity:0;transition:opacity .5s ease!important;overflow:hidden}
+.rvt.rm .rvt-it.on{opacity:1} .rvt.rm .rvt-it b{flex:0 1 auto;min-width:0;max-width:45%;overflow:hidden;text-overflow:ellipsis} .rvt.rm .rvt-st{flex:none} .rvt.rm .rvt-tx{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.starpick{display:flex;justify-content:center;gap:4px;margin:10px 0 6px}
+.starpick button{width:54px;height:54px;display:grid;place-items:center;border-radius:14px;color:var(--line2);transition:transform var(--d-press) var(--ease-out),color .15s}
+.starpick button svg{width:42px;height:42px;fill:currentColor;stroke:currentColor;stroke-width:1;stroke-linejoin:round}
+.starpick button.on{color:var(--f)}
+.starpick button:active{transform:scale(.88)}
+.starpick button.pop{animation:starpop .36s var(--spring-bouncy)}
+@keyframes starpop{40%{transform:scale(1.2)}}
+@media (max-width:359px){.starpick{gap:0}.starpick button{width:48px;height:50px}.starpick button svg{width:36px;height:36px}}
+.search.plain{background-image:none;padding-left:14px;box-shadow:none}
+.ta{display:block;width:100%;min-height:128px;border:0;border-radius:14px;padding:12px 14px;color:var(--text);font:400 16px/1.4 var(--font);resize:vertical;outline:0;-webkit-appearance:none;appearance:none}
+#sheet .card .search.plain,#sheet .card .ta{background-color:var(--card2)}
+:root[data-scheme="dark"] #sheet .card .search.plain,:root[data-scheme="dark"] #sheet .card .ta{background-color:var(--card3)}
+.ta::placeholder{color:var(--text3)}
+.search.plain:focus-visible,.ta:focus-visible{box-shadow:0 0 0 2px var(--accent)}
+.btn:disabled{opacity:.6;pointer-events:none}
+/* напоминания: как уведомления на экране iPhone — стекло на цветном фоне */
+.ntf-stage{position:relative;border-radius:var(--r);padding:16px 12px 12px;margin-bottom:12px;overflow:hidden;background:radial-gradient(80% 70% at 100% 0%,rgba(198,244,50,.55),transparent 60%),radial-gradient(90% 80% at 0% 100%,rgba(18,166,216,.55),transparent 65%),var(--grad);display:grid;gap:8px}
+.ntf{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border-radius:18px;background:var(--ntf-bg);-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);color:var(--ntf-text);box-shadow:0 6px 18px -8px rgba(0,0,0,.35)}
+.ntf img{width:36px;height:36px;border-radius:9px;flex:none}
+.ntf .nh{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ntf-text2);text-transform:uppercase;letter-spacing:.02em}
+.ntf b{display:block;font-size:15px;font-weight:600;margin-top:2px;letter-spacing:-.01em}
+.ntf .nb{font-size:14px;line-height:1.35;margin-top:1px;text-wrap:pretty}
+.ntf-stage .ntf:nth-child(2){transform:scale(.97);opacity:.92}
+.rem-steps{counter-reset:st;display:grid;gap:0}
+.rem-st{display:flex;gap:12px;align-items:center;padding:10px 0;box-shadow:inset 0 -.5px 0 var(--line)} .rem-st:last-child{box-shadow:none}
+.rem-st .num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--accent);color:#fff;font:700 14px var(--num)}
+.rem-st .ic{color:var(--c-text);width:20px;height:20px;vertical-align:-4px}
+.rem-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:8px 0;box-shadow:inset 0 -.5px 0 var(--line)} .rem-row:last-child{box-shadow:none}
+.rem-row .t{flex:1;min-width:0;font-weight:600;font-size:16px} .rem-row .t small{display:block;color:var(--text2);font-size:13px;font-weight:400;margin-top:2px}
+.tin{height:38px;min-width:92px;padding:0 10px;border:0;border-radius:10px;background:var(--card2);color:var(--text);font:600 17px var(--num);text-align:center;outline:0;-webkit-appearance:none;appearance:none}
+#sheet .card .tin{background:var(--card2)} :root[data-scheme="dark"] #sheet .card .tin{background:var(--card3)}
+.tin:focus-visible{box-shadow:0 0 0 2px var(--accent)} .tin:disabled{opacity:.5}
+.toggle:disabled{opacity:.45;pointer-events:none} .toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.toggle.busy::after{animation:tglbusy 1s ease-in-out infinite alternate} @keyframes tglbusy{to{opacity:.55}}
+/* подсказки дня: цветные карточки, листаются вбок */
+.hl{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:2px 16px 6px;scrollbar-width:none;scroll-padding:0 16px} .hl::-webkit-scrollbar{display:none}
+.hl-c{flex:0 0 78%;max-width:300px;scroll-snap-align:start;border-radius:var(--r);padding:14px 16px 16px;color:#fff;text-align:left;display:flex;flex-direction:column;gap:6px;min-height:132px;position:relative;overflow:hidden;transition:transform var(--d-press) var(--ease-out)}
+.hl-c:only-child{flex-basis:100%;max-width:none}
+.hl-c:active{transform:scale(.97)}
+.hl-c .hl-eb{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;opacity:.92} .hl-c .hl-eb .ic{width:18px;height:18px}
+.hl-c .hl-t{font:700 19px/1.2 var(--display);letter-spacing:-.02em;text-wrap:balance}
+.hl-c .hl-s{font-size:14px;line-height:1.35;opacity:.92;text-wrap:pretty}
+.hl-c .hl-go{margin-top:auto;font-size:14px;font-weight:600;display:flex;align-items:center;gap:2px} .hl-c .hl-go .ic{width:16px;height:16px}
+.hl-c.g-p{background:linear-gradient(150deg,#6A5CFF 0%,#4B3FE0 60%,#3A2FB8 100%)}
+.hl-c.g-c{background:linear-gradient(150deg,#1192C7 0%,#0B7CB0 55%,#095E86 100%)}
+.hl-c.g-v{background:linear-gradient(150deg,#D8FF4A 0%,#B5E62A 60%,#8FCB12 100%);color:#0B0D12}
+.hl-c.g-a{background:var(--grad)}
+.hl-c.g-f{background:linear-gradient(150deg,#FFC34D 0%,#FF9F1C 60%,#F07C00 100%);color:#2A1700}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:1ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:1ms!important}
   .tap:active,.btn:active,.chip:active,.ev:active,.addopt:active,.opt:active{transform:none!important;opacity:.7}
@@ -454,6 +538,9 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
   <canvas id="fx"></canvas>
 </div>
 <script>
+/* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
+const API='https://abstract-tolerant-ember.ruweb.place/trener-api'; // адрес сервера — меняется только здесь
+const APPV='mt-2026-10-30-r1'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -492,6 +579,8 @@ const I={
  bolt:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
  wallet:'<rect x="3" y="6" width="18" height="14" rx="3"/><path d="M16 13h2M3 10h18"/>',
  doc:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 16h6"/>',
+ share:'<path d="M12 3.5v11"/><path d="M8 7.5l4-4 4 4"/><path d="M8 10.5H6.5a1.5 1.5 0 0 0-1.5 1.5v7a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-7a1.5 1.5 0 0 0-1.5-1.5H16"/>',
+ addsq:'<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8.5v7M8.5 12h7"/>',
  cart:'<path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.8L20 8H6.2"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/>'
 };
 const ic=(n,s='')=>`<svg class="ic" ${s} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${I[n]}</svg>`;
@@ -575,26 +664,6 @@ const MEALS=[
  {n:'Творог с миндалём и клюквой',b:1,img:'img/food/tvorog_orehi.jpg',cr:['Nevena Kukoljac','CC BY 2.0','https://commons.wikimedia.org/wiki/File:Breakfast_with_quark_and_nuts_2015.jpg'],items:[['tvorog',200],['almond',20],['cranb',15]],price:160,time:'5 мин'}
 ].map(m=>({...m,nut:mix(m.items)}));
 
-/* ---------- сеть клуба: 8 клубов ---------- */
-const CLUBS=[
- {id:'kaluzh',n:'Калужский',a:'ул. Профсоюзная, 61А · ТЦ «Калужский»',m:'м. Калужская',lat:55.6662,lng:37.5508},
- {id:'oblaka',n:'Облака',a:'Ореховый б-р, 22А · ТЦ «Облака»',m:'м. Домодедовская',lat:55.6120,lng:37.7196},
- {id:'izumrud',n:'Изумруд',a:'ул. Пришвина, 3Г · ТЦ «Изумруд»',m:'м. Бибирево',lat:55.8848,lng:37.6030},
- {id:'zilart',n:'Зиларт',a:'б-р Братьев Весниных, 2 · ТРЦ «ЗИЛ»',m:'м. ЗИЛ',lat:55.7013,lng:37.6450},
- {id:'mytishchi',n:'Мытищи',a:'ул. Мира, 32/2 · ТЦ 4Daily',m:'Мытищи',lat:55.9197,lng:37.7608},
- {id:'reutov',n:'Реутов',a:'ул. Октября, вл10 · ТЦ «Экватор»',m:'м. Новокосино',lat:55.7587,lng:37.8631},
- {id:'serpukhov',n:'Серпухов',a:'Борисовское ш., 1 · ТЦ «Корстон»',m:'Серпухов',lat:54.9076,lng:37.4262},
- {id:'perm',n:'Пермь',a:'б-р Гагарина, 46 · ТРЦ «Лайнер»',m:'Пермь',lat:58.0134,lng:56.2908}
-];
-const club=()=>CLUBS.find(c=>c.id===S.profile.club)||CLUBS[0];
-function dist(a,b){const R=6371,r=x=>x*Math.PI/180,dLa=r(b.lat-a.lat),dLo=r(b.lng-a.lng);const h=Math.sin(dLa/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
-const kmTxt=d=>d<1?Math.round(d*1000)+' м':(d<10?d.toFixed(1).replace('.',','):Math.round(d))+' км';
-let GEO=null;
-function locate(cb){
-  if(!navigator.geolocation){cb&&cb(false);return}
-  try{navigator.geolocation.getCurrentPosition(p=>{GEO={lat:p.coords.latitude,lng:p.coords.longitude};const near=CLUBS.map(c=>({c,d:dist(GEO,c)})).sort((a,b)=>a.d-b.d)[0];cb&&cb(near)},()=>cb&&cb(false),{timeout:6000,maximumAge:600000})}catch(e){cb&&cb(false)}
-}
-
 /* ---------- цели ---------- */
 const GOALS={
  lose:{n:'Похудеть',d:'Сбросить жир, сохранить мышцы',i:'flame',col:'#FF5136',adj:{slow:-.10,mid:-.15,fast:-.20},prot:2.0,prog:'Жиросжигание'},
@@ -609,27 +678,30 @@ const KFA=[1.4,1.6,1.9,2.2,2.5]; // группы физической актив
 const ROMAN=['I','II','III','IV','V'];
 
 /* ---------- состояние ---------- */
-const DEMO={name:'Алексей',sex:'m',age:30,h:180,w:88,goal:'lose',pace:'mid',work:'sit',trains:3,level:'new',income:120000,people:1,share:.3,club:'izumrud',place:'both'};
-const fresh=()=>({onb:true,profile:{...DEMO},log:[],done:[0],sets:{},remind:{},tab:'today',theme:'light',weights:[],forms:[],extra:[],custom:[],refs:[],v:3,day:null,week:null,doneOn:{},plan:null});
-let S=load()||fresh();if(!['today','tech','me'].includes(S.tab))S.tab='today';
+const DEF={name:'',sex:'m',age:30,h:178,w:80,goal:'lose',pace:'mid',work:'sit',trains:3,level:'new',income:80000,people:1,share:.3,place:'both'}; // только стартовые значения анкеты — человек меняет их сам
+const fresh=()=>({onb:true,profile:{...DEF},log:[],done:[],sets:{},remind:{},tab:'today',theme:'light',weights:[],forms:[],extra:[],custom:[],refs:[],v:3,day:null,week:null,doneOn:{},plan:null});
+let S=load()||fresh();if(S.demo||(S.profile&&S.profile.name==='Алексей'&&S.profile.club==='izumrud'&&S.profile.w===88)){const th=S.theme;S=fresh();S.theme=th} // старое сохранение «примера» — честно начинаем с анкеты
+if(!['today','tech','me'].includes(S.tab))S.tab='today';
 S.theme=S.theme||'light';
 function applyTheme(){const r=document.documentElement;r.dataset.theme=S.theme;const dark=S.theme==='dark'||(S.theme==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.scheme=dark?'dark':'light';const m=document.getElementById('themecolor');if(m)m.content=dark?'#0F1117':'#F2F3F7'}
 applyTheme();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
 function setTheme(t){const run=()=>{S.theme=t;save();applyTheme();rerender()};haptic(6);if(document.startViewTransition&&!RM&&S.theme!==t){const r=document.documentElement;r.classList.add('theme-vt');const vt=document.startViewTransition(run);vt.ready.catch(()=>{});vt.finished.catch(()=>{}).then(()=>r.classList.remove('theme-vt'))}else run()}
 S.weights=S.weights||[];S.forms=S.forms||[];S.extra=S.extra||[];S.custom=S.custom||[];S.refs=S.refs||[];(S.log||[]).forEach(x=>{if(typeof x.img==='string'&&x.img.length>200000)x.img=null}); // старые записи с фото во весь размер тормозили каждую перерисовку  // вес по датам, разборы техники, упражнения в план, свои продукты
-window.__S=()=>S;window.__demoAllSets=()=>{program().ex.forEach((x,i)=>{for(let j=0;j<setsOf(x);j++)S.sets[i+'-'+j]=true});S.startedAt=Date.now()-46*60000;save();rerender()}; // для записи ролика
+window.__S=()=>S;window.__allSets=()=>{program().ex.forEach((x,i)=>{for(let j=0;j<setsOf(x);j++)S.sets[i+'-'+j]=true});S.startedAt=Date.now()-46*60000;save();rerender()}; // для записи ролика
 if(!S.profile||!GOALS[S.profile.goal]||S.profile.income==null)S=fresh();
 S.profile.name=cleanName(S.profile.name);
-if(!S.v){if(!S.demo)S.done=[...Array(Math.min(S.done.length,effTrains())).keys()];S.v=2} // старые сохранения: отметки были «индекс 1 = сегодня», сохраняем только число сделанных
-if(S.v<3){if(!S.demo){S.done=[...Array(Math.min(S.done.length,effTrains())).keys()];if(S.plan&&(S.plan.length>effTrains()||S.profile.level==='new'))S.plan=null}S.v=3} // сохранения до лимита новичка: план пересобирается с учётом сделанных дней
+if(!S.v){S.done=[...Array(Math.min(S.done.length,effTrains())).keys()];S.v=2} // старые сохранения: отметки были «индекс 1 = сегодня», сохраняем только число сделанных
+if(!S.did)S.did=newDid(); // случайный номер устройства — без имени и телефона
+if(S.v<3){S.done=[...Array(Math.min(S.done.length,effTrains())).keys()];if(S.plan&&(S.plan.length>effTrains()||S.profile.level==='new'))S.plan=null;S.v=3} // сохранения до лимита новичка: план пересобирается с учётом сделанных дней
 // новый день — новый дневник и подходы; новая неделя — новые отметки тренировок
 function rollDay(){const td=today0(),wk=monday0();let ch=false;if(!S.day){const utc=new Date().toISOString().slice(0,10),now=new Date().toTimeString().slice(0,5);S.log=S.log.filter(e=>!e.d||e.d===td||(e.d===utc&&utc!==td&&e.t<=now))}
-  if(S.day&&S.day!==td){S.log=S.log.filter(e=>e.d===td);if(!(S.startedAt&&Date.now()-S.startedAt<4*3600e3)){S.sets={};S.startedAt=null}if(S.demo&&!S.log.length)seedDay();ch=true}
-  if(S.week&&S.week!==wk){S.lastDone=Object.keys(S.doneOn||{}).sort().pop()||S.lastDone;if(!S.demo)S.rot=(S.rot||0)+S.done.length;S.doneOn=Object.fromEntries(Object.entries(S.doneOn||{}).filter(([d])=>d>=wk));S.done=S.demo?((new Date().getDay()+6)%7>=2?[0]:[]):[...new Set(Object.values(S.doneOn))];S.plan=null;ch=true}
+  if(S.day&&S.day!==td){S.log=S.log.filter(e=>e.d===td);if(!(S.startedAt&&Date.now()-S.startedAt<4*3600e3)){S.sets={};S.startedAt=null}ch=true}
+  if(S.week&&S.week!==wk){S.lastDone=Object.keys(S.doneOn||{}).sort().pop()||S.lastDone;S.rot=(S.rot||0)+S.done.length;S.doneOn=Object.fromEntries(Object.entries(S.doneOn||{}).filter(([d])=>d>=wk));S.done=[...new Set(Object.values(S.doneOn))];S.plan=null;ch=true}
+  if(S.useDay!==td){S.useDay=td;S.useDays=(S.useDays||0)+1} // дни, когда открывали приложение (для просьбы оставить отзыв)
   S.day=td;S.week=wk;S.doneOn=S.doneOn||{};save();return ch}
 rollDay();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.day!==today0()&&rollDay()){closeSheet();render()}});
-function save(){
+function save(){pushSoon();
   try{localStorage.setItem('yb-demo2',JSON.stringify(S));return true}catch(e){}
   // память браузера переполнена (чаще всего — большие фото в дневнике): убираем тяжёлые снимки, записи и цифры сохраняем
   try{(S.log||[]).forEach(x=>{if(typeof x.img==='string'&&x.img.length>120000)x.img=null});(S.refs||[]).splice(0,Math.max(0,(S.refs||[]).length-40));localStorage.setItem('yb-demo2',JSON.stringify(S));return true}
@@ -653,9 +725,6 @@ function norm(pr){ // всё считает код, нейросеть цифр�
 const paceTxt=(pr,n)=>pr.goal==='lose'||pr.goal==='muscle'?(n.capped?'держим вес':PACE[n.minor&&pr.goal==='muscle'&&pr.pace==='fast'?'mid':pr.pace].toLowerCase()):n.adj===0?'держим вес':'';
 const progName=pr=>pr.goal==='lose'&&norm(pr).capped?GOALS.keep.prog:GOALS[pr.goal].prog; // подросткам и при недовесе «Жиросжигание» не предлагаем
 function eaten(){return S.log.reduce((t,e)=>({k:t.k+e.k,p:t.p+e.p,f:t.f+e.f,c:t.c+e.c,cost:t.cost+(e.cost||0)}),{k:0,p:0,f:0,c:0,cost:0})}
-function seedDay(){if(S.log.length)return;const now=new Date(),m=now.getHours()*60+now.getMinutes();if(m<360)return; // до 6 утра у Алексея день ещё пустой
-  const tm=Math.min(550,m-20),t=String(Math.floor(tm/60)).padStart(2,'0')+':'+String(tm%60).padStart(2,'0'); // завтрак не «из будущего»: 09:10 или 20 минут назад
-  const b=mix([['oats',250],['banana',100]]);S.log.push({d:today0(),t,n:'Овсянка с бананом',img:'img/food/ovsyanka.jpg',k:b.k,p:b.p,f:b.f,c:b.c,cost:45,acc:'средняя'})}
 function stores(b){return b<400?[['Пятёрочка','цены ниже среднего'],['Магнит','акции каждую неделю'],['Дикси','рядом с домом']]:b<800?[['Перекрёсток','широкий выбор'],['Лента','выгодно на неделю'],['ВкусВилл','готовая еда с КБЖУ']]:[['ВкусВилл','готовая еда с КБЖУ'],['Азбука Вкуса','фермерские продукты'],['Перекрёсток','широкий выбор']]}
 
 /* ---------- программа под цель ---------- */
@@ -675,7 +744,7 @@ const SPLITS={
             ['Сила',[['Гоблет-приседания','3 × 12','Гантель у груди, спина прямая.','squat','Goblet_Squat'],['Выпады с гантелями','3 × 10 на ногу','Колено над стопой.','lunge','Dumbbell_Lunges'],['Тяга нижнего блока','3 × 12','Грудь вперёд, тяните к поясу.','seatedrow','Seated_Cable_Rows'],['Боковая планка','3 × 30 сек на сторону','Тело прямое.',null,'Side_Bridge']]]],
  home:[['Дома А',HOME_EX],['Дома Б',[['Отжимания (можно с колен)','3 × 10','Корпус прямой, локти под 45°.',null,'Pushups'],['Ягодичный мост','3 × 15','Сожмите ягодицы вверху.',null,'Butt_Lift_Bridge'],['Выпады назад','3 × 10 на ногу','Шаг назад, колено над стопой; можно без гантелей.',null,'Dumbbell_Rear_Lunge',1],['Скалолаз','3 × 30 сек','Таз не поднимается, темп ровный.',null,'Mountain_Climbers'],['Боковая планка','3 × 20 сек на сторону','Тело прямое.',null,'Side_Bridge']]]]
 };
-const program=()=>{const g=S.profile.goal,sp=SPLITS[S.profile.place==='home'?'home':g],n=effTrains(),d=curDay(),r=S.demo?0:(S.rot||0);return{name:progName(S.profile),days:Array.from({length:n},(_,i)=>sp[(i+r)%sp.length][0]),ex:sp[(d+r)%sp.length][1]}};
+const program=()=>{const g=S.profile.goal,sp=SPLITS[S.profile.place==='home'?'home':g],n=effTrains(),d=curDay(),r=S.rot||0;return{name:progName(S.profile),days:Array.from({length:n},(_,i)=>sp[(i+r)%sp.length][0]),ex:sp[(d+r)%sp.length][1]}};
 const exPic=x=>x[3]&&x[3]!=='home'?gymPic(x[3]):x[4]?EXIMG(x[4])+(x[5]||0)+'.jpg':gymPic(x[3]); // фото зала, если есть; иначе — кадр атласа
 function effTrains(pr){pr=pr||S.profile;return pr.level==='new'?Math.min(pr.trains,4):pr.trains} // новичкам — не больше 4 в неделю и не два дня подряд
 const curDay=()=>{const n=effTrains(),t=S.doneOn&&S.doneOn[today0()];if(t!=null&&t<n)return t;for(let i=0;i<n;i++)if(!S.done.includes(i))return i;return n-1}; // какой день программы сегодня
@@ -684,7 +753,6 @@ const weekPlanCount=()=>Math.min((S.plan||planWeek()).length,effTrains()); // с
 const dow=s=>(new Date(s+'T00:00').getDay()+6)%7;
 // план недели: уже сделанные дни + оставшиеся с сегодня; новичкам — через день, с учётом вчерашней тренировки (и на стыке недель)
 function planWeek(){const wd=(new Date().getDay()+6)%7,n=effTrains(),td=today0();
-  if(S.demo){const s=wd>=2?wd-2:wd;return [s,s+2,s+4].filter(d=>d<=6).slice(0,n)}
   const past=[...new Set(Object.keys(S.doneOn||{}).filter(d=>S.week&&d>=S.week&&d<=td).sort().map(dow))],k=Math.max(0,n-past.length),fut=[],dt=doneToday();
   if(S.profile.level==='new'){for(let d=wd+(dt?2:restYest()?1:0);d<7&&fut.length<k;d+=2)fut.push(d)}
   else{const st=wd+(dt?1:0),rem=7-st,m=Math.max(0,Math.min(k,rem));for(let i=0;i<m;i++)fut.push(st+(m>1?Math.round(i*(rem-1)/(m-1)):0))}
@@ -701,7 +769,7 @@ const gymPic=k=>'img/gym/'+(k||'club')+'.jpg';
 
 /* ---------- каркас ---------- */
 const TABS=[['today','Сегодня','sun'],['scan','','plus'],['tech','Атлас','ruler'],['me','Я','me']];
-const TITLES={today:'Сегодня',tech:'Атлас',me:'Личный кабинет',food:'Питание',gym:'Тренировки',club:'Клуб'};
+const TITLES={today:'Сегодня',tech:'Атлас',me:'Личный кабинет',food:'Питание',gym:'Тренировки'};
 function renderTabs(){const box=$('#tabbtns');if(!box.children.length)box.innerHTML=TABS.map(([id,l,i])=>id==='scan'?`<button class="tab fab" onclick="openAdd()" aria-label="Записать"><span class="circ">${ic('plus')}</span><span>Записать</span></button>`:`<button class="tab" data-id="${id}" onclick="go('${id}')">${ic(i)}<span>${l}</span></button>`).join('');box.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.id===S.tab));movePill()}
 function movePill(){const on=$('#tabbtns .tab.on'),p=$('#tabpill');if(!on)return;if(!p.dataset.init){p.style.transition='none';p.dataset.init=1;requestAnimationFrame(()=>{p.style.transition=''})}p.style.left=(on.offsetLeft+on.offsetWidth/2-32)+'px';p.style.opacity=1}
 function toTop(){const sc=$('#scroll');sc.style.scrollBehavior='auto';sc.scrollTop=0;sc.style.scrollBehavior=''}
@@ -771,7 +839,6 @@ function cleanName(s){return String(s||'').replace(/[<>&"`]/g,'').trim()||'Вы'
 const clean=s=>String(s||'').replace(/[<>&"`]/g,'').trim();
 const ava=()=>S.profile.name==='Вы'?ic('me','style="width:20px;height:20px"'):S.profile.name[0]; // без имени — значок, а не буква «В»
 function hello(){const h=new Date().getHours();return h<5?'Доброй ночи':h<11?'Доброе утро':h<17?'Добрый день':h<23?'Добрый вечер':'Доброй ночи'}
-function demoBanner(sub){return S.demo?`<button class="card tap demo" onclick="resetAll()"><div class="ibox accent">${ic('spark')}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:15px">Пример: данные Алексея</div><div class="small muted">${sub}</div></div><span class="chev">${ic('chev')}</span></button>`:''}
 function vToday(){
   const ws=weekStrip(),pr=S.profile,n=norm(pr),e=eaten(),left=n.kcal-e.k,g=GOALS[pr.goal],pg=program(),hr=new Date().getHours(),ti=curDay();
   const dateStr=new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
@@ -780,8 +847,8 @@ function vToday(){
   const mealTime=s.late?'':ateNow?(hr<11?'13:00':hr<16?'19:00':left>n.kcal*.3?'сейчас':''):'сейчас';
   const foot=left<0?(e.k>n.kcal*1.3?'Сильно больше нормы — проверьте граммы в записях':'Вышли за норму — бывает. Завтра по плану, без урезания'):s.late?(hr<5?'Ночь — время сна, утром начнём с завтрака':'Поздний вечер — на ночь не добираем, завтра по плану'):nextMeal&&mealTime?`Дальше — ${nextMeal.n.toLowerCase()}, ${u(nextMeal.nut.k,'ккал')}`:ateNow&&hr>=16?'Ужин записан · осталось '+u(left,'ккал'):s.why==='small'?'Готовые блюда дороже вашего бюджета — доберите крупой, яйцами, кефиром':s.why==='money'?'Бюджет на сегодня закончился — доберите тем, что есть дома':'Норма на сегодня почти закрыта';
   return `<div class="top"><div><div class="eyebrow">${dateStr[0].toUpperCase()+dateStr.slice(1)}</div><div class="date">${hello()}${pr.name&&pr.name!=='Вы'?',<br>'+pr.name:''}</div></div><button class="avatar tap" onclick="go('me')" aria-label="Личный кабинет">${ava()}</button></div>
-  ${demoBanner('Составить свой план — 2 минуты')}
   ${ws}
+  <div class="rvtbox">${rvTicker()}</div>
   <button class="hero-today tap ${left<0?'over':''}" onclick="openFoodPlan()">
     <div class="ht-eb">${left>=0?'Осталось на сегодня':'Сверх нормы'}</div>
     <div class="ht-main"><div><div class="n-hero">${CU(Math.abs(left))}</div><div class="ht-sub">ккал из ${fmt(n.kcal)} · <span style="white-space:nowrap">цель «${g.n.toLowerCase()}»</span></div></div>
@@ -802,28 +869,46 @@ function vToday(){
   </div>
   <h2>Главное сейчас</h2>
   <button class="card tap" style="display:block;width:100%;text-align:left" onclick="openChat()"><div class="row" style="align-items:flex-start"><div class="ibox accent">${ic('spark')}</div><div style="flex:1;min-width:0"><div style="font-size:16px;line-height:1.4;text-wrap:pretty">${tip(n,e)}</div><div class="small" style="margin-top:6px;color:var(--accent-text);font-weight:600">Спросить тренера</div></div><span class="chev">${ic('chev')}</span></div></button>
+  ${hlCards(n,e)}
   <h2>Хроника дня <small onclick="openAdd()">+ Записать</small></h2>
   <div class="card list tl">
     ${S.log.map((en,i)=>`<div class="li" role="button" onclick="openEntry(${i})"><time>${en.t}</time><div style="flex:1;min-width:0"><div style="font-weight:600">${en.n}</div><div class="tiny muted">Б ${fmt(en.p)} · Ж ${fmt(en.f)} · У ${fmt(en.c)} · ${en.src==='этикетка'?'по этикетке':'по базе'}${en.acc==='средняя'?', граммы уточнены':''}</div></div><span class="kc" style="white-space:nowrap">${fmt(en.k)}<small style="font:500 12px var(--font);color:var(--text2)"> ккал</small></span></div>`).join('')}
     ${nextMeal&&mealTime?`<button class="li next" style="width:100%" onclick="openMeal(${MEALS.findIndex(x=>x.n===nextMeal.n)})"><time>${mealTime}</time><div style="flex:1;min-width:0"><b>${nextMeal.n}</b><div class="tiny">подобрано под остаток и бюджет · ${u(nextMeal.nut.k,'ккал')} · ≈${nextMeal.price} ₽</div></div><span class="chev">${ic('chev')}</span></button>`:''}
     <button class="li ${done||wfull||lateW||!planToday?'':'next'}" style="width:100%" onclick="openProgram()"><time>${done?'готово':wfull?'неделя':rest?'отдых':!planToday?'потом':lateW?'поздно':'вечер'}</time><div style="flex:1;min-width:0"><b>${pg.days[ti]}</b><div class="tiny">${pl(pg.ex.length,'упражнение','упражнения','упражнений')} · ~45 мин · «${pg.name}»${rest?' · вчера была тренировка, сегодня отдых':lateW?' · лучше перенести на завтра':''}</div></div><span class="chev">${ic('chev')}</span></button>
-    ${!S.log.length?`<div class="li muted small" style="justify-content:center">Пока ничего не записано</div>`:''}
+    ${!S.log.length?`<button class="li" style="width:100%;justify-content:center;gap:8px;color:var(--accent-text);font-weight:600" onclick="openAdd()">${ic('plus','style="width:18px;height:18px"')} Записать первую еду</button>`:''}
   </div>
+  ${rvAsk()}
   <h2>Итоги дня</h2>
   <div class="card list">
     ${lf?`<div class="li"><div style="flex:1"><div style="font-weight:600">${fMus(lf.ex).slice(0,2).map(m=>MUSCLES[m]).filter(Boolean).join(', ')||'Мышцы по упражнению'}</div><div class="tiny muted">работали · ${fName(lf.ex).toLowerCase()}, ${ago(lf.t)}</div></div><i class="dot acc"></i></div>`:''}
     <div class="li"><div style="flex:1"><div style="font-weight:600">Белок</div><div class="tiny muted">${!S.log.length?'цель на день — '+u(n.p,'г'):Math.round(e.p)>=n.p?'норма закрыта':'не хватает '+u(n.p-Math.round(e.p),'г')+({lose:' — мышцы не уходят вместе с жиром',recomp:' — мышцы не уходят вместе с жиром',muscle:' — из него строятся мышцы',endurance:' — для восстановления'}[pr.goal]||'')}</div></div><span class="n-s">${fmt(e.p)} <span class="muted" style="font-weight:500">/ ${n.p}</span></span></div>
     <div class="li"><div style="flex:1"><div style="font-weight:600">Бюджет на еду</div><div class="tiny muted">осталось сегодня из ${fmt(budgetOf(pr))} ₽${S.log.some(x=>!x.cost)?' · без цены продуктов из базы':''}</div></div><span class="n-s">${fmt(Math.max(budgetOf(pr)-e.cost,0))} ₽</span></div>
   </div>
+  ${rvBlock()}
   <div class="concept">Калории считает код по базе продуктов; норма&nbsp;— формула Миффлина × группа активности Роспотребнадзора + тренировки · не&nbsp;медицинская консультация</div>`;
 }
+/* подсказки дня: цветные карточки, как «Главное» в «Здоровье» на iPhone; всё считает код по дневнику, плану и весу */
+function hlCards(n,e){const hr=new Date().getHours(),pg=program(),ti=curDay(),done=doneToday(),wd=(new Date().getDay()+6)%7,planToday=!S.plan||S.plan.includes(wd),leftP=n.p-Math.round(e.p),cards=[];
+  const c=(cl,icn,eb,t,sub,go,fn)=>`<button class="hl-c ${cl}" onclick="${fn}"><div class="hl-eb">${ic(icn)}<span>${eb}</span></div><div class="hl-t">${t}</div><div class="hl-s">${sub}</div><div class="hl-go">${go}${ic('chev')}</div></button>`;
+  const wdone=Math.min(S.done.length,weekPlanCount()),wplan=weekPlanCount();
+  if(done)cards.push(c('g-v','check','Тренировка','Сделано сегодня',`${wdone} из ${wplan} на этой неделе. Отдых между тренировками — тоже часть плана.`,'История','openHistory()'));
+  else if(restDay())cards.push(c('g-v','heart','Тренировка','Сегодня отдых','Мышцы восстанавливаются между занятиями. Прогулка 30 минут — в самый раз.','План недели','openProgram()'));
+  else if(planToday&&!weekFull()&&hr>=5&&hr<22)cards.push(c('g-v','gym','Тренировка',esc(pg.days[ti]),`${pl(pg.ex.length,'упражнение','упражнения','упражнений')} · около 45 минут · ${wdone} из ${wplan} на неделе`,'Начать','openProgram()'));
+  if(S.log.length&&hr>=11&&leftP>20)cards.push(c('g-p','muscle','Белок',`Добрать ${u(leftP,'г')}`,'Творог, курица, яйца или рыба — подберём под остаток калорий и бюджет.','Что съесть','openFoodPlan()'));
+  else if(S.log.length&&leftP<=0)cards.push(c('g-p','muscle','Белок','Норма закрыта',`${u(Math.round(e.p),'г')} из ${u(n.p,'г')} — мышцам есть из чего восстанавливаться.`,'Питание','openFoodPlan()'));
+  if(!(S.remind&&S.remind.on)&&!S.hlRemOff)cards.push(c('g-f','bell','Напоминания','Не забыть про главное','Утром — план на день, вечером — тренировка и белок. Только если есть что напомнить.','Настроить','openRemind()'));
+  const lw=S.weights[S.weights.length-1],wAge=lw?(Date.parse(today0())-Date.parse(lw.d))/864e5:99;
+  if(wAge>=7)cards.push(c('g-c','weight','Вес',lw?'Пора взвеситься':'Запишите вес','Раз в неделю, утром до завтрака — так норма считается точнее.','Записать','openWeight()'));
+  if(!S.forms.length)cards.push(c('g-a','ruler','Техника','Проверьте присед','Снимите себя сбоку — телефон найдёт ошибки и покажет, как надо.','Снять видео','openForm()'));
+  if(!cards.length)return '';
+  return `<h2>Подсказки дня</h2><div class="hl">${cards.slice(0,3).join('')}</div>`}
 function ago(t){const d=Date.now()-t,m=Math.round(d/60000);if(m<60)return 'только что';if(m<60*20)return Math.round(m/60)+' ч назад';const dd=Math.round(m/1440);return dd<=1?'вчера':dd+' дн. назад'}
 function weekStrip(){
   const names=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],wd=(new Date().getDay()+6)%7,n=effTrains(),ti=curDay(),days=[];
   for(let i=0;i<n;i++){let d=Math.max(0,Math.min(6,wd+(i-ti)*2));while(days.includes(d)&&d<6)d++;if(days.includes(d))continue;days.push(d)}
   if(!S.plan){S.plan=planWeek();save()}days.length=0;days.push(...S.plan); // план недели — один раз в неделю, с первого дня, когда открыли приложение
   const today=new Date(),mon=new Date(today);mon.setDate(today.getDate()-wd);
-  return `<div class="wk" style="margin:0 0 18px">${names.map((nm,i)=>{const di=days.indexOf(i),done=di>-1&&S.done.includes(di),dt=new Date(mon);dt.setDate(mon.getDate()+i);const dn=S.demo?done||!!(S.doneOn&&S.doneOn[ymd(dt)]!=null):!!(S.doneOn&&S.doneOn[ymd(dt)]!=null);return `<div class="d ${dn?'done':di>-1&&i>=wd&&S.done.length<weekPlanCount()?'plan':''} ${i===wd?'today':''}"><i>${dn?ic('check','style="width:16px;height:16px"'):dt.getDate()}</i>${nm}</div>`}).join('')}</div>`;
+  return `<div class="wk" style="margin:0 0 18px">${names.map((nm,i)=>{const di=days.indexOf(i),done=di>-1&&S.done.includes(di),dt=new Date(mon);dt.setDate(mon.getDate()+i);const dn=!!(S.doneOn&&S.doneOn[ymd(dt)]!=null);return `<div class="d ${dn?'done':di>-1&&i>=wd&&S.done.length<weekPlanCount()?'plan':''} ${i===wd?'today':''}"><i>${dn?ic('check','style="width:16px;height:16px"'):dt.getDate()}</i>${nm}</div>`}).join('')}</div>`;
 }
 function tip(n,e){
   const g=S.profile.goal,leftP=n.p-Math.round(e.p),h=new Date().getHours(),sg=suggest(),lunch=S.log.some(x=>+x.t.slice(0,2)>=11);
@@ -920,7 +1005,7 @@ function productPortion(id,g){
    ${x.odd?`<div class="small" style="margin:0 4px 8px;color:var(--warn-text)">Цифры этикетки не сходятся (по составу ≈${fmt(x.calcK)} ккал на 100 г) — проверьте упаковку</div>`:''}<div class="src" style="margin:0 4px 10px">Источник: ${(x.src||'база приложения').replace(/;?\s*цифры по памяти,?\s*проверить/i,' · цифры ещё сверяем с таблицей')} · считает код: ${x.kcal?'ккал на 100 г × граммы':'Б×4 + Ж×9 + У×4'}</div>
    <button class="btn" onclick="logProduct()">Записать в дневник</button><button class="btn ghost" onclick="openSearch('${x.n.replace(/'/g,'')}')">Назад к поиску</button>`);
 }
-function logProduct(){if(S.day!==today0())rollDay();const x=DB.products.find(p=>p.id===PP.id),k=PP.g/100,kc=(x.kcal||kcalOf(x))*k;S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:x.n+' · '+PP.g+' г',img:x.img||'',k:kc,p:x.p*k,f:x.f*k,c:x.c*k,cost:0,acc:'высокая',src:x.id.startsWith('off_')||x.mine?'этикетка':'база'});save();closeSheet();DIR='';S.tab='today';render();toTop();kc>1500?toast('Записано '+u(kc,'ккал')+' за одну запись — проверьте граммы',true):toast('Записано · '+u(kc,'ккал'))}
+function logProduct(){if(S.day!==today0())rollDay();const x=DB.products.find(p=>p.id===PP.id),k=PP.g/100,kc=(x.kcal||kcalOf(x))*k;S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:x.n+' · '+PP.g+' г',img:x.img||'',k:kc,p:x.p*k,f:x.f*k,c:x.c*k,cost:0,acc:'высокая',src:x.id.startsWith('off_')||x.mine?'этикетка':'база'});S.entries=(S.entries||0)+1;save();closeSheet();DIR='';S.tab='today';render();toTop();kc>1500?toast('Записано '+u(kc,'ккал')+' за одну запись — проверьте граммы',true):toast('Записано · '+u(kc,'ккал'))}
 function dishFromDB(id){
   const d=DB.dishes.find(x=>x.id===id);if(!d)return;const miss=[];
   const parts=d.parts.map(pt=>{
@@ -1168,7 +1253,7 @@ function openEntry(i,ask){const en=S.log[i];if(!en)return;if(!ask)openEntry.back
      :`<button class="btn ghost" onclick="openEntry(${i},1)">Удалить запись</button>`}`)}
 function scaleEntry(i,x){const en=S.log[i];if(!en)return;['k','p','f','c','cost'].forEach(f=>{if(typeof en[f]==='number')en[f]=Math.round(en[f]*x*10)/10});en.k=Math.round(en.k);save();const bk=openEntry.back;openEntry.back=null;if(bk)bk();else{closeSheet();rerender()}rerender.dirty=1;toast('Порция поправлена · '+u(en.k,'ккал'))}
 function delEntry(i){const en=S.log[i];if(!en)return;S.log.splice(i,1);save();const bk=openEntry.back;openEntry.back=null;if(bk)bk();else{closeSheet();rerender()}rerender.dirty=1;haptic(10);toast('Запись удалена')}
-function addLog(){if(S.day!==today0())rollDay();const d=SC.d,t=total();S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:d.name,img:SC.thumb||(SC.photo&&SC.photo.length<200000?SC.photo:null)||d.img,k:t.k,p:t.p,f:t.f,c:t.c,cost:d.cost,acc:d.store?'высокая':'средняя',src:d.store?'этикетка':d.fromDB?'база':'база'});save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(t.k,'ккал'))}
+function addLog(){if(S.day!==today0())rollDay();const d=SC.d,t=total();S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:d.name,img:SC.thumb||(SC.photo&&SC.photo.length<200000?SC.photo:null)||d.img,k:t.k,p:t.p,f:t.f,c:t.c,cost:d.cost,acc:d.store?'высокая':'средняя',src:d.store?'этикетка':d.fromDB?'база':'база'});S.entries=(S.entries||0)+1;save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(t.k,'ккал'))}
 
 /* ---------- Тренировки ---------- */
 const STAGES=[['Старт','8 недель'],['Прогресс','4 недели'],['Результат','6 недель']];
@@ -1223,12 +1308,12 @@ function finishWorkout(force,homeMin){
   if(S.day!==today0())rollDay();
   const pg=program(),ti=curDay();if(doneToday()){toast('Сегодняшняя тренировка уже записана');return}if(S.done.includes(ti)){toast('Все тренировки этой недели уже сделаны');return}
   if(!force&&restDay()){sheet('Сегодня день отдыха',`<div class="muted" style="margin:4px 0 14px;line-height:1.45">Вчера уже была тренировка. Новичкам нужен день между занятиями: мышцы и связки восстанавливаются, и следующая тренировка пройдёт лучше. Сегодня подойдёт прогулка.</div><button class="btn" onclick="closeSheet()">Отдохну сегодня</button><button class="btn ghost" onclick="finishWorkout(true,${homeMin||0})">Всё равно записать</button>`);return}
-  S.done.push(ti);S.doneOn=S.doneOn||{};S.doneOn[today0()]=ti;if(!S.demo&&S.plan&&!S.plan.includes((new Date().getDay()+6)%7))S.plan=planWeek(); // тренировка вне плана — остаток недели пересобирается
+  S.done.push(ti);S.doneOn=S.doneOn||{};S.doneOn[today0()]=ti;if(S.plan&&!S.plan.includes((new Date().getDay()+6)%7))S.plan=planWeek(); // тренировка вне плана — остаток недели пересобирается
   const doneSets=setsDone(pg),allSets=pg.ex.reduce((s,x)=>s+setsOf(x),0)+S.extra.length*3,full=doneSets>=allSets;
   const timed=!!(homeMin||S.startedAt),mins=homeMin||(S.startedAt?Math.max(1,Math.round((Date.now()-S.startedAt)/60000)):0),kcal=Math.round(4*S.profile.w*mins/60); // 4 МЕТ сверх покоя × вес × часы — как в норме; без отмеченных подходов время не выдумываем
   S.workouts=(S.workouts||0)+1;S.startedAt=null;save();SHEET_FN=null;rerender.dirty=1;haptic([10,50,10,50,20]);
   sheet('Тренировка завершена',`<div style="text-align:center;padding:6px 0 10px">${OK}<div class="num" style="font-size:42px;margin-top:12px">${timed?CU(mins,' мин'):'Готово'}</div><div class="muted">${timed?'≈ '+u(kcal,'ккал')+' сверх покоя · ':''}${homeMin?'дома, без инвентаря':`подходов ${doneSets} из ${allSets}`}${timed?'':' · время и расход не считаем'}</div></div>
-   <div class="grid2"><div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:26px">${Math.min(S.done.length,weekPlanCount())}/${weekPlanCount()}</div><div class="small muted">на этой неделе</div></div><div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:26px">${S.demo?'3 нед.':S.workouts}</div><div class="small muted">${S.demo?'серия без пропусков':pl(S.workouts,'тренировка','тренировки','тренировок').replace(/^\S+\s/,'')+' всего'}</div></div></div>
+   <div class="grid2"><div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:26px">${Math.min(S.done.length,weekPlanCount())}/${weekPlanCount()}</div><div class="small muted">на этой неделе</div></div><div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:26px">${S.workouts}</div><div class="small muted">${pl(S.workouts,'тренировка','тренировки','тренировок').replace(/^\S+\s/,'')+' всего'}</div></div></div>
    <div class="card" style="margin-top:12px">${(()=>{const nx=pg.days.findIndex((d,i)=>i<weekPlanCount()&&!S.done.includes(i));return nx<0?'Все тренировки этой недели сделаны. Новая неделя — с понедельника.':'Следующая — «'+pg.days[nx]+'». Привычка закрепляется в среднем за 66 дней (Lally, 2010): держите ритм '+pl(pg.days.length,'тренировка','тренировки','тренировок')+' в неделю.'})()}</div>
    <button class="btn" onclick="closeSheet();if(S.tab==='today'){rerender();toTop()}else go('today')">Отлично</button>`);
 }
@@ -1774,11 +1859,6 @@ async function prefetchAll(){
     S.offline=Date.now();save();st('Готово — работает без интернета',100);haptic([10,40,10]);toast('Скачано: работает без интернета');if(S.tab==='me')setTimeout(rerender,300)}
   catch(e){console.error(e);st('Не получилось: '+(/fetch|network|load failed/i.test(e.message||'')?'нет связи':(e.message||e))+'. Проверьте связь и попробуйте ещё раз',null)}}
 
-/* ---------- Клуб ---------- */
-const LOAD=[8,12,18,26,30,28,24,22,26,34,48,72,86,80,58,36,18];
-function clubLoad(){const c=club(),k=0.8+([...c.id].reduce((s,ch)=>s+ch.charCodeAt(0),0)%5)*0.08;return LOAD.map(v=>Math.min(98,Math.round(v*k)))}
-function loadNow(){const h=new Date().getHours();return h<7||h>23?5:clubLoad()[h-7]}
-function bestHour(){const L=clubLoad(),h=Math.max(new Date().getHours()+1,7);if(h>22)return 10;let best=h,v=999;for(let x=h;x<=22;x++){if(L[x-7]<v){v=L[x-7];best=x}}return best}
 function vTech(){
   const lf=S.lastForm;if(!EXL&&!loadEX.busy&&!loadEX.failed){loadEX.busy=1;loadEX().then(()=>{loadEX.busy=0;loadEX.failed=!EXL;if(S.tab==='tech')rerender()})}
   return `<div class="top"><div><div class="eyebrow">${EXL?pl(EXL.length,'упражнение','упражнения','упражнений')+' · дом и зал':'Библиотека упражнений'}</div><div class="date">Атлас</div></div><button class="avatar tap" onclick="go('me')" aria-label="Личный кабинет">${ava()}</button></div>
@@ -1795,7 +1875,6 @@ function vTech(){
 function vMe(){
   const pr=S.profile,n=norm(pr),g=GOALS[pr.goal],pg=program(),w=S.weights,lastW=w.length?w[w.length-1].w:pr.w,firstW=w.length?w[0].w:pr.w,dW=lastW-firstW;
   return `<div class="top"><div><div class="eyebrow">Личный кабинет</div><div class="date">${pr.name==='Вы'?'Мой план':pr.name}</div></div><button class="avatar tap" onclick="openEdit()" aria-label="Изменить профиль">${ava()}</button></div>
-  ${demoBanner('Составить свой план')}
   <button class="hero-today tap" onclick="openEdit()"><div class="row between" style="align-items:flex-start"><div style="min-width:0"><div class="ht-eb">Норма · ${g.n.toLowerCase()}${paceTxt(pr,n)?', '+paceTxt(pr,n):''}</div><div style="margin-top:6px"><span class="n-xl">${fmt(n.kcal)}</span><span style="font:500 15px var(--font);margin-left:6px">ккал в день</span></div></div><span style="opacity:.8">${ic('chev')}</span></div>
     <div class="row" style="gap:8px;margin-top:14px">${[['Белки',n.p],['Жиры',n.f],['Углеводы',n.c]].map(([l,v])=>`<div class="glasschip"><div class="n-m">${v}<span style="font:500 13px var(--font)"> г</span></div><div style="font-size:13px">${l}</div></div>`).join('')}</div>
     <div class="ht-foot" style="margin-top:10px">${ic('me')}<span>${pr.h} см · ${(''+lastW).replace('.',',')} кг · ${pl(pr.age,'год','года','лет')}</span></div></button>
@@ -1811,8 +1890,10 @@ function vMe(){
     <button class="rowbtn" onclick="openProfile()"><div class="ibox tech">${ic('doc')}</div><div class="t">Как считаем норму<small>формулы, коэффициенты, источники</small></div><span class="chev">${ic('chev')}</span></button>
     <button class="rowbtn" onclick="openSub()"><div class="ibox warn">${ic('star')}</div><div class="t">Подписка<small>пока всё бесплатно · прототип</small></div><span class="chev">${ic('chev')}</span></button>
     <button class="rowbtn" onclick="openOffline()"><div class="ibox c">${ic('download')}</div><div class="t">Работа без интернета<small>${S.offline?'всё скачано · фото еды и камера работают без сети':'скачать модели заранее, пока есть Wi-Fi (~110 МБ)'}</small></div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="openRemind()"><div class="ibox primary">${ic('bell')}</div><div class="t">Напоминания<small>${S.remind&&S.remind.on?remSub(remR()):'выключены · тренировка, еда и белок'}</small></div><span class="chev">${ic('chev')}</span></button>
     <button class="rowbtn" onclick="openData()"><div class="ibox ok">${ic('lock')}</div><div class="t">Мои данные<small>на телефоне · скачать или удалить</small></div><span class="chev">${ic('chev')}</span></button>
   </div>
+  ${rvBlock()}
   <h2>Оформление</h2>
   <div class="seg" role="radiogroup" aria-label="Тема">${[['light','Светлая'],['dark','Тёмная'],['auto','Авто']].map(([k,l])=>`<button role="radio" aria-checked="${S.theme===k}" class="${S.theme===k?'on':''}" onclick="setTheme('${k}')">${l}</button>`).join('')}</div>
   <div class="lock" style="margin-top:16px">${ic('lock')}<div><b>Это ваш личный кабинет.</b> Норма, план, дневник и вес считаются только по вашим данным и хранятся на этом телефоне. Вход по номеру и перенос на другой телефон появятся в рабочей версии с сервером.</div></div>
@@ -1867,7 +1948,7 @@ function openHistory(){
    <h2>Дневник еды</h2>${S.log.length?`<div class="card small muted">${pl(S.log.length,'запись','записи','записей')} сегодня · ${fmt(eaten().k)} ккал</div>`:`<button class="addopt" onclick="openScan()"><div class="ibox primary">${ic('cam')}</div><div style="flex:1"><div class="title">Записать первое блюдо</div><div class="small muted">по фото или из базы</div></div><span class="chev">${ic('chev')}</span></button>`}`);
 }
 function openData(){
-  sheet('Мои данные',`<div class="lock">${ic('lock')}<div><b>Всё хранится на вашем телефоне</b> — в памяти браузера. Мы не получаем вес, доход, фото и видео. Сменили телефон — скачайте файл и загрузите на новом (загрузка появится в рабочей версии).</div></div>
+  sheet('Мои данные',`<div class="lock">${ic('lock')}<div><b>Всё хранится на вашем телефоне</b> — в памяти браузера. Мы не получаем вес, доход, фото и видео. На сервер уходит только случайный номер устройства (для счётчика заходов, без имени и телефона) и отзыв, если вы его оставите. Сменили телефон — скачайте файл и загрузите на новом (загрузка появится в рабочей версии).</div></div>
    <div class="card list" style="margin-top:10px">
     <button class="rowbtn" onclick="exportData()"><div class="ibox">${ic('download')}</div><div class="t">Скачать мои данные<small>файл JSON: профиль, дневник, вес, разборы</small></div><span class="chev">${ic('chev')}</span></button>
     <button class="rowbtn" onclick="openProfile()"><div class="ibox">${ic('doc')}</div><div class="t">Что и как считается<small>формулы и источники</small></div><span class="chev">${ic('chev')}</span></button>
@@ -1880,16 +1961,10 @@ function confirmReset(){sheet('Удалить всё?',`<div class="card">Про
 function openSub(){
   sheet('Подписка',`<div class="card"><div class="small muted">Что будет платным</div><div class="title" style="margin-top:4px">Разбор техники без лимита, тренер и тренды</div><div class="small muted" style="margin-top:6px">Запись еды и база продуктов останутся бесплатными. Цена и условия ещё не определены — это прототип.</div></div>
    <div class="card list">${[['Запись еды по фото, базе и штрихкоду','бесплатно'],['Норма, программа, вес и история','бесплатно'],['Атлас упражнений','бесплатно'],['Разбор техники по видео','3 видео в неделю бесплатно, дальше по подписке'],['Тренер без лимита и тренды за месяцы','по подписке']].map(([a,b])=>`<div class="li" style="align-items:flex-start"><div style="flex:1"><div style="font-weight:600">${a}</div><div class="small muted">${b}</div></div>${b.startsWith('бесплатно')?`<span style="color:var(--ok-text)">${ic('check','style="width:18px;height:18px"')}</span>`:`<span class="pill accent" style="flex:none">${ic('lock','style="width:14px;height:14px"')} Плюс</span>`}</div>`).join('')}</div>
-   <button class="btn sec" onclick="closeSheet()">Понятно</button>`);
+   <h2 style="margin-top:22px">Что говорят пользователи</h2><div class="rvbox">${rvInner()}</div>
+   <button class="btn sec" onclick="closeSheet()">Понятно</button>`);rvLoad();
 }
-function clubList(mode){
-  const list=CLUBS.map(c=>({c,d:GEO?dist(GEO,c):null}));if(GEO)list.sort((a,b)=>a.d-b.d);
-  const sel=mode==='onb'?D.club:S.profile.club;
-  return list.map(({c,d})=>`<button class="opt ${sel===c.id?'on':''}" onclick="${mode==='onb'?`D.club='${c.id}';renderOnb()`:`pickClub('${c.id}')`}"><div class="ibox" style="background:var(--accent-soft);color:var(--accent)">${ic('club')}</div><div style="flex:1"><div style="font-weight:700">клуб «${c.n}»</div><div class="small muted">${c.m} · ${c.a.split(' · ')[0]}</div></div>${d!=null?`<span class="small muted">${kmTxt(d)}</span>`:''}</button>`).join('');
-}
-function openStreak(){sheet('Серия',`<div class="card volt"><div class="num" style="font-size:40px">${S.demo?'3 недели':pl(S.workouts||0,'тренировка','тренировки','тренировок')}</div><div class="muted">${S.demo?'лучшая — 3 недели':'серия считается с первой полной недели'}</div></div><div class="card list"><div class="li" style="flex-direction:column;align-items:flex-start;gap:2px"><div class="small muted">Правило</div><div style="font-weight:600">не меньше 2 тренировок в&nbsp;неделю&nbsp;— в зале или дома</div></div><div class="li" style="flex-direction:column;align-items:flex-start;gap:2px"><div class="small muted">Страховка</div><div style="font-weight:600">1 пропуск в месяц — осталась</div></div></div><button class="btn sec" onclick="closeSheet();toast('Пауза до понедельника — серия сохранена')">Пауза: болею / отпуск</button>`)}
-function pickClub(id){S.profile.club=id;save();closeSheet();render();toast('Клуб: '+club().n)}
-function openClubs(){sheet('Клубы сети',`<button class="btn sec" style="margin-bottom:12px" onclick="locate(n=>{if(n){pickClub(n.c.id)}else toast('Геопозиция недоступна — выберите вручную',true)})">${ic('pin')} Определить по геопозиции</button>${clubList('tab')}`)}
+function openStreak(){sheet('Серия',`<div class="card volt"><div class="num" style="font-size:40px">${pl(S.workouts||0,'тренировка','тренировки','тренировок')}</div><div class="muted">серия считается с первой полной недели</div></div><div class="card list"><div class="li" style="flex-direction:column;align-items:flex-start;gap:2px"><div class="small muted">Правило</div><div style="font-weight:600">не меньше 2 тренировок в&nbsp;неделю&nbsp;— в зале или дома</div></div><div class="li" style="flex-direction:column;align-items:flex-start;gap:2px"><div class="small muted">Страховка</div><div style="font-weight:600">1 пропуск в месяц — осталась</div></div></div><button class="btn sec" onclick="closeSheet();toast('Пауза до понедельника — серия сохранена')">Пауза: болею / отпуск</button>`)}
 
 /* ---------- Чат ---------- */
 function openChat(){
@@ -1935,12 +2010,12 @@ function openProfile(){
    ${SOURCES}<button class="btn sec" onclick="openEdit()">Изменить данные</button>
    <div class="concept">Норма — ориентир, а не предписание · не&nbsp;медицинская консультация</div>`);
 }
-function resetAll(){try{localStorage.removeItem('yb-demo2')}catch(e){};const th=S.theme;S=fresh();S.theme=th||'light';closeSheet();showOnb()}
+function resetAll(){if(S.remind&&(S.remind.on||S.remind.unsub))remDrop().then(()=>api('/push/unsubscribe',{did:S.did}));try{localStorage.removeItem('yb-demo2')}catch(e){};const th=S.theme,did=S.did;S=fresh();S.theme=th||'light';S.did=did||newDid();closeSheet();showOnb()}
 
 /* ---------- Анкета ---------- */
-let OB=0,D={...DEMO},geoTried=false,obDir='',obPct=0;
+let OB=0,D={...DEF},obDir='',obPct=0;
 const STEPS=7;
-function showOnb(){OB=0;D={...DEMO,name:''};geoTried=false;obDir='';obPct=0;$('#onb').classList.remove('hide');renderOnb()}
+function showOnb(){OB=0;D={...DEF};obDir='';obPct=0;$('#onb').classList.remove('hide');renderOnb()}
 function renderOnb(){
   const nr=norm(D),bud=budgetOf(D);
   const steps=[
@@ -1953,8 +2028,8 @@ function renderOnb(){
        <div class="feat"><div class="ibox accent">${ic('cam')}</div>Калории по фото и базе</div>
        <div class="feat"><div class="ibox tech">${ic('ruler')}</div>Техника по вашему видео</div>
        <div class="feat"><div class="ibox volt">${ic('cart')}</div>Магазины под ваш бюджет</div></div></div>
-      <button class="btn" style="margin-top:10px" onclick="obNext()">Составить мой план</button><button class="btn ghost" onclick="obDemo()">Показать на примере</button>
-      <div class="concept" style="margin-top:6px">Данные остаются на вашем телефоне · прототип, демо-данные · не медицинская консультация</div>`,
+      <button class="btn" style="margin-top:10px" onclick="obNext()">Составить мой план</button>
+      <div class="concept" style="margin-top:6px">Данные остаются на вашем телефоне · прототип · не медицинская консультация</div>`,
    ()=>`<div class="q">Чего хотите добиться?</div><div class="qs">План, калории и тренировки подстроятся под цель</div>
       <div class="fadeb" style="overflow-y:auto;flex:1;min-height:0;margin:0 -4px;padding:0 4px">${Object.entries(GOALS).map(([k,g])=>`<button class="opt ${D.goal===k?'on':''}" onclick="D.goal='${k}';renderOnb()"><div class="ibox">${ic(g.i)}</div><div style="flex:1"><div style="font-weight:700">${g.n}</div><div class="small muted">${g.d}</div></div></button>`).join('')}
       ${D.goal==='lose'||D.goal==='muscle'?`<div class="small muted" style="margin:6px 4px 8px">Темп</div><div class="chips pace">${Object.entries(PACE).map(([k,l])=>`<button class="chip ${D.pace===k?'on':''}" onclick="D.pace='${k}';renderOnb()">${l}<small>${(GOALS[D.goal].adj[k]>0?'+':GOALS[D.goal].adj[k]<0?'−':'')+Math.abs(Math.round(GOALS[D.goal].adj[k]*100))}%</small></button>`).join('')}</div>`:''}</div>
@@ -2007,12 +2082,268 @@ function updBud(){const b=budgetOf(D);const a=$('#incv'),bv=$('#budv'),sv=$('#st
 function obAdj(k,d,mn,mx){if(k==='h'||k==='w')D._body=1;D[k]=Math.max(mn,Math.min(mx,D[k]+d));haptic(4);renderOnb()}
 function obNext(){obDir='sl';OB=Math.min(OB+1,STEPS-1);haptic(8);renderOnb()}
 function obBack(){obDir='sr';OB=Math.max(0,OB-1);haptic(5);renderOnb()}
-function obDemo(){D={...DEMO};obFinish(true)}
-function obFinish(demo){const p={...D};delete p._geo;delete p._body;p.name=cleanName(p.name);S.profile=p;S.demo=!!demo;S.onb=false;S.done=demo&&(new Date().getDay()+6)%7>=2?[0]:[];S.sets={};S.log=[];S.weights=[];S.forms=[];S.extra=[];S.workouts=demo?7:0;S.lastForm=null;S.day=today0();S.week=monday0();S.doneOn={};S.plan=null;S.v=3;if(demo)seedDay();save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+progName(p)+'» готов'),450)}
+function obFinish(){const p={...D};delete p._body;p.name=cleanName(p.name);S.profile=p;delete S.demo;S.onb=false;S.done=[];S.sets={};S.log=[];S.weights=[];S.forms=[];S.extra=[];S.workouts=0;S.rot=0;S.lastDone=null;S.lastForm=null;S.startedAt=null;S.day=today0();S.week=monday0();S.doneOn={};S.plan=null;S.v=3;save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+progName(p)+'» готов'),450)}
+
+/* ---------- сервер: номер устройства, счётчик заходов, отзывы ----------
+   Сервера может ещё не быть или не быть сети — всё молча (console.warn), интерфейс честно пишет, что не получилось.
+   На сервер уходят только случайный номер устройства (без имени и телефона), версия, часовой пояс и отзыв, если его оставили. */
+function newDid(){try{if(crypto.randomUUID)return crypto.randomUUID()}catch(e){}
+  const b=new Uint8Array(16);try{crypto.getRandomValues(b)}catch(e){for(let i=0;i<16;i++)b[i]=Math.random()*256|0}
+  b[6]=b[6]&15|64;b[8]=b[8]&63|128;const h=[...b].map(x=>x.toString(16).padStart(2,'0')).join('');
+  return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20)}
+async function api(path,body){const ac=new AbortController(),t=setTimeout(()=>ac.abort(),8000);
+  try{const r=await fetch(API+path,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:ac.signal,credentials:'omit',cache:'no-store',mode:'cors'});
+    let data=null;if(r.status!==204){try{data=await r.json()}catch(e){}}
+    if(!r.ok)console.warn('Сервер:',path,r.status);return {ok:r.ok,status:r.status,data}}
+  catch(e){console.warn('Сервер недоступен:',path,(e&&e.name)||e);return {ok:false,status:0,data:null,offline:!navigator.onLine}}
+  finally{clearTimeout(t)}}
+const tzName=()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){return ''}};
+// счётчик заходов: раз за запуск (и при возвращении в приложение), не чаще раза в 30 минут; не ушло — повторим при следующем запуске
+function visit(){const now=Date.now();if(now-Math.max(S.visitAt||0,visit.tried||0)<30*60e3||!navigator.onLine)return;visit.tried=now;
+  api('/visit',{did:S.did,v:APPV,tz:tzName(),first:!S.visitOk}).then(r=>{if(r.ok){S.visitAt=Date.now();S.visitOk=true;save()}})}
+
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); // текст отзывов пишут люди — только как текст
+const STAR_D='M12 3.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8-5.3-2.8-5.3 2.8 1-5.8-4.2-4.1 5.9-.9z';
+const RVCAP=['','Плохо','Так себе','Нормально','Хорошо','Отлично'];
+const RV={st:'idle',at:0,busy:false}; // st: idle — ещё не спрашивали, loading, ok, offline — нет интернета, noserver — сервер не ответил
+function stars(v,sz=16){const one=`<svg viewBox="0 0 24 24" width="${sz}" height="${sz}"><path d="${STAR_D}"/></svg>`,row=one.repeat(5),c=Math.max(0,Math.min(5,v)),w=Math.floor(c)*(sz+2)+(c%1)*sz; // ширина закраски точно по звёздам (между ними 2 px)
+  return `<span class="stars" role="img" aria-label="Оценка ${f1(Math.round(v*10)/10)} из 5"><span class="s0">${row}</span><span class="s1" style="width:${w}px">${row}</span></span>`}
+function rvNorm(x){if(!x||typeof x!=='object')return null;const st=Math.round(+x.stars);if(!(st>=1&&st<=5))return null;
+  let ts=x.ts;ts=typeof ts==='number'?(ts<1e12?ts*1000:ts):Date.parse(ts);
+  return {id:String(x.id==null?'':x.id).slice(0,64),name:String(x.name||'').trim().slice(0,40),stars:st,text:String(x.text||'').trim().slice(0,600),ts:Number.isFinite(ts)?ts:0}}
+const rvList=()=>(S.rv&&Array.isArray(S.rv.list))?S.rv.list:[];
+function rvDate(ts){if(!ts)return '';const d=new Date(ts),td=today0(),y=new Date();y.setDate(y.getDate()-1);
+  return ymd(d)===td?'сегодня':ymd(d)===ymd(y)?'вчера':d.toLocaleDateString('ru-RU',d.getFullYear()===new Date().getFullYear()?{day:'numeric',month:'long'}:{day:'numeric',month:'long',year:'numeric'})}
+async function rvLoad(force){if(RV.busy||(!force&&RV.at&&Date.now()-RV.at<10*60e3))return;RV.at=Date.now();
+  if(!navigator.onLine){RV.st='offline';rvPaint();return}
+  RV.busy=true;if(RV.st==='idle')RV.st='loading';const [r,st]=await Promise.all([api('/reviews?limit=50'),api('/stats')]);RV.busy=false;
+  if(st.ok&&st.data&&typeof st.data==='object'){const num=v=>Number.isFinite(+v)&&+v>=0?Math.round(+v):0;S.rvStats={users:num(st.data.users_total),reviews:num(st.data.reviews_total),at:Date.now()}}
+  if(r.ok&&Array.isArray(r.data)){const got=r.data.map(rvNorm).filter(Boolean),ids=new Set(got.map(x=>x.id));
+    // свой свежий отзыв показываем, даже если сервер его ещё не отдаёт (сутки)
+    const mine=rvList().filter(x=>x.mine&&!ids.has(x.id)&&Date.now()-x.ts<864e5);
+    got.forEach(x=>{if((S.rvMine||[]).includes(x.id))x.mine=true});
+    S.rv={list:[...mine,...got].sort((a,b)=>b.ts-a.ts).slice(0,50),at:Date.now()};RV.st='ok';save()}
+  else RV.st=r.offline?'offline':'noserver';
+  rvPaint()}
+function rvPaint(){document.querySelectorAll('.rvbox').forEach(el=>{el.innerHTML=rvInner()});rvtPaint();const a=$('#rvall');if(a)a.innerHTML=rvAllInner()}
+function rvNote(n){return RV.st==='offline'?(n?'Сохранённые отзывы · обновятся, когда появится интернет':''):RV.st==='noserver'?(n?'Сохранённые отзывы · сервер сейчас не отвечает':''):''}
+function rvEmpty(){const [t,s]=RV.st==='offline'?['Отзывы загрузятся, когда появится интернет','Свой можно написать и сейчас — черновик сохранится']
+  :RV.st==='ok'?['Пока отзывов нет — будьте первым','Расскажите, что получилось и чего не хватает']
+  :RV.st==='noserver'?['Отзывы скоро появятся — будьте первым','Расскажите, что получилось и чего не хватает']:['Загружаем отзывы…',''];
+  return `<div class="row" style="align-items:flex-start"><div class="ibox warn">${ic('star')}</div><div style="flex:1;min-width:0"><div style="font-weight:600;text-wrap:balance">${t}</div>${s?`<div class="small muted" style="margin-top:2px">${s}</div>`:''}</div></div>`}
+function rvItem(x,short){return `<div class="li rv-it${short?' rv-short':''}"><div style="flex:1;min-width:0"><div class="row between" style="gap:8px"><b class="rv-nm">${esc(x.name)||'Пользователь'}${x.mine?' <span class="pill ok" style="padding:2px 8px;font-size:12px">ваш</span>':''}</b><span class="tiny muted" style="flex:none">${rvDate(x.ts)}</span></div><div style="margin-top:4px">${stars(x.stars,14)}</div>${x.text?`<div class="rv-tx">${esc(x.text)}</div>`:''}</div></div>`}
+const rvAvg=L=>L.reduce((s,x)=>s+x.stars,0)/L.length;
+// «пользуются 340 человек» — по ответу сервера GET /stats, если он есть; без сервера строки нет
+function rvUsers(){const u=S.rvStats&&S.rvStats.users;if(!(u>=1))return '';const a=u%100,b=u%10;return (b===1&&a!==11?'пользуется ':'пользуются ')+pl(u,'человек','человека','человек')}
+function rvSum(L,big){const n=L.length,avg=rvAvg(L),tot=Math.max(n,(S.rvStats&&S.rvStats.reviews)||0),us=rvUsers();
+  return `<div class="rv-sum${big?' big':''}"><span class="${big?'n-xl':'n-l'}">${avg.toFixed(1).replace('.',',')}</span><div style="min-width:0">${stars(avg,big?22:18)}<div class="small muted" style="margin-top:4px">${n>=50&&tot<=n?'50+ отзывов':pl(tot,'отзыв','отзыва','отзывов')}${us?' · <span style="white-space:nowrap">'+us+'</span>':''}</div></div></div>`}
+const rvDraftOn=()=>!!(S.rvDraft&&(S.rvDraft.stars||(S.rvDraft.text||'').trim()));
+function rvInner(){const L=rvList(),n=L.length,note=rvNote(n);
+  return `<div class="card rv">${n?`<button class="rv-top tap" onclick="openReviews()" aria-label="Все отзывы">${rvSum(L)}<span class="chev">${ic('chev')}</span></button><div class="list">${L.slice(0,3).map(x=>rvItem(x,true)).join('')}</div>`:rvEmpty()}
+   ${note?`<div class="tiny muted rv-note">${note}</div>`:''}
+   <div class="rv-acts">${n?`<button class="btn sec sm" onclick="openReviews()">Все отзывы</button>`:''}<button class="btn sm" onclick="openReviewForm()">${rvDraftOn()?'Дописать отзыв':'Оставить отзыв'}</button></div></div>`}
+function rvBlock(){if(!RV.at||Date.now()-RV.at>10*60e3)setTimeout(()=>rvLoad(),0);return `<h2>Отзывы</h2><div class="rvbox">${rvInner()}</div>`}
+/* бегущая строка отзывов на «Сегодня» (под неделей): «Марина ★★★★★ — „за неделю минус 1,5 кг…“».
+   Едет CSS-анимацией transform по продублированной ленте — скрипт каждый кадр ничего не перерисовывает.
+   Отзывов нет, нет сети и сохранённых — строки нет совсем. «Уменьшить движение» — без движения, смена раз в 5 с. */
+const RVT={sig:'',w:0,t0:Date.now(),i:0,iv:0,io:null};
+function rvtList(){return rvList().filter(x=>x.stars>=4&&x.text.length>=3).slice(0,12)} // свежие сверху, с текстом; все — в «Все отзывы»
+function rvtCut(t){t=t.replace(/\s+/g,' ').trim();if(t.length<=64)return t;const c=t.slice(0,64),sp=c.lastIndexOf(' ');return (sp>40?c.slice(0,sp):c).replace(/[\s,.;:!?—–-]+$/,'')+'…'}
+function rvtItem(x){return `<span class="rvt-it"><b>${esc(x.name)||'Пользователь'}</b><span class="rvt-st">${'★'.repeat(x.stars)}<i>${'★'.repeat(5-x.stars)}</i></span><span class="rvt-tx">— «${esc(rvtCut(x.text))}»</span></span>`}
+function rvtSig(L){return (RM?'rm|':'')+L.map(x=>x.id+':'+x.stars+':'+x.text.length).join(',')}
+function rvTicker(){const L=rvtList();if(!L.length){RVT.sig='';return ''}
+  const all=rvList(),avg=rvAvg(all).toFixed(1).replace('.',','),sig=rvtSig(L);
+  const lab=`Отзывы: средняя оценка ${avg} из 5, ${pl(Math.max(all.length,(S.rvStats&&S.rvStats.reviews)||0),'отзыв','отзыва','отзывов')}. Открыть все отзывы`;
+  const head=`<button class="rvt tap${RM?' rm':''}" onclick="openReviews()" aria-label="${lab}"><span class="rvt-avg" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="${STAR_D}"/></svg>${avg}</span><span class="rvt-win" aria-hidden="true">`;
+  queueMicrotask(rvtFix); // после вставки в страницу: замер ленты (один раз на набор отзывов) и пауза за краем экрана
+  if(RM){const i=RVT.i%L.length;return head+L.map((x,j)=>rvtItem(x).replace('class="rvt-it"',`class="rvt-it${j===i?' on':''}"`)).join('')+'</span></button>'}
+  // лента повторяется, пока половина заметно шире окна (оценка по числу знаков, точный замер — в rvtFix)
+  let one=L.map(rvtItem).join(''),chars=L.reduce((s,x)=>s+(x.name||'Пользователь').length+rvtCut(x.text).length+12,0),half=one;
+  for(let k=1;chars*k*7.2<900&&k<8;k++)half+=one;
+  const st=sig===RVT.sig&&RVT.w?rvtStyle(RVT.w):'';
+  return head+`<span class="rvt-track" style="${st}"><span class="rvt-half">${half}</span><span class="rvt-half">${half}</span></span></span></button>`}
+// скорость ~34 px/с; сдвиг по времени с запуска — после перерисовки экрана лента продолжает с того же места, а не прыгает в начало
+function rvtStyle(w){const d=Math.max(12,w/34);return `--rvt-d:${d.toFixed(2)}s;--rvt-o:-${(((Date.now()-RVT.t0)/1000)%d).toFixed(2)}s`}
+function rvtFix(){const el=document.querySelector('.rvtbox .rvt');if(RVT.io){RVT.io.disconnect();RVT.io=null}
+  if(!el){RVT.sig='';return}
+  const L=rvtList(),sig=rvtSig(L);
+  if(RM){RVT.sig=sig;if(!RVT.iv)RVT.iv=setInterval(rvtRot,5000);return}
+  const tr=el.querySelector('.rvt-track'),h=tr&&tr.firstElementChild;
+  if(tr&&h&&!(sig===RVT.sig&&RVT.w)){const win=el.querySelector('.rvt-win').offsetWidth;let w=h.offsetWidth;
+    if(w&&w<win+60){const k=Math.ceil((win+60)/w);[...tr.children].forEach(x=>{const src=x.innerHTML;x.innerHTML=src.repeat(k+1)});w=h.offsetWidth} // узкий набор — добавили повторов
+    RVT.w=w;RVT.sig=sig;tr.setAttribute('style',rvtStyle(w))}
+  if('IntersectionObserver' in window){RVT.io=new IntersectionObserver(es=>{es.forEach(e=>e.target.classList.toggle('off',!e.isIntersecting))});RVT.io.observe(el)}}
+function rvtRot(){const el=document.querySelector('.rvtbox .rvt.rm');if(!el){clearInterval(RVT.iv);RVT.iv=0;return}
+  if(document.hidden||$('#sheet').classList.contains('on'))return;
+  const it=el.querySelectorAll('.rvt-it');if(it.length<2)return;RVT.i=(RVT.i+1)%it.length;it.forEach((x,j)=>x.classList.toggle('on',j===RVT.i))}
+// свежие отзывы пришли — строку меняем, только если набор изменился (иначе не дёргаем анимацию)
+function rvtPaint(){const box=document.querySelector('.rvtbox');if(!box)return;const L=rvtList(),sig=L.length?rvtSig(L):'';
+  if(sig&&sig===RVT.sig&&box.firstElementChild){const a=box.querySelector('.rvt-avg');if(a)a.lastChild.textContent=rvAvg(rvList()).toFixed(1).replace('.',',');return}
+  if(!sig&&!box.firstElementChild)return;RVT.w=0;box.innerHTML=rvTicker()}
+document.addEventListener('visibilitychange',()=>document.documentElement.classList.toggle('pg-hid',document.hidden));
+function rvAllInner(){const L=rvList(),n=L.length,note=rvNote(n);if(!n)return `<div class="card">${rvEmpty()}</div><button class="btn" onclick="openReviewForm()">${rvDraftOn()?'Дописать отзыв':'Оставить отзыв'}</button>`;
+  const cnt=[5,4,3,2,1].map(s=>[s,L.filter(x=>x.stars===s).length]);
+  return `<div class="card">${rvSum(L,true)}<div class="rv-bars">${cnt.map(([s,c])=>`<div class="rv-bar"><span class="tiny muted">${s}</span><div class="bar"><i style="width:${c/n*100}%"></i></div><span class="tiny muted">${c}</span></div>`).join('')}</div>${note?`<div class="tiny muted rv-note">${note}</div>`:''}</div>
+   <div class="card list">${L.map(x=>rvItem(x)).join('')}</div>
+   <button class="btn" onclick="openReviewForm()">${rvDraftOn()?'Дописать отзыв':'Оставить отзыв'}</button>
+   <div class="concept">Отзывы пишут пользователи приложения · средняя оценка считается по ${n>=50?'последним 50':'всем'} отзывам</div>`}
+function openReviews(){sheet('Отзывы',`<div id="rvall">${rvAllInner()}</div>`);rvLoad()}
+function openReviewForm(){if(S.askedReview===today0())S.askedReview='done';const d=S.rvDraft=Object.assign({stars:0,name:'',text:''},S.rvDraft);save();
+  sheet('Ваш отзыв',`<div class="card" style="text-align:center"><div class="small muted">Как вам «Мой тренер»?</div>
+    <div class="starpick" role="radiogroup" aria-label="Оценка">${[1,2,3,4,5].map(i=>`<button role="radio" aria-checked="${d.stars===i}" aria-label="${pl(i,'звезда','звезды','звёзд')}" class="${i<=d.stars?'on':''}" onclick="rvStar(${i})"><svg viewBox="0 0 24 24"><path d="${STAR_D}"/></svg></button>`).join('')}</div>
+    <div class="small" id="rvcap" style="min-height:18px;font-weight:600;color:${d.stars?'var(--text)':'var(--text2)'}">${RVCAP[d.stars]||'Коснитесь звезды'}</div></div>
+   <div class="card"><label class="small muted" for="rv_n" style="display:block;margin-bottom:6px">Имя — необязательно</label>
+    <input type="text" id="rv_n" class="search plain" maxlength="40" autocomplete="off" placeholder="Как подписать отзыв" value="${esc(d.name)}" oninput="rvDraftSet('name',this.value)">
+    <div class="row between" style="margin:14px 0 6px"><label class="small muted" for="rv_t">Что понравилось, чего не хватает</label><span class="tiny muted" id="rvcnt" style="flex:none">${d.text.length} / 600</span></div>
+    <textarea id="rv_t" class="ta" maxlength="600" rows="5" placeholder="Например: удобно считать калории по фото, хочется больше домашних тренировок" oninput="rvDraftSet('text',this.value)">${esc(d.text)}</textarea></div>
+   <div id="rvmsg" aria-live="polite"></div>
+   <button class="btn" id="rvsend" onclick="rvSend()">Отправить отзыв</button>
+   <div class="concept">В отзыве уходят только оценка, текст и имя, если укажете; сервер в России. Отзыв увидят все пользователи приложения.</div>`)}
+function rvStar(i){S.rvDraft.stars=i;haptic(8);save();document.querySelectorAll('.starpick button').forEach((b,j)=>{b.classList.toggle('on',j<i);b.setAttribute('aria-checked',j+1===i);b.classList.remove('pop');if(j===i-1&&!RM){void b.offsetWidth;b.classList.add('pop')}});
+  const c=$('#rvcap');if(c){c.textContent=RVCAP[i];c.style.color='var(--text)'}const m=$('#rvmsg');if(m)m.innerHTML='';rvPaint()}
+function rvDraftSet(k,v){S.rvDraft[k]=v;if(k==='text'){const c=$('#rvcnt');if(c)c.textContent=v.length+' / 600'}clearTimeout(rvDraftSet.t);rvDraftSet.t=setTimeout(()=>{save();rvPaint()},400)}
+const rvMsg=(t,ok)=>{const m=$('#rvmsg');if(m)m.innerHTML=`<div class="lock" style="background:${ok?'var(--ok-soft)':'var(--warn-soft)'}"><span style="color:${ok?'var(--ok-text)':'var(--warn-text)'}">${ic(ok?'check':'bell')}</span><div>${t}</div></div>`};
+// ответы сервера на POST /reviews: {error:код} — для каждого кода понятный текст; черновик при этом не теряется
+const RVERR={one_per_day:'<b>Можно один отзыв в сутки.</b> Этот сохранили черновиком — отправьте завтра.',
+  too_many:'<b>Слишком много отзывов с этого телефона.</b> Попробуйте позже — черновик сохранён.',
+  bad_words:'<b>Уберите грубые слова</b> — и отправьте ещё раз. Черновик сохранён.',
+  no_links:'<b>Ссылки в отзыве нельзя.</b> Уберите адрес сайта и отправьте ещё раз.',
+  bad_stars:'<b>Поставьте оценку</b> — от одной до пяти звёзд.',
+  too_long:'<b>Слишком длинно.</b> Текст — до 600 знаков, имя — до 40.',
+  empty_text:'<b>Напишите пару слов</b> — что понравилось или чего не хватает.',
+  bad_did:'<b>Отзыв не ушёл из-за сбоя.</b> Нажмите «Отправить отзыв» ещё раз.'};
+const RVLINK=/(https?:\/\/|www\.|\b[a-z0-9-]+\.(ru|com|net|org|рф|su|io|me|ly|app|site|online|info|biz)(?![a-zа-яё0-9]))/i;
+async function rvSend(){const d=S.rvDraft,b=$('#rvsend');if(!d||rvSend.busy)return;
+  if(!d.stars){rvMsg('Поставьте оценку — от одной до пяти звёзд.');haptic(20);return}
+  const name=clean(d.name).slice(0,40),text=String(d.text||'').trim().slice(0,600);
+  if(text.length<2){rvMsg(RVERR.empty_text);haptic(20);return}
+  if(RVLINK.test(text)||RVLINK.test(name)){rvMsg(RVERR.no_links);haptic(20);return}
+  if(!navigator.onLine){rvMsg('<b>Нет интернета — отзыв не ушёл.</b> Черновик сохранён на телефоне, отправьте, когда появится сеть.');toast('Нет интернета — сохранили черновик',true);return}
+  rvSend.busy=1;if(b){b.disabled=true;b.textContent='Отправляем…'}
+  const r=await api('/reviews',{did:S.did,name,stars:d.stars,text});rvSend.busy=0;
+  if(r.ok){const id=String((r.data&&r.data.id)||'local-'+Date.now());S.rvMine=[...(S.rvMine||[]),id].slice(-20);
+    S.rv={list:[{id,name,stars:d.stars,text,ts:Date.now(),mine:true},...rvList().filter(x=>x.id!==id)].slice(0,50),at:Date.now()};
+    S.rvDraft=null;S.askedReview='done';save();haptic([10,40,10]);setTimeout(()=>rvLoad(true),1500);
+    sheet('Спасибо!',`<div style="padding:8px 0 4px">${OK}</div><div class="title" style="text-align:center;margin-top:14px">Отзыв опубликован</div><div class="small muted" style="text-align:center;margin:6px 0 16px">Его уже видят другие пользователи — это помогает им решиться, а нам понять, что улучшить.</div>
+      <div class="card list">${rvItem(S.rv.list[0])}</div><button class="btn" onclick="openReviews()">Все отзывы</button><button class="btn ghost" onclick="closeSheet()">Готово</button>`);
+    rvPaint();rerender.dirty=1;return}
+  if(b){b.disabled=false;b.textContent='Отправить отзыв'}
+  const code=r.data&&typeof r.data.error==='string'?r.data.error:'';
+  if(code==='bad_did'){S.did=newDid();save()} // номер устройства испорчен — сделали новый, со второй попытки уйдёт
+  if(RVERR[code]&&(r.status===429||r.status===400||r.status===413||r.status===422)){rvMsg(RVERR[code]);return}
+  if(r.status===429){rvMsg(RVERR.one_per_day);return}
+  if(r.status===400||r.status===413||r.status===422){rvMsg('<b>Сервер не принял отзыв.</b> Проверьте текст — до 600 знаков — и попробуйте ещё раз.');return}
+  if(r.offline){rvMsg('<b>Пропал интернет — отзыв не ушёл.</b> Черновик сохранён на телефоне, отправьте, когда появится сеть.');return}
+  rvMsg('<b>Сервер отзывов пока не отвечает — отзыв не ушёл.</b> Черновик сохранён на телефоне, попробуйте позже.')}
+// мягкая просьба оценить: на 3-й день или после 5-й записи еды, один раз — карточкой в ленте, не всплывающим окном
+function rvAsk(){if(S.askedReview&&S.askedReview!==today0())return '';
+  if(!S.askedReview){if((S.useDays||0)<3&&(S.entries||0)<5)return '';S.askedReview=today0();save()}
+  return `<div class="card rv-ask"><div class="row" style="align-items:flex-start"><div class="ibox warn">${ic('star')}</div><div style="flex:1;min-width:0"><div style="font-weight:600">Как вам приложение?</div><div class="small muted" style="margin-top:2px">Пара слов поможет другим решиться, а нам — понять, что улучшить</div></div></div>
+    <div class="rv-acts"><button class="btn sm" onclick="openReviewForm()">Оценить</button><button class="btn sec sm" onclick="rvAskOff()">Не сейчас</button></div></div>`}
+function rvAskOff(){S.askedReview='done';save();haptic(5);rerender()}
+window.addEventListener('online',()=>{visit();if(RV.st==='offline'||RV.st==='noserver')rvLoad(true)});
+window.addEventListener('offline',()=>{if(RV.st!=='ok'||!rvList().length){RV.st='offline';rvPaint()}});
+
+/* ---------- напоминания: пуш-уведомления, как в «Здоровье» на iPhone ----------
+   Присылает сервер (утром и вечером, по цифрам дня). Без сервера выключатель честно остаётся выключенным.
+   На сервер уходят только номер устройства, часовой пояс, время напоминаний и цифры дня: сколько осталось ккал и белка, была ли тренировка. */
+const REMDEF={on:false,morning:'09:00',evening:'19:00',workout:true,food:true};
+function remR(){const R=S.remind&&typeof S.remind==='object'?S.remind:(S.remind={});for(const k in REMDEF)if(R[k]===undefined)R[k]=REMDEF[k];return R} // тот же объект — изменения не теряются
+const remPrefs=R=>({workout:R.workout!==false,food:R.food!==false,morning:R.morning||'09:00',evening:R.evening||'19:00'});
+const isIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isStandalone=()=>navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
+const pushOk=()=>'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window&&window.isSecureContext!==false;
+// ios — нужно открыть с экрана «Домой»; no — браузер не умеет; denied — запрещено в настройках; ok — можно включать
+function remEnv(){if(isIOS()&&!isStandalone())return 'ios';if(!pushOk())return 'no';if(Notification.permission==='denied')return 'denied';return 'ok'}
+const REMST={busy:false,msg:null};
+function b64u(s){s=String(s).replace(/-/g,'+').replace(/_/g,'/');s+='==='.slice((s.length+3)%4);const b=atob(s),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}
+function sameKey(sub,key){try{const k=sub.options&&sub.options.applicationServerKey;if(!k)return false;const a=new Uint8Array(k);return a.length===key.length&&a.every((v,i)=>v===key[i])}catch(e){return false}}
+const swReg=ms=>'serviceWorker' in navigator?Promise.race([navigator.serviceWorker.ready,new Promise(r=>setTimeout(()=>r(null),ms||5000))]).catch(()=>null):Promise.resolve(null);
+function remSub(R){if(!R.on)return 'выключены';const p=remPrefs(R),w=[p.workout&&'тренировка',p.food&&'еда и белок'].filter(Boolean).join(', ');return `утром в ${p.morning}, вечером в ${p.evening}${w?' · '+w:''}`}
+function remHowOn(){return isIOS()?'Откройте «Настройки» → «Уведомления» → «Мой тренер» и включите «Допуск уведомлений». Потом вернитесь сюда.'
+  :/Android/i.test(navigator.userAgent)?'Нажмите на значок слева от адреса сайта → «Разрешения» → «Уведомления» → «Разрешить». Или «Настройки» телефона → «Приложения» → браузер → «Уведомления».'
+  :'Нажмите на значок замка слева от адреса сайта и разрешите уведомления для этого сайта. Потом вернитесь сюда.'}
+function remNote(){const m=REMST.msg;if(!m)return '';const ok=m[0]==='ok';
+  return `<div class="lock" style="background:${ok?'var(--ok-soft)':'var(--warn-soft)'}"><span style="color:${ok?'var(--ok-text)':'var(--warn-text)'}">${ic(ok?'check':'bell')}</span><div>${m[1]}</div></div>`}
+function remBody(){const R=remR(),env=remEnv(),p=remPrefs(R),dis=env!=='ok'&&!R.on;
+  const sw=`<button class="toggle ${R.on?'on':''}${REMST.busy?' busy':''}" role="switch" aria-checked="${R.on}" aria-label="Напоминания" onclick="remToggle()" ${dis||REMST.busy?'disabled':''}></button>`;
+  const ex=[['Пора на тренировку',`Сегодня «${esc(program().days[curDay()])}» — около 45 минут. Отметьте, когда сделаете.`,'19:00'],['Не хватает белка',`До нормы ещё ${u(Math.max(25,norm(S.profile).p-Math.round(eaten().p)),'г')} — творог или курица на ужин закроют.`,'сейчас']];
+  let env1='';
+  if(env==='ios')env1=`<div class="card"><div class="title" style="font-size:17px">Сначала — на экран «Домой»</div><div class="small muted" style="margin:4px 0 6px">На iPhone напоминания приходят, только если открыть приложение с экрана «Домой» (нужен iOS 16.4 или новее). Это бесплатно и займёт 10 секунд:</div>
+    <div class="rem-steps"><div class="rem-st"><span class="num">1</span><div>Внизу Safari нажмите «Поделиться» ${ic('share')}</div></div><div class="rem-st"><span class="num">2</span><div>Выберите «На экран „Домой“» ${ic('addsq')}</div></div><div class="rem-st"><span class="num">3</span><div>Откройте «Мой тренер» со значка на экране «Домой» и включите напоминания здесь</div></div></div></div>`;
+  else if(env==='no')env1=`<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('bell')}</span><div><b>Этот браузер не умеет присылать напоминания.</b> ${isIOS()?'Нужен iOS 16.4 или новее — обновите iPhone в «Настройки» → «Основные» → «Обновление ПО».':'Откройте приложение в Chrome, Safari или Edge — настройки ниже сохранятся.'}</div></div>`;
+  else if(env==='denied')env1=`<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('bell')}</span><div><b>Уведомления для приложения запрещены.</b> ${remHowOn()}</div></div>`;
+  return `<div class="ntf-stage" aria-hidden="true">${ex.map(([t,b,tm])=>`<div class="ntf"><img src="icon.png" alt=""><div style="flex:1;min-width:0"><div class="nh"><span>Мой тренер</span><span>${tm}</span></div><b>${t}</b><div class="nb">${b}</div></div></div>`).join('')}</div>
+   ${env1}
+   <div class="card"><div class="rem-row" style="box-shadow:none;padding:0"><div class="ibox primary">${ic('bell')}</div><div class="t">Напоминания<small id="remst">${REMST.busy?'Включаем…':R.on?'включены · '+remSub(R):'выключены'}</small></div>${sw}</div></div>
+   <div id="remmsg" aria-live="polite">${remNote()}</div>
+   <h2 style="margin-top:6px">Когда</h2>
+   <div class="card"><label class="rem-row"><span class="t">Утром<small>план на день и что съесть на завтрак</small></span><input type="time" class="tin" value="${p.morning}" onchange="remPref('morning',this.value)" aria-label="Утреннее напоминание"></label>
+    <label class="rem-row"><span class="t">Вечером<small>тренировка, если ещё не отмечена, и белок</small></span><input type="time" class="tin" value="${p.evening}" onchange="remPref('evening',this.value)" aria-label="Вечернее напоминание"></label></div>
+   <h2 style="margin-top:6px">О чём напоминать</h2>
+   <div class="card"><div class="rem-row"><span class="t">Тренировка<small>в дни по плану, если ещё не сделали</small></span><button class="toggle ${p.workout?'on':''}" role="switch" aria-checked="${p.workout}" aria-label="Тренировка" onclick="remPref('workout',${!p.workout})"></button></div>
+    <div class="rem-row"><span class="t">Еда и белок<small>если не записали еду или недобрали белок</small></span><button class="toggle ${p.food?'on':''}" role="switch" aria-checked="${p.food}" aria-label="Еда и белок" onclick="remPref('food',${!p.food})"></button></div></div>
+   <div class="concept">Для напоминаний на сервер уходят только номер устройства и цифры дня (сколько осталось ккал и белка, была ли тренировка); сервер в России. Без имени, веса и фото.<br>Не медицинская консультация.</div>`}
+function openRemind(){REMST.msg=null;if(!S.hlRemOff){S.hlRemOff=1;save();rerender.dirty=1}sheet('Напоминания',`<div id="remall">${remBody()}</div>`);remCheck().then(ch=>{if(ch)remPaint()})}
+function remPaint(){const b=$('#remall');if(b){const y=$('#sbody').scrollTop;b.innerHTML=remBody();$('#sbody').scrollTop=y}rerender.dirty=1}
+const remSay=(k,t)=>{REMST.msg=[k,t];remPaint()};
+async function remToggle(){if(REMST.busy)return;haptic(8);if(remR().on)return remOff();return remOn()}
+async function remOn(){const R=remR(),env=remEnv();if(env!=='ok'){remPaint();return}
+  REMST.busy=true;REMST.msg=null;remPaint();
+  const done=(k,t)=>{REMST.busy=false;if(t)REMST.msg=[k,t];remPaint()};
+  let perm=Notification.permission;
+  if(perm!=='granted'){try{perm=await new Promise(res=>{const q=Notification.requestPermission(res);if(q&&q.then)q.then(res,()=>res('default'))})}catch(e){perm='default'}}
+  if(perm==='denied')return done('warn','<b>Вы запретили уведомления.</b> '+remHowOn());
+  if(perm!=='granted')return done('warn','<b>Уведомления не разрешены.</b> Нажмите на выключатель ещё раз и выберите «Разрешить».');
+  if(!navigator.onLine)return done('warn','<b>Нет интернета.</b> Напоминания включатся, когда появится сеть — нажмите ещё раз.');
+  const k=await api('/push/key'),key=k.ok&&k.data&&k.data.publicKey;
+  if(!key)return done('warn',k.offline?'<b>Пропал интернет.</b> Попробуйте ещё раз, когда появится сеть.':'<b>Напоминания заработают, когда подключим сервер.</b> Настройки сохранили — включите чуть позже.');
+  const reg=await swReg(6000);if(!reg||!reg.pushManager)return done('warn','<b>Приложение ещё готовится.</b> Закройте и откройте его снова, потом включите напоминания.');
+  let sub=null;
+  try{const kb=b64u(key);sub=await reg.pushManager.getSubscription();if(sub&&!sameKey(sub,kb)){await sub.unsubscribe().catch(()=>{});sub=null}
+    if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:kb})}
+  catch(e){console.warn('Подписка на напоминания:',(e&&e.name)||e);return done('warn','<b>Телефон не дал подписаться на напоминания.</b> Попробуйте ещё раз чуть позже.')}
+  const r=await api('/push/subscribe',{did:S.did,sub:sub.toJSON(),tz:tzName(),prefs:remPrefs(R)});
+  if(!r.ok){try{await sub.unsubscribe()}catch(e){}return done('warn',r.offline?'<b>Пропал интернет.</b> Попробуйте ещё раз, когда появится сеть.':'<b>Напоминания заработают, когда подключим сервер.</b> Настройки сохранили — включите чуть позже.')}
+  R.on=true;R.sig='';R.stAt=0;R.dirty=false;R.unsub=false;R.tz=tzName();save();haptic([10,40,10]);
+  done('ok',`<b>Напоминания включены.</b> Утром в ${remPrefs(R).morning} и вечером в ${remPrefs(R).evening} — только если есть что напомнить.`);
+  toast('Напоминания включены');setTimeout(pushTick,300)}
+async function remOff(){const R=remR();R.on=false;R.unsub=true;REMST.msg=null;save();remPaint();toast('Напоминания выключены');
+  await remDrop();remUnsub()}
+async function remDrop(){try{const reg=await swReg(3000),sub=reg&&reg.pushManager&&await reg.pushManager.getSubscription();if(sub)await sub.unsubscribe()}catch(e){console.warn('Отписка:',(e&&e.name)||e)}}
+async function remUnsub(){const R=remR();if(!R.unsub||!navigator.onLine)return;const r=await api('/push/unsubscribe',{did:S.did});if(r.ok){R.unsub=false;save()}} // не дошло — повторим при следующем запуске
+function remPref(k,v){const R=remR();if((k==='morning'||k==='evening')&&!/^\d\d:\d\d$/.test(v||''))return remPaint();R[k]=v;haptic(5);
+  if(R.on){R.dirty=true;clearTimeout(remPref.t);remPref.t=setTimeout(remResend,800)}save();remPaint()}
+async function remResend(){const R=remR();if(!R.on||!R.dirty||!navigator.onLine)return;
+  const reg=await swReg(3000),sub=reg&&reg.pushManager&&await reg.pushManager.getSubscription().catch(()=>null);if(!sub)return;
+  const r=await api('/push/subscribe',{did:S.did,sub:sub.toJSON(),tz:tzName(),prefs:remPrefs(R)});if(r.ok){R.dirty=false;save()}}
+// выключатель не врёт: если разрешение забрали в настройках или подписка пропала — показываем «выключены»
+async function remCheck(){const R=remR();if(!R.on)return false;
+  if(!pushOk()||Notification.permission!=='granted'){R.on=false;R.unsub=true;save();return true}
+  const reg=await swReg(4000);if(!reg||!reg.pushManager)return false;
+  const sub=await reg.pushManager.getSubscription().catch(()=>null);if(!sub){R.on=false;R.unsub=true;save();return true}return false}
+async function remSync(){try{const R=remR();if(await remCheck())rerender.dirty=1;if(R.unsub)remUnsub();else if(R.on){if(R.dirty||R.tz!==tzName()){R.tz=tzName();R.dirty=true;remResend()}pushTick()}}catch(e){console.warn('Напоминания:',e)}}
+// цифры дня для сервера: при изменениях дневника и тренировки, не чаще раза в 2 минуты и только при включённых напоминаниях
+function pushSoon(){if(!(S&&S.remind&&S.remind.on)||S.onb)return;clearTimeout(pushSoon.t);pushSoon.t=setTimeout(pushTick,2000)}
+function pushState(){const n=norm(S.profile),e=eaten(),wd=(new Date().getDay()+6)%7,done=doneToday(),plan=S.plan||planWeek();
+  return {date:today0(),kcal_left:Math.round(n.kcal-e.k),protein_left_g:Math.max(0,n.p-Math.round(e.p)),workout_today:done||(plan.includes(wd)&&!restDay()&&!weekFull()),workout_done:done,reviewed:!!(S.rvMine&&S.rvMine.length)}}
+function pushTick(){const R=S.remind;if(!R||!R.on||S.onb||!S.profile||pushTick.busy)return;let st;try{st=pushState()}catch(e){return}
+  const sig=JSON.stringify(st);if(sig===R.sig)return;
+  const wait=2*60e3-(Date.now()-(R.stAt||0));clearTimeout(pushTick.t);if(wait>0){pushTick.t=setTimeout(pushTick,wait+300);return}
+  if(!navigator.onLine)return;pushTick.busy=1;R.stAt=Date.now();
+  api('/push/state',{did:S.did,...st}).then(r=>{pushTick.busy=0;if(r.ok){R.sig=sig;save()}else{clearTimeout(pushTick.t);pushTick.t=setTimeout(pushTick,2*60e3+300)}})}
+// нажали на напоминание: адрес вида ./#gym или ./#food открывает нужный экран
+function openHash(h){h=String(h||'').replace(/^#/,'');if(!h||S.onb)return;try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}
+  const m={gym:openProgram,food:openFoodPlan,scan:openScan,weight:openWeight,remind:openRemind,reviews:openReviews,review:()=>openReviewForm()};
+  if(m[h])setTimeout(m[h],350);else if(['today','tech','me'].includes(h)){closeSheet();go(h)}}
+if('serviceWorker' in navigator)try{navigator.serviceWorker.addEventListener('message',e=>{const o=e.data&&e.data.open;if(o)try{openHash(new URL(o,location.href).hash)}catch(_){}})}catch(e){}
+window.addEventListener('online',()=>{if(S.remind&&(S.remind.on||S.remind.unsub))remSync()});
 
 /* ---------- старт ---------- */
 if(S.onb)showOnb();else $('#onb').classList.add('hide');
 render();
+setTimeout(visit,1500);setTimeout(remSync,2500);openHash(location.hash);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){visit();if(!S.onb&&S.tab==='today')rvLoad();if(S.remind&&(S.remind.on||S.remind.unsub))remSync()}});
 </script>
 </body>
 </html>
