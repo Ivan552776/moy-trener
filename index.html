@@ -587,8 +587,8 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 <script>
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
-const API=SRV+'/trener-api'; // адрес сервера — меняется только здесь
-const APPV='mt-2026-10-30-r18'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
+const APPV='mt-2026-10-31-r19'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
