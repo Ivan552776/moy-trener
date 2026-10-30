@@ -2147,8 +2147,8 @@ function stars(v,sz=16){const one=`<svg viewBox="0 0 24 24" width="${sz}" height
 function rvNorm(x){if(!x||typeof x!=='object')return null;const st=Math.round(+x.stars);if(!(st>=1&&st<=5))return null;
   let ts=x.ts;ts=typeof ts==='number'?(ts<1e12?ts*1000:ts):Date.parse(ts);
   return {id:String(x.id==null?'':x.id).slice(0,64),name:String(x.name||'').trim().slice(0,40),stars:st,text:String(x.text||'').trim().slice(0,600),ts:Number.isFinite(ts)?ts:0}}
-// ?demo-reviews=1 — предпросмотр для Ивана: 5 примерных отзывов с плашкой «пример», запросов к серверу нет; по умолчанию — только настоящие
-const RVDEMO=/[?&]demo-reviews=1\b/.test(location.search),RVDEMO_L=RVDEMO?[['Марина',5,'За две недели минус 1,8 кг. Удобно, что калории считает по фото — не надо всё взвешивать.'],['Олег',4,'Разбор приседа по видео реально помог: колени больше не заваливаются.'],['',5,'Простое и красивое приложение, план под мой бюджет — то, что надо.'],['Анастасия',5,'Напоминания про белок — наконец-то добираю норму.'],['Дмитрий',4,'Хотелось бы больше блюд, но в целом очень удобно.']].map(([name,stars,text],i)=>({id:'demo'+i,name,stars,text,ts:Date.now()-(i+1)*864e5,demo:1})):null;
+// (был ?demo-reviews=1 — предпросмотр с примерами; убран по просьбе Ивана)чанию — только настоящие
+const RVDEMO=false,RVDEMO_L=null; // предпросмотр с примерными отзывами убран — показываем только настоящие
 const rvList=()=>RVDEMO_L||((S.rv&&Array.isArray(S.rv.list))?S.rv.list:[]);
 function rvDate(ts){if(!ts)return '';const d=new Date(ts),td=today0(),y=new Date();y.setDate(y.getDate()-1);
   return ymd(d)===td?'сегодня':ymd(d)===ymd(y)?'вчера':d.toLocaleDateString('ru-RU',d.getFullYear()===new Date().getFullYear()?{day:'numeric',month:'long'}:{day:'numeric',month:'long',year:'numeric'})}
