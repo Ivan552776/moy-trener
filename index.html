@@ -507,6 +507,28 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .ta::placeholder{color:var(--text3)}
 .search.plain:focus-visible,.ta:focus-visible{box-shadow:0 0 0 2px var(--accent)}
 .btn:disabled{opacity:.6;pointer-events:none}
+/* окно согласия перед анкетой и просмотр документов внутри приложения */
+#cons{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;justify-content:flex-end;background:var(--veil);opacity:0;pointer-events:none;transition:opacity .25s ease}
+#cons.on{opacity:1;pointer-events:auto}
+.cons-card{position:relative;background:var(--sheet);border-radius:var(--r-sheet) var(--r-sheet) 0 0;padding:10px 20px calc(env(safe-area-inset-bottom) + 16px);transform:translateY(40px);transition:transform .4s var(--ease-out);max-height:92%;overflow-y:auto}
+#cons.on .cons-card{transform:none}
+.cons-card .x{position:absolute;right:16px;top:16px}
+.cons-t{font:700 24px/1.15 var(--display);letter-spacing:-.02em;margin:14px 40px 6px 0}
+.cons-row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;font-size:15.5px;line-height:1.38;cursor:pointer;box-shadow:inset 0 -.5px 0 var(--line);-webkit-user-select:none;user-select:none}
+.cons-row:last-of-type{box-shadow:none}
+.cbx{flex:none;width:24px;height:24px;margin-top:1px;border-radius:7px;box-shadow:inset 0 0 0 2px var(--line2);display:grid;place-items:center;color:#fff;transition:background-color .15s,box-shadow .15s}
+.cbx .ic{width:16px;height:16px;stroke-width:3;opacity:0;transform:scale(.6);transition:opacity .15s,transform .2s var(--ease-out)}
+.cons-row[aria-checked="true"] .cbx{background:var(--accent);box-shadow:none} .cons-row[aria-checked="true"] .cbx .ic{opacity:1;transform:none}
+.cons-row .req{color:var(--text3);font-size:13px;white-space:nowrap}
+.doclink{color:var(--accent-text);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;cursor:pointer}
+.cons-foot{margin-top:12px;font-size:12px;line-height:1.4;color:var(--text3);text-align:center}
+#docv{position:absolute;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;transform:translateY(100%);transition:transform .35s var(--ease-out)}
+#docv.on{transform:none}
+.docv-h{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 10px) 14px 10px;box-shadow:0 .5px 0 var(--line);background:var(--bg)}
+.docv-h b{flex:1;min-width:0;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.docv-h a{flex:none;font-size:14px;font-weight:600;color:var(--accent-text)}
+#docv iframe{flex:1;width:100%;border:0;background:#fff}
+@media (prefers-reduced-motion: reduce){.cons-card,#docv{transition:none}}
 /* напоминания: как уведомления на экране iPhone — стекло на цветном фоне */
 .ntf-stage{position:relative;border-radius:var(--r);padding:16px 12px 12px;margin-bottom:12px;overflow:hidden;background:radial-gradient(80% 70% at 100% 0%,rgba(198,244,50,.55),transparent 60%),radial-gradient(90% 80% at 0% 100%,rgba(18,166,216,.55),transparent 65%),var(--grad);display:grid;gap:8px}
 .ntf{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border-radius:18px;background:var(--ntf-bg);-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);color:var(--ntf-text);box-shadow:0 6px 18px -8px rgba(0,0,0,.35)}
@@ -1998,7 +2020,11 @@ function openData(){
     <button class="rowbtn" onclick="openProfile()"><div class="ibox">${ic('doc')}</div><div class="t">Что и как считается<small>формулы и источники</small></div><span class="chev">${ic('chev')}</span></button>
     <button class="rowbtn" onclick="confirmReset()"><div class="ibox bad">${ic('trash')}</div><div class="t" style="color:var(--bad)">Удалить всё и начать заново<small>без подтверждения ничего не удалится</small></div><span class="chev">${ic('chev')}</span></button>
    </div>
-   <div class="concept">Персональные данные по 152-ФЗ: в рабочей версии будут храниться в России · оферта и политика — на этапе юриста</div>`);
+   <h2 style="margin-top:18px">Документы</h2>
+   <div class="card list">${['terms','privacy','consent','recurrent','requisites'].map(k=>`<button class="rowbtn" onclick="docView('${k}')"><div class="ibox">${ic('doc')}</div><div class="t">${LEGAL[k]}</div><span class="chev">${ic('chev')}</span></button>`).join('')}</div>
+   ${S.consent?`<div class="small muted" style="margin:-4px 4px 10px">Согласие дано ${new Date(S.consent.at).toLocaleDateString('ru-RU')} · редакция от ${LEGAL_V.split('-').reverse().join('.')}</div>`:''}
+   <div class="card list"><a class="rowbtn" href="mailto:ncochetow@yandex.ru?subject=${encodeURIComponent('Отзыв согласия на обработку персональных данных — Мой тренер')}&body=${encodeURIComponent('Прошу прекратить обработку моих персональных данных. Номер устройства в приложении: '+(S.did||''))}"><div class="ibox warn">${ic('lock')}</div><div class="t">Отозвать согласие<small>письмо на ncochetow@yandex.ru</small></div><span class="chev">${ic('chev')}</span></a></div>
+   <div class="concept">Данные о весе, питании и здоровье хранятся на вашем телефоне. На сервер в России уходят только номер устройства, отзывы и цифры дня для напоминаний — если вы их включили.</div>`);
 }
 function exportData(){try{const blob=new Blob([JSON.stringify(S,null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='moy-trener-'+today0()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast('Файл сохранён')}catch(e){toast('Не удалось сохранить файл',true)}}
 function confirmReset(){sheet('Удалить всё?',`<div class="card">Профиль, дневник, вес и разборы техники будут удалены с этого телефона. Вернуть их будет нельзя.</div><button class="btn danger" onclick="resetAll()">Да, удалить всё</button><button class="btn ghost" onclick="openData()">Отмена</button>`)}
@@ -2006,6 +2032,7 @@ function openSub(){
   sheet('Подписка',`<div class="card"><div class="small muted">Что будет платным</div><div class="title" style="margin-top:4px">Разбор техники без лимита, тренер и тренды</div><div class="small muted" style="margin-top:6px">Запись еды и база продуктов останутся бесплатными. Цена и условия ещё не определены.</div></div>
    <div class="card list">${[['Запись еды по фото, базе и штрихкоду','бесплатно'],['Норма, программа, вес и история','бесплатно'],['Атлас упражнений','бесплатно'],['Разбор техники по видео','3 видео в неделю бесплатно, дальше по подписке'],['Тренер без лимита и тренды за месяцы','по подписке']].map(([a,b])=>`<div class="li" style="align-items:flex-start"><div style="flex:1"><div style="font-weight:600">${a}</div><div class="small muted">${b}</div></div>${b.startsWith('бесплатно')?`<span style="color:var(--ok-text)">${ic('check','style="width:18px;height:18px"')}</span>`:`<span class="pill accent" style="flex:none">${ic('lock','style="width:14px;height:14px"')} Плюс</span>`}</div>`).join('')}</div>
    <h2 style="margin-top:22px">Что говорят пользователи</h2><div class="rvbox">${rvInner()}</div>
+   <div class="small muted" style="margin:12px 4px">При оформлении подписки понадобится ${docA('recurrent','согласие на автоматические списания')}.</div>
    <button class="btn sec" onclick="closeSheet()">Понятно</button>`);rvLoad();
 }
 function openStreak(){sheet('Серия',`<div class="card volt"><div class="num" style="font-size:40px">${pl(S.workouts||0,'тренировка','тренировки','тренировок')}</div><div class="muted">серия считается с первой полной недели</div></div><div class="card list"><div class="li" style="flex-direction:column;align-items:flex-start;gap:2px"><div class="small muted">Правило</div><div style="font-weight:600">не меньше 2 тренировок в&nbsp;неделю&nbsp;— в зале или дома</div></div><div class="li" style="flex-direction:column;align-items:flex-start;gap:2px"><div class="small muted">Страховка</div><div style="font-weight:600">1 пропуск в месяц — осталась</div></div></div><button class="btn sec" onclick="closeSheet();toast('Пауза до понедельника — серия сохранена')">Пауза: болею / отпуск</button>`)}
@@ -2059,6 +2086,31 @@ function resetAll(){if(S.remind&&(S.remind.on||S.remind.unsub))remDrop().then(()
 /* ---------- Анкета ---------- */
 let OB=0,D={...DEF},obDir='',obPct=0;
 const STEPS=7;
+/* ---------- юридическое окно перед анкетой: соглашение и политика, отдельное согласие на обработку ПДн (152-ФЗ с 01.09.2025), 14+ ----------
+   Редакция документов — LEGAL_V: сменили её — спросим снова. Документы открываются внутри приложения (legal/*.html). */
+const LEGAL_V='2026-10-30',LEGAL={terms:'Пользовательское соглашение',privacy:'Политика обработки персональных данных',consent:'Согласие на обработку персональных данных',recurrent:'Согласие на автоматические списания',requisites:'Реквизиты'};
+const consentOk=()=>!!(S.consent&&S.consent.v===LEGAL_V);
+let CONS={a:false,b:false,c:false,after:''};
+const docA=(k,txt)=>`<a class="doclink" href="legal/${k}.html" onclick="event.preventDefault();event.stopPropagation();docView('${k}')">${txt}</a>`;
+function consentOpen(after){CONS={a:false,b:false,c:false,after};let o=$('#cons');if(!o){o=document.createElement('div');o.id='cons';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Согласие с документами');o.addEventListener('click',e=>{if(e.target===o)consentClose()});$('#phone').appendChild(o)}
+  o.innerHTML=consentBody();requestAnimationFrame(()=>o.classList.add('on'))}
+function consentBody(){const row=(k,html)=>`<div class="cons-row" role="checkbox" tabindex="0" aria-checked="${!!CONS[k]}" onclick="consentTick('${k}')" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();consentTick('${k}')}"><span class="cbx">${ic('check')}</span><span>${html}</span></div>`,ok=CONS.a&&CONS.b&&CONS.c;
+  return `<div class="cons-card"><div class="grab"></div><button class="x" onclick="consentClose()" aria-label="Закрыть">✕</button>
+   <div class="cons-t">Перед началом</div><div class="small muted" style="margin-bottom:6px">Отметьте всё — без этого мы не можем составить ваш план. Документы открываются по нажатию.</div>
+   ${row('a',`Принимаю ${docA('terms','Пользовательское соглашение')} и ознакомлен(а) с ${docA('privacy','Политикой обработки персональных данных')}`)}
+   ${row('b',`Даю ${docA('consent','Согласие на обработку персональных данных')}`)}
+   ${row('c','Мне есть 14 лет')}
+   <button class="btn" style="margin-top:10px" ${ok?'':'disabled'} onclick="consentAccept()">Продолжить</button>
+   ${CONS.after==='existing'?'<button class="btn ghost" onclick="consentLater()">Позже</button>':''}
+   <div class="cons-foot">Исполнитель: Кочетов Иван Максимович, самозанятый, ИНН 771570623556 · ${docA('requisites','Реквизиты')}</div></div>`}
+function consentTick(k){CONS[k]=!CONS[k];haptic(5);const o=$('#cons');if(!o)return;const y=o.querySelector('.cons-card').scrollTop;o.innerHTML=consentBody();o.classList.add('on');o.querySelector('.cons-card').scrollTop=y;const r=o.querySelector(`.cons-row[onclick="consentTick('${k}')"]`);if(r)r.focus({preventScroll:true})}
+function consentAccept(){if(!(CONS.a&&CONS.b&&CONS.c))return;S.consent={v:LEGAL_V,at:Date.now()};save();haptic([10,40,10]);const after=CONS.after;consentClose();if(after==='onb')setTimeout(obNext,120)}
+function consentLater(){S.consentAsked=LEGAL_V;save();consentClose()} // уже пользуется — спросили один раз, данные не блокируем
+function consentClose(){const o=$('#cons');if(!o)return;if(CONS.after==='existing'&&!consentOk()){S.consentAsked=LEGAL_V;save()}o.classList.remove('on');setTimeout(()=>{if(!o.classList.contains('on'))o.remove()},300)}
+function docView(k){let o=$('#docv');if(!o){o=document.createElement('div');o.id='docv';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');$('#phone').appendChild(o)}
+  o.innerHTML=`<div class="docv-h"><button class="x" onclick="docClose()" aria-label="Закрыть документ">✕</button><b>${LEGAL[k]||''}</b><a href="legal/${k}.html" target="_blank" rel="noopener">Открыть</a></div><iframe src="legal/${k}.html" title="${LEGAL[k]||''}" onload="try{const d=this.contentDocument,b=d&&d.querySelector('.back');if(b)b.remove()}catch(e){}"></iframe>`;
+  requestAnimationFrame(()=>o.classList.add('on'))}
+function docClose(){const o=$('#docv');if(!o)return;o.classList.remove('on');setTimeout(()=>{if(!o.classList.contains('on'))o.remove()},360)}
 function showOnb(){OB=0;D={...DEF};obDir='';obPct=0;$('#onb').classList.remove('hide');renderOnb();setTimeout(()=>rvLoad(),600)} // новенький сразу видит отзывы
 function renderOnb(){
   const nr=norm(D),bud=budgetOf(D);
@@ -2073,7 +2125,7 @@ function renderOnb(){
        <div class="feat"><div class="ibox tech">${ic('ruler')}</div>Техника по вашему видео</div>
        <div class="feat"><div class="ibox volt">${ic('cart')}</div>Магазины под ваш бюджет</div></div>
       <div id="obrv">${rv}</div></div>
-      <button class="btn" style="margin-top:10px" onclick="obNext()">Составить мой план</button>
+      <button class="btn" style="margin-top:10px" onclick="consentOk()?obNext():consentOpen('onb')">Составить мой план</button>
       <div class="concept" style="margin-top:6px">Данные остаются на вашем телефоне · не медицинская консультация</div>`},
    ()=>`<div class="q">Чего хотите добиться?</div><div class="qs">План, калории и тренировки подстроятся под цель</div>
       <div class="fadeb" style="overflow-y:auto;flex:1;min-height:0;margin:0 -4px;padding:0 4px">${Object.entries(GOALS).map(([k,g])=>`<button class="opt ${D.goal===k?'on':''}" onclick="D.goal='${k}';renderOnb()"><div class="ibox">${ic(g.i)}</div><div style="flex:1"><div style="font-weight:700">${g.n}</div><div class="small muted">${g.d}</div></div></button>`).join('')}
@@ -2394,6 +2446,7 @@ window.addEventListener('online',()=>{if(S.remind&&(S.remind.on||S.remind.unsub)
 
 /* ---------- старт ---------- */
 if(S.onb)showOnb();else $('#onb').classList.add('hide');
+if(!S.onb&&!consentOk()&&S.consentAsked!==LEGAL_V)setTimeout(()=>consentOpen('existing'),1500); // прошли анкету до окна согласия — спросим один раз, ничего не блокируя
 render();
 setTimeout(visit,1500);setTimeout(remSync,2500);openHash(location.hash);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){visit();if(!S.onb&&S.tab==='today')rvLoad();if(S.remind&&(S.remind.on||S.remind.unsub))remSync()}});

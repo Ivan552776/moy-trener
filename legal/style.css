@@ -1,0 +1,15 @@
+:root{--bg:#F2F3F7;--card:#fff;--text:#0B0B0F;--muted:#6B6F7B;--accent:#E8173F;--line:rgba(0,0,0,.08)}
+@media (prefers-color-scheme:dark){:root{--bg:#0F1015;--card:#1A1B22;--text:#F2F3F7;--muted:#9A9DA8;--line:rgba(255,255,255,.1)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;-webkit-text-size-adjust:100%}
+main{max-width:720px;margin:0 auto;padding:24px 16px 64px}
+a{color:var(--accent)}
+.back{display:inline-block;margin-bottom:16px;text-decoration:none;font-weight:600}
+h1{font-size:28px;line-height:1.2;margin:0 0 6px}
+.date{color:var(--muted);font-size:14px;margin-bottom:20px}
+h2{font-size:19px;margin:28px 0 8px}
+p,li{margin:0 0 10px}
+ul,ol{padding-left:22px}
+.card{background:var(--card);border-radius:16px;padding:16px 18px;margin:20px 0;box-shadow:0 1px 0 var(--line)}
+.card b{display:inline-block;min-width:0}
+.muted{color:var(--muted);font-size:14px}

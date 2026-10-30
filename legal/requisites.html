@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Реквизиты — Мой тренер</title><link rel="stylesheet" href="style.css"><script src="legal.js"></script>
+<style>
+.hero{display:flex;align-items:center;gap:14px;margin:6px 0 18px}
+.logo{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#FF2D55,#E8173F 55%,#B0126E);display:grid;place-items:center;box-shadow:0 8px 24px rgba(232,23,63,.28)}
+.logo svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.req{background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 1px 0 var(--line)}
+.row{display:flex;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.k{flex:0 0 42%;color:var(--muted);font-size:14px}
+.v{flex:1;font-weight:600;word-break:break-word}
+.docs a{display:block;padding:12px 18px;border-bottom:1px solid var(--line);text-decoration:none;font-weight:600}
+.docs a:last-child{border-bottom:0}
+@media print{body{background:#fff}main{padding:0}.back{display:none}.req,.docs{box-shadow:none;border:1px solid #e5e5ea}}
+</style></head>
+<body><main>
+<a class="back" href="../">‹ В приложение</a>
+<div class="hero"><div class="logo"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg></div>
+<div><h1 style="margin:0">Реквизиты</h1><div class="muted">Приложение «<span data-r="app"></span>»</div></div></div>
+
+<div class="req">
+<div class="row"><div class="k">Исполнитель</div><div class="v" data-r="fio"></div></div>
+<div class="row"><div class="k">Статус</div><div class="v">Самозанятый — плательщик налога на профессиональный доход</div></div>
+<div class="row"><div class="k">ИНН</div><div class="v" data-r="inn"></div></div>
+<div class="row"><div class="k">Налоговый орган</div><div class="v" data-r="tax"></div></div>
+<div class="row"><div class="k">На учёте с</div><div class="v" data-r="since"></div></div>
+<div class="row"><div class="k">Электронная почта</div><div class="v" data-r="email"></div></div>
+<div class="row opt"><div class="k">Телефон</div><div class="v" data-r="phone"></div></div>
+<div class="row"><div class="k">Приём платежей</div><div class="v" data-r="payment"></div></div>
+<div class="row"><div class="k">Стоимость подписки</div><div class="v"><span data-r="price"></span>, первые <span data-r="trial"></span> — бесплатно</div></div>
+<div class="row"><div class="k">Чеки</div><div class="v">Формируются в приложении ФНС «Мой налог» и направляются на почту покупателя</div></div>
+</div>
+
+<h2>Документы</h2>
+<div class="req docs">
+<a href="terms.html">Пользовательское соглашение (оферта)</a>
+<a href="privacy.html">Политика обработки персональных данных</a>
+<a href="consent.html">Согласие на обработку персональных данных</a>
+<a href="recurrent.html">Согласие на автоматические списания</a>
+</div>
+<p class="muted" style="margin-top:18px">Приложение не оказывает медицинских услуг; рекомендации носят информационный характер. Данные о питании, весе, фото и видео хранятся на устройстве пользователя.</p>
+</main></body></html>
