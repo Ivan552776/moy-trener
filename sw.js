@@ -4,7 +4,7 @@
    видео не трогаем (нужны частичные ответы 206), кроме короткого примера squat.mp4: страница берёт его целиком через fetch.
    Версия кэша меняется при выкладке — скачанное (библиотеки, базы, картинки) переносится в новую копию, старые страницы не переносятся.
    lib/ отдаётся из памяти без проверки: новую версию библиотеки класть по новому пути, иначе останется старая. */
-const V='mt-2026-10-30-r12';
+const V='mt-2026-10-30-r13';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(['./','index.html','manifest.webmanifest','icon.png'].map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 // страница просит сохранить себя (её адрес заранее неизвестен: index.html на сервере, yobody.html в превью)
 self.addEventListener('message',e=>{const u=e.data&&e.data.cachePage;if(u)e.waitUntil(caches.open(V).then(c=>c.add(new Request(u,{cache:'reload'}))).catch(()=>{}))});
@@ -26,7 +26,10 @@ const put=(req,res)=>{if(res&&res.ok&&res.status===200&&res.type==='basic'){cons
 const timeout=(p,ms)=>Promise.race([p,new Promise((_,j)=>setTimeout(()=>j(new Error('timeout')),ms))]);
 self.addEventListener('fetch',e=>{
   const r=e.request;if(r.method!=='GET'||r.headers.has('range'))return;
-  const u=new URL(r.url);if(u.origin!==location.origin)return;
+  const u=new URL(r.url);
+  // движок нейросети с нашего сервера в России: храним в памяти, чтобы без сети распознавание работало (модель кэширует сама библиотека)
+  if(u.hostname==='abstract-tolerant-ember.ruweb.place'&&u.pathname.startsWith('/trener-files/lib/')){e.respondWith(caches.match(r).then(m=>m||fetch(r).then(res=>{if(res&&res.ok&&(res.type==='cors'||res.type==='basic')){const c=res.clone();caches.open(V).then(ca=>ca.put(r,c)).catch(()=>{})}return res})));return}
+  if(u.origin!==location.origin)return;
   const p=u.pathname;
   if(/\.(webm|mov|ogv)$/i.test(p)||(/\.mp4$/i.test(p)&&!p.endsWith('/squat.mp4'))||p.includes('/models/mobileclip'))return;
   if(r.mode==='navigate'||p.endsWith('.html')||p.endsWith('/')){

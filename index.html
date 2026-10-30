@@ -1140,6 +1140,7 @@ function plateInner(d,capt){const im=SC.photo?`<img src="${SC.photo}" alt="">`:d
 const LIB=p=>new URL('lib/'+p,location.href).href; // библиотеки и модели лежат у нас: работает через VPN и на мобильной сети, без чужих серверов
 const TFJS_URL=LIB('transformers.min.js'); // @huggingface/transformers 4.3.2
 let CLIP=null,CLIPLOAD=null,CLIPDB=null;
+const HEAVY='https://abstract-tolerant-ember.ruweb.place/trener-files/';
 const f16=u=>{const s=u>>15,e=(u>>10)&31,m=u&1023;return (s?-1:1)*(e===0?m*5.960464477539063e-8:e===31?(m?NaN:Infinity):Math.pow(2,e-15)*(1+m/1024))};
 async function loadClip(onStatus){
   if(CLIP)return CLIP;
@@ -1148,9 +1149,14 @@ async function loadClip(onStatus){
   const say=s=>{loadClip.last=s;subs.forEach(f=>{try{f(s)}catch(e){}})};
   // без движения 45 с во время скачивания (оборвалась мобильная связь) — честная ошибка с «Повторить», а не вечное ожидание
   let tick=Date.now(),dl=true,imp=false,dog=null;const stall=new Promise((_,rej)=>{dog=setInterval(()=>{if(dl&&Date.now()-tick>(imp?45000:150000))rej(new Error('нет связи: загрузка модели остановилась'))},3000)});
-  CLIPLOAD=Promise.race([stall,(async()=>{say('Загружаем движок нейросети (один раз)…');const T=await import(TFJS_URL);tick=Date.now();imp=true;T.env.allowRemoteModels=false;T.env.allowLocalModels=true;T.env.localModelPath=new URL('models/',location.href).href;T.env.backends.onnx.wasm.wasmPaths=LIB('ort/');T.env.backends.onnx.wasm.proxy=true; // считает в отдельном потоке — экран не замирает на 2–4 с при каждом фото
+  CLIPLOAD=Promise.race([stall,(async()=>{say('Загружаем движок нейросети (один раз)…');const T=await import(TFJS_URL);tick=Date.now();imp=true;T.env.allowRemoteModels=false;T.env.allowLocalModels=true;
+    // тяжёлые файлы (модель 72 МБ и движок 27 МБ) — с нашего сервера в России: GitHub из России по мобильной сети отдаёт их еле-еле.
+    // Выбранный источник запоминаем: без сети модель берётся из памяти телефона по тому же адресу
+    let hv=S.heavyBase;if(!hv){hv='gh';try{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),4000);const r=await fetch(HEAVY+'models/mobileclip-s2/config.json',{signal:ac.signal,cache:'no-store'});clearTimeout(tm);if(r.ok)hv='ru'}catch(e){}}
+    const HB=hv==='ru'?HEAVY:new URL('./',location.href).href;loadClip.hv=hv;
+    T.env.localModelPath=HB+'models/';T.env.backends.onnx.wasm.wasmPaths=hv==='ru'?HEAVY+'lib/ort/':LIB('ort/');T.env.backends.onnx.wasm.proxy=true; // считает в отдельном потоке — экран не замирает на 2–4 с при каждом фото
     // движок нейросети (wasm, ~27 МБ) качаем сами с честными мегабайтами — иначе после «100%» модели ещё полминуты тишины; потом он берётся из кэша
-    const WASM=LIB('ort/ort-wasm-simd-threaded.asyncify.wasm');let wmb=26.8;
+    const WASM=(hv==='ru'?HEAVY+'lib/ort/':LIB('ort/'))+'ort-wasm-simd-threaded.asyncify.wasm';let wmb=26.8;
     let hit=false;try{hit=!!(window.caches&&await caches.match(WASM))}catch(e){}
     if(hit){say('Запускаем распознавание…');wmb=0}else try{const r=await fetch(WASM);if(r.ok&&r.body){wmb=(+r.headers.get('content-length')||26.8e6)/1e6;const rd=r.body.getReader();let got=0,sh=-1;
       for(;;){const {done,value}=await rd.read();if(done)break;got+=value.length;tick=Date.now();const g=Math.floor(got/1e6);if(g>sh){sh=g;say(`Скачиваем распознавание: ${g} из ${Math.round(wmb+(loadClip.mb||72))} МБ (${Math.floor(g/(wmb+(loadClip.mb||72))*100)}%) — один раз, дальше без интернета`)}}}}catch(e){}
@@ -1171,6 +1177,7 @@ async function loadClip(onStatus){
     const byG=Array.from({length:G},()=>[]);db.items.forEach((x,i)=>byG[x.k].push(i));
     CLIPDB={db,W,byG,bias:db.bias};
     // прогрев убран: в Safari он не ускорял первый снимок, а добавлял ~2,5 с ожидания
+    if(S.heavyBase!==loadClip.hv){S.heavyBase=loadClip.hv;save()} // модель скачалась отсюда — дальше берём из памяти по этому адресу
     CLIP=async src=>{const img=await T.RawImage.read(src);const out=await model(await proc(img));const e=Float32Array.from(out.image_embeds.data);let s=0;for(const x of e)s+=x*x;s=Math.sqrt(s)||1;return e.map(x=>x/s)};
     return CLIP})()]);
   try{return await CLIPLOAD}catch(e){CLIPLOAD=null;throw e}finally{clearInterval(dog);subs.clear();loadClip.last=''}
