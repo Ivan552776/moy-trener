@@ -273,6 +273,8 @@ h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.src,.lock,.calcrow span{text-
 .tab.fab:active .circ{transform:scale(.9)}
 
 /* ---------- шторка ---------- */
+/* шторка, открытая с начального экрана (отзывы), — поверх него */
+#phone:has(#onb:not(.hide)) #veil{z-index:21} #phone:has(#onb:not(.hide)) #sheet{z-index:22}
 #veil{position:absolute;inset:0;background:var(--veil);opacity:0;pointer-events:none;transition:opacity .28s ease;z-index:10}
 #veil.on{opacity:1;pointer-events:auto} #veil.drag{transition:none}
 #sheet{position:absolute;left:0;right:0;bottom:0;max-height:92%;background:var(--sheet);box-shadow:0 -1px 0 var(--line),0 -20px 60px rgba(0,0,0,.12);border-radius:var(--r-sheet) var(--r-sheet) 0 0;transform:translateY(calc(100% + 40px));visibility:hidden;transition:transform var(--d-sheet-out) var(--ease-drawer),visibility 0s var(--d-sheet-out);z-index:11;display:flex;flex-direction:column;will-change:transform}
