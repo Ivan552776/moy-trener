@@ -7,15 +7,15 @@
 <meta name="theme-color" id="themecolor" content="#F2F3F7">
 <script>try{var t=(JSON.parse(localStorage.getItem('yb-demo2'))||{}).theme||'light',r=document.documentElement;r.dataset.theme=t;r.dataset.scheme=t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}catch(e){}</script>
 <title>Мой тренер — ИИ-тренер: питание по базе и техника по видео</title>
-<meta name="description" content="Мой тренер: калории по фото считает база продуктов, техника упражнений разбирается по вашему видео прямо в телефоне. Прототип, открывается на любом телефоне.">
+<meta name="description" content="Мой тренер: калории по фото считает база продуктов, техника упражнений разбирается по вашему видео прямо в телефоне. Открывается на любом телефоне.">
 <meta property="og:title" content="Мой тренер — питание по базе, техника по видео">
 <meta property="og:description" content="Калории по фото считает код по базе продуктов, техника — по вашему видео. Откройте на телефоне.">
-<meta property="og:image" content="https://ivan552776.github.io/moy-trener-demo/og-2.jpg">
+<meta property="og:image" content="https://ivan552776.github.io/moy-trener/og-2.jpg">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Мой тренер — калории по фото и техника по видео">
 <meta property="og:site_name" content="Мой тренер"><meta property="og:locale" content="ru_RU">
 <meta name="twitter:card" content="summary_large_image">
-<meta property="og:url" content="https://ivan552776.github.io/moy-trener-demo/">
+<meta property="og:url" content="https://ivan552776.github.io/moy-trener/">
 <meta property="og:type" content="website">
 <link rel="icon" href="icon.png"><link rel="apple-touch-icon" href="icon.png"><link rel="manifest" href="manifest.webmanifest">
 <style>
@@ -1994,7 +1994,7 @@ function openData(){
 function exportData(){try{const blob=new Blob([JSON.stringify(S,null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='moy-trener-'+today0()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast('Файл сохранён')}catch(e){toast('Не удалось сохранить файл',true)}}
 function confirmReset(){sheet('Удалить всё?',`<div class="card">Профиль, дневник, вес и разборы техники будут удалены с этого телефона. Вернуть их будет нельзя.</div><button class="btn danger" onclick="resetAll()">Да, удалить всё</button><button class="btn ghost" onclick="openData()">Отмена</button>`)}
 function openSub(){
-  sheet('Подписка',`<div class="card"><div class="small muted">Что будет платным</div><div class="title" style="margin-top:4px">Разбор техники без лимита, тренер и тренды</div><div class="small muted" style="margin-top:6px">Запись еды и база продуктов останутся бесплатными. Цена и условия ещё не определены — это прототип.</div></div>
+  sheet('Подписка',`<div class="card"><div class="small muted">Что будет платным</div><div class="title" style="margin-top:4px">Разбор техники без лимита, тренер и тренды</div><div class="small muted" style="margin-top:6px">Запись еды и база продуктов останутся бесплатными. Цена и условия ещё не определены.</div></div>
    <div class="card list">${[['Запись еды по фото, базе и штрихкоду','бесплатно'],['Норма, программа, вес и история','бесплатно'],['Атлас упражнений','бесплатно'],['Разбор техники по видео','3 видео в неделю бесплатно, дальше по подписке'],['Тренер без лимита и тренды за месяцы','по подписке']].map(([a,b])=>`<div class="li" style="align-items:flex-start"><div style="flex:1"><div style="font-weight:600">${a}</div><div class="small muted">${b}</div></div>${b.startsWith('бесплатно')?`<span style="color:var(--ok-text)">${ic('check','style="width:18px;height:18px"')}</span>`:`<span class="pill accent" style="flex:none">${ic('lock','style="width:14px;height:14px"')} Плюс</span>`}</div>`).join('')}</div>
    <h2 style="margin-top:22px">Что говорят пользователи</h2><div class="rvbox">${rvInner()}</div>
    <button class="btn sec" onclick="closeSheet()">Понятно</button>`);rvLoad();
@@ -2005,7 +2005,7 @@ function openStreak(){sheet('Серия',`<div class="card volt"><div class="num
 function openChat(){
   sheet('Мой тренер',`<div id="chat"><div class="msg bot">Привет${S.profile.name==='Вы'?'':', '+S.profile.name}! Ваша цель — ${GOALS[S.profile.goal].n.toLowerCase()}. Помогу с&nbsp;тренировками и питанием. О&nbsp;чём спросить?</div></div>
    <div class="chips ask" style="margin-top:12px">${['Что съесть вечером?',S.profile.place==='home'?'Не успеваю сегодня потренироваться':'Не успеваю сегодня в зал','Болит спина после тренировки'].map(q=>`<button class="chip" onclick="ask(this.textContent)">${q}</button>`).join('')}</div>
-   <div class="concept">Ответы пока подготовлены заранее — это прототип · не&nbsp;медицинская консультация</div>`);
+   <div class="concept">Ответы — готовые подсказки по вашим цифрам · не&nbsp;медицинская консультация</div>`);
 }
 function ask(q){
   const c=$('#chat');c.insertAdjacentHTML('beforeend',`<div class="msg me">${q}</div>`);let a;
@@ -2056,7 +2056,7 @@ function renderOnb(){
   const steps=[
    ()=>{const rv=obRv();return `<div id="obcv" class="fadeb${rv?' has-rv':''}" style="flex:1;overflow-y:auto;overflow-x:hidden;margin:calc(-1*env(safe-area-inset-top) - 36px) -20px 0;padding:0 20px;display:flex;flex-direction:column">
       <div class="cover" aria-hidden="true"></div>
-      <div class="brand"><div class="bigicon">${ic('bolt')}</div><span class="pill accent">ИИ-тренер · прототип</span></div>
+      <div class="brand"><div class="bigicon">${ic('bolt')}</div><span class="pill accent">ИИ-тренер</span></div>
       <div class="cv-title">Мой тренер</div>
       <div class="muted cv-sub" style="font-size:17px;line-height:1.4;margin-top:10px;text-wrap:pretty">Считает честно: калории — по базе продуктов, технику — по вашему видео. План под цель, тело и бюджет.</div>
       <div style="margin:14px 0 8px">
@@ -2065,7 +2065,7 @@ function renderOnb(){
        <div class="feat"><div class="ibox volt">${ic('cart')}</div>Магазины под ваш бюджет</div></div>
       <div id="obrv">${rv}</div></div>
       <button class="btn" style="margin-top:10px" onclick="obNext()">Составить мой план</button>
-      <div class="concept" style="margin-top:6px">Данные остаются на вашем телефоне · прототип · не медицинская консультация</div>`},
+      <div class="concept" style="margin-top:6px">Данные остаются на вашем телефоне · не медицинская консультация</div>`},
    ()=>`<div class="q">Чего хотите добиться?</div><div class="qs">План, калории и тренировки подстроятся под цель</div>
       <div class="fadeb" style="overflow-y:auto;flex:1;min-height:0;margin:0 -4px;padding:0 4px">${Object.entries(GOALS).map(([k,g])=>`<button class="opt ${D.goal===k?'on':''}" onclick="D.goal='${k}';renderOnb()"><div class="ibox">${ic(g.i)}</div><div style="flex:1"><div style="font-weight:700">${g.n}</div><div class="small muted">${g.d}</div></div></button>`).join('')}
       ${D.goal==='lose'||D.goal==='muscle'?`<div class="small muted" style="margin:6px 4px 8px">Темп</div><div class="chips pace">${Object.entries(PACE).map(([k,l])=>`<button class="chip ${D.pace===k?'on':''}" onclick="D.pace='${k}';renderOnb()">${l}<small>${(GOALS[D.goal].adj[k]>0?'+':GOALS[D.goal].adj[k]<0?'−':'')+Math.abs(Math.round(GOALS[D.goal].adj[k]*100))}%</small></button>`).join('')}</div>`:''}</div>
