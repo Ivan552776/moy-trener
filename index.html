@@ -118,7 +118,7 @@ h2{font:700 20px/1.2 var(--display);letter-spacing:-.015em;color:var(--text);mar
 h2 small{font:600 15px var(--font);letter-spacing:0;color:var(--accent-text);cursor:pointer;padding:8px 10px;margin:-8px -10px;border-radius:10px;transition:background-color .15s}
 h2 small:active{background:var(--accent-soft)}
 h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.src,.lock,.calcrow span{text-wrap:pretty}
-#obrv{margin-top:auto;padding-top:10px} .obrv{display:block;width:100%;text-align:left;margin:0 0 4px;padding:9px 0 0;border-radius:var(--r);background:var(--card);box-shadow:var(--shadow);overflow:hidden}
+#obrv{margin-top:auto;padding-top:10px} #obrv:empty{display:none} .obrv{display:block;width:100%;text-align:left;margin:0 0 4px;padding:9px 0 0;border-radius:var(--r);background:var(--card);box-shadow:var(--shadow);overflow:hidden}
 .obrv-h{display:flex;align-items:center;gap:6px;padding:0 12px 8px;font-size:13px;white-space:nowrap} .obrv-h b{font:700 15px var(--num)} .obrv-h .stars{--f:#F5A524}
 .obrv-demo{margin-left:auto;font-size:11px;padding:2px 8px;background:var(--warn-soft);color:var(--warn-text)}
 .obrv-win{overflow:hidden;padding-bottom:10px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 14px),transparent)}
@@ -128,9 +128,21 @@ h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.src,.lock,.calcrow span{text-
 .obrv-c{flex:none;width:240px;padding:8px 11px;border-radius:12px;background:var(--card2);display:flex;flex-direction:column;gap:3px} .obrv-c .stars{--f:#F5A524}
 .obrv-t{font-size:13.5px;line-height:1.3;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.7em}
 .obrv-n{font-size:12px;font-weight:600;color:var(--text2)}
- #onb .has-rv .cover{aspect-ratio:auto;height:min(230px,27dvh);max-height:none} #onb .has-rv .feat{padding-top:4px;padding-bottom:4px}
-@media (max-height:760px){#onb .has-rv .cover{height:120px;aspect-ratio:auto} #onb .has-rv .cv-sub{font-size:15px!important;line-height:1.35!important;margin-top:6px!important}}
-@media (max-height:620px){#onb .has-rv .cover{height:96px}}
+/* шапка начального экрана: фото целиком (вертикальный кадр поверх размытой копии), снизу мягко уходит в фон; иконка и заголовок — под фото */
+#onb .cover{aspect-ratio:auto;height:clamp(190px,36dvh,330px);max-height:none;background:#E9E6E1}
+#onb .cover img{position:absolute;animation:none}
+#onb .cover .cv-bg{left:-24px;top:-24px;width:calc(100% + 48px);height:calc(100% + 48px);object-fit:cover;filter:blur(18px) saturate(1.1);opacity:.85}
+#onb .cover .cv-fg{left:50%;top:0;height:100%;width:auto;max-width:none;transform:translateX(-50%);object-fit:contain;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+#onb .cover::after{background:linear-gradient(180deg,transparent 0%,transparent 62%,var(--bg) 100%);z-index:1}
+#onb .brand{margin-top:-18px}
+/* три пункта: с лентой отзывов — компактные чипы, без ленты — крупный список */
+#obcv.has-rv .feats{display:block;margin:12px 0 0!important;line-height:0}
+#obcv.has-rv .feat{display:inline-flex;margin:0 5px 6px 0;line-height:1.2;padding:6px 10px;gap:0;letter-spacing:-.01em;border-radius:999px;background:var(--card);box-shadow:var(--shadow);font:600 12.5px var(--font)}
+#obcv.has-rv .feat .ibox{display:none} .feat .fs,#obcv.has-rv .feat .fl{display:none} #obcv.has-rv .feat .fs{display:inline} #obcv>*{flex-shrink:0} #obcv.has-rv .cover{height:clamp(170px,30dvh,280px)}
+#obcv:not(.has-rv) .feat{font-size:17px;padding-top:9px;padding-bottom:9px} #obcv:not(.has-rv) .feat .ibox{width:42px;height:42px}
+@media (max-height:700px){#onb .cover{height:30dvh} #onb .cv-sub{font-size:15px!important;line-height:1.35!important;margin-top:6px!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}#obcv:not(.has-rv) .feat{display:flex;font-size:15px;padding-top:5px;padding-bottom:5px} #obcv:not(.has-rv) .feat .ibox{width:34px;height:34px}}
+@media (max-height:700px){#obcv.has-rv .cover{height:19dvh} #obcv.has-rv .feats{margin-top:8px!important}}
+@media (max-height:620px){#onb .cover{height:22dvh} #obcv.has-rv .cover{height:22dvh} #obcv.has-rv .feats{display:none}}
 #phone.modal .obrv-tr,.pg-hid .obrv-tr{animation-play-state:paused}
 @media (prefers-reduced-motion: reduce){.obrv-tr{animation:none}}
 .me-card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:16px} .me-ava{width:60px;height:60px;flex:none;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font:700 24px var(--display)} .me-ava .ic{width:28px;height:28px} .me-nm{font:700 20px/1.2 var(--display);letter-spacing:-.02em;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .me-ed{flex:none;font-size:15px;font-weight:600;color:var(--accent-text)}
@@ -306,8 +318,7 @@ h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.src,.lock,.calcrow span{text-
 .feat{display:flex;gap:12px;align-items:center;padding:7px 0;font:600 16px var(--font)}
 .feat .ibox{width:36px;height:36px;border-radius:11px} .feat .ibox .ic{width:20px;height:20px} .feat .ibox.volt{background:var(--volt-soft);color:var(--volt-ink)}
 #onb .chip{height:44px;padding:0 16px;min-width:44px;justify-content:center}
-#onb .cover{max-height:min(300px,36dvh)}
-@media (max-height:700px){#onb .cover{aspect-ratio:auto;height:150px}#onb .cv-title{font-size:38px}#onb .feat{display:none}}
+@media (max-height:700px){#onb .cv-title{font-size:38px}}
 #onb .chips.pace{display:grid;grid-template-columns:1fr 1.3fr 1fr;gap:8px} #onb .chips.pace .chip{height:56px;flex-direction:column;gap:0;padding:0 6px;min-width:0} #onb .chips.pace .chip small{font:500 13px var(--num);opacity:.7}
 .fadeb{-webkit-mask-image:linear-gradient(#000 calc(100% - 28px),transparent);mask-image:linear-gradient(#000 calc(100% - 28px),transparent);padding-bottom:24px!important}
 
@@ -2040,14 +2051,14 @@ function renderOnb(){
   const nr=norm(D),bud=budgetOf(D);
   const steps=[
    ()=>{const rv=obRv();return `<div id="obcv" class="fadeb${rv?' has-rv':''}" style="flex:1;overflow-y:auto;overflow-x:hidden;margin:calc(-1*env(safe-area-inset-top) - 36px) -20px 0;padding:0 20px;display:flex;flex-direction:column">
-      <div class="cover"><img src="img/tech-demo.jpg" alt="Разбор техники на ваших кадрах"><span class="pill shade">${ic('ruler','style="width:15px;height:15px"')} Разбор техники на ваших кадрах</span></div>
+      <div class="cover"><img class="cv-bg" src="img/tech-demo.jpg" alt="" aria-hidden="true"><img class="cv-fg" src="img/tech-demo.jpg" alt="Разбор техники: присед с углами таза и колена"></div>
       <div class="brand"><div class="bigicon">${ic('bolt')}</div><span class="pill accent">ИИ-тренер · прототип</span></div>
       <div class="cv-title">Мой тренер</div>
       <div class="muted cv-sub" style="font-size:17px;line-height:1.4;margin-top:10px;text-wrap:pretty">Считает честно: калории — по базе продуктов, технику — по вашему видео. План под цель, тело и бюджет.</div>
-      <div style="margin:14px 0 8px">
-       <div class="feat"><div class="ibox accent">${ic('cam')}</div>Калории по фото и базе</div>
-       <div class="feat"><div class="ibox tech">${ic('ruler')}</div>Техника по вашему видео</div>
-       <div class="feat"><div class="ibox volt">${ic('cart')}</div>Магазины под ваш бюджет</div></div>
+      <div class="feats" style="margin:14px 0 8px">
+       <div class="feat"><div class="ibox accent">${ic('cam')}</div><span class="fl">Калории по фото и базе</span><span class="fs">Калории по фото</span></div>
+       <div class="feat"><div class="ibox tech">${ic('ruler')}</div><span class="fl">Техника по вашему видео</span><span class="fs">Техника по видео</span></div>
+       <div class="feat"><div class="ibox volt">${ic('cart')}</div><span class="fl">Магазины под ваш бюджет</span><span class="fs">Под ваш бюджет</span></div></div>
       <div id="obrv">${rv}</div></div>
       <button class="btn" style="margin-top:10px" onclick="obNext()">Составить мой план</button>
       <div class="concept" style="margin-top:6px">Данные остаются на вашем телефоне · прототип · не медицинская консультация</div>`},
