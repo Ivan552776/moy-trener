@@ -1158,8 +1158,10 @@ async function loadClip(onStatus){
     // движок нейросети (wasm, ~27 МБ) качаем сами с честными мегабайтами — иначе после «100%» модели ещё полминуты тишины; потом он берётся из кэша
     const WASM=(hv==='ru'?HEAVY+'lib/ort/':LIB('ort/'))+'ort-wasm-simd-threaded.asyncify.wasm';let wmb=26.8;
     let hit=false;try{hit=!!(window.caches&&await caches.match(WASM))}catch(e){}
-    if(hit){say('Запускаем распознавание…');wmb=0}else try{const r=await fetch(WASM);if(r.ok&&r.body){wmb=(+r.headers.get('content-length')||26.8e6)/1e6;const rd=r.body.getReader();let got=0,sh=-1;
-      for(;;){const {done,value}=await rd.read();if(done)break;got+=value.length;tick=Date.now();const g=Math.floor(got/1e6);if(g>sh){sh=g;say(`Скачиваем распознавание: ${g} из ${Math.round(wmb+(loadClip.mb||72))} МБ (${Math.floor(g/(wmb+(loadClip.mb||72))*100)}%) — один раз, дальше без интернета`)}}}}catch(e){}
+    let parts=null;if(hit){say('Запускаем распознавание…');wmb=0;try{T.env.backends.onnx.wasm.wasmBinary=new Uint8Array(await (await caches.match(WASM)).arrayBuffer())}catch(e){}}else try{const r=await fetch(WASM);if(r.ok&&r.body){wmb=(+r.headers.get('content-length')||26.8e6)/1e6;const rd=r.body.getReader();let got=0,sh=-1;parts=[];
+      for(;;){const {done,value}=await rd.read();if(done)break;parts.push(value);got+=value.length;tick=Date.now();const g=Math.floor(got/1e6);if(g>sh){sh=g;say(`Скачиваем распознавание: ${g} из ${Math.round(wmb+(loadClip.mb||72))} МБ (${Math.floor(g/(wmb+(loadClip.mb||72))*100)}%) — один раз, дальше без интернета`)}}}}catch(e){}
+    // скачанный движок отдаём библиотеке сразу — иначе она качала его второй раз (лишние 27 МБ мобильного трафика)
+    if(parts&&parts.length){let n=0;for(const p of parts)n+=p.length;const b=new Uint8Array(n);let o=0;for(const p of parts){b.set(p,o);o+=p.length}parts=null;T.env.backends.onnx.wasm.wasmBinary=b}
     loadClip.wmb=wmb;
     // база распознавания: дообученные веса по группам (clipdb.bin, float16) + список позиций; модель берём ту, на которой обучали
     const [db,bin]=await Promise.all([fetch('models/clipdb.json',{cache:'no-cache'}).then(r=>r.json()),fetch('models/clipdb.bin',{cache:'no-cache'}).then(r=>r.arrayBuffer())]);
