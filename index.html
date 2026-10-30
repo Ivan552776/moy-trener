@@ -882,7 +882,6 @@ function vToday(){
   const foot=left<0?(e.k>n.kcal*1.3?'Сильно больше нормы — проверьте граммы в записях':'Вышли за норму — бывает. Завтра по плану, без урезания'):s.late?(hr<5?'Ночь — время сна, утром начнём с завтрака':'Поздний вечер — на ночь не добираем, завтра по плану'):nextMeal&&mealTime?`Дальше — ${nextMeal.n.toLowerCase()}, ${u(nextMeal.nut.k,'ккал')}`:ateNow&&hr>=16?'Ужин записан · осталось '+u(left,'ккал'):s.why==='small'?'Готовые блюда дороже вашего бюджета — доберите крупой, яйцами, кефиром':s.why==='money'?'Бюджет на сегодня закончился — доберите тем, что есть дома':'Норма на сегодня почти закрыта';
   return `<div class="top"><div><div class="eyebrow">${dateStr[0].toUpperCase()+dateStr.slice(1)}</div><div class="date">${hello()}${pr.name&&pr.name!=='Вы'?',<br>'+pr.name:''}</div></div><button class="avatar tap" onclick="go('me')" aria-label="Личный кабинет">${ava()}</button></div>
   ${ws}
-  <div class="rvtbox">${rvTicker()}</div>
   <button class="hero-today tap ${left<0?'over':''}" onclick="openFoodPlan()">
     <div class="ht-eb">${left>=0?'Осталось на сегодня':'Сверх нормы'}</div>
     <div class="ht-main"><div><div class="n-hero">${CU(Math.abs(left))}</div><div class="ht-sub">ккал из ${fmt(n.kcal)} · <span style="white-space:nowrap">цель «${g.n.toLowerCase()}»</span></div></div>
@@ -918,7 +917,6 @@ function vToday(){
     <div class="li"><div style="flex:1"><div style="font-weight:600">Белок</div><div class="tiny muted">${!S.log.length?'цель на день — '+u(n.p,'г'):Math.round(e.p)>=n.p?'норма закрыта':'не хватает '+u(n.p-Math.round(e.p),'г')+({lose:' — мышцы не уходят вместе с жиром',recomp:' — мышцы не уходят вместе с жиром',muscle:' — из него строятся мышцы',endurance:' — для восстановления'}[pr.goal]||'')}</div></div><span class="n-s">${fmt(e.p)} <span class="muted" style="font-weight:500">/ ${n.p}</span></span></div>
     <div class="li"><div style="flex:1"><div style="font-weight:600">Бюджет на еду</div><div class="tiny muted">осталось сегодня из ${fmt(budgetOf(pr))} ₽${S.log.some(x=>!x.cost)?' · без цены продуктов из базы':''}</div></div><span class="n-s">${fmt(Math.max(budgetOf(pr)-e.cost,0))} ₽</span></div>
   </div>
-  ${rvBlock()}
   <div class="concept">Калории считает код по базе продуктов; норма&nbsp;— формула Миффлина × группа активности Роспотребнадзора + тренировки · не&nbsp;медицинская консультация</div>`;
 }
 /* подсказки дня: цветные карточки, как «Главное» в «Здоровье» на iPhone; всё считает код по дневнику, плану и весу */
