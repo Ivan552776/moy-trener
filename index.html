@@ -118,6 +118,7 @@ h2{font:700 20px/1.2 var(--display);letter-spacing:-.015em;color:var(--text);mar
 h2 small{font:600 15px var(--font);letter-spacing:0;color:var(--accent-text);cursor:pointer;padding:8px 10px;margin:-8px -10px;border-radius:10px;transition:background-color .15s}
 h2 small:active{background:var(--accent-soft)}
 h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.src,.lock,.calcrow span{text-wrap:pretty}
+.me-card{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:16px} .me-ava{width:60px;height:60px;flex:none;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font:700 24px var(--display)} .me-ava .ic{width:28px;height:28px} .me-nm{font:700 20px/1.2 var(--display);letter-spacing:-.02em;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .me-ed{flex:none;font-size:15px;font-weight:600;color:var(--accent-text)}
 .avatar{width:38px;height:38px;flex:none;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:700;font-size:15px;box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--accent-soft)}
 .muted{color:var(--text2)} .small{font-size:13px} .tiny{font-size:12px}
 .title{font-weight:600;font-size:17px;letter-spacing:-.01em}
@@ -579,6 +580,7 @@ const I={
  bolt:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
  wallet:'<rect x="3" y="6" width="18" height="14" rx="3"/><path d="M16 13h2M3 10h18"/>',
  doc:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 16h6"/>',
+ moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
  share:'<path d="M12 3.5v11"/><path d="M8 7.5l4-4 4 4"/><path d="M8 10.5H6.5a1.5 1.5 0 0 0-1.5 1.5v7a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-7a1.5 1.5 0 0 0-1.5-1.5H16"/>',
  addsq:'<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8.5v7M8.5 12h7"/>',
  cart:'<path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.8L20 8H6.2"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/>'
@@ -1872,33 +1874,36 @@ function vTech(){
   <div id="exlist" style="margin-top:12px">${exList()}</div>
   <div class="concept">Углы считаются по точкам суставов, точность зависит от ракурса и света · не медицинская консультация</div>`;
 }
-function vMe(){
-  const pr=S.profile,n=norm(pr),g=GOALS[pr.goal],pg=program(),w=S.weights,lastW=w.length?w[w.length-1].w:pr.w,firstW=w.length?w[0].w:pr.w,dW=lastW-firstW;
-  return `<div class="top"><div><div class="eyebrow">Личный кабинет</div><div class="date">${pr.name==='Вы'?'Мой план':pr.name}</div></div><button class="avatar tap" onclick="openEdit()" aria-label="Изменить профиль">${ava()}</button></div>
-  <button class="hero-today tap" onclick="openEdit()"><div class="row between" style="align-items:flex-start"><div style="min-width:0"><div class="ht-eb">Норма · ${g.n.toLowerCase()}${paceTxt(pr,n)?', '+paceTxt(pr,n):''}</div><div style="margin-top:6px"><span class="n-xl">${fmt(n.kcal)}</span><span style="font:500 15px var(--font);margin-left:6px">ккал в день</span></div></div><span style="opacity:.8">${ic('chev')}</span></div>
-    <div class="row" style="gap:8px;margin-top:14px">${[['Белки',n.p],['Жиры',n.f],['Углеводы',n.c]].map(([l,v])=>`<div class="glasschip"><div class="n-m">${v}<span style="font:500 13px var(--font)"> г</span></div><div style="font-size:13px">${l}</div></div>`).join('')}</div>
-    <div class="ht-foot" style="margin-top:10px">${ic('me')}<span>${pr.h} см · ${(''+lastW).replace('.',',')} кг · ${pl(pr.age,'год','года','лет')}</span></div></button>
-  ${n.under||n.minor?`<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('heart')}</span><div>${n.under?`<b>Вес ниже нормы (ИМТ ${dec(n.bmi)}).</b> ${n.capped?'Худеть не советуем — план держит вес. ':''}Посоветуйтесь с врачом.`:'<b>До 18 лет</b> калории не урезаем, норма — ориентир для растущего организма. Покажите план родителям и обсудите с педиатром; силовые — под присмотром тренера. ВОЗ советует подросткам ≥ 60 минут движения в день.'}</div></div>`:''}
-  <div class="grid2">
-    <button class="card tap qa" style="min-height:0" onclick="openWeight()"><div class="ibox c">${ic('weight')}</div><div><div class="small muted">Вес</div><div class="n-m" style="margin-top:2px">${(''+lastW).replace('.',',')}<span class="unit">кг</span></div><div style="margin-top:6px"><span class="pill ${w.length>1?(tooFast(w)?'':dW<0?'ok':''):(w.length&&w[w.length-1].d===today0()?'':'accent')}" ${tooFast(w)?'style="background:var(--warn-soft);color:var(--warn-text)"':''}>${w.length>1?(dW>0?'+':'')+dW.toFixed(1).replace('.',',')+' кг с начала':w.length&&w[w.length-1].d===today0()?'записано':'записать'}</span></div></div></button>
-    <button class="card tap qa" style="min-height:0" onclick="openHistory()"><div class="ibox volt">${ic('history')}</div><div><div class="small muted">История</div>${!S.workouts&&!S.forms.length?`<div class="qt" style="margin-top:2px">Пока пусто</div><div class="small muted" style="margin-top:6px">здесь будут тренировки</div>`:`<div class="n-m" style="margin-top:2px">${S.workouts||0}<span class="unit">${pl(S.workouts||0,'тренировка','тренировки','тренировок').replace(/^\S+\s/,'')}</span></div><div class="small muted" style="margin-top:6px">${pl(S.forms.length,'разбор','разбора','разборов')} техники</div>`}</div></button>
+function vMe(){ // личный кабинет как «Настройки» на iPhone: карточка профиля и короткие списки, всё подробное — в шторках
+  const pr=S.profile,n=norm(pr),g=GOALS[pr.goal],pg=program(),w=S.weights,lastW=w.length?w[w.length-1].w:pr.w,L=rvList(),R=S.remind&&S.remind.on;
+  if(!RV.at||Date.now()-RV.at>10*60e3)setTimeout(()=>rvLoad(),0);
+  const row=(fn,cl,icn,t,sub)=>`<button class="rowbtn" onclick="${fn}"><div class="ibox ${cl}">${ic(icn)}</div><div class="t">${t}${sub?`<small>${sub}</small>`:''}</div><span class="chev">${ic('chev')}</span></button>`;
+  const TH={light:'светлая',dark:'тёмная',auto:'как в телефоне'};
+  return `<div class="top"><div><div class="eyebrow">Личный кабинет</div><div class="date">Я</div></div></div>
+  <button class="card tap me-card" onclick="openEdit()"><div class="me-ava">${ava()}</div><div style="flex:1;min-width:0"><div class="me-nm">${pr.name==='Вы'?'Ваш профиль':esc(pr.name)}</div>
+    <div class="small muted">${g.n} · ${(''+lastW).replace('.',',')} кг · ${fmt(n.kcal)} ккал в день</div>${n.minor||n.under?`<div class="tiny" style="margin-top:4px;color:var(--warn-text)">${n.minor?'До 18 лет — план с ограничениями':'Вес ниже нормы — план держит вес'}</div>`:''}</div><span class="me-ed">Изменить</span></button>
+  <div class="card list">
+    ${row('openProfile()','tech','doc','Мой план',`${fmt(n.kcal)} ккал · Б ${n.p} · Ж ${n.f} · У ${n.c}`)}
+    ${row('openProgram()','volt','gym','Тренировки',`${esc(pg.name)} · ${Math.min(S.done.length,weekPlanCount())} из ${weekPlanCount()} за неделю`)}
+    ${row('openFoodPlan()','accent','food','Питание и бюджет',`${fmt(budgetOf(pr))} ₽ в день`)}
   </div>
   <div class="card list">
-    <button class="rowbtn" onclick="openProgram()"><div class="ibox volt">${ic('gym')}</div><div class="t">Программа «${pg.name}»<small>${pl(pg.days.length,'тренировка','тренировки','тренировок')} в неделю · ${Math.min(S.done.length,weekPlanCount())} из ${weekPlanCount()} на этой неделе${S.extra.length?' · +'+pl(S.extra.length,'упражнение','упражнения','упражнений')+' в плане':''}</small></div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="openFoodPlan()"><div class="ibox accent">${ic('food')}</div><div class="t">Питание и бюджет<small>${fmt(budgetOf(pr))} ₽ в день · что съесть, магазины рядом</small></div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="SC=null;openSearch()"><div class="ibox c">${ic('search')}</div><div class="t">База продуктов<small>наша с источниками и мировая Open Food Facts${S.custom.length?' · '+pl(S.custom.length,'ваш продукт','ваших продукта','ваших продуктов'):''}</small></div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="openProfile()"><div class="ibox tech">${ic('doc')}</div><div class="t">Как считаем норму<small>формулы, коэффициенты, источники</small></div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="openSub()"><div class="ibox warn">${ic('star')}</div><div class="t">Подписка<small>пока всё бесплатно · прототип</small></div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="openOffline()"><div class="ibox c">${ic('download')}</div><div class="t">Работа без интернета<small>${S.offline?'всё скачано · фото еды и камера работают без сети':'скачать модели заранее, пока есть Wi-Fi (~110 МБ)'}</small></div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="openRemind()"><div class="ibox primary">${ic('bell')}</div><div class="t">Напоминания<small>${S.remind&&S.remind.on?remSub(remR()):'выключены · тренировка, еда и белок'}</small></div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="openData()"><div class="ibox ok">${ic('lock')}</div><div class="t">Мои данные<small>на телефоне · скачать или удалить</small></div><span class="chev">${ic('chev')}</span></button>
+    ${row('openWeight()','c','weight','Вес',w.length?`${(''+lastW).replace('.',',')} кг · ${pl(w.length,'запись','записи','записей')}`:'записать сегодняшний')}
+    ${row('openHistory()','volt','history','История',S.workouts||S.forms.length?[S.workouts?pl(S.workouts,'тренировка','тренировки','тренировок'):'',S.forms.length?pl(S.forms.length,'разбор','разбора','разборов'):''].filter(Boolean).join(' · '):'тренировки и разборы техники')}
   </div>
-  ${rvBlock()}
-  <h2>Оформление</h2>
-  <div class="seg" role="radiogroup" aria-label="Тема">${[['light','Светлая'],['dark','Тёмная'],['auto','Авто']].map(([k,l])=>`<button role="radio" aria-checked="${S.theme===k}" class="${S.theme===k?'on':''}" onclick="setTheme('${k}')">${l}</button>`).join('')}</div>
-  <div class="lock" style="margin-top:16px">${ic('lock')}<div><b>Это ваш личный кабинет.</b> Норма, план, дневник и вес считаются только по вашим данным и хранятся на этом телефоне. Вход по номеру и перенос на другой телефон появятся в рабочей версии с сервером.</div></div>
+  <div class="card list">
+    ${row('openRemind()','primary','bell','Напоминания',R?remSub(remR()):'выключены')}
+    ${row('openReviews()','warn','star','Отзывы',L.length?`${rvAvg(L).toFixed(1).replace('.',',')} ★ · ${pl(L.length,'отзыв','отзыва','отзывов')}`:'оставить первый')}
+    ${row('openOffline()','c','download','Без интернета',S.offline?'всё скачано':'скачать заранее по Wi-Fi')}
+    ${row('openSub()','warn','spark','Подписка','пока бесплатно')}
+  </div>
+  <div class="card list">
+    ${row('openData()','ok','lock','Данные и конфиденциальность','всё хранится на этом телефоне')}
+    ${row('openThemeSheet()','tech','moon','Тема',TH[S.theme]||'светлая')}
+  </div>
   <div class="concept">Не медицинская консультация. При травмах и заболеваниях посоветуйтесь с врачом.</div>`;
 }
+function openThemeSheet(){sheet('Тема',`<div class="seg" role="radiogroup" aria-label="Тема">${[['light','Светлая'],['dark','Тёмная'],['auto','Авто']].map(([k,l])=>`<button role="radio" aria-checked="${S.theme===k}" class="${S.theme===k?'on':''}" onclick="setTheme('${k}');setTimeout(openThemeSheet,60)">${l}</button>`).join('')}</div><div class="small muted" style="margin:10px 4px 0">«Авто» — как в настройках телефона</div>`);SHEET_FN=openThemeSheet}
 function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function today0(){return ymd(new Date())}
 function monday0(){const m=new Date();m.setDate(m.getDate()-(m.getDay()+6)%7);return ymd(m)}
