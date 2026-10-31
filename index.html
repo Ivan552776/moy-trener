@@ -571,6 +571,11 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
   .scanline{animation:none!important;top:50%}
   ::view-transition-old(root),::view-transition-new(root){animation:none!important}
 }
+.coach-ava{flex:none;line-height:0}.coach-ava .coach-svg{border-radius:14px;display:block}
+@media (prefers-reduced-motion:no-preference){.coach-ava .eyes{animation:cblink 5s infinite;transform-origin:32px 31px}.hero-today~* .coach-ava,.coach-pick .coach-ava{animation:cbob 3.2s ease-in-out infinite}}
+@keyframes cblink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}@keyframes cbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+.coach-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.coach-pick{text-align:left;padding:14px;display:block;width:100%}.coach-pick.on{outline:2px solid var(--accent);outline-offset:-2px}
+.rowbtn .coach-ava.sm{width:40px;display:grid;place-items:center}
 </style>
 </head>
 <body>
@@ -588,7 +593,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r20'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r21'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -897,6 +902,32 @@ function cleanName(s){return String(s||'').replace(/[<>&"`]/g,'').trim()||'Вы'
 const clean=s=>String(s||'').replace(/[<>&"`]/g,'').trim();
 const ava=()=>S.profile.name==='Вы'?ic('me','style="width:20px;height:20px"'):S.profile.name[0]; // без имени — значок, а не буква «В»
 function hello(){const h=new Date().getHours();return h<5?'Доброй ночи':h<11?'Доброе утро':h<17?'Добрый день':h<23?'Добрый вечер':'Доброй ночи'}
+/* ---------- тренер с характером: выбирается после анкеты, «ведёт» на экране «Сегодня». Цифры и советы считает код (tip), тренер только добавляет свою манеру ---------- */
+const COACHES={
+  max:{n:'Макс',r:'строгий, по делу',c:'#E8173F',skin:'#F1C6A6',hair:'#2B2B33',hs:'buzz',
+    hi:['Работаем.','Без отговорок.','Дисциплина решает.','Подъём, дела ждут.'],done:['Тренировка в кармане. Так держать.','Сделано. Завтра не расслабляемся.'],
+    prot:['Белок не добран — исправляем.','Мышцы без белка не растут. Добираем.'],over:['Перебор. Завтра чётко по плану, без голодовок.'],ask:'Спросить Макса'},
+  alina:{n:'Алина',r:'заботливая, поддержит',c:'#B0126E',skin:'#F6D2BC',hair:'#7A4A2A',hs:'long',
+    hi:['Привет! Я рядом.','Как ты сегодня? Начнём потихоньку.','Ты справляешься лучше, чем думаешь.'],done:['Ты сегодня молодец, правда!','Тренировка сделана — горжусь тобой.'],
+    prot:['Давай чуть позаботимся о белке.','Не забудь про белок — телу он сейчас нужен.'],over:['Ничего страшного, бывает. Завтра просто вернёмся к плану.'],ask:'Спросить Алину'},
+  tema:{n:'Тёма',r:'весёлый, на позитиве',c:'#F59E0B',skin:'#E9B98F',hair:'#D9822B',hs:'curly',
+    hi:['Йо! Погнали.','Новый день — новые гайки.','Ну что, зажжём?'],done:['Бум! Тренировка закрыта!','Красава, сделал! Диван подождёт.'],
+    prot:['Белок сам себя не съест 😉','Нужно больше белка, чемпион.'],over:['Ну, погуляли. Завтра — по-спортивному!'],ask:'Спросить Тёму'},
+  vera:{n:'Вера',r:'спокойный профи, факты',c:'#2563EB',skin:'#F3CDB3',hair:'#1F2937',hs:'bun',
+    hi:['Добрый день. По плану.','Коротко о главном.','Спокойно и по шагам.'],done:['Тренировка выполнена. Восстановление — сон и белок.','План на сегодня закрыт.'],
+    prot:['Белка меньше нормы.','Для результата важно добрать белок.'],over:['Калорий больше нормы. Завтра — обычный план, без урезания.'],ask:'Спросить Веру'}};
+const coach=()=>COACHES[S.coach]||COACHES.max;
+function coachSvg(k,sz){const c=COACHES[k]||COACHES.max,s=sz||56,H={buzz:'<path d="M17 25q2-12 15-12t15 12q-6-5-15-5t-15 5z" fill="HC"/>',
+    long:'<path d="M14 34q-2-21 18-22 20 1 18 22v14q-4-3-6-12-4-7-12-8-8 1-12 8-2 9-6 12z" fill="HC"/>',
+    curly:'<g fill="HC"><circle cx="20" cy="21" r="6"/><circle cx="28" cy="15" r="7"/><circle cx="37" cy="15" r="7"/><circle cx="45" cy="21" r="6"/></g>',
+    bun:'<circle cx="32" cy="9" r="6" fill="HC"/><path d="M16 28q1-14 16-14t16 14q-5-7-16-7t-16 7z" fill="HC"/>'}[c.hs].replace(/HC/g,c.hair);
+  return `<svg class="coach-svg" viewBox="0 0 64 64" width="${s}" height="${s}" aria-hidden="true"><rect width="64" height="64" rx="18" fill="${c.c}"/><path d="M14 64q2-14 18-14t18 14z" fill="#fff" opacity=".92"/><rect x="27" y="40" width="10" height="10" rx="4" fill="${c.skin}"/><ellipse cx="32" cy="31" rx="13" ry="14" fill="${c.skin}"/>${H}<g class="eyes"><ellipse cx="27" cy="31" rx="1.7" ry="2.1" fill="#222"/><ellipse cx="37" cy="31" rx="1.7" ry="2.1" fill="#222"/></g><path d="M27 37q5 4 10 0" stroke="#7a3b2e" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`}
+function coachLine(n,e){const c=coach(),k=new Date().getDate()+new Date().getMonth()*31,pick=a=>a[k%a.length],leftP=n.p-Math.round(e.p),h=new Date().getHours();
+  return doneToday()?pick(c.done):e.k>n.kcal?pick(c.over):(leftP>40&&h>=14)?pick(c.prot):pick(c.hi)}
+function pickCoach(first){
+  sheet(first?'Выберите своего тренера':'Мой тренер',`<div class="small muted" style="margin:0 2px 12px">${first?'Он будет вести вас: подсказывать по еде и тренировкам, радоваться успехам и напоминать о главном. Сменить можно в любой момент в «Я».':'Советы и цифры одинаковые — разная манера общения.'}</div>
+   <div class="coach-grid">${Object.keys(COACHES).map(k=>{const c=COACHES[k];return `<button class="card tap coach-pick${S.coach===k?' on':''}" onclick="setCoach('${k}',${first?1:0})"><div class="coach-ava">${coachSvg(k,64)}</div><div class="title" style="margin-top:8px">${c.n}</div><div class="tiny muted">${c.r}</div><div class="small" style="margin-top:8px;line-height:1.35">«${c.hi[0]}»</div></button>`}).join('')}</div>`)}
+function setCoach(k,first){S.coach=k;save();haptic([10,40,10]);closeSheet();rerender();setTimeout(()=>toast(COACHES[k].n+' теперь ваш тренер'),300);if(first){visit.tried=0;S.visitAt=0;visit()}}
 function vToday(){
   const ws=weekStrip(),pr=S.profile,n=norm(pr),e=eaten(),left=n.kcal-e.k,g=GOALS[pr.goal],pg=program(),hr=new Date().getHours(),ti=curDay();
   const dateStr=new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});
@@ -925,7 +956,7 @@ function vToday(){
         :`<a class="ev empty" onclick="openScan()"><div>${ic('cam')}<div><b>Тарелка</b><br><span>сфотографируйте первое блюдо</span></div></div></a>`}
   </div>
   <h2>Главное сейчас</h2>
-  <button class="card tap" style="display:block;width:100%;text-align:left" onclick="openChat()"><div class="row" style="align-items:flex-start"><div class="ibox accent">${ic('spark')}</div><div style="flex:1;min-width:0"><div style="font-size:16px;line-height:1.4;text-wrap:pretty">${tip(n,e)}</div><div class="small" style="margin-top:6px;color:var(--accent-text);font-weight:600">Спросить тренера</div></div><span class="chev">${ic('chev')}</span></div></button>
+  <button class="card tap" style="display:block;width:100%;text-align:left" onclick="openChat()"><div class="row" style="align-items:flex-start"><div class="coach-ava">${coachSvg(S.coach,44)}</div><div style="flex:1;min-width:0"><div class="tiny muted" style="font-weight:600;margin-bottom:2px">${coach().n} · ваш тренер</div><div style="font-size:16px;line-height:1.4;text-wrap:pretty"><b>${coachLine(n,e)}</b> ${tip(n,e)}</div><div class="small" style="margin-top:6px;color:var(--accent-text);font-weight:600">${coach().ask}</div></div><span class="chev">${ic('chev')}</span></div></button>
   ${hlCards(n,e)}
   <h2>Хроника дня <small onclick="openAdd()">+ Записать</small></h2>
   <div class="card list tl">
@@ -1954,6 +1985,7 @@ function vMe(){ // личный кабинет как «Настройки» н�
     ${row('openProfile()','tech','doc','Мой план',`${fmt(n.kcal)} ккал · Б ${n.p} · Ж ${n.f} · У ${n.c}`)}
     ${row('openProgram()','volt','gym','Тренировки',`${esc(pg.name)} · ${Math.min(S.done.length,weekPlanCount())} из ${weekPlanCount()} за неделю`)}
     ${row('openFoodPlan()','accent','food','Питание и бюджет',`${fmt(budgetOf(pr))} ₽ в день`)}
+    <button class="rowbtn" onclick="pickCoach()"><div class="coach-ava sm">${coachSvg(S.coach,32)}</div><div class="t">Мой тренер<small>${coach().n} — ${coach().r}</small></div><span class="chev">${ic('chev')}</span></button>
   </div>
   <div class="card list">
     ${row('openWeight()','c','weight','Вес',w.length?`${(''+lastW).replace('.',',')} кг · ${pl(w.length,'запись','записи','записей')}`:'записать сегодняшний')}
@@ -2046,7 +2078,7 @@ function openStreak(){sheet('Серия',`<div class="card volt"><div class="num
 
 /* ---------- Чат ---------- */
 function openChat(){
-  sheet('Мой тренер',`<div id="chat"><div class="msg bot">Привет${S.profile.name==='Вы'?'':', '+S.profile.name}! Ваша цель — ${GOALS[S.profile.goal].n.toLowerCase()}. Помогу с&nbsp;тренировками и питанием. О&nbsp;чём спросить?</div></div>
+  sheet(coach().n+' · ваш тренер',`<div id="chat"><div class="msg bot">${coach().hi[0]} Привет${S.profile.name==='Вы'?'':', '+S.profile.name}! Ваша цель — ${GOALS[S.profile.goal].n.toLowerCase()}. Помогу с&nbsp;тренировками и питанием. О&nbsp;чём спросить?</div></div>
    <div class="chips ask" style="margin-top:12px">${['Что съесть вечером?',S.profile.place==='home'?'Не успеваю сегодня потренироваться':'Не успеваю сегодня в зал','Болит спина после тренировки'].map(q=>`<button class="chip" onclick="ask(this.textContent)">${q}</button>`).join('')}</div>
    <div class="concept">Ответы — готовые подсказки по вашим цифрам · не&nbsp;медицинская консультация</div>`);
 }
@@ -2186,7 +2218,7 @@ function updBud(){const b=budgetOf(D);const a=$('#incv'),bv=$('#budv'),sv=$('#st
 function obAdj(k,d,mn,mx){if(k==='h'||k==='w')D._body=1;D[k]=Math.max(mn,Math.min(mx,D[k]+d));haptic(4);renderOnb()}
 function obNext(){obDir='sl';OB=Math.min(OB+1,STEPS-1);haptic(8);renderOnb()}
 function obBack(){obDir='sr';OB=Math.max(0,OB-1);haptic(5);renderOnb()}
-function obFinish(){const p={...D};delete p._body;p.name=cleanName(p.name);S.profile=p;delete S.demo;S.onb=false;S.done=[];S.sets={};S.log=[];S.weights=[];S.forms=[];S.extra=[];S.workouts=0;S.rot=0;S.lastDone=null;S.lastForm=null;S.startedAt=null;S.day=today0();S.week=monday0();S.doneOn={};S.plan=null;S.v=3;save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+progName(p)+'» готов'),450);visit.tried=0;S.visitAt=0;visit()}
+function obFinish(){const p={...D};delete p._body;p.name=cleanName(p.name);S.profile=p;delete S.demo;S.onb=false;S.done=[];S.sets={};S.log=[];S.weights=[];S.forms=[];S.extra=[];S.workouts=0;S.rot=0;S.lastDone=null;S.lastForm=null;S.startedAt=null;S.day=today0();S.week=monday0();S.doneOn={};S.plan=null;S.v=3;save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+progName(p)+'» готов'),450);setTimeout(()=>pickCoach(true),900)}
 
 /* ---------- сервер: номер устройства, счётчик заходов, отзывы ----------
    Сервера может ещё не быть или не быть сети — всё молча (console.warn), интерфейс честно пишет, что не получилось.
@@ -2203,7 +2235,7 @@ async function api(path,body){const ac=new AbortController(),t=setTimeout(()=>ac
   finally{clearTimeout(t)}}
 const tzName=()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){return ''}};
 // счётчик заходов: раз за запуск (и при возвращении в приложение), не чаще раза в 30 минут; не ушло — повторим при следующем запуске
-function visit(){const now=Date.now();if(S.onb||!S.profile)return; // заходом считаем только того, кто прошёл анкету: клики по анкете — не заходы
+function visit(){const now=Date.now();if(S.onb||!S.profile||!S.coach)return; // заходом считаем только того, кто прошёл анкету и выбрал тренера: клики по анкете — не заходы
   if(now-Math.max(S.visitAt||0,visit.tried||0)<30*60e3||!navigator.onLine)return;visit.tried=now;
   (S.days=S.days||[]).includes(today0())||(S.days.push(today0()),S.days.length>400&&S.days.shift());api('/visit',{did:S.did,v:APPV,tz:tzName(),first:!S.visitOk,food:S.foodN||0,workouts:S.workouts||0,forms:(S.forms||[]).length,days:S.days.length}).then(r=>{if(r.ok){S.visitAt=Date.now();S.visitOk=true;save()}})}
 
@@ -2241,7 +2273,7 @@ function rvEmpty(){const [t,s]=RV.st==='offline'?['Отзывы загрузят
 function rvItem(x,short){return `<div class="li rv-it${short?' rv-short':''}"><div style="flex:1;min-width:0"><div class="row between" style="gap:8px"><b class="rv-nm">${esc(x.name)||'Пользователь'}${x.mine?' <span class="pill ok" style="padding:2px 8px;font-size:12px">ваш</span>':''}</b><span class="tiny muted" style="flex:none">${rvDate(x.ts)}</span></div><div style="margin-top:4px">${stars(x.stars,14)}</div>${x.text?`<div class="rv-tx">${esc(x.text)}</div>`:''}</div></div>`}
 const rvAvg=L=>L.reduce((s,x)=>s+x.stars,0)/L.length;
 // «пользуются 340 человек» — по ответу сервера GET /stats, если он есть; без сервера строки нет
-function rvUsers(){const u=S.rvStats&&S.rvStats.users;if(!(u>=1))return '';const a=u%100,b=u%10;return (b===1&&a!==11?'пользуется ':'пользуются ')+pl(u,'человек','человека','человек')}
+function rvUsers(){const u=S.rvStats&&S.rvStats.users;if(!(u>=10))return '';const a=u%100,b=u%10;return (b===1&&a!==11?'пользуется ':'пользуются ')+pl(u,'человек','человека','человек')}
 function rvSum(L,big){const n=L.length,avg=rvAvg(L),tot=Math.max(n,(S.rvStats&&S.rvStats.reviews)||0),us=rvUsers();
   return `<div class="rv-sum${big?' big':''}"><span class="${big?'n-xl':'n-l'}">${avg.toFixed(1).replace('.',',')}</span><div style="min-width:0">${stars(avg,big?22:18)}<div class="small muted" style="margin-top:4px">${n>=50&&tot<=n?'50+ отзывов':pl(tot,'отзыв','отзыва','отзывов')}${us?' · <span style="white-space:nowrap">'+us+'</span>':''}</div></div></div>`}
 const rvDraftOn=()=>!!(S.rvDraft&&(S.rvDraft.stars||(S.rvDraft.text||'').trim()));
@@ -2282,7 +2314,7 @@ function rvtFix(){const el=document.querySelector('.rvtbox .rvt');if(RVT.io){RVT
   if('IntersectionObserver' in window){RVT.io=new IntersectionObserver(es=>{es.forEach(e=>e.target.classList.toggle('off',!e.isIntersecting))});RVT.io.observe(el)}}
 function obRv(){const L=rvtList().slice(0,8);if(!L.length)return '';const solo=L.length===1;/* один отзыв — одна карточка на всю ширину, без движения */const all=rvList(),avg=rvAvg(all).toFixed(1).replace('.',',');
   const card=x=>`<div class="obrv-c">${stars(x.stars,13)}<div class="obrv-t">«${esc(x.text.replace(/\s+/g,' ').trim())}»</div><div class="obrv-n">${esc(x.name)||'Пользователь'}</div></div>`,one=L.map(card).join('');
-  const d=Math.max(20,L.length*7),u=S.rvStats&&S.rvStats.users,us=u>=1?`<div class="obrv-u">Уже ${u%10===1&&u%100!==11?'пользуется':'пользуются'} ${pl(u,'человек','человека','человек')}</div>`:''; // ~36 px/с при карточке 240 px + 12 px
+  const d=Math.max(20,L.length*7),u=S.rvStats&&S.rvStats.users,us=u>=10?`<div class="obrv-u">Уже ${u%10===1&&u%100!==11?'пользуется':'пользуются'} ${pl(u,'человек','человека','человек')}</div>`:''; // ~36 px/с при карточке 240 px + 12 px
   return `<button class="obrv tap" onclick="openReviews()" aria-label="Отзывы: средняя оценка ${avg} из 5. Открыть все отзывы"><div class="obrv-h">${stars(rvAvg(all),14)}<b>${avg}</b><span class="muted" style="flex:none">·&nbsp;${pl(Math.max(all.length,(S.rvStats&&S.rvStats.reviews)||0),'отзыв','отзыва','отзывов')}</span>${RVDEMO?'<span class="pill obrv-demo">пример</span>':''}</div>
    <div class="obrv-win" aria-hidden="true"><div class="obrv-tr${RM||solo?' rm':''}${solo?' solo':''}" style="--obrv-d:${d}s">${one}${RM||solo?'':one}</div></div>${us}</button>`}
 function obRvPaint(){const b=$('#obrv');if(!b||$('#onb').classList.contains('hide'))return;const h=obRv();b.innerHTML=h;const c=$('#obcv');if(c)c.classList.toggle('has-rv',!!h)}
@@ -2455,6 +2487,7 @@ window.addEventListener('online',()=>{if(S.remind&&(S.remind.on||S.remind.unsub)
 /* ---------- старт ---------- */
 if(S.onb)showOnb();else $('#onb').classList.add('hide');
 setTimeout(scanResume,600);
+if(!S.onb&&S.profile&&!S.coach)setTimeout(()=>{if(!$('#sheet').classList.contains('on'))pickCoach(true)},2500);
 if(!S.onb&&!consentOk()&&S.consentAsked!==LEGAL_V)setTimeout(()=>consentOpen('existing'),1500); // прошли анкету до окна согласия — спросим один раз, ничего не блокируя
 render();
 setTimeout(visit,1500);setTimeout(remSync,2500);openHash(location.hash);
