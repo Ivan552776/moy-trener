@@ -593,7 +593,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r22'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r23'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1124,8 +1124,9 @@ async function offProduct(code){
   const j=await r.json();if(j.status!==1||!j.product)return null;return offToProduct(j.product);
 }
 async function offSearch(q,signal){
-  const url=`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=20&fields=${OFF_FIELDS}`;
-  const r=await fetch(url,{signal});if(!r.ok)throw new Error('503');const j=await r.json();return (j.products||[]).filter(x=>x.nutriments&&(x.nutriments['energy-kcal_100g']!=null||x.nutriments.proteins_100g!=null)).map(offToProduct);
+  // старый поиск world.openfoodfacts.org/cgi/search.pl с ноября 2026 отвечает 503, а новый не разрешает запросы из браузера — идём через наш шлюз в Яндекс Облаке
+  const url=`${API.replace(/\/trener-api$/,'')}/off/search?q=${encodeURIComponent(q)}&page_size=20&fields=${OFF_FIELDS}`;
+  const r=await fetch(url,{signal});if(!r.ok)throw new Error(String(r.status));const j=await r.json();return (j.hits||j.products||[]).map(x=>Array.isArray(x.brands)?{...x,brands:x.brands.join(',')}:x).filter(x=>x.nutriments&&(x.nutriments['energy-kcal_100g']!=null||x.nutriments.proteins_100g!=null)).map(offToProduct);
 }
 function useOff(x){await0=null;if(!DB)DB={products:[],dishes:[]};if(!DB.products.find(p=>p.id===x.id))DB.products.push(x);productPortion(x.id,x.portion&&x.portion.g>0&&x.portion.g<=400?x.portion.g:100)}
 let await0=null;
