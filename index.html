@@ -593,7 +593,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r21'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r22'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -916,6 +916,7 @@ const COACHES={
   vera:{n:'Вера',r:'спокойный профи, факты',c:'#2563EB',skin:'#F3CDB3',hair:'#1F2937',hs:'bun',
     hi:['Добрый день. По плану.','Коротко о главном.','Спокойно и по шагам.'],done:['Тренировка выполнена. Восстановление — сон и белок.','План на сегодня закрыт.'],
     prot:['Белка меньше нормы.','Для результата важно добрать белок.'],over:['Калорий больше нормы. Завтра — обычный план, без урезания.'],ask:'Спросить Веру'}};
+const COACH_ON=false; // тренеры с характером спрятаны до красивых иллюстраций (решение Ивана 01.11) — код оставлен
 const coach=()=>COACHES[S.coach]||COACHES.max;
 function coachSvg(k,sz){const c=COACHES[k]||COACHES.max,s=sz||56,H={buzz:'<path d="M17 25q2-12 15-12t15 12q-6-5-15-5t-15 5z" fill="HC"/>',
     long:'<path d="M14 34q-2-21 18-22 20 1 18 22v14q-4-3-6-12-4-7-12-8-8 1-12 8-2 9-6 12z" fill="HC"/>',
@@ -956,7 +957,7 @@ function vToday(){
         :`<a class="ev empty" onclick="openScan()"><div>${ic('cam')}<div><b>Тарелка</b><br><span>сфотографируйте первое блюдо</span></div></div></a>`}
   </div>
   <h2>Главное сейчас</h2>
-  <button class="card tap" style="display:block;width:100%;text-align:left" onclick="openChat()"><div class="row" style="align-items:flex-start"><div class="coach-ava">${coachSvg(S.coach,44)}</div><div style="flex:1;min-width:0"><div class="tiny muted" style="font-weight:600;margin-bottom:2px">${coach().n} · ваш тренер</div><div style="font-size:16px;line-height:1.4;text-wrap:pretty"><b>${coachLine(n,e)}</b> ${tip(n,e)}</div><div class="small" style="margin-top:6px;color:var(--accent-text);font-weight:600">${coach().ask}</div></div><span class="chev">${ic('chev')}</span></div></button>
+  <button class="card tap" style="display:block;width:100%;text-align:left" onclick="openChat()"><div class="row" style="align-items:flex-start">${COACH_ON?`<div class="coach-ava">${coachSvg(S.coach,44)}</div>`:`<div class="ibox accent">${ic('spark')}</div>`}<div style="flex:1;min-width:0">${COACH_ON?`<div class="tiny muted" style="font-weight:600;margin-bottom:2px">${coach().n} · ваш тренер</div>`:''}<div style="font-size:16px;line-height:1.4;text-wrap:pretty">${COACH_ON?`<b>${coachLine(n,e)}</b> `:''}${tip(n,e)}</div><div class="small" style="margin-top:6px;color:var(--accent-text);font-weight:600">${COACH_ON?coach().ask:'Спросить тренера'}</div></div><span class="chev">${ic('chev')}</span></div></button>
   ${hlCards(n,e)}
   <h2>Хроника дня <small onclick="openAdd()">+ Записать</small></h2>
   <div class="card list tl">
@@ -1985,7 +1986,7 @@ function vMe(){ // личный кабинет как «Настройки» н�
     ${row('openProfile()','tech','doc','Мой план',`${fmt(n.kcal)} ккал · Б ${n.p} · Ж ${n.f} · У ${n.c}`)}
     ${row('openProgram()','volt','gym','Тренировки',`${esc(pg.name)} · ${Math.min(S.done.length,weekPlanCount())} из ${weekPlanCount()} за неделю`)}
     ${row('openFoodPlan()','accent','food','Питание и бюджет',`${fmt(budgetOf(pr))} ₽ в день`)}
-    <button class="rowbtn" onclick="pickCoach()"><div class="coach-ava sm">${coachSvg(S.coach,32)}</div><div class="t">Мой тренер<small>${coach().n} — ${coach().r}</small></div><span class="chev">${ic('chev')}</span></button>
+    ${COACH_ON?'':'<!--'}<button class="rowbtn" onclick="pickCoach()"><div class="coach-ava sm">${coachSvg(S.coach,32)}</div><div class="t">Мой тренер<small>${coach().n} — ${coach().r}</small></div><span class="chev">${ic('chev')}</span></button>${COACH_ON?'':'-->'}
   </div>
   <div class="card list">
     ${row('openWeight()','c','weight','Вес',w.length?`${(''+lastW).replace('.',',')} кг · ${pl(w.length,'запись','записи','записей')}`:'записать сегодняшний')}
@@ -2078,7 +2079,7 @@ function openStreak(){sheet('Серия',`<div class="card volt"><div class="num
 
 /* ---------- Чат ---------- */
 function openChat(){
-  sheet(coach().n+' · ваш тренер',`<div id="chat"><div class="msg bot">${coach().hi[0]} Привет${S.profile.name==='Вы'?'':', '+S.profile.name}! Ваша цель — ${GOALS[S.profile.goal].n.toLowerCase()}. Помогу с&nbsp;тренировками и питанием. О&nbsp;чём спросить?</div></div>
+  sheet(COACH_ON?coach().n+' · ваш тренер':'Мой тренер',`<div id="chat"><div class="msg bot">${COACH_ON?coach().hi[0]+' ':''}Привет${S.profile.name==='Вы'?'':', '+S.profile.name}! Ваша цель — ${GOALS[S.profile.goal].n.toLowerCase()}. Помогу с&nbsp;тренировками и питанием. О&nbsp;чём спросить?</div></div>
    <div class="chips ask" style="margin-top:12px">${['Что съесть вечером?',S.profile.place==='home'?'Не успеваю сегодня потренироваться':'Не успеваю сегодня в зал','Болит спина после тренировки'].map(q=>`<button class="chip" onclick="ask(this.textContent)">${q}</button>`).join('')}</div>
    <div class="concept">Ответы — готовые подсказки по вашим цифрам · не&nbsp;медицинская консультация</div>`);
 }
@@ -2218,7 +2219,7 @@ function updBud(){const b=budgetOf(D);const a=$('#incv'),bv=$('#budv'),sv=$('#st
 function obAdj(k,d,mn,mx){if(k==='h'||k==='w')D._body=1;D[k]=Math.max(mn,Math.min(mx,D[k]+d));haptic(4);renderOnb()}
 function obNext(){obDir='sl';OB=Math.min(OB+1,STEPS-1);haptic(8);renderOnb()}
 function obBack(){obDir='sr';OB=Math.max(0,OB-1);haptic(5);renderOnb()}
-function obFinish(){const p={...D};delete p._body;p.name=cleanName(p.name);S.profile=p;delete S.demo;S.onb=false;S.done=[];S.sets={};S.log=[];S.weights=[];S.forms=[];S.extra=[];S.workouts=0;S.rot=0;S.lastDone=null;S.lastForm=null;S.startedAt=null;S.day=today0();S.week=monday0();S.doneOn={};S.plan=null;S.v=3;save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+progName(p)+'» готов'),450);setTimeout(()=>pickCoach(true),900)}
+function obFinish(){const p={...D};delete p._body;p.name=cleanName(p.name);S.profile=p;delete S.demo;S.onb=false;S.done=[];S.sets={};S.log=[];S.weights=[];S.forms=[];S.extra=[];S.workouts=0;S.rot=0;S.lastDone=null;S.lastForm=null;S.startedAt=null;S.day=today0();S.week=monday0();S.doneOn={};S.plan=null;S.v=3;save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+progName(p)+'» готов'),450);if(COACH_ON)setTimeout(()=>pickCoach(true),900);else{visit.tried=0;S.visitAt=0;visit()}}
 
 /* ---------- сервер: номер устройства, счётчик заходов, отзывы ----------
    Сервера может ещё не быть или не быть сети — всё молча (console.warn), интерфейс честно пишет, что не получилось.
@@ -2235,7 +2236,7 @@ async function api(path,body){const ac=new AbortController(),t=setTimeout(()=>ac
   finally{clearTimeout(t)}}
 const tzName=()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){return ''}};
 // счётчик заходов: раз за запуск (и при возвращении в приложение), не чаще раза в 30 минут; не ушло — повторим при следующем запуске
-function visit(){const now=Date.now();if(S.onb||!S.profile||!S.coach)return; // заходом считаем только того, кто прошёл анкету и выбрал тренера: клики по анкете — не заходы
+function visit(){const now=Date.now();if(S.onb||!S.profile||(COACH_ON&&!S.coach))return; // заходом считаем только того, кто прошёл анкету и выбрал тренера: клики по анкете — не заходы
   if(now-Math.max(S.visitAt||0,visit.tried||0)<30*60e3||!navigator.onLine)return;visit.tried=now;
   (S.days=S.days||[]).includes(today0())||(S.days.push(today0()),S.days.length>400&&S.days.shift());api('/visit',{did:S.did,v:APPV,tz:tzName(),first:!S.visitOk,food:S.foodN||0,workouts:S.workouts||0,forms:(S.forms||[]).length,days:S.days.length}).then(r=>{if(r.ok){S.visitAt=Date.now();S.visitOk=true;save()}})}
 
@@ -2487,7 +2488,7 @@ window.addEventListener('online',()=>{if(S.remind&&(S.remind.on||S.remind.unsub)
 /* ---------- старт ---------- */
 if(S.onb)showOnb();else $('#onb').classList.add('hide');
 setTimeout(scanResume,600);
-if(!S.onb&&S.profile&&!S.coach)setTimeout(()=>{if(!$('#sheet').classList.contains('on'))pickCoach(true)},2500);
+if(COACH_ON&&!S.onb&&S.profile&&!S.coach)setTimeout(()=>{if(!$('#sheet').classList.contains('on'))pickCoach(true)},2500);
 if(!S.onb&&!consentOk()&&S.consentAsked!==LEGAL_V)setTimeout(()=>consentOpen('existing'),1500); // прошли анкету до окна согласия — спросим один раз, ничего не блокируя
 render();
 setTimeout(visit,1500);setTimeout(remSync,2500);openHash(location.hash);
