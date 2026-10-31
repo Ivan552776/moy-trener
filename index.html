@@ -588,7 +588,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-10-31-r19'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r20'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1149,11 +1149,11 @@ async function saveCustom(code){
 let SC=null;
 function openScan(){
   SC={photo:null};
-  if(!CLIP&&!(navigator.connection&&navigator.connection.saveData))setTimeout(()=>{loadClip().catch(()=>{})},0); // фото ещё не снято, а модель уже качается; photoFlow дождётся того же обещания
+  // модель заранее не грузим: на iPhone камера/галерея вместе с нейросетью съедали память и Safari перезагружал страницу (человека выкидывало на главный экран)
   sheet('Записать блюдо',`<label class="card tap" style="display:block;text-align:center;padding:26px 16px;cursor:pointer">
     <div class="bigicon">${ic('cam')}</div>
     <div class="title" style="margin-top:12px">Сфотографировать</div><div class="small muted">или выбрать фото из галереи</div>
-    <input type="file" accept="image/*" style="display:none" onchange="gotPhoto(this)"></label>
+    <input type="file" accept="image/*" style="display:none" onclick="scanMark()" onchange="gotPhoto(this)"></label>
    <button class="btn sec" style="margin-top:12px" onclick="openSearch()">${ic('search')} Найти в базе продуктов и блюд</button>
    <div class="small muted" style="margin:14px 4px 8px">Или пример для показа:</div>
    ${Object.entries(DISHES).filter(([,d])=>d.img).map(([id,d])=>`<button class="opt" onclick="recognize('${id}')">${plateMini(d)}<div style="flex:1"><div style="font-weight:700">${d.name}</div><div class="small muted">${d.store?'магазинное блюдо из нашей базы':'домашнее блюдо'}</div></div><span class="chev">${ic('chev')}</span></button>`).join('')}`);
@@ -1218,8 +1218,13 @@ function clipMatch(e){ // дообученный классификатор по
   let z=0;lg.forEach(v=>z+=Math.exp(v-m));
   return order.map(g=>{const ids=byG[g],mine=ids.find(i=>(S.refs||[]).some(r=>r.id===db.items[i].id));return {g,s:lg[g],i:mine!=null?mine:ids[0],ids,p:Math.exp(lg[g]-m)/z}});
 }
+// если телефон всё же перезапустил страницу, пока открыта камера или галерея, — возвращаем человека к записи блюда, а не на главный экран
+function scanMark(){try{sessionStorage.setItem('yb-scan',String(Date.now()))}catch(e){}}
+function scanUnmark(){try{sessionStorage.removeItem('yb-scan')}catch(e){}}
+function scanResume(){let t=0;try{t=+sessionStorage.getItem('yb-scan')||0}catch(e){}scanUnmark();
+  if(t&&Date.now()-t<5*60e3&&!S.onb){openScan();setTimeout(()=>toast('Телефону не хватило памяти, фото не дошло. Выберите его ещё раз — должно получиться',true),400)}}
 function gotPhoto(inp){
-  const f=inp.files&&inp.files[0];if(!f)return;SC.photo=null;SC.thumb=null;
+  scanUnmark();const f=inp.files&&inp.files[0];if(!f)return;SC.photo=null;SC.thumb=null;
   // снимок с телефона (12 Мп, 3–8 МБ) сразу уменьшаем: модели хватает 800 px, в дневник — миниатюра 320 px (её рисуем из 800, не из оригинала).
   // Иначе дневник переполнял память браузера и записи пропадали после перезагрузки, а вкладки тормозили
   const url=URL.createObjectURL(f),im=new Image();
@@ -2113,7 +2118,7 @@ function docView(k){let o=$('#docv');if(!o){o=document.createElement('div');o.id
   o.innerHTML=`<div class="docv-h"><button class="x" onclick="docClose()" aria-label="Закрыть документ">✕</button><b>${LEGAL[k]||''}</b><a href="legal/${k}.html" target="_blank" rel="noopener">Открыть</a></div><iframe src="legal/${k}.html" title="${LEGAL[k]||''}" onload="try{const d=this.contentDocument,b=d&&d.querySelector('.back');if(b)b.remove()}catch(e){}"></iframe>`;
   requestAnimationFrame(()=>o.classList.add('on'))}
 function docClose(){const o=$('#docv');if(!o)return;o.classList.remove('on');setTimeout(()=>{if(!o.classList.contains('on'))o.remove()},360)}
-function showOnb(){OB=0;D={...DEF};obDir='';obPct=0;$('#onb').classList.remove('hide');renderOnb();setTimeout(()=>rvLoad(),600)} // новенький сразу видит отзывы
+function showOnb(){OB=0;D={...DEF};obDir='';obPct=0;$('#onb').classList.remove('hide');renderOnb();rvLoad()} // новенький сразу видит отзывы
 function renderOnb(){
   const nr=norm(D),bud=budgetOf(D);
   const steps=[
@@ -2181,7 +2186,7 @@ function updBud(){const b=budgetOf(D);const a=$('#incv'),bv=$('#budv'),sv=$('#st
 function obAdj(k,d,mn,mx){if(k==='h'||k==='w')D._body=1;D[k]=Math.max(mn,Math.min(mx,D[k]+d));haptic(4);renderOnb()}
 function obNext(){obDir='sl';OB=Math.min(OB+1,STEPS-1);haptic(8);renderOnb()}
 function obBack(){obDir='sr';OB=Math.max(0,OB-1);haptic(5);renderOnb()}
-function obFinish(){const p={...D};delete p._body;p.name=cleanName(p.name);S.profile=p;delete S.demo;S.onb=false;S.done=[];S.sets={};S.log=[];S.weights=[];S.forms=[];S.extra=[];S.workouts=0;S.rot=0;S.lastDone=null;S.lastForm=null;S.startedAt=null;S.day=today0();S.week=monday0();S.doneOn={};S.plan=null;S.v=3;save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+progName(p)+'» готов'),450)}
+function obFinish(){const p={...D};delete p._body;p.name=cleanName(p.name);S.profile=p;delete S.demo;S.onb=false;S.done=[];S.sets={};S.log=[];S.weights=[];S.forms=[];S.extra=[];S.workouts=0;S.rot=0;S.lastDone=null;S.lastForm=null;S.startedAt=null;S.day=today0();S.week=monday0();S.doneOn={};S.plan=null;S.v=3;save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+progName(p)+'» готов'),450);visit.tried=0;S.visitAt=0;visit()}
 
 /* ---------- сервер: номер устройства, счётчик заходов, отзывы ----------
    Сервера может ещё не быть или не быть сети — всё молча (console.warn), интерфейс честно пишет, что не получилось.
@@ -2198,7 +2203,8 @@ async function api(path,body){const ac=new AbortController(),t=setTimeout(()=>ac
   finally{clearTimeout(t)}}
 const tzName=()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){return ''}};
 // счётчик заходов: раз за запуск (и при возвращении в приложение), не чаще раза в 30 минут; не ушло — повторим при следующем запуске
-function visit(){const now=Date.now();if(now-Math.max(S.visitAt||0,visit.tried||0)<30*60e3||!navigator.onLine)return;visit.tried=now;
+function visit(){const now=Date.now();if(S.onb||!S.profile)return; // заходом считаем только того, кто прошёл анкету: клики по анкете — не заходы
+  if(now-Math.max(S.visitAt||0,visit.tried||0)<30*60e3||!navigator.onLine)return;visit.tried=now;
   (S.days=S.days||[]).includes(today0())||(S.days.push(today0()),S.days.length>400&&S.days.shift());api('/visit',{did:S.did,v:APPV,tz:tzName(),first:!S.visitOk,food:S.foodN||0,workouts:S.workouts||0,forms:(S.forms||[]).length,days:S.days.length}).then(r=>{if(r.ok){S.visitAt=Date.now();S.visitOk=true;save()}})}
 
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); // текст отзывов пишут люди — только как текст
@@ -2224,7 +2230,7 @@ async function rvLoad(force){if(RVDEMO){RV.st='ok';return}if(RV.busy||(!force&&R
     const mine=rvList().filter(x=>x.mine&&!ids.has(x.id)&&Date.now()-x.ts<864e5);
     got.forEach(x=>{if((S.rvMine||[]).includes(x.id))x.mine=true});
     S.rv={list:[...mine,...got].sort((a,b)=>b.ts-a.ts).slice(0,50),at:Date.now()};RV.st='ok';save()}
-  else{RV.st=r.offline?'offline':'noserver';RV.at=Date.now()-10*60e3+30e3;clearTimeout(rvLoad.t);rvLoad.t=setTimeout(()=>{if(!$('#onb').classList.contains('hide')||S.tab==='today')rvLoad()},31e3)} // не получилось — повторим через 30 с, а не через 10 минут
+  else{RV.st=r.offline?'offline':'noserver';RV.at=Date.now()-10*60e3+5e3;clearTimeout(rvLoad.t);rvLoad.t=setTimeout(()=>{if(!$('#onb').classList.contains('hide')||S.tab==='today')rvLoad()},6e3)} // не получилось — повторим через 6 с
   rvPaint()}
 function rvPaint(){document.querySelectorAll('.rvbox').forEach(el=>{el.innerHTML=rvInner()});rvtPaint();obRvPaint();const a=$('#rvall');if(a)a.innerHTML=rvAllInner()}
 function rvNote(n){if(RVDEMO)return 'Пример: так отзывы будут выглядеть — это не настоящие отзывы';return RV.st==='offline'?(n?'Сохранённые отзывы · обновятся, когда появится интернет':''):RV.st==='noserver'?(n?'Сохранённые отзывы · сервер сейчас не отвечает':''):''}
@@ -2448,6 +2454,7 @@ window.addEventListener('online',()=>{if(S.remind&&(S.remind.on||S.remind.unsub)
 
 /* ---------- старт ---------- */
 if(S.onb)showOnb();else $('#onb').classList.add('hide');
+setTimeout(scanResume,600);
 if(!S.onb&&!consentOk()&&S.consentAsked!==LEGAL_V)setTimeout(()=>consentOpen('existing'),1500); // прошли анкету до окна согласия — спросим один раз, ничего не блокируя
 render();
 setTimeout(visit,1500);setTimeout(remSync,2500);openHash(location.hash);
