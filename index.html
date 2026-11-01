@@ -5,8 +5,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" id="themecolor" content="#F2F3F7">
-<script>try{var t=(JSON.parse(localStorage.getItem('yb-demo2'))||{}).theme||'light',r=document.documentElement;r.dataset.theme=t;r.dataset.scheme=t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}catch(e){}</script>
+<meta name="theme-color" id="themecolor" content="#F2F3F7"><meta name="color-scheme" content="light dark">
+<script>try{var dm=navigator.deviceMemory;if((dm&&dm<=2)||matchMedia('(prefers-reduced-transparency: reduce)').matches||!(CSS.supports('backdrop-filter','blur(1px)')||CSS.supports('-webkit-backdrop-filter','blur(1px)')))document.documentElement.classList.add('noblur')}catch(e){}try{var t=(JSON.parse(localStorage.getItem('yb-demo2'))||{}).theme||'light',r=document.documentElement;r.dataset.theme=t;r.dataset.scheme=t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}catch(e){}</script>
 <title>Мой тренер — ИИ-тренер: питание по базе и техника по видео</title>
 <meta name="description" content="Мой тренер: калории по фото считает база продуктов, техника упражнений разбирается по вашему видео прямо в телефоне. Открывается на любом телефоне.">
 <meta property="og:title" content="Мой тренер — питание по базе, техника по видео">
@@ -569,6 +569,22 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .ntf .nb{font-size:14px;line-height:1.35;margin-top:1px;text-wrap:pretty}
 .ntf-stage .ntf:nth-child(2){transform:scale(.97);opacity:.92}
 .rem-steps{counter-reset:st;display:grid;gap:0}
+.a2h{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.a2h-s{display:flex;flex-direction:column;gap:8px;min-width:0}
+.a2h-pic{height:92px;border-radius:14px;background:var(--card2,rgba(120,120,128,.12));display:grid;place-items:center;overflow:hidden;padding:8px}
+.a2h-t{font-size:12.5px;line-height:1.3;color:var(--text2);display:flex;gap:6px;align-items:flex-start;text-wrap:pretty}
+.a2h-t .num{flex:none;width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font:700 11px/18px var(--num,inherit);text-align:center}
+.a2h-bar{display:flex;gap:5px;align-items:center;padding:7px;max-width:100%;border-radius:12px;background:var(--card);box-shadow:var(--shadow)}
+.a2h-bar span{width:6px;height:6px;flex:none;border-radius:2px;background:var(--line2)}
+.a2h-bar b,.a2h-menu b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff}
+.a2h-bar .ic,.a2h-menu .ic{width:15px;height:15px}
+.a2h-menu{width:100%;display:grid;gap:5px}
+.a2h-menu i{display:block;height:12px;border-radius:5px;background:var(--card);opacity:.8}
+.a2h-menu b{width:auto;height:auto;border-radius:9px;display:flex;gap:4px;align-items:center;padding:5px 6px;font-weight:600}
+.a2h-menu em{font-style:normal;font-size:9.5px;line-height:1.1;text-align:left}
+.a2h-home{display:grid;justify-items:center;gap:4px}
+.a2h-home img{width:46px;height:46px;border-radius:12px;box-shadow:0 0 0 3px var(--accent)}
+.a2h-home small{font-size:10px;color:var(--text2)}
 .rem-st{display:flex;gap:12px;align-items:center;padding:10px 0;box-shadow:inset 0 -.5px 0 var(--line)} .rem-st:last-child{box-shadow:none}
 .rem-st .num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--accent);color:#fff;font:700 14px var(--num)}
 .rem-st .ic{color:var(--c-text);width:20px;height:20px;vertical-align:-4px}
@@ -652,6 +668,13 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .cv-tag{font-size:15px;font-weight:600;color:var(--accent-text)}
 .bigicon,.ibox.primary,#sheet .ibox.primary{box-shadow:none!important}
 .tab.fab .circ{box-shadow:none!important}
+/* без размытия (слабые телефоны, «уменьшить прозрачность»): те же панели, но непрозрачные */
+.noblur *,.noblur *::before,.noblur *::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.noblur #tabs{background:rgba(255,255,255,.97)} :root.noblur[data-scheme="dark"] #tabs{background:#2C2C2E}
+.noblur #sheet{background:var(--sheet)} .noblur #hdr{background:var(--bg)} .noblur #toast{background:var(--sheet-card)} .noblur .cv-glass{background:var(--sheet-card)}
+.noblur .tx-eb,.noblur .wx-st{background:rgba(0,0,0,.55)}
+/* всплывающее сообщение — компактное, над панелью вкладок */
+#toast{font-size:14px;padding:9px 14px;max-width:min(320px,calc(100% - 32px));gap:6px}
 /* узкие экраны (iPhone SE 320): без переносов посреди слова и цифр */
 .glasschip .n-m,.h2-ml b,.mx-v b,.n-s{white-space:nowrap} .stage,.small,.tiny,.qt,.rowbtn .t{hyphens:auto;-webkit-hyphens:auto}
 @media (max-width:359px){.stage{padding:8px 6px} .stage>div:nth-child(2){font-size:13px!important} .glasschip{padding:8px 8px} .glasschip .n-m{font-size:20px}
@@ -672,12 +695,12 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .streak{display:flex;align-items:center;gap:4px;height:38px;padding:0 12px 0 9px;border-radius:999px;background:var(--card);box-shadow:var(--shadow);color:var(--accent-text)} .streak .ic{width:20px;height:20px} .streak b{font:700 17px var(--num);font-variant-numeric:tabular-nums;color:var(--text)}
 .hero2{position:relative;isolation:isolate;overflow:hidden;display:block;width:100%;text-align:left;color:var(--text);border-radius:var(--r-hero);padding:20px 20px 16px;margin:0 0 12px;
   background:var(--card);box-shadow:var(--shadow);
-  --hw:var(--text);--hw2:var(--text2);--hw3:var(--text3);--hline:var(--line);--htrack:rgba(4,120,87,.21);--p:#047857;--p-soft:rgba(4,120,87,.16);--f:#34D399;--f-soft:rgba(52,211,153,.22);--c:#0D9488;--c-soft:rgba(13,148,136,.17)}
+  --hw:var(--text);--hw2:var(--text2);--hw3:var(--text3);--hline:var(--line);--htrack:rgba(4,120,87,.22);--p:#047857;--p-soft:rgba(4,120,87,.16);--f:#34D399;--f-soft:rgba(52,211,153,.22);--c:#0D9488;--c-soft:rgba(13,148,136,.17)}
 :root[data-scheme="dark"] .hero2{color:#fff;background:linear-gradient(180deg,#232326,#1C1C1E);
-  --hw:#fff;--hw2:rgba(255,255,255,.7);--hw3:rgba(255,255,255,.45);--hline:rgba(255,255,255,.12);--htrack:rgba(16,185,129,.15)}
+  --hw:#fff;--hw2:rgba(255,255,255,.7);--hw3:rgba(255,255,255,.45);--hline:rgba(255,255,255,.12);--htrack:rgba(16,185,129,.24)}
 .h2-row{display:flex;align-items:center;gap:18px}
 .h2-ring{position:relative;width:140px;height:140px;flex:none}
-.h2-ring .ring-t{stroke:var(--htrack)} .stg .h2-ring .ring{animation:ringin 900ms cubic-bezier(.22,1,.36,1) both} @keyframes ringin{from{opacity:0;transform:scale(.96)}} .h2-ring .ring-v{stroke:url(#hg)}
+.h2-ring .ring-t{stroke:var(--htrack)} .stg .h2-ring .ring{animation:ringin 900ms cubic-bezier(.22,1,.36,1) both} @keyframes ringin{from{opacity:0;transform:scale(.96)}} .h2-ring .ring-v{stroke:url(#hg);filter:drop-shadow(0 2px 3px rgba(4,120,87,.30))} .h2-dot{position:absolute;left:50%;top:calc(var(--rs,140px)*8.5/120);width:calc(var(--rs,140px)*15/120);height:calc(var(--rs,140px)*15/120);transform:translate(-50%,-50%);border-radius:50%;background:#34D399;box-shadow:0 2px 3px rgba(4,120,87,.30)}
 .hero2.over .h2-ring .ring-t{stroke:rgba(16,185,129,.4)}
 .h2-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .h2-in .n-hero{font-size:36px;line-height:1;letter-spacing:-.03em}
@@ -692,7 +715,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .now{background:var(--card);border-radius:var(--r);padding:16px 16px 8px;box-shadow:var(--shadow);margin-bottom:12px}
 .now-h{display:flex;align-items:center;gap:10px;margin-bottom:10px} .now-ava{width:32px;height:32px;border-radius:50%} .now-ava .ic{width:18px;height:18px}
 .now-l{font-size:15px;font-weight:600;color:var(--accent-text)}
-.now-t{font:500 17px/1.4 var(--font);letter-spacing:-.01em;text-wrap:pretty;margin-bottom:14px}
+.now-t{font:500 17px/1.35 var(--font);letter-spacing:-.01em;text-wrap:pretty;margin-bottom:14px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden} .now-t.open{-webkit-line-clamp:unset;display:block} .now-more{display:none;margin:-10px 0 12px;font-size:15px;font-weight:600;color:var(--accent-text)} .now-more.on{display:inline-block}
 .now .btn{margin-bottom:2px}
 .now-ask{display:flex;align-items:center;justify-content:center;gap:2px;width:100%;height:44px;font-size:15px;font-weight:600;color:var(--text2)} .now-ask .ic{width:16px;height:16px}
 .techx{position:relative;isolation:isolate;display:block;width:100%;border-radius:var(--r-hero);overflow:hidden;text-align:left;color:#fff;background:#0B0D12;margin:0 0 12px;box-shadow:0 18px 40px -22px rgba(0,0,0,.55)}
@@ -708,7 +731,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .tx-go{background:#fff;color:#0B0D12} .tx-demo{background:rgba(255,255,255,.2);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .me-i{background:var(--card2);color:var(--text)} .me-i .ic{width:21px;height:21px}
 .calm .ibox{width:36px;height:36px;border-radius:11px;color:var(--text2)} .calm .ibox .ic{width:20px;height:20px}
-@media (max-width:359px){.h2-ring{width:120px;height:120px}.h2-ring .ring{width:120px;height:120px}.h2-in .n-hero{font-size:30px}.h2-row{gap:14px}}
+@media (max-width:359px){.h2-ring{width:120px;height:120px}.h2-ring .ring{width:120px;height:120px} .h2-ring{--rs:120px}.h2-in .n-hero{font-size:30px}.h2-row{gap:14px}}
 </style>
 </head>
 <body>
@@ -726,7 +749,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r38'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r39'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -789,6 +812,7 @@ function cu(el,anim){const to=+el.dataset.cu,suf=el.dataset.suf||'';if(!anim||!t
 const bar=(p,extra='')=>`<i style="width:${ANIM?0:p}%;${extra}" data-w="${p}%"></i>`;
 const raf2=f=>requestAnimationFrame(()=>requestAnimationFrame(f));
 function after(root,anim,stag){
+  root.querySelectorAll('.now-t').forEach(t=>{const m=t.nextElementSibling;if(m&&m.classList.contains('now-more'))m.classList.toggle('on',t.scrollHeight>t.clientHeight+2)}); // совет длиннее 3 строк — «Ещё»
   root.querySelectorAll('.wk2').forEach(el=>{el.style.scrollBehavior='auto';el.scrollLeft=el.scrollWidth;el.style.scrollBehavior=''}); // лента недели — на текущей неделе
   root.querySelectorAll('[data-cu]').forEach(el=>cu(el,anim));
   root.querySelectorAll('[data-w]').forEach(el=>{if(anim)raf2(()=>{el.style.width=el.dataset.w});else el.style.width=el.dataset.w});
@@ -1007,7 +1031,7 @@ function rerender(){
   rerender.dirty=0;const y=$('#scroll').scrollTop;ANIM=false;renderTabs();$('#scroll').innerHTML=`<div>${screen()}</div>`;after($('#scroll'),false,false);ANIM=!RM;$('#scroll').scrollTo({top:y,behavior:'instant'});if(SHEET_FN&&$('#sheet').classList.contains('on')){const fn=SHEET_FN;keepScroll(()=>{ANIM=false;fn();ANIM=!RM})}}
 document.addEventListener('touchstart',()=>{},{passive:true}); // :active на iPhone
 function haptic(ms){try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}
-function toast(t,err){const el=$('#toast');el.innerHTML=`<span style="color:${err?'var(--accent)':'var(--ok)'};font-weight:700;min-width:18px;text-align:center;flex:none">${err?'!':ic('check')}</span><span>${t}</span>`;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2200)}
+function toast(t,err){const now=Date.now();if(!err&&toast.at&&now-toast.at<1500&&$('#toast').classList.contains('on'))return;toast.at=now;const el=$('#toast');el.innerHTML=`<span style="color:${err?'var(--accent)':'var(--ok)'};font-weight:700;min-width:18px;text-align:center;flex:none">${err?'!':ic('check')}</span><span>${t}</span>`;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2000)}
 function sheet(title,html){SHEET_FN=null;clearTimeout(closeSheet.t);if(!$('#sheet').classList.contains('on')||$('#stitle').textContent!==title)tapBlock();const sb=$('#sbody'),swap=$('#sheet').classList.contains('on')&&$('#stitle').textContent!==title&&!RM;$('#stitle').textContent=title;sb.innerHTML=html;sb.classList.remove('swap');if(swap){void sb.offsetWidth;sb.classList.add('swap')}$('#sheet').classList.add('on');$('#veil').classList.add('on');$('#phone').classList.add('modal');$('#sbody').scrollTop=0;after($('#sbody'),!RM,false)}
 function closeSheet(){tapBlock();SHEET_FN=null;if(rerender.dirty)setTimeout(()=>{if(rerender.dirty&&!$('#sheet').classList.contains('on'))rerender()},260);WT=null;$('#sheet').classList.remove('on');$('#veil').classList.remove('on');$('#phone').classList.remove('modal');stopRest();clearInterval(EXT);
   $('#sbody').querySelectorAll('iframe,video').forEach(el=>{try{el.pause&&el.pause()}catch(e){}el.remove()});if(typeof bcStop==='function')bcStop();
@@ -1102,12 +1126,12 @@ function vToday(){
   return `<div class="top"><div><div class="eyebrow">${dateStr[0].toUpperCase()+dateStr.slice(1)}</div><div class="date">${hello()}${pr.name&&pr.name!=='Вы'?',<br>'+pr.name:''}</div></div><div class="top-r"><button class="streak tap" onclick="openStreak()" aria-label="${pl(st,'день','дня','дней')} подряд">${ic('flame')}<b>${st}</b></button><button class="avatar tap" onclick="go('me')" aria-label="Личный кабинет">${ava()}</button></div></div>
   ${ws}
   <button class="hero2 tap ${left<0?'over':''}" onclick="openFoodPlan()"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34D399"/><stop offset=".5" stop-color="#10B981"/><stop offset="1" stop-color="#064E3B"/></linearGradient></defs></svg>
-    <div class="h2-row"><div class="h2-ring">${ring(pct,140,12)}<div class="h2-in"><div class="n-hero">${CU(Math.abs(left))}</div><div class="h2-l">${left>=0?'осталось ккал':'ккал сверх нормы'}</div></div></div>
+    <div class="h2-row"><div class="h2-ring">${ring(pct,140,15)}${pct<=0?'<i class="h2-dot"></i>':''}<div class="h2-in"><div class="n-hero">${CU(Math.abs(left))}</div><div class="h2-l">${left>=0?'осталось ккал':'ккал сверх нормы'}</div></div></div>
     <div class="h2-mac">${[['Белки','p'],['Жиры','f'],['Углеводы','c']].map(([l,k])=>`<div class="h2-m m-${k}"><div class="h2-ml"><span>${l}</span><b>${fmt(e[k])}<i>/${n[k]} г</i></b></div><div class="bar">${bar(Math.min(e[k]/n[k]*100,100))}</div></div>`).join('')}</div></div>
     <div class="h2-foot"><span>${fmt(e.k)} из ${fmt(n.kcal)} ккал · цель «${g.n.toLowerCase()}»</span></div></button>
   <section class="now">
     <div class="now-h"><div class="ibox accent now-ava">${ic('spark')}</div><div class="now-l">Сейчас</div></div>
-    <div class="now-t">${tip(n,e)}</div>
+    <div class="now-t">${tip(n,e)}</div><button class="now-more" onclick="this.previousElementSibling.classList.add('open');this.remove()">Ещё</button>
     <button class="btn" onclick="${act[0]}">${ic(act[1])}${act[2]}</button>
     <button class="now-ask" onclick="openChat()">Спросить тренера ${ic('chev')}</button>
   </section>
@@ -1265,7 +1289,7 @@ function productPortion(id,g){
    ${x.odd?`<div class="small" style="margin:0 4px 8px;color:var(--warn-text)">Цифры этикетки не сходятся (по составу ≈${fmt(x.calcK)} ккал на 100 г) — проверьте упаковку</div>`:''}<div class="src" style="margin:0 4px 10px">Источник: ${(x.src||'база приложения').replace(/;?\s*цифры по памяти,?\s*проверить/i,' · цифры ещё сверяем с таблицей')} · считает код: ${x.kcal?'ккал на 100 г × граммы':'Б×4 + Ж×9 + У×4'}</div>
    <button class="btn" onclick="logProduct()">Записать в дневник</button><button class="btn ghost" onclick="openSearch('${x.n.replace(/'/g,'')}')">Назад к поиску</button>`);
 }
-function logProduct(){S.foodN=(S.foodN||0)+1;if(S.day!==today0())rollDay();const x=DB.products.find(p=>p.id===PP.id),k=PP.g/100,kc=(x.kcal||kcalOf(x))*k;S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:x.n+' · '+PP.g+' г',img:x.img||'',k:kc,p:x.p*k,f:x.f*k,c:x.c*k,cost:0,acc:'высокая',src:x.id.startsWith('off_')||x.mine?'этикетка':'база'});S.entries=(S.entries||0)+1;save();closeSheet();DIR='';S.tab='today';render();toTop();kc>1500?toast('Записано '+u(kc,'ккал')+' за одну запись — проверьте граммы',true):toast('Записано · '+u(kc,'ккал'))}
+function logProduct(){S.foodN=(S.foodN||0)+1;if(S.foodN===1)setTimeout(remOffer,2400);if(S.day!==today0())rollDay();const x=DB.products.find(p=>p.id===PP.id),k=PP.g/100,kc=(x.kcal||kcalOf(x))*k;S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:x.n+' · '+PP.g+' г',img:x.img||'',k:kc,p:x.p*k,f:x.f*k,c:x.c*k,cost:0,acc:'высокая',src:x.id.startsWith('off_')||x.mine?'этикетка':'база'});S.entries=(S.entries||0)+1;save();closeSheet();DIR='';S.tab='today';render();toTop();kc>1500?toast('Записано '+u(kc,'ккал')+' за одну запись — проверьте граммы',true):toast('Записано · '+u(kc,'ккал'))}
 function dishFromDB(id){
   const d=DB.dishes.find(x=>x.id===id);if(!d)return;const miss=[];
   const parts=d.parts.map(pt=>{
@@ -1528,7 +1552,7 @@ function openEntry(i,ask){const en=S.log[i];if(!en)return;if(!ask)openEntry.back
      :`<button class="btn ghost" onclick="openEntry(${i},1)">Удалить запись</button>`}`)}
 function scaleEntry(i,x){const en=S.log[i];if(!en)return;['k','p','f','c','cost'].forEach(f=>{if(typeof en[f]==='number')en[f]=Math.round(en[f]*x*10)/10});en.k=Math.round(en.k);save();const bk=openEntry.back;openEntry.back=null;if(bk)bk();else{closeSheet();rerender()}rerender.dirty=1;toast('Порция поправлена · '+u(en.k,'ккал'))}
 function delEntry(i){const en=S.log[i];if(!en)return;S.log.splice(i,1);save();const bk=openEntry.back;openEntry.back=null;if(bk)bk();else{closeSheet();rerender()}rerender.dirty=1;haptic(10);toast('Запись удалена')}
-function addLog(){S.foodN=(S.foodN||0)+1;if(S.day!==today0())rollDay();const d=SC.d,t=total();S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:d.name,img:SC.thumb||(SC.photo&&SC.photo.length<200000?SC.photo:null)||d.img,k:t.k,p:t.p,f:t.f,c:t.c,cost:d.cost,acc:d.store?'высокая':'средняя',src:d.store?'этикетка':d.fromDB?'база':'база'});S.entries=(S.entries||0)+1;save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(t.k,'ккал'))}
+function addLog(){S.foodN=(S.foodN||0)+1;if(S.foodN===1)setTimeout(remOffer,2400);if(S.day!==today0())rollDay();const d=SC.d,t=total();S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:d.name,img:SC.thumb||(SC.photo&&SC.photo.length<200000?SC.photo:null)||d.img,k:t.k,p:t.p,f:t.f,c:t.c,cost:d.cost,acc:d.store?'высокая':'средняя',src:d.store?'этикетка':d.fromDB?'база':'база'});S.entries=(S.entries||0)+1;save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(t.k,'ккал'))}
 
 /* ---------- Тренировки ---------- */
 const STAGES=[['Старт','8 недель'],['Прогресс','4 недели'],['Результат','6 недель']];
@@ -2273,7 +2297,7 @@ function applyData(d){const keep={},pics={},shots={};SYNC_LOCAL.forEach(k=>{if(S
   applyTheme();if(!S.onb)$('#onb').classList.add('hide');DIR='';if($('#sheet').classList.contains('on'))rerender.dirty=1;else render()}
 function acLost(){AC=null;acSave();toast('Вход в аккаунт истёк — войдите снова',true);if(S.tab==='me')rerender()}
 const localEmpty=()=>S.onb||!((S.log||[]).length||(S.weights||[]).length||(S.hist||[]).length||(S.forms||[]).length||S.workouts||Object.keys(S.doneOn||{}).length);
-async function acDone(d,how){AC={t:d.token,u:d.user,ver:0,how,dirty:0,h:''};acSave();closeSheet();haptic([10,40,10]);
+async function acDone(d,how){AC={t:d.token,u:d.user,ver:0,how,dirty:0,h:''};acSave();if(S.remind&&S.remind.on){S.remind.dirty=true;remResend()}closeSheet();haptic([10,40,10]);
   const r=await api('/sync/get',{token:AC.t},20000);if(!AC)return;const srv=r.ok&&r.data&&r.data.data,ok=srv&&srv.profile&&GOALS[srv.profile.goal];
   if(!ok){AC.ver=r.ok&&r.data?r.data.ver:0;acSave();if(S.onb){toast('Вы вошли — осталось несколько вопросов');if(OB===0)setTimeout(obNext,150)}else toast('Вы вошли — данные сохраняются в аккаунт');if(!S.onb)syncPush(true);if(S.tab==='me')rerender();return}
   if(localEmpty()){AC.ver=r.data.ver;applyData(srv);AC.h=hashStr(JSON.stringify(syncData()));acSave();toast('Данные из аккаунта загружены');return}
@@ -2366,7 +2390,7 @@ function openAccount(){if(!AC)return openAuth();const u=AC.u||{};
     <button class="rowbtn" onclick="acDelAsk()"><div class="ibox bad">${ic('trash')}</div><div class="t" style="color:var(--bad)">Удалить аккаунт и данные<small>с сервера; на телефоне ничего не удалится</small></div><span class="chev">${ic('chev')}</span></button>
    </div>`);SHEET_FN=openAccount;if(AC.wait&&!SYNC.srv)syncAgain()}
 async function syncAgain(){const t=AC&&AC.t;if(!t)return;const r=await api('/sync/get',{token:t},20000);if(r.ok&&r.data&&r.data.data&&AC){SYNC.srv=r.data.data;AC.wait=r.data.ver;acSave()}}
-async function acLogout(quiet){if(!AC)return;if(AC.dirty&&!AC.wait)await syncPush();const t=AC.t;AC=null;acSave();api('/auth/logout',{token:t});if(quiet)return;closeSheet();toast('Вы вышли. Данные остались на телефоне');if(S.tab==='me')rerender()}
+async function acLogout(quiet){if(!AC)return;if(AC.dirty&&!AC.wait)await syncPush();const t=AC.t;AC=null;acSave();api('/auth/logout',{token:t});if(S.remind&&S.remind.on){S.remind.dirty=true;remResend()}if(quiet)return;closeSheet();toast('Вы вышли. Данные остались на телефоне');if(S.tab==='me')rerender()}
 function acOutAsk(){sheet('Выйти из аккаунта?',`<div class="card" style="text-wrap:pretty">Данные в аккаунте сохранятся — войдёте снова, и всё на месте. Что сделать с данными на этом телефоне?</div>
    <button class="btn sec" onclick="acLogout()">Оставить на этом телефоне</button><button class="btn danger" onclick="acOutWipe()">Удалить с этого телефона</button><button class="btn ghost" onclick="openAccount()">Отмена</button>`)}
 async function acOutWipe(){await acLogout(true);toast('Вы вышли, данные с телефона удалены');resetAll()}
@@ -2545,7 +2569,7 @@ function updBud(){const b=budgetOf(D);const a=$('#incv'),bv=$('#budv'),sv=$('#st
 function obAdj(k,d,mn,mx){if(k==='h'||k==='w')D._body=1;D[k]=Math.max(mn,Math.min(mx,D[k]+d));haptic(4);renderOnb()}
 function obNext(){obDir='sl';OB=Math.min(OB+1,STEPS-1);haptic(8);renderOnb()}
 function obBack(){obDir='sr';OB=Math.max(0,OB-1);haptic(5);renderOnb()}
-function obFinish(){const p={...D};delete p._body;p.name=cleanName(p.name);S.profile=p;delete S.demo;S.onb=false;S.done=[];S.sets={};S.log=[];S.weights=[];S.forms=[];S.extra=[];S.hist=[];S.workouts=0;S.rot=0;S.lastDone=null;S.lastForm=null;S.startedAt=null;S.day=today0();S.week=monday0();S.doneOn={};S.plan=null;S.v=3;save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+progName(p)+'» готов'),450);if(COACH_ON)setTimeout(()=>pickCoach(true),900);else{visit.tried=0;S.visitAt=0;visit()}if(!AC)setTimeout(authOffer,2600)}
+function obFinish(){const p={...D};delete p._body;p.name=cleanName(p.name);S.profile=p;delete S.demo;S.onb=false;S.done=[];S.sets={};S.log=[];S.weights=[];S.forms=[];S.extra=[];S.hist=[];S.workouts=0;S.rot=0;S.lastDone=null;S.lastForm=null;S.startedAt=null;S.day=today0();S.week=monday0();S.doneOn={};S.plan=null;S.v=3;save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+progName(p)+'» готов'),450);if(COACH_ON)setTimeout(()=>pickCoach(true),900);else{visit.tried=0;S.visitAt=0;visit()}if(!AC)setTimeout(authOffer,2600);setTimeout(remOffer,4200)}
 
 /* ---------- сервер: номер устройства, счётчик заходов, отзывы ----------
    Сервера может ещё не быть или не быть сети — всё молча (console.warn), интерфейс честно пишет, что не получилось.
@@ -2719,9 +2743,10 @@ window.addEventListener('offline',()=>{if(RV.st!=='ok'||!rvList().length){RV.st=
 /* ---------- напоминания: пуш-уведомления, как в «Здоровье» на iPhone ----------
    Присылает сервер (утром и вечером, по цифрам дня). Без сервера выключатель честно остаётся выключенным.
    На сервер уходят только номер устройства, часовой пояс, время напоминаний и цифры дня: сколько осталось ккал и белка, была ли тренировка. */
-const REMDEF={on:false,morning:'09:00',evening:'19:00',workout:true,food:true};
+const REMDEF={on:false,morning:'09:00',day:'14:00',evening:'19:00',plan:true,food:true,workout:true,praise:true,streak:true,weekly:true,quiet_from:'22:00',quiet_to:'08:00'};
+const REMK=['plan','food','workout','praise','streak','weekly'],REMT=['morning','day','evening','quiet_from','quiet_to'];
 function remR(){const R=S.remind&&typeof S.remind==='object'?S.remind:(S.remind={});for(const k in REMDEF)if(R[k]===undefined)R[k]=REMDEF[k];return R} // тот же объект — изменения не теряются
-const remPrefs=R=>({workout:R.workout!==false,food:R.food!==false,morning:R.morning||'09:00',evening:R.evening||'19:00'});
+const remPrefs=R=>{const o={};REMK.forEach(k=>o[k]=R[k]!==false);REMT.forEach(k=>o[k]=/^\d\d:\d\d$/.test(R[k]||'')?R[k]:REMDEF[k]);return o};
 const isIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const isStandalone=()=>navigator.standalone===true||matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches;
 const pushOk=()=>'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window&&window.isSecureContext!==false;
@@ -2731,31 +2756,45 @@ const REMST={busy:false,msg:null};
 function b64u(s){s=String(s).replace(/-/g,'+').replace(/_/g,'/');s+='==='.slice((s.length+3)%4);const b=atob(s),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}
 function sameKey(sub,key){try{const k=sub.options&&sub.options.applicationServerKey;if(!k)return false;const a=new Uint8Array(k);return a.length===key.length&&a.every((v,i)=>v===key[i])}catch(e){return false}}
 const swReg=ms=>'serviceWorker' in navigator?Promise.race([navigator.serviceWorker.ready,new Promise(r=>setTimeout(()=>r(null),ms||5000))]).catch(()=>null):Promise.resolve(null);
-function remSub(R){if(!R.on)return 'выключены';const p=remPrefs(R),w=[p.workout&&'тренировка',p.food&&'еда и белок'].filter(Boolean).join(', ');return `утром в ${p.morning}, вечером в ${p.evening}${w?' · '+w:''}`}
+function remSub(R){if(!R.on)return 'выключены';const p=remPrefs(R);return `утром, днём и вечером · тишина ${p.quiet_from}–${p.quiet_to}`}
 function remHowOn(){return isIOS()?'Откройте «Настройки» → «Уведомления» → «Мой тренер» и включите «Допуск уведомлений». Потом вернитесь сюда.'
   :/Android/i.test(navigator.userAgent)?'Нажмите на значок слева от адреса сайта → «Разрешения» → «Уведомления» → «Разрешить». Или «Настройки» телефона → «Приложения» → браузер → «Уведомления».'
   :'Нажмите на значок замка слева от адреса сайта и разрешите уведомления для этого сайта. Потом вернитесь сюда.'}
 function remNote(){const m=REMST.msg;if(!m)return '';const ok=m[0]==='ok';
   return `<div class="lock" style="background:${ok?'var(--ok-soft)':'var(--warn-soft)'}"><span style="color:${ok?'var(--ok-text)':'var(--warn-text)'}">${ic(ok?'check':'bell')}</span><div>${m[1]}</div></div>`}
+// как добавить на экран «Домой» на iPhone: три шага с картинками
+function a2hs(){return `<div class="a2h" role="list">
+  <div class="a2h-s" role="listitem"><div class="a2h-pic"><div class="a2h-bar"><span></span><span></span><b>${ic('share')}</b><span></span><span></span></div></div><div class="a2h-t"><span class="num">1</span>Внизу Safari — «Поделиться»</div></div>
+  <div class="a2h-s" role="listitem"><div class="a2h-pic"><div class="a2h-menu"><i></i><b>${ic('addsq')}<em>На экран «Домой»</em></b><i></i></div></div><div class="a2h-t"><span class="num">2</span>«На экран „Домой“» → «Добавить»</div></div>
+  <div class="a2h-s" role="listitem"><div class="a2h-pic"><div class="a2h-home"><img src="icon-192.png" alt=""><small>Мой тренер</small></div></div><div class="a2h-t"><span class="num">3</span>Откройте со значка и включите</div></div>
+ </div><div class="small muted" style="margin:8px 4px 0">Нужен iOS 16.4 или новее. Если «Поделиться» не видно — прокрутите страницу чуть вверх.</div>`}
+function ntfStage(){let ex;try{const pn=Math.max(25,norm(S.profile).p-Math.round(eaten().p));ex=[['План на сегодня',`${fmt(norm(S.profile).kcal)} ккал и ${norm(S.profile).p} г белка. Тренировка «${esc(program().days[curDay()])}» — около 45 минут.`,'9:00'],[`До нормы белка ${pn} г`,pn<=30?'Творог 200 г на перекус — и норма закрыта.':pn<=50?'Творог на перекус и курица на ужин — и норма закрыта.':'Курица или рыба на обед и творог на перекус — догоните к вечеру.','14:00']]}catch(e){ex=[['План на сегодня','Норма калорий и тренировка на сегодня уже готовы.','9:00']]}
+  return `<div class="ntf-stage" aria-hidden="true">${ex.map(([t,b,tm])=>`<div class="ntf"><img src="icon-192.png" alt=""><div style="flex:1;min-width:0"><div class="nh"><span>Мой тренер</span><span>${tm}</span></div><b>${t}</b><div class="nb">${b}</div></div></div>`).join('')}</div>`}
 function remBody(){const R=remR(),env=remEnv(),p=remPrefs(R),dis=env!=='ok'&&!R.on;
   const sw=`<button class="toggle ${R.on?'on':''}${REMST.busy?' busy':''}" role="switch" aria-checked="${R.on}" aria-label="Напоминания" onclick="remToggle()" ${dis||REMST.busy?'disabled':''}></button>`;
-  const ex=[['Пора на тренировку',`Сегодня «${esc(program().days[curDay()])}» — около 45 минут. Отметьте, когда сделаете.`,'19:00'],['Не хватает белка',`До нормы ещё ${u(Math.max(25,norm(S.profile).p-Math.round(eaten().p)),'г')} — творог или курица на ужин закроют.`,'сейчас']];
+  const tg=(k,t,sub)=>`<div class="rem-row"><span class="t">${t}<small>${sub}</small></span><button class="toggle ${p[k]?'on':''}" role="switch" aria-checked="${p[k]}" aria-label="${t}" onclick="remPref('${k}',${!p[k]})"></button></div>`;
+  const tm=(k,t,sub)=>`<label class="rem-row"><span class="t">${t}<small>${sub}</small></span><input type="time" class="tin" value="${p[k]}" onchange="remPref('${k}',this.value)" aria-label="${t}"></label>`;
   let env1='';
-  if(env==='ios')env1=`<div class="card"><div class="title" style="font-size:17px">Сначала — на экран «Домой»</div><div class="small muted" style="margin:4px 0 6px">На iPhone напоминания приходят, только если открыть приложение с экрана «Домой» (нужен iOS 16.4 или новее). Это бесплатно и займёт 10 секунд:</div>
-    <div class="rem-steps"><div class="rem-st"><span class="num">1</span><div>Внизу Safari нажмите «Поделиться» ${ic('share')}</div></div><div class="rem-st"><span class="num">2</span><div>Выберите «На экран „Домой“» ${ic('addsq')}</div></div><div class="rem-st"><span class="num">3</span><div>Откройте «Мой тренер» со значка на экране «Домой» и включите напоминания здесь</div></div></div></div>`;
-  else if(env==='no')env1=`<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('bell')}</span><div><b>Этот браузер не умеет присылать напоминания.</b> ${isIOS()?'Нужен iOS 16.4 или новее — обновите iPhone в «Настройки» → «Основные» → «Обновление ПО».':'Откройте приложение в Chrome, Safari или Edge — настройки ниже сохранятся.'}</div></div>`;
+  if(env==='ios')env1=`<div class="card"><div class="title" style="font-size:17px">Сначала — на экран «Домой»</div><div class="small muted" style="margin:4px 0 10px">На iPhone напоминания приходят, только если открыть «Мой тренер» со значка на экране «Домой». Это бесплатно и займёт 10 секунд:</div>${a2hs()}</div>`;
+  else if(env==='no')env1=`<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('bell')}</span><div><b>Этот браузер не умеет присылать напоминания.</b> ${isIOS()?'Нужен iOS 16.4 или новее — обновите iPhone в «Настройки» → «Основные» → «Обновление ПО».':'Откройте приложение в Chrome, Яндекс Браузере, Samsung Internet или Edge — настройки ниже сохранятся.'}</div></div>`;
   else if(env==='denied')env1=`<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('bell')}</span><div><b>Уведомления для приложения запрещены.</b> ${remHowOn()}</div></div>`;
-  return `<div class="ntf-stage" aria-hidden="true">${ex.map(([t,b,tm])=>`<div class="ntf"><img src="icon.png" alt=""><div style="flex:1;min-width:0"><div class="nh"><span>Мой тренер</span><span>${tm}</span></div><b>${t}</b><div class="nb">${b}</div></div></div>`).join('')}</div>
+  return `${ntfStage()}
    ${env1}
    <div class="card"><div class="rem-row" style="box-shadow:none;padding:0"><div class="ibox primary">${ic('bell')}</div><div class="t">Напоминания<small id="remst">${REMST.busy?'Включаем…':R.on?'включены · '+remSub(R):'выключены'}</small></div>${sw}</div></div>
    <div id="remmsg" aria-live="polite">${remNote()}</div>
-   <h2 style="margin-top:6px">Когда</h2>
-   <div class="card"><label class="rem-row"><span class="t">Утром<small>план на день и что съесть на завтрак</small></span><input type="time" class="tin" value="${p.morning}" onchange="remPref('morning',this.value)" aria-label="Утреннее напоминание"></label>
-    <label class="rem-row"><span class="t">Вечером<small>тренировка, если ещё не отмечена, и белок</small></span><input type="time" class="tin" value="${p.evening}" onchange="remPref('evening',this.value)" aria-label="Вечернее напоминание"></label></div>
    <h2 style="margin-top:6px">О чём напоминать</h2>
-   <div class="card"><div class="rem-row"><span class="t">Тренировка<small>в дни по плану, если ещё не сделали</small></span><button class="toggle ${p.workout?'on':''}" role="switch" aria-checked="${p.workout}" aria-label="Тренировка" onclick="remPref('workout',${!p.workout})"></button></div>
-    <div class="rem-row"><span class="t">Еда и белок<small>если не записали еду или недобрали белок</small></span><button class="toggle ${p.food?'on':''}" role="switch" aria-checked="${p.food}" aria-label="Еда и белок" onclick="remPref('food',${!p.food})"></button></div></div>
-   <div class="concept">Для напоминаний на сервер уходят только номер устройства и цифры дня (сколько осталось ккал и белка, была ли тренировка); сервер в России. Без имени, веса и фото.<br>Не медицинская консультация.</div>`}
+   <div class="card">${tg('plan','План на день','утром: калории, белок и тренировка')}${tg('food','Еда и белок','днём: сколько белка добрать, что съесть')}${tg('workout','Тренировка','вечером, если по плану и ещё не сделана')}${tg('praise','Похвала','когда день закрыт: тренировка, белок, серия')}${tg('streak','Серия под угрозой','если сегодня ещё ничего не отмечено')}${tg('weekly','Итоги недели','в воскресенье вечером')}</div>
+   <h2 style="margin-top:6px">Когда</h2>
+   <div class="card">${tm('morning','Утром','план на день')}${tm('day','Днём','еда и белок')}${tm('evening','Вечером','тренировка и итоги')}</div>
+   <h2 style="margin-top:6px">Тихие часы</h2>
+   <div class="card">${tm('quiet_from','С','ничего не присылаем')}${tm('quiet_to','До','')}</div>
+   <div class="concept">Не чаще 3 раз в день и только когда есть что сказать. Для напоминаний на сервер в России уходят номер устройства и цифры дня (норма, сколько осталось белка, была ли тренировка, серия) — без веса и фото.<br>Не медицинская консультация.</div>`}
+// мягкое предложение после первого полезного действия: один раз, без давления
+function remOffer(){const R=remR(),env=remEnv();if(R.on||S.remAsked||S.onb||env==='no'||env==='denied'||$('#sheet').classList.contains('on')||$('#cons.on'))return;S.remAsked=1;save();
+  sheet('Напоминать о главном?',`${ntfStage()}<div class="small muted" style="margin:0 4px 12px;text-wrap:pretty">Утром — план на день, днём — сколько белка добрать, вечером — тренировка, если она по плану. Не чаще 3 раз в день, ночью — тишина.</div>
+   ${env==='ios'?`<div class="card"><div class="title" style="font-size:17px;margin-bottom:10px">На iPhone — сначала на экран «Домой»</div>${a2hs()}</div><button class="btn" onclick="closeSheet()">Понятно</button>`:`<button class="btn" onclick="openRemind();remToggle()">Включить</button>`}
+   <button class="btn ghost" onclick="closeSheet()">Не сейчас</button>`)}
+const remDiag=(step,err)=>api('/push/diag',{step,err:String((err&&err.name)||err||'').slice(0,80),env:`${isIOS()?'ios':/Android/i.test(navigator.userAgent)?'android':'pc'} sa=${isStandalone()?1:0} perm=${'Notification' in window?Notification.permission:'-'}`});
 function openRemind(){REMST.msg=null;if(!S.hlRemOff){S.hlRemOff=1;save();rerender.dirty=1}sheet('Напоминания',`<div id="remall">${remBody()}</div>`);remCheck().then(ch=>{if(ch)remPaint()})}
 function remPaint(){const b=$('#remall');if(b){const y=$('#sbody').scrollTop;b.innerHTML=remBody();$('#sbody').scrollTop=y}rerender.dirty=1}
 const remSay=(k,t)=>{REMST.msg=[k,t];remPaint()};
@@ -2765,30 +2804,30 @@ async function remOn(){const R=remR(),env=remEnv();if(env!=='ok'){remPaint();ret
   const done=(k,t)=>{REMST.busy=false;if(t)REMST.msg=[k,t];remPaint()};
   let perm=Notification.permission;
   if(perm!=='granted'){try{perm=await new Promise(res=>{const q=Notification.requestPermission(res);if(q&&q.then)q.then(res,()=>res('default'))})}catch(e){perm='default'}}
-  if(perm==='denied')return done('warn','<b>Вы запретили уведомления.</b> '+remHowOn());
+  if(perm==='denied'){remDiag('perm','denied');return done('warn','<b>Вы запретили уведомления.</b> '+remHowOn())}
   if(perm!=='granted')return done('warn','<b>Уведомления не разрешены.</b> Нажмите на выключатель ещё раз и выберите «Разрешить».');
   if(!navigator.onLine)return done('warn','<b>Нет интернета.</b> Напоминания включатся, когда появится сеть — нажмите ещё раз.');
   const k=await api('/push/key'),key=k.ok&&k.data&&k.data.publicKey;
   if(!key)return done('warn',k.offline?'<b>Пропал интернет.</b> Попробуйте ещё раз, когда появится сеть.':'<b>Напоминания заработают, когда подключим сервер.</b> Настройки сохранили — включите чуть позже.');
-  const reg=await swReg(6000);if(!reg||!reg.pushManager)return done('warn','<b>Приложение ещё готовится.</b> Закройте и откройте его снова, потом включите напоминания.');
+  const reg=await swReg(6000);if(!reg||!reg.pushManager){remDiag('sw',reg?'no_pm':'no_reg');return done('warn','<b>Приложение ещё готовится.</b> Закройте и откройте его снова, потом включите напоминания.')}
   let sub=null;
   try{const kb=b64u(key);sub=await reg.pushManager.getSubscription();if(sub&&!sameKey(sub,kb)){await sub.unsubscribe().catch(()=>{});sub=null}
     if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:kb})}
-  catch(e){console.warn('Подписка на напоминания:',(e&&e.name)||e);return done('warn','<b>Телефон не дал подписаться на напоминания.</b> Попробуйте ещё раз чуть позже.')}
-  const r=await api('/push/subscribe',{did:S.did,sub:sub.toJSON(),tz:tzName(),prefs:remPrefs(R)});
-  if(!r.ok){try{await sub.unsubscribe()}catch(e){}return done('warn',r.offline?'<b>Пропал интернет.</b> Попробуйте ещё раз, когда появится сеть.':'<b>Напоминания заработают, когда подключим сервер.</b> Настройки сохранили — включите чуть позже.')}
+  catch(e){console.warn('Подписка на напоминания:',(e&&e.name)||e);remDiag('subscribe',e);return done('warn','<b>Телефон не дал подписаться на напоминания.</b> Попробуйте ещё раз чуть позже.')}
+  const r=await api('/push/subscribe',{did:S.did,sub:sub.toJSON(),tz:tzName(),prefs:remPrefs(R),token:AC&&AC.t});
+  if(!r.ok){remDiag('server',r.status);try{await sub.unsubscribe()}catch(e){}return done('warn',r.offline?'<b>Пропал интернет.</b> Попробуйте ещё раз, когда появится сеть.':'<b>Напоминания заработают, когда подключим сервер.</b> Настройки сохранили — включите чуть позже.')}
   R.on=true;R.sig='';R.stAt=0;R.dirty=false;R.unsub=false;R.tz=tzName();save();haptic([10,40,10]);
-  done('ok',`<b>Напоминания включены.</b> Утром в ${remPrefs(R).morning} и вечером в ${remPrefs(R).evening} — только если есть что напомнить.`);
+  done('ok',`<b>Напоминания включены.</b> Утром, днём и вечером — только когда есть что сказать, ночью тишина.`);
   toast('Напоминания включены');setTimeout(pushTick,300)}
 async function remOff(){const R=remR();R.on=false;R.unsub=true;REMST.msg=null;save();remPaint();toast('Напоминания выключены');
   await remDrop();remUnsub()}
 async function remDrop(){try{const reg=await swReg(3000),sub=reg&&reg.pushManager&&await reg.pushManager.getSubscription();if(sub)await sub.unsubscribe()}catch(e){console.warn('Отписка:',(e&&e.name)||e)}}
 async function remUnsub(){const R=remR();if(!R.unsub||!navigator.onLine)return;const r=await api('/push/unsubscribe',{did:S.did});if(r.ok){R.unsub=false;save()}} // не дошло — повторим при следующем запуске
-function remPref(k,v){const R=remR();if((k==='morning'||k==='evening')&&!/^\d\d:\d\d$/.test(v||''))return remPaint();R[k]=v;haptic(5);
+function remPref(k,v){const R=remR();if(REMT.includes(k)&&!/^\d\d:\d\d$/.test(v||''))return remPaint();R[k]=v;haptic(5);
   if(R.on){R.dirty=true;clearTimeout(remPref.t);remPref.t=setTimeout(remResend,800)}save();remPaint()}
 async function remResend(){const R=remR();if(!R.on||!R.dirty||!navigator.onLine)return;
   const reg=await swReg(3000),sub=reg&&reg.pushManager&&await reg.pushManager.getSubscription().catch(()=>null);if(!sub)return;
-  const r=await api('/push/subscribe',{did:S.did,sub:sub.toJSON(),tz:tzName(),prefs:remPrefs(R)});if(r.ok){R.dirty=false;save()}}
+  const r=await api('/push/subscribe',{did:S.did,sub:sub.toJSON(),tz:tzName(),prefs:remPrefs(R),token:AC&&AC.t});if(r.ok){R.dirty=false;save()}}
 // выключатель не врёт: если разрешение забрали в настройках или подписка пропала — показываем «выключены»
 async function remCheck(){const R=remR();if(!R.on)return false;
   if(!pushOk()||Notification.permission!=='granted'){R.on=false;R.unsub=true;save();return true}
@@ -2798,7 +2837,9 @@ async function remSync(){try{const R=remR();if(await remCheck())rerender.dirty=1
 // цифры дня для сервера: при изменениях дневника и тренировки, не чаще раза в 2 минуты и только при включённых напоминаниях
 function pushSoon(){if(!(S&&S.remind&&S.remind.on)||S.onb)return;clearTimeout(pushSoon.t);pushSoon.t=setTimeout(pushTick,2000)}
 function pushState(){const n=norm(S.profile),e=eaten(),wd=(new Date().getDay()+6)%7,done=doneToday(),plan=S.plan||planWeek();
-  return {date:today0(),kcal_left:Math.round(n.kcal-e.k),protein_left_g:Math.max(0,n.p-Math.round(e.p)),workout_today:done||(plan.includes(wd)&&!restDay()&&!weekFull()),workout_done:done,reviewed:!!(S.rvMine&&S.rvMine.length)}}
+  const mon=monday0(),wk=(S.hist||[]).filter(h=>h.d>=mon&&h.k>0),days=wk.length+(e.k>0?1:0),kc=wk.reduce((a,h)=>a+h.k,0)+(e.k>0?e.k:0);let wname='';try{wname=program().days[curDay()]}catch(_){}
+  return {date:today0(),kcal_left:Math.round(n.kcal-e.k),protein_left_g:Math.max(0,n.p-Math.round(e.p)),workout_today:done||(plan.includes(wd)&&!restDay()&&!weekFull()),workout_done:done,reviewed:!!(S.rvMine&&S.rvMine.length),
+    extra:{kcal:n.kcal,p:n.p,food_n:(S.log||[]).filter(x=>!x.d||x.d===today0()).length,streak:streakDays(),wname:String(wname||'').slice(0,40),plan:plan.slice(0,7),week:{done:S.done.length,plan:weekPlanCount(),days,kcal_avg:days?Math.round(kc/days):0}}}}
 function pushTick(){const R=S.remind;if(!R||!R.on||S.onb||!S.profile||pushTick.busy)return;let st;try{st=pushState()}catch(e){return}
   const sig=JSON.stringify(st);if(sig===R.sig)return;
   const wait=2*60e3-(Date.now()-(R.stAt||0));clearTimeout(pushTick.t);if(wait>0){pushTick.t=setTimeout(pushTick,wait+300);return}

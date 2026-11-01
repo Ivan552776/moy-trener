@@ -4,7 +4,7 @@
    видео не трогаем (нужны частичные ответы 206), кроме короткого примера squat.mp4: страница берёт его целиком через fetch.
    Версия кэша меняется при выкладке — скачанное (библиотеки, базы, картинки) переносится в новую копию, старые страницы не переносятся.
    lib/ отдаётся из памяти без проверки: новую версию библиотеки класть по новому пути, иначе останется старая. */
-const V='mt-2026-11-01-r38';
+const V='mt-2026-11-01-r39';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(['./','index.html','manifest.webmanifest','icon.png','data/products.json','data/dishes.json','data/aliases.json'].map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 // страница просит сохранить себя (её адрес заранее неизвестен: index.html на сервере, yobody.html в превью)
 self.addEventListener('message',e=>{const u=e.data&&e.data.cachePage;if(u)e.waitUntil(caches.open(V).then(c=>c.add(new Request(u,{cache:'reload'}))).catch(()=>{}))});
@@ -46,7 +46,7 @@ self.addEventListener('fetch',e=>{
 });
 // напоминания с сервера: JSON {title, body, tag, url, icon?} → уведомление; нажали — открываем приложение на нужном экране (url вида ./#gym)
 self.addEventListener('push',e=>{let d={};try{d=e.data?e.data.json():{}}catch(_){try{d={body:e.data.text()}}catch(__){}}
-  const o={body:String(d.body||''),icon:d.icon||'icon.png',badge:'icon.png',data:{url:d.url||'./'}};if(d.tag)o.tag=String(d.tag);
+  const o={body:String(d.body||''),icon:d.icon||'icon-192.png',badge:d.badge||'badge-96.png',data:{url:d.url||'./'}};if(d.tag)o.tag=String(d.tag);
   e.waitUntil(self.registration.showNotification(String(d.title||'Мой тренер'),o))});
 self.addEventListener('notificationclick',e=>{e.notification.close();const sc=self.registration.scope;
   let url=sc;try{const t=new URL((e.notification.data&&e.notification.data.url)||'./',sc);if(t.origin===location.origin&&t.href.startsWith(sc))url=t.href}catch(_){}
