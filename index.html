@@ -705,12 +705,12 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 :root[data-scheme="dark"] .hero2{color:#fff;background:linear-gradient(180deg,#232326,#1C1C1E);
   --hw:#fff;--hw2:rgba(255,255,255,.7);--hw3:rgba(255,255,255,.45);--hline:rgba(255,255,255,.12);--htrack:rgba(16,185,129,.24)}
 .h2-row{display:flex;align-items:center;gap:18px}
-.h2-ring{position:relative;width:140px;height:140px;flex:none}
+.h2-ring{--rs:140px;position:relative;width:var(--rs);height:var(--rs);flex:none} .h2-ring .ring{width:var(--rs);height:var(--rs)} @media (min-width:390px){.h2-ring{--rs:148px}} @media (max-width:374px){.h2-ring{--rs:128px}}
 .h2-ring .ring-t{stroke:var(--htrack)} .stg .h2-ring .ring{animation:ringin 900ms cubic-bezier(.22,1,.36,1) both} @keyframes ringin{from{opacity:0;transform:scale(.96)}} .h2-ring .ring-v{stroke:url(#hg);filter:drop-shadow(0 2px 3px rgba(4,120,87,.30))} .h2-dot{position:absolute;left:50%;top:calc(var(--rs,140px)*8.5/120);width:calc(var(--rs,140px)*15/120);height:calc(var(--rs,140px)*15/120);transform:translate(-50%,-50%);border-radius:50%;background:#34D399;box-shadow:0 2px 3px rgba(4,120,87,.30)}
 .hero2.over .h2-ring .ring-t{stroke:rgba(16,185,129,.4)}
-.h2-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-.h2-in .n-hero{font-size:36px;line-height:1;letter-spacing:-.03em}
-.h2-l{font-size:12.5px;font-weight:600;color:var(--hw2);margin-top:4px}
+.h2-in{position:absolute;inset:calc(var(--rs)*16/120 + 8px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.h2-in .n-hero{font-size:var(--nf,30px);line-height:1;letter-spacing:-.02em;white-space:nowrap}
+.h2-l{font-size:12px;line-height:1.2;font-weight:600;color:var(--hw2);margin-top:4px;max-width:100%}
 .hero2.over .h2-l{color:#6EE7B7}
 .h2-mac{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
 .h2-ml{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:13px;font-weight:600;color:var(--hw2)}
@@ -737,7 +737,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .tx-go{background:#fff;color:#0B0D12} .tx-demo{background:rgba(255,255,255,.2);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .me-i{background:var(--card2);color:var(--text)} .me-i .ic{width:21px;height:21px}
 .calm .ibox{width:36px;height:36px;border-radius:11px;color:var(--text2)} .calm .ibox .ic{width:20px;height:20px}
-@media (max-width:359px){.h2-ring{width:120px;height:120px}.h2-ring .ring{width:120px;height:120px} .h2-ring{--rs:120px}.h2-in .n-hero{font-size:30px}.h2-row{gap:14px}}
+@media (max-width:359px){.h2-ring{--rs:120px}.h2-row{gap:14px}}
 </style>
 </head>
 <body>
@@ -755,7 +755,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r40'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r41'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -818,6 +818,7 @@ function cu(el,anim){const to=+el.dataset.cu,suf=el.dataset.suf||'';if(!anim||!t
 const bar=(p,extra='')=>`<i style="width:${ANIM?0:p}%;${extra}" data-w="${p}%"></i>`;
 const raf2=f=>requestAnimationFrame(()=>requestAnimationFrame(f));
 function after(root,anim,stag){
+  root.querySelectorAll('.h2-in').forEach(b=>{const n=b.querySelector('.n-hero'),cu=n&&n.querySelector('[data-cu]');if(!n)return;const t=fmt(+(cu?cu.dataset.cu:n.textContent.replace(/\D/g,'')))+(cu?cu.dataset.suf||'':''),w=b.clientWidth||86,em=[...t].reduce((a,c)=>a+(/\d/.test(c)?.66:c==='−'||c==='-'?.66:.34),0);n.style.setProperty('--nf',Math.max(16,Math.min(32,Math.floor(w*.92/Math.max(em,1))))+'px')}); // число в кольце — впритык не бывает
   root.querySelectorAll('.now-t').forEach(t=>{const m=t.nextElementSibling;if(m&&m.classList.contains('now-more'))m.classList.toggle('on',t.scrollHeight>t.clientHeight+2)}); // совет длиннее 3 строк — «Ещё»
   root.querySelectorAll('.wk2').forEach(el=>{el.style.scrollBehavior='auto';el.scrollLeft=el.scrollWidth;el.style.scrollBehavior=''}); // лента недели — на текущей неделе
   root.querySelectorAll('[data-cu]').forEach(el=>cu(el,anim));
@@ -2829,7 +2830,7 @@ function remQuickBody(){const R=remR(),env=remEnv();
 async function remHello(){REMST.wait=true;REMST.got=REMST.miss=false;remPaint();clearTimeout(remHello.t);
   const r=await api('/push/hello',{did:S.did},15000);
   if(!r.ok||!r.data||!(r.data.code>=200&&r.data.code<300)){remDiag('hello',r.status+'/'+(r.data&&r.data.code));REMST.wait=false;REMST.miss=true;return remPaint()}
-  remHello.t=setTimeout(()=>{if(REMST.wait){REMST.wait=false;REMST.miss=true;remDiag('hello','timeout');remPaint()}},10000)}
+  remHello.t=setTimeout(()=>{if(REMST.wait){REMST.wait=false;REMST.miss=true;remDiag('hello','timeout');remPaint()}},12000)}
 if('serviceWorker' in navigator)try{navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.pushed==='hello'&&REMST.wait){clearTimeout(remHello.t);REMST.wait=false;REMST.got=true;haptic([10,40,10]);remPaint()}})}catch(e){}
 const remDiag=(step,err)=>api('/push/diag',{step,err:String((err&&err.name)||err||'').slice(0,80),env:`${isIOS()?'ios':/Android/i.test(navigator.userAgent)?'android':'pc'} sa=${isStandalone()?1:0} perm=${'Notification' in window?Notification.permission:'-'}`});
 function openRemind(){if(!remR().on)return remOpenQuick('Уведомления');REMST.mode='full';REMST.msg=null;if(!S.hlRemOff){S.hlRemOff=1;save();rerender.dirty=1}sheet('Напоминания',`<div id="remall">${remBody()}</div>`);remCheck().then(ch=>{if(ch)remPaint()})}
@@ -2855,7 +2856,7 @@ async function remOn(){const R=remR(),env=remEnv();if(env!=='ok'){remPaint();ret
   if(!r.ok){remDiag('server',r.status);try{await sub.unsubscribe()}catch(e){}return done('warn',r.offline?'<b>Пропал интернет.</b> Попробуйте ещё раз, когда появится сеть.':'<b>Напоминания заработают, когда подключим сервер.</b> Настройки сохранили — включите чуть позже.')}
   R.on=true;R.sig='';R.stAt=0;R.dirty=false;R.unsub=false;R.tz=tzName();save();haptic([10,40,10]);
   done('ok',`<b>Напоминания включены.</b> Утром, днём и вечером — только когда есть что сказать, ночью тишина.`);
-  setTimeout(pushTick,300);if(REMST.mode==='offer'){REMST.msg=null;remHello()}else{toast('Уведомления включены');remHello()}}
+  setTimeout(pushTick,300);if(REMST.mode==='offer')REMST.msg=null;else toast('Уведомления включены');REMST.wait=true;remPaint();setTimeout(remHello,1500)}
 async function remOff(){const R=remR();R.on=false;R.unsub=true;REMST.msg=null;save();remPaint();toast('Напоминания выключены');
   await remDrop();remUnsub()}
 async function remDrop(){try{const reg=await swReg(3000),sub=reg&&reg.pushManager&&await reg.pushManager.getSubscription();if(sub)await sub.unsubscribe()}catch(e){console.warn('Отписка:',(e&&e.name)||e)}}
