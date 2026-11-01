@@ -51,9 +51,10 @@
   --warn:#F59E0B; --warn-text:#9A5B00; --warn-soft:rgba(245,158,11,.14);
   --bad:#E8590C; --bad-text:#C2410C; --bad-soft:rgba(232,89,12,.10);
   --mus-main:#FF2D55; --mus-help:#FFB21E;
+  --tabglass:rgba(255,255,255,.72); --tabshadow:inset 0 0 0 1px rgba(255,255,255,.7),0 0 0 .5px rgba(16,20,40,.08),0 12px 32px -12px rgba(229,23,63,.30),0 4px 14px rgba(16,20,40,.08);
   --ntf-bg:rgba(255,255,255,.80); --ntf-text:#0B0D12; --ntf-text2:rgba(11,13,18,.55);
   /* форма */
-  --r:20px; --r2:12px; --r3:20px; --r-hero:28px; --r-sheet:28px; --pill:999px;
+  --r:24px; --r2:12px; --r3:24px; --r-hero:28px; --r-sheet:28px; --pill:999px;
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Segoe UI",Roboto,sans-serif;
   --display:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,"Segoe UI",Roboto,sans-serif;
   --num:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
@@ -86,6 +87,7 @@
   --warn:#FFC34D; --warn-text:#FFC34D; --warn-soft:rgba(255,195,77,.16);
   --bad:#FF8A3D; --bad-text:#FF9F5A; --bad-soft:rgba(255,138,61,.16);
   --mus-main:#FF3358; --mus-help:#FFC34D;
+  --tabglass:rgba(44,44,46,.66); --tabshadow:inset 0 0 0 1px rgba(255,255,255,.10),0 12px 32px -12px rgba(255,45,85,.35);
   --ntf-bg:rgba(28,30,38,.78); --ntf-text:#F5F6FA; --ntf-text2:rgba(245,246,250,.6);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -255,15 +257,15 @@ h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.src,.lock,.calcrow span{text-
 
 
 /* ---------- таббар ---------- */
-#tabs{position:absolute;left:0;right:0;bottom:0;height:calc(env(safe-area-inset-bottom) + 62px);padding:0 4px env(safe-area-inset-bottom);background:var(--glass);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);box-shadow:0 -.5px 0 var(--line);display:flex;align-items:center;z-index:5;view-transition-name:tabs}
+#tabs{position:absolute;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom) + 8px);height:64px;padding:0 4px;border-radius:999px;background:var(--tabglass);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);box-shadow:var(--tabshadow);touch-action:none;display:flex;align-items:center;z-index:5;view-transition-name:tabs}
 @media (prefers-reduced-transparency: reduce){#tabs,#hdr{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}}
 #tabbtns{position:relative;z-index:1;display:flex;align-items:center;width:100%;height:100%}
-#tabpill{display:none}
-.tab{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;font-size:10px;font-weight:600;letter-spacing:.01em;color:var(--text2);transition:color var(--d-tab) var(--ease-out);padding-top:8px}
+#tabpill{position:absolute;left:0;top:5px;bottom:5px;width:72px;border-radius:999px;background:var(--accent-soft);opacity:0;z-index:0;transition:transform 480ms var(--spring-bouncy),width 300ms var(--spring),opacity .2s;will-change:transform} #tabpill.drag{transition:width 200ms var(--ease-out),opacity .2s}
+.tab{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:600;letter-spacing:.01em;color:var(--text2);transition:color var(--d-tab) var(--ease-out)} .tab .ic{transition:transform 260ms var(--spring)!important} .tab.mag .ic{transform:scale(1.15)!important}
 .tab .ic{width:25px;height:25px;opacity:.8;transition:transform var(--d-press) var(--ease-out),opacity .2s} .tab:active .ic{transform:scale(.88)}
 .tab.on{color:var(--accent-text)} .tab.on .ic{opacity:1;stroke-width:2.3;animation:tabpop 420ms var(--spring-bouncy)} @keyframes tabpop{30%{transform:scale(.86)}}
 .tab.fab{color:var(--text2)}
-.tab.fab .circ{width:38px;height:38px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;margin:-6px 0 -7px;box-shadow:0 3px 10px rgba(225,29,72,.28);transition:transform var(--d-press) var(--ease-out)}
+.tab.fab .circ{width:38px;height:38px;border-radius:50%;background:var(--grad);color:#fff;display:grid;place-items:center;margin:0;width:36px;height:36px;box-shadow:0 3px 10px rgba(225,29,72,.28);transition:transform var(--d-press) var(--ease-out)}
 .tab.fab .circ .ic{width:21px;height:21px;stroke-width:2.4;opacity:1;transform:none}
 .tab.fab:active .circ{transform:scale(.9)}
 
@@ -379,7 +381,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.97)}}
 #toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top) + 12px);transform:translate(-50%,-160%);background:var(--card);box-shadow:var(--shadow-pop);padding:12px 18px;border-radius:var(--pill);font-weight:600;font-size:15px;z-index:30;transition:transform .3s var(--ease-out);display:flex;gap:8px;align-items:center;max-width:calc(100% - 32px);width:max-content;white-space:normal;text-wrap:balance;line-height:1.3}
 #toast.on{transform:translate(-50%,0);transition:transform .5s var(--spring-bouncy)}
-#phone:not(.modal) #toast{top:auto;bottom:calc(env(safe-area-inset-bottom) + 76px);transform:translate(-50%,calc(100% + 100px))} #phone:not(.modal) #toast.on{transform:translate(-50%,0)}
+#phone:not(.modal) #toast{top:auto;bottom:calc(env(safe-area-inset-bottom) + 84px);transform:translate(-50%,calc(100% + 100px))} #phone:not(.modal) #toast.on{transform:translate(-50%,0)}
 :root[data-scheme="dark"] #toast{background:var(--card3)}
 
 /* ---------- появление и переходы ---------- */
@@ -569,6 +571,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
   .tap:active,.btn:active,.chip:active,.ev:active,.addopt:active,.opt:active{transform:none!important;opacity:.7}
   #sheet{transition:opacity .2s!important;transform:none!important;opacity:0} #sheet.on{opacity:1}
   #phone.modal #scroll{transform:none}
+  .tab.mag .ic{transform:none!important} #tabpill{transition:none!important}
   .stg>*,.stg .opt{animation:rmfade 150ms ease both!important;animation-duration:150ms!important} @keyframes rmfade{from{opacity:0}}
   .scanline{animation:none!important;top:50%}
   ::view-transition-old(root),::view-transition-new(root){animation:none!important}
@@ -585,6 +588,32 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .scal .sc-d{font:600 14px/34px var(--num);font-variant-numeric:tabular-nums;height:34px;width:34px;margin:0 auto;border-radius:50%;color:var(--text2)}
 .scal .sc-v{background:var(--accent-soft);color:var(--accent-text)} .scal .sc-t{background:var(--accent);color:#fff} .scal .sc-f{opacity:.35} .scal .sc-n{box-shadow:inset 0 0 0 2px var(--accent)}
 .scal-k{display:flex;gap:16px;margin-top:12px;font-size:13px;color:var(--text2)} .scal-k>span{display:flex;align-items:center;gap:6px} .sc-k{width:10px;height:10px;border-radius:50%} .sc-k.sc-v{background:var(--accent-soft)} .sc-k.sc-t{background:var(--accent)}
+.workx{position:relative;isolation:isolate;display:block;width:100%;height:236px;border-radius:var(--r-hero);overflow:hidden;text-align:left;color:#fff;background:#16181F;margin:0 0 14px;box-shadow:0 18px 40px -24px rgba(0,0,0,.5)}
+.workx img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;outline:0}
+.workx::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,.28) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,.25) 50%,rgba(0,0,0,.82) 100%)}
+.wx-st{position:absolute;left:16px;top:16px;display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:999px;background:rgba(0,0,0,.4);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-size:13px;font-weight:600} .wx-st .ic{width:15px;height:15px}
+.workx.done .wx-st{background:var(--accent)}
+.wx-c{position:absolute;left:18px;right:18px;bottom:16px}
+.wx-t{font:700 26px/1.1 var(--display);letter-spacing:-.022em} .wx-s{font-size:14px;color:rgba(255,255,255,.8);margin-top:4px}
+.wx-go{display:inline-flex;align-items:center;gap:2px;margin-top:12px;height:42px;padding:0 14px 0 20px;border-radius:999px;background:#fff;color:#0B0D12;font-weight:600;font-size:16px} .wx-go .ic{width:18px;height:18px}
+.mealx{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border-radius:var(--r);padding:10px 16px 10px 10px;box-shadow:var(--shadow);margin:0 0 14px}
+.mx-p{position:relative;width:84px;height:84px;border-radius:12px;overflow:hidden;flex:none;background:var(--accent-soft);color:var(--accent-text);display:grid;place-items:center} .mx-p .ic{width:30px;height:30px} .mx-p img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;outline:0}
+.mx-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px} .mx-eb{font-size:13px;font-weight:600;color:var(--accent-text)} .mx-t b{font-size:16px;line-height:1.25;font-weight:600;text-wrap:pretty} .mx-s{font-size:13px;color:var(--text2)}
+.mx-v{display:flex;flex-direction:column;align-items:flex-end;flex:none} .mx-v b{font:700 20px var(--num);font-variant-numeric:tabular-nums} .mx-v span{font-size:12px;color:var(--text2)} .mx-v .mx-pr{margin-top:4px;font-weight:600;color:var(--text)}
+.wk2{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 -16px 20px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain} .wk2::-webkit-scrollbar{display:none}
+.wk2-w{flex:none;width:100%;display:flex;justify-content:space-between;padding:0 12px;scroll-snap-align:start}
+.wk2-d{display:flex;flex-direction:column;align-items:center;gap:6px;width:44px;padding:8px 0;border-radius:999px;transition:background-color .3s var(--ease-out),transform 300ms var(--spring)}
+.wk2-d:active{transform:scale(.94);transition:transform 110ms var(--ease-out)}
+.wk2-d .n{font-size:11px;font-weight:600;color:var(--text3)}
+.wk2-d .c{position:relative;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:600 15px var(--num);font-variant-numeric:tabular-nums;color:var(--text2);box-shadow:inset 0 0 0 1.5px var(--line)}
+.wk2-d .c .ic{width:16px;height:16px;stroke-width:2.6}
+.wk2-d.plan .c{box-shadow:inset 0 0 0 1.5px var(--accent-soft);color:var(--text)}
+.wk2-d.tr .c{background:var(--accent-soft);color:var(--accent-text);box-shadow:none}
+.wk2-d.fut .c{color:var(--text3)}
+.wk2-d.sel{background:var(--card);box-shadow:var(--shadow)}
+.wk2-d.today{background:var(--accent);box-shadow:0 8px 20px -10px rgba(229,23,63,.7)} .wk2-d.today .n{color:rgba(255,255,255,.8)} .wk2-d.today .c{color:#fff;box-shadow:none;font-weight:700}
+.wk2-r{position:absolute;inset:0;width:32px;height:32px;transform:rotate(-90deg)} .wk2-r circle{fill:none;stroke-width:2.6} .wk2-r .t{stroke:rgba(255,255,255,.3)} .wk2-r .v{stroke:#fff;stroke-linecap:round}
+:root[data-scheme="dark"] .wk2-d.today{box-shadow:none}
 /* ---------- «Сегодня» 3.0: кольцо-герой, «Сейчас», разбор техники ---------- */
 .top-r{display:flex;align-items:center;gap:8px;flex:none}
 .streak{display:flex;align-items:center;gap:4px;height:38px;padding:0 12px 0 9px;border-radius:999px;background:var(--card);box-shadow:var(--shadow);color:var(--accent-text)} .streak .ic{width:20px;height:20px} .streak b{font:700 17px var(--num);font-variant-numeric:tabular-nums;color:var(--text)}
@@ -643,7 +672,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r27'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r28'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -705,6 +734,7 @@ function cu(el,anim){const to=+el.dataset.cu,suf=el.dataset.suf||'';if(!anim||!t
 const bar=(p,extra='')=>`<i style="width:${ANIM?0:p}%;${extra}" data-w="${p}%"></i>`;
 const raf2=f=>requestAnimationFrame(()=>requestAnimationFrame(f));
 function after(root,anim,stag){
+  root.querySelectorAll('.wk2').forEach(el=>{el.style.scrollBehavior='auto';el.scrollLeft=el.scrollWidth;el.style.scrollBehavior=''}); // лента недели — на текущей неделе
   root.querySelectorAll('[data-cu]').forEach(el=>cu(el,anim));
   root.querySelectorAll('[data-w]').forEach(el=>{if(anim)raf2(()=>{el.style.width=el.dataset.w});else el.style.width=el.dataset.w});
   root.querySelectorAll('[data-arc]').forEach(el=>{if(anim)raf2(()=>{el.style.strokeDashoffset=el.dataset.arc});else el.style.strokeDashoffset=el.dataset.arc});
@@ -884,7 +914,17 @@ const gymPic=k=>'img/gym/'+(k||'club')+'.jpg';
 const TABS=[['today','Сегодня','sun'],['scan','','plus'],['tech','Атлас','ruler'],['me','Я','me']];
 const TITLES={today:'Сегодня',tech:'Атлас',me:'Личный кабинет',food:'Питание',gym:'Тренировки'};
 function renderTabs(){const box=$('#tabbtns');if(!box.children.length)box.innerHTML=TABS.map(([id,l,i])=>id==='scan'?`<button class="tab fab" onclick="openAdd()" aria-label="Записать"><span class="circ">${ic('plus')}</span><span>Записать</span></button>`:`<button class="tab" data-id="${id}" onclick="go('${id}')">${ic(i)}<span>${l}</span></button>`).join('');box.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.id===S.tab));movePill()}
-function movePill(){const on=$('#tabbtns .tab.on'),p=$('#tabpill');if(!on)return;if(!p.dataset.init){p.style.transition='none';p.dataset.init=1;requestAnimationFrame(()=>{p.style.transition=''})}p.style.left=(on.offsetLeft+on.offsetWidth/2-32)+'px';p.style.opacity=1}
+function movePill(x){const on=$('#tabbtns .tab.on'),p=$('#tabpill');if(!on)return;if(!p.dataset.init){p.style.transition='none';p.dataset.init=1;requestAnimationFrame(()=>{p.style.transition=''})}
+  const w=on.offsetWidth-6;p.style.width=w+'px';p.style.transform=`translateX(${x!=null?x-w/2:on.offsetLeft+3}px)`;p.style.opacity=1}
+/* панель вкладок: ведём пальцем — индикатор едет следом, значок под пальцем увеличивается; отпустили — переходим на вкладку под пальцем */
+(()=>{let st=null;const box=()=>$('#tabbtns'),under=x=>[...box().querySelectorAll('.tab')].find(b=>x>=b.offsetLeft&&x<b.offsetLeft+b.offsetWidth);
+  document.addEventListener('pointerdown',e=>{const b=box();if(!b||!b.contains(e.target))return;st={x0:e.clientX,drag:false,left:b.getBoundingClientRect().left}},{passive:true});
+  document.addEventListener('pointermove',e=>{if(!st)return;if(!st.drag&&Math.abs(e.clientX-st.x0)<8)return;st.drag=true;const b=box(),x=Math.max(0,Math.min(b.offsetWidth,e.clientX-st.left)),t=under(x);
+    $('#tabpill').classList.add('drag');movePill(x);b.querySelectorAll('.tab').forEach(q=>q.classList.toggle('mag',q===t))},{passive:true});
+  const end=e=>{if(!st)return;const was=st;st=null;const b=box();$('#tabpill').classList.remove('drag');b.querySelectorAll('.mag').forEach(q=>q.classList.remove('mag'));
+    if(!was.drag)return;const t=under(e.clientX-was.left);was.drag&&(end.block=Date.now());if(t&&t.dataset.id&&t.dataset.id!==S.tab)go(t.dataset.id);else movePill()};
+  document.addEventListener('pointerup',end);document.addEventListener('pointercancel',e=>{st=null;$('#tabpill').classList.remove('drag');box().querySelectorAll('.mag').forEach(q=>q.classList.remove('mag'));movePill()});
+  document.addEventListener('click',e=>{if(end.block&&Date.now()-end.block<350&&box().contains(e.target)){e.stopPropagation();e.preventDefault()}},true)})();
 function toTop(){const sc=$('#scroll');sc.style.scrollBehavior='auto';sc.scrollTop=0;sc.style.scrollBehavior=''}
 function go(t){if(t==='food'){openFoodPlan();return}if(t==='gym'){openProgram();return}if(t==='club'){t='me'}if(!['today','tech','me'].includes(t))t='today';if(t===S.tab){$('#scroll').scrollTo({top:0,behavior:'smooth'});return}DIR=TABS.findIndex(x=>x[0]===t)>TABS.findIndex(x=>x[0]===S.tab)?'sl':'sr';if(S.tab==='tech')EXN=20;S.tab=t;save();const sw=()=>{render();toTop()};if(document.startViewTransition&&!RM){document.documentElement.dataset.vt=DIR==='sl'?'l':'r';document.startViewTransition(sw).ready.catch(()=>{})}else sw();haptic(8)}
 function screen(){if(!['today','tech','me'].includes(S.tab))S.tab='today';return {today:vToday,tech:vTech,me:vMe}[S.tab]()}
@@ -1011,6 +1051,10 @@ function vToday(){
     <button class="btn" onclick="${act[0]}">${ic(act[1])}${act[2]}</button>
     <button class="now-ask" onclick="openChat()">Спросить тренера ${ic('chev')}</button>
   </section>
+  <button class="workx tap${done?' done':''}" onclick="openProgram()"><img src="${S.profile.place==='home'?gymPic('home'):gymPic(pg.ex[0]&&pg.ex[0][3])}" alt="" onerror="this.remove()">
+    <span class="wx-st">${done?ic('check')+'Готово':wfull?'Неделя закрыта':rest?'Отдых':!planToday?'Следующая':lateW?'Завтра':'Тренировка дня'}</span>
+    <div class="wx-c"><div class="wx-t">${pg.days[ti]}</div><div class="wx-s">${pl(pg.ex.length,'упражнение','упражнения','упражнений')} · 45 мин · «${pg.name}»</div>
+    <span class="wx-go">${done?'Посмотреть':act[0]==='openProgram()'?'План тренировки':'Начать'}${ic('chev')}</span></div></button>
   <button class="techx tap" onclick="${lf?'openForm()':`formRun('squat.mp4','squat')`}" aria-label="Разбор техники по камере">
     <img src="${lf?lf.shot:'img/tech-demo.jpg'}" alt="">
     <div class="tx-c"><span class="tx-eb">${lf?`${fName(lf.ex)} · ${ago(lf.t)}`:'Камера проверит технику'}</span>
@@ -1018,12 +1062,11 @@ function vToday(){
       <div class="tx-t">${lf?'Разбор техники':'Разбор техники по видео'}</div>
       <div class="tx-s">${lf?'Снимите ещё подход — сравним с прошлым разом':'Снимите подход сбоку — телефон найдёт ошибки и покажет на ваших кадрах, как исправить'}</div>
       <div class="tx-b"><span class="tx-go" onclick="event.stopPropagation();openForm()">${ic('cam')}Снять подход</span>${lf?'':`<span class="tx-demo">${ic('play')}Пример</span>`}</div></div></button>
-  <h2>План дня</h2>
+  ${nextMeal&&mealTime?(()=>{const mi=MEALS.findIndex(x=>x.n===nextMeal.n),im=(MEALS[mi]||{}).img;return `<button class="mealx tap" onclick="openMeal(${mi})"><div class="mx-p">${ic('food')}${pic(im,nextMeal.n)}</div><div class="mx-t"><span class="mx-eb">Дальше · ${mealTime}</span><b>${nextMeal.n}</b><span class="mx-s">под остаток и бюджет</span></div><div class="mx-v"><b>${fmt(nextMeal.nut.k)}</b><span>ккал</span><span class="mx-pr">≈${nextMeal.price} ₽</span></div></button>`})():''}
+  ${S.log.length?`<h2>Съедено сегодня</h2>
   <div class="card list tl">
     ${S.log.map((en,i)=>`<div class="li" role="button" onclick="openEntry(${i})"><time>${en.t}</time><div style="flex:1;min-width:0"><div style="font-weight:600">${en.n}</div><div class="tiny muted">Б ${fmt(en.p)} · Ж ${fmt(en.f)} · У ${fmt(en.c)} · ${en.src==='этикетка'?'по этикетке':'по базе'}${en.acc==='средняя'?', граммы уточнены':''}</div></div><span class="kc" style="white-space:nowrap">${fmt(en.k)}<small style="font:500 12px var(--font);color:var(--text2)"> ккал</small></span></div>`).join('')}
-    ${nextMeal&&mealTime?`<button class="li next" style="width:100%" onclick="openMeal(${MEALS.findIndex(x=>x.n===nextMeal.n)})"><time>${mealTime}</time><div style="flex:1;min-width:0"><b>${nextMeal.n}</b><div class="tiny">подобрано под остаток и бюджет · ${u(nextMeal.nut.k,'ккал')} · ≈${nextMeal.price} ₽</div></div><span class="chev">${ic('chev')}</span></button>`:''}
-    <button class="li ${done||wfull||lateW||!planToday?'':'next'}" style="width:100%" onclick="openProgram()"><time>${done?'готово':wfull?'неделя':rest?'отдых':!planToday?'потом':lateW?'поздно':'вечер'}</time><div style="flex:1;min-width:0"><b>${pg.days[ti]}</b><div class="tiny">${pl(pg.ex.length,'упражнение','упражнения','упражнений')} · ~45 мин · «${pg.name}»${rest?' · вчера была тренировка, сегодня отдых':lateW?' · лучше перенести на завтра':''}</div></div><span class="chev">${ic('chev')}</span></button>
-  </div>
+  </div>`:''}
   ${rvAsk()}
   <h2>Итоги дня</h2>
   <div class="card list calm">
@@ -1051,12 +1094,20 @@ function hlCards(n,e){const hr=new Date().getHours(),pg=program(),ti=curDay(),do
   if(!cards.length)return '';
   return `<h2>Подсказки дня</h2><div class="hl">${cards.slice(0,3).join('')}</div>`}
 function ago(t){const d=Date.now()-t,m=Math.round(d/60000);if(m<60)return 'только что';if(m<60*20)return Math.round(m/60)+' ч назад';const dd=Math.round(m/1440);return dd<=1?'вчера':dd+' дн. назад'}
+function wkTap(el,k,tr,plan){el.closest('.wk2').querySelectorAll('.sel').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');haptic(5);
+  const d=new Date(k+'T12:00'),lab=d.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});toast(lab[0].toUpperCase()+lab.slice(1)+' — '+(tr?'тренировка сделана':k===today0()?'сегодня':plan?'тренировка по плану':d>new Date()?'день отдыха':'без тренировки'))}
 function weekStrip(){
   const names=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],wd=(new Date().getDay()+6)%7,n=effTrains(),ti=curDay(),days=[];
   for(let i=0;i<n;i++){let d=Math.max(0,Math.min(6,wd+(i-ti)*2));while(days.includes(d)&&d<6)d++;if(days.includes(d))continue;days.push(d)}
   if(!S.plan){S.plan=planWeek();save()}days.length=0;days.push(...S.plan); // план недели — один раз в неделю, с первого дня, когда открыли приложение
   const today=new Date(),mon=new Date(today);mon.setDate(today.getDate()-wd);
-  return `<div class="wk" style="margin:0 0 18px">${names.map((nm,i)=>{const di=days.indexOf(i),done=di>-1&&S.done.includes(di),dt=new Date(mon);dt.setDate(mon.getDate()+i);const dn=!!(S.doneOn&&S.doneOn[ymd(dt)]!=null);return `<div class="d ${dn?'done':di>-1&&i>=wd&&S.done.length<weekPlanCount()?'plan':''} ${i===wd?'today':''}"><i>${dn?ic('check','style="width:16px;height:16px"'):dt.getDate()}</i>${nm}</div>`}).join('')}</div>`;
+  const e=eaten(),pct=Math.min(100,Math.round(e.k/norm(S.profile).kcal*100)),tk=today0();
+  const cell=(dt,i,plan)=>{const k=ymd(dt),tr=!!(S.doneOn&&S.doneOn[k]!=null),isT=k===tk,fut=dt>today&&!isT,r=13,L=2*Math.PI*r;
+    const mini=isT?`<svg class="wk2-r" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="${r}" class="t"/><circle cx="16" cy="16" r="${r}" class="v" stroke-dasharray="${L}" stroke-dashoffset="${L*(1-pct/100)}"/></svg>`:'';
+    return `<button class="wk2-d${isT?' today':''}${tr?' tr':''}${fut?' fut':''}${plan?' plan':''}" onclick="wkTap(this,'${k}',${tr?1:0},${plan?1:0})"><span class="n">${names[i]}</span><span class="c">${mini}${tr&&!isT?ic('check'):dt.getDate()}</span></button>`};
+  const pm=new Date(mon);pm.setDate(mon.getDate()-7);
+  const wk=(m,cur)=>`<div class="wk2-w">${names.map((nm,i)=>{const dt=new Date(m);dt.setDate(m.getDate()+i);return cell(dt,i,cur&&days.includes(i)&&dt>=new Date(today0()))}).join('')}</div>`;
+  return `<div class="wk2" aria-label="Неделя">${wk(pm,false)}${wk(mon,true)}</div>`;
 }
 function tip(n,e){
   const g=S.profile.goal,leftP=n.p-Math.round(e.p),h=new Date().getHours(),sg=suggest(),lunch=S.log.some(x=>+x.t.slice(0,2)>=11);
