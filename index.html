@@ -500,10 +500,24 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .rv-sum{display:flex;align-items:center;gap:14px;min-width:0} .rv-sum.big{padding:2px 0 8px}
 .rv .list .li:last-child{box-shadow:inset 0 -.5px 0 var(--line)} .rv .list{margin-bottom:2px}
 .rv-it{align-items:flex-start!important}
-.rv-nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.rv-nm{min-width:0;overflow-wrap:anywhere;font-weight:600}
 .rv-tx{margin-top:6px;font-size:15px;line-height:1.4;white-space:pre-line;overflow-wrap:anywhere;text-wrap:pretty}
 .rv-short .rv-tx{display:-webkit-box;-webkit-line-clamp:4;line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .rv-note{margin-top:10px}
+/* ответ «Команды «Мой тренер»» под отзывом: свёрнут строкой «Ответ команды», раскрывается (как на Яндекс Картах); изумрудное стекло */
+.rv-rep-t{display:inline-flex;align-items:center;gap:4px;min-height:32px;margin-top:6px;padding:0;font-size:13.5px;font-weight:600;color:var(--ok-text)}
+.rv-rep-t .ic{width:15px;height:15px;transition:transform .2s var(--ease-out)} .rv-rep-t[aria-expanded="true"] .ic{transform:rotate(90deg)}
+.rv-rep{position:relative;margin-top:4px;padding:10px 12px 11px;border-radius:14px;background:linear-gradient(140deg,rgba(52,211,153,.22),rgba(16,185,129,.07) 70%);border:.5px solid rgba(16,185,129,.30);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 6px 16px -10px rgba(4,120,87,.45);-webkit-backdrop-filter:blur(14px) saturate(170%);backdrop-filter:blur(14px) saturate(170%);overflow:hidden}
+.rv-rep[hidden]{display:none}
+:root[data-scheme="dark"] .rv-rep{background:linear-gradient(140deg,rgba(110,231,183,.17),rgba(16,185,129,.05) 70%);border-color:rgba(110,231,183,.24);box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 6px 16px -10px rgba(0,0,0,.6)}
+.rv-rep-h{display:flex;flex-wrap:wrap;align-items:center;gap:2px 7px;min-width:0;font-size:13px} .rv-rep-h b{min-width:0;color:var(--ok-text);font-weight:700}
+.rv-rep-h .tiny{flex:none;margin-left:auto}
+.rv-rep-ic{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--ok);color:#fff} .rv-rep-ic .ic{width:12px;height:12px;stroke-width:2.6}
+.rv-rep-tx{margin-top:5px;font-size:14.5px;line-height:1.4;white-space:pre-line;overflow-wrap:anywhere;text-wrap:pretty;color:var(--text)}
+.rv-new{padding:2px 8px;font-size:12px;margin-left:4px}
+.rv-hint{display:flex;gap:8px;align-items:flex-start;margin-top:10px;font-size:13px;line-height:1.35;color:var(--text2)} .rv-hint .ic{flex:none;width:16px;height:16px;margin-top:1px;color:var(--ok-text)}
+.rvt-rep,.obrv-rep{flex:none;padding:3px 7px;border-radius:99px;background:var(--ok-soft);color:var(--ok-text);font-size:11.5px;font-weight:700;line-height:1;white-space:nowrap}
+.obrv-n{display:flex;align-items:center;gap:6px;min-width:0} .obrv-n>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .obrv-rep{margin-left:auto}
 .rv-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px} .rv-acts .btn{flex:1 1 130px;width:auto;padding:0 12px}
 .rv-bars{display:grid;gap:6px;margin-top:10px}
 .rv-bar{display:grid;grid-template-columns:12px 1fr 28px;align-items:center;gap:10px} .rv-bar span:last-child{text-align:right}
@@ -647,8 +661,18 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .wx-c{position:absolute;left:18px;right:18px;bottom:16px}
 .wx-t{font:700 26px/1.1 var(--display);letter-spacing:-.022em} .wx-s{font-size:14px;color:rgba(255,255,255,.8);margin-top:4px}
 .wx-go{display:inline-flex;align-items:center;gap:2px;margin-top:12px;height:42px;padding:0 14px 0 20px;border-radius:999px;background:#fff;color:#0B0D12;font-weight:600;font-size:16px} .wx-go .ic{width:18px;height:18px}
-.dish .thumb{width:60px;height:60px;border-radius:14px} .dish-ic{position:absolute;inset:0;display:grid;place-items:center;color:var(--accent-text);background:var(--accent-soft)} .dish-ic .ic{width:24px;height:24px}
+.dish .thumb{width:60px;height:60px;border-radius:14px} .dish-ic{position:absolute;inset:0;display:grid;place-items:center;color:#fff;background:radial-gradient(120% 90% at 20% 15%,rgba(255,255,255,.28),transparent 55%),var(--grad);box-shadow:inset 0 1px 0 rgba(255,255,255,.25)} .dish-ic .ic{width:26px;height:26px;stroke-width:1.6}
 .stepn{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-text);font:700 13px var(--num);margin-top:1px}
+.dsec{margin-bottom:8px} .dhead{position:sticky;top:-1px;z-index:3;display:flex;align-items:center;gap:6px;padding:10px 4px 8px;font:700 17px var(--display);background:var(--sheet);color:var(--text)} .dhead .ic{width:17px;height:17px;color:var(--accent-text)}
+:root[data-scheme="dark"] .dhead{background:rgb(28,28,30)} .dhead{background:rgb(243,242,246)} .noblur .dhead{background:var(--sheet)}
+.dietrow{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:9px 0;text-align:left;box-shadow:inset 0 -.5px 0 var(--line);transition:background-color .2s var(--ease-out)} .dlist .dietrow:last-child{box-shadow:none}
+.dietrow.on{background:linear-gradient(90deg,var(--accent-soft),transparent 70%);margin:0 -20px;padding:9px 20px;width:calc(100% + 40px)} .dietrow:active{transform:scale(.99)}
+.dicon{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-text)} .dicon .ic{width:19px;height:19px;stroke-width:1.6}
+.dtx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px} .dtx b{font-weight:650;font-size:16px;line-height:1.25} .dtx small{font-size:13px;color:var(--text2);line-height:1.3}
+.dietrow .toggle{pointer-events:none} .dtop{position:sticky;top:-1px;z-index:4;padding:2px 0 6px;background:rgb(243,242,246)} :root[data-scheme="dark"] .dtop{background:rgb(28,28,30)} .noblur .dtop{background:var(--sheet)}
+.dsel{margin-top:8px} .dsel .chip{font-size:13px;padding:6px 11px}
+.ddone{position:sticky;bottom:-16px;z-index:4;margin:12px -20px -16px;padding:12px 20px calc(env(safe-area-inset-bottom) + 22px);background:rgba(243,242,246,.82);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:0 -.5px 0 var(--line)}
+:root[data-scheme="dark"] .ddone{background:rgba(28,28,30,.82)}
 .mealx{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border-radius:var(--r);padding:12px 16px 12px 12px;box-shadow:var(--shadow);margin:0 0 12px}
 .mx-p{position:relative;width:84px;height:84px;border-radius:12px;overflow:hidden;flex:none;background:var(--accent-soft);color:var(--accent-text);display:grid;place-items:center} .mx-p .ic{width:30px;height:30px} .mx-p img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;outline:0}
 .mx-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px} .mx-eb{font-size:13px;font-weight:600;color:var(--accent-text)} .mx-t b{font-size:16px;line-height:1.25;font-weight:600;text-wrap:pretty} .mx-s{font-size:13px;color:var(--text2)}
@@ -759,7 +783,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r53'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-02-r54'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -802,6 +826,12 @@ const I={
  moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
  share:'<path d="M12 3.5v11"/><path d="M8 7.5l4-4 4 4"/><path d="M8 10.5H6.5a1.5 1.5 0 0 0-1.5 1.5v7a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-7a1.5 1.5 0 0 0-1.5-1.5H16"/>',
  addsq:'<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8.5v7M8.5 12h7"/>',
+ bowl:'<path d="M3.5 11h17a8.5 8.5 0 0 1-17 0z"/><path d="M8 20h8"/><path d="M9 7.5c0-1.5 1.5-1.5 1.5-3M13.5 7.5c0-1.5 1.5-1.5 1.5-3"/>',
+ fish:'<path d="M3 12c3-4.5 9-6 14-2l3-2.5v9L17 14c-5 4-11 2.5-14-2z"/><circle cx="8" cy="11.2" r=".8" fill="currentColor"/>',
+ egg:'<path d="M12 3c3.6 0 6.5 5.4 6.5 10a6.5 6.5 0 0 1-13 0C5.5 8.4 8.4 3 12 3z"/>',
+ meat:'<path d="M14.5 4.5a5 5 0 0 1 4.9 6.1c-.6 2.6-3.2 4.4-5.9 4.4h-1l-3.6 3.6a2 2 0 1 1-2.6-2.6L9.9 12.4v-1A6.9 6.9 0 0 1 14.5 4.5z"/>',
+ leaf:'<path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15"/><path d="M5 19c3-4 6-7 10-9"/>',
+ cup:'<path d="M5 8h12v5a6 6 0 0 1-12 0z"/><path d="M17 9.5h1.5a2.5 2.5 0 0 1 0 5H16.5"/><path d="M8 3.5v2M11 3.5v2M14 3.5v2"/>',
  cart:'<path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h8.9a1 1 0 0 0 1-.8L20 8H6.2"/><circle cx="9.5" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/>'
 };
 const ic=(n,s='')=>`<svg class="ic" ${s} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${I[n]}</svg>`;
@@ -1219,30 +1249,84 @@ function tip(n,e){
   return `Сегодня всё по плану. Вечером — ${program().days[curDay()].replace(/^./,c=>c.toLowerCase())}, около 45&nbsp;минут.`;
 }
 
-/* ---------- Не ем и аллергии: строгое исключение блюд по меткам продуктов (data/allergens.json, korzina.json «al»).
-   «Не ем» синхронизируется с аккаунтом; аллергии — сведения о здоровье (ст. 10 152-ФЗ): только на этом телефоне (S.alg в SYNC_LOCAL) ---------- */
-const NOEAT=[['fish','Рыба',['fish']],['pork','Свинина',['pork']],['beef','Говядина',['beef']],['veg','Мясо, птица и рыба — я вегетарианец',['meat','poultry','pork','beef','fish','seafood']],['milk','Молочное',['milk']],['mushroom','Грибы',['mushroom']],['spicy','Острое',['spicy']]];
-const ALG=[['nuts','Орехи',['nuts']],['peanut','Арахис',['peanut']],['milk','Молоко и лактоза',['milk']],['egg','Яйца',['egg']],['gluten','Глютен: пшеница, рожь, ячмень, овёс',['gluten']],['fish','Рыба',['fish']],['seafood','Морепродукты',['seafood']],['soy','Соя',['soy']],['honey','Мёд',['honey']],['citrus','Цитрусы',['citrus']],['sesame','Кунжут',['sesame']]];
-const TAG_N={milk:'молоко',egg:'яйца',gluten:'глютен',fish:'рыба',seafood:'морепродукты',soy:'соя',nuts:'орехи',peanut:'арахис',honey:'мёд',citrus:'цитрусы',sesame:'кунжут',pork:'свинина',beef:'говядина',meat:'мясо',poultry:'птица',mushroom:'грибы',spicy:'острое'};
-const algOf=()=>{S.alg=S.alg||{a:[],o:[]};S.alg.a=S.alg.a||[];S.alg.o=S.alg.o||[];return S.alg};
-function banTags(only){const t=new Set();if(only!=='alg')(S.noeat||[]).forEach(k=>{const r=NOEAT.find(x=>x[0]===k);if(r)r[2].forEach(x=>t.add(x))});if(only!=='noeat')algOf().a.forEach(k=>{const r=ALG.find(x=>x[0]===k);if(r)r[2].forEach(x=>t.add(x))});return t}
+/* ---------- Не ем и аллергии: строгое исключение блюд по меткам продуктов (data/allergens.json, korzina.json «al», tools/prices/allergens.py).
+   «Не ем» и «Кухня и время» синхронизируются с аккаунтом; аллергии и свои продукты — сведения о здоровье (ст. 10 152-ФЗ): только на этом телефоне (S.alg в SYNC_LOCAL).
+   Словарь меток ловит с запасом: лучше убрать лишнее блюдо, чем пропустить аллерген ---------- */
+const MEAT=['meat','poultry','pork','beef','lamb','offal','chicken'],SEA=['fish','seafood','crustacean','mollusc'];
+// [ключ, название, примеры, метки, значок]
+const ALG=[['gluten','Глютен','пшеница, рожь, ячмень, овёс',['gluten'],'leaf'],['crustacean','Ракообразные','креветки, раки, крабы',['crustacean','seafood'],'fish'],
+ ['mollusc','Моллюски','кальмары, мидии',['mollusc','seafood'],'fish'],['fish','Рыба','любая рыба и икра',['fish'],'fish'],['egg','Яйца','и майонез, выпечка, панировка',['egg'],'egg'],
+ ['peanut','Арахис','и арахисовая паста',['peanut'],'leaf'],['soy','Соя','соевый соус, тофу',['soy'],'leaf'],['milk','Белок молока','молоко, творог, сыр, сливочное масло',['milk'],'cup'],
+ ['lactose','Лактоза','убираем все молочные продукты',['milk'],'cup'],['nuts','Орехи','миндаль, фундук, грецкий, кешью, фисташки',['nuts'],'leaf'],
+ ['celery','Сельдерей','',['celery'],'leaf'],['mustard','Горчица','и майонез',['mustard'],'leaf'],['sesame','Кунжут','и хумус',['sesame'],'leaf'],['lupin','Люпин','мука и паста из люпина',['lupin'],'leaf'],
+ ['sulfite','Сульфиты','сухофрукты, вино, уксус',['sulfite'],'leaf'],['buckwheat','Гречка','',['buckwheat'],'bowl'],['honey','Мёд','',['honey'],'cup'],['citrus','Цитрусовые','лимон, апельсин, мандарин',['citrus'],'leaf'],
+ ['chocolate','Шоколад и какао','',['chocolate'],'cup'],['berry','Клубника и ягоды','',['berry'],'leaf'],['tomato','Томаты','помидоры, томатная паста, кетчуп',['tomato'],'leaf'],['corn','Кукуруза','',['corn'],'leaf'],
+ ['legume','Бобовые','горох, чечевица, нут, фасоль',['legume'],'leaf'],['exotic','Банан, киви, экзотические фрукты','',['exotic'],'leaf'],['rosaceae','Яблоки, груши, косточковые','перекрёстная аллергия на пыльцу',['rosaceae'],'leaf'],
+ ['mushroom','Грибы','',['mushroom'],'leaf'],['seeds','Семечки подсолнечника','',['seeds'],'leaf'],['poppy','Мак','',['poppy'],'leaf'],['coconut','Кокос','',['coconut'],'leaf'],
+ ['chicken','Курица','куриное мясо',['chicken'],'meat'],['redmeat','Красное мясо (альфа-гал)','говядина, свинина, баранина',['beef','pork','lamb','offal'],'meat'],['pork','Свинина','',['pork'],'meat'],
+ ['spicy','Острое и специи','',['spicy'],'leaf'],['onion','Лук и чеснок','',['onion'],'leaf'],['yeast','Дрожжи','хлеб, лаваш, дрожжевое тесто',['yeast'],'bowl']];
+const INTOL=[['fructose','Фруктоза','фрукты, мёд, сахар, сухофрукты',['fructose'],'leaf'],['histamine','Гистамин','выдержанные сыры, копчёности, квашеное, томаты',['histamine'],'leaf'],
+ ['fodmap','Чувствительный кишечник (FODMAP)','лук, чеснок, бобовые, пшеница, яблоки, молоко',['fodmap'],'leaf'],['pku','Фенилаланин','аспартам — в наших рецептах его нет',[],'leaf']];
+const NOEAT=[['veg','Вегетарианец','без мяса, птицы и рыбы',[...MEAT,...SEA],'leaf'],['vegan','Веган','без всего животного, включая мёд',[...MEAT,...SEA,'milk','egg','honey'],'leaf'],
+ ['pesc','Пескетарианец','рыба можно, мясо нет',MEAT,'fish'],['halal','Халяль','без свинины и алкоголя',['pork','alcohol'],'meat'],['kosher','Кошер (упрощённо)','без свинины, морепродуктов; мясо отдельно от молока',['pork','seafood','crustacean','mollusc'],'meat'],
+ ['fast','Православный пост','без мяса, молока и яиц',[...MEAT,'milk','egg',...SEA],'leaf'],['fastfish','В пост рыба можно','вместе с «Православный пост»',[],'fish'],
+ ['nosugar','Без сахара','сахар, мёд, сладости',['sugar'],'cup'],['noalc','Без алкоголя в рецептах','',['alcohol'],'cup'],
+ ['pork','Свинину','',['pork'],'meat'],['beef','Говядину','',['beef'],'meat'],['lamb','Баранину','',['lamb'],'meat'],['poultry','Птицу','курица, индейка',['poultry','chicken'],'meat'],
+ ['offal','Субпродукты','печень, сердце, язык',['offal'],'meat'],['fish','Рыбу','',['fish'],'fish'],['seafood','Морепродукты','',['seafood','crustacean','mollusc'],'fish'],
+ ['milk','Молочное','',['milk'],'cup'],['mushroom','Грибы','',['mushroom'],'leaf'],['spicy','Острое','',['spicy'],'leaf']];
+const KITCHEN=[['nooven','Нет духовки','советуем только то, что на плите'],['t15','Готовлю не дольше 15 минут',''],['t30','Готовлю не дольше 30 минут',''],['simple','Только самое простое','без теста, лепки и мясорубки']];
+const TAG_N={milk:'молоко',egg:'яйца',gluten:'глютен',fish:'рыба',seafood:'морепродукты',crustacean:'ракообразные',mollusc:'моллюски',soy:'соя',nuts:'орехи',peanut:'арахис',honey:'мёд',citrus:'цитрусовые',sesame:'кунжут',
+ celery:'сельдерей',mustard:'горчица',lupin:'люпин',sulfite:'сульфиты',buckwheat:'гречка',chocolate:'шоколад',berry:'ягоды',tomato:'томаты',corn:'кукуруза',legume:'бобовые',exotic:'экзотические фрукты',rosaceae:'яблоки и косточковые',
+ seeds:'семечки',poppy:'мак',coconut:'кокос',chicken:'курица',pork:'свинина',beef:'говядина',lamb:'баранина',offal:'субпродукты',meat:'мясо',poultry:'птица',mushroom:'грибы',spicy:'острое',onion:'лук и чеснок',yeast:'дрожжи',
+ sugar:'сахар',alcohol:'алкоголь',histamine:'гистамин',fodmap:'FODMAP',fructose:'фруктоза'};
+const algOf=()=>{S.alg=S.alg||{a:[],o:[],w:[]};['a','o','w'].forEach(k=>S.alg[k]=S.alg[k]||[]);return S.alg};
+const ALLROWS=()=>[...ALG,...INTOL];
+function banTags(only){const t=new Set(),ne=S.noeat||[];
+  if(only!=='alg')ne.forEach(k=>{const r=NOEAT.find(x=>x[0]===k);if(!r)return;r[3].forEach(x=>{if(k==='fast'&&ne.includes('fastfish')&&SEA.includes(x))return;t.add(x)})});
+  if(only!=='noeat')algOf().a.forEach(k=>{const r=ALLROWS().find(x=>x[0]===k);if(r)r[3].forEach(x=>t.add(x))});return t}
 const banOther=()=>new Set(algOf().o.map(x=>x.id));
-function dishBan(d){const t=banTags(),o=banOther();if(!t.size&&!o.size)return null;for(const [id] of d.ing){const x=KIT.it[id];const hit=(x.al||[]).find(a=>t.has(a));if(hit)return TAG_N[hit];if(o.has(x.kb)||o.has(id))return x.n.toLowerCase()}return null}
-const dietOn=()=>!!((S.noeat||[]).length||algOf().a.length||algOf().o.length);
-function dietSub(){const l=[...(S.noeat||[]).map(k=>(NOEAT.find(x=>x[0]===k)||[,''])[1].replace(/ — .*/,'')),...algOf().a.map(k=>(ALG.find(x=>x[0]===k)||[,''])[1].replace(/:.*/,'')),...algOf().o.map(x=>x.n)].filter(Boolean);return l.length?l.join(', ').toLowerCase():'ничего не исключено'}
-function openDiet(){const A=algOf(),chip=(on,fn,t)=>`<button class="chip ${on?'on':''}" aria-pressed="${on}" onclick="${fn}">${t}</button>`;
-  sheet('Не ем и аллергии',`<div class="small muted" style="margin:0 4px 12px">Всё необязательно. Отмеченное уберём из советов блюд, списка покупок и замены.</div>
-   <h2 style="margin-top:0">Не ем</h2><div class="chips wrap" style="margin-bottom:6px">${NOEAT.map(([k,t])=>chip((S.noeat||[]).includes(k),`dietT('noeat','${k}')`,t)).join('')}</div>
-   <h2>Аллергия или непереносимость</h2><div class="chips wrap">${ALG.map(([k,t])=>chip(A.a.includes(k),`dietT('alg','${k}')`,t)).join('')}</div>
-   <div class="small muted" style="margin:12px 4px 6px">Другое — продукт из нашей базы</div>
-   ${A.o.length?`<div class="chips wrap" style="margin-bottom:8px">${A.o.map(x=>`<button class="chip on" onclick="dietOther('${x.id}')" aria-label="Убрать ${esc(x.n)}">${esc(x.n)} ✕</button>`).join('')}</div>`:''}
-   <input class="search" type="search" placeholder="Найти продукт, например «помидор»" oninput="dietFind(this.value)" style="margin-bottom:8px"><div id="dietres"></div>
-   <div class="card" style="margin-top:12px"><div class="row" style="gap:10px;align-items:flex-start"><div class="ibox ok">${ic('lock')}</div><div class="small"><b>Аллергии хранятся только на этом телефоне</b> — не уходят на сервер и в аккаунт. «Не ем» сохраняется в аккаунт.</div></div></div>
-   <div class="concept">Мы убираем такие блюда из советов, но состав в магазине может отличаться — проверяйте упаковку. Это не медицинская консультация.</div>`);SHEET_FN=openDiet}
-function dietT(kind,k){if(kind==='noeat'){const l=S.noeat=S.noeat||[],i=l.indexOf(k);i<0?l.push(k):l.splice(i,1)}else{const l=algOf().a,i=l.indexOf(k);i<0?l.push(k):l.splice(i,1)}if(S.cook)S.cook.skip={};save();haptic(6);keepScroll(openDiet)}
-function dietOther(id,n){const o=algOf().o,i=o.findIndex(x=>x.id===id);if(i<0&&n)o.push({id,n});else if(i>=0)o.splice(i,1);if(S.cook)S.cook.skip={};save();haptic(6);keepScroll(openDiet)}
+const stem=w=>norm_(w).replace(/(ами|ями|ов|ев|ей|ой|ий|ый|ая|яя|ое|ее|ые|ие|ам|ям|ах|ях|ом|ем|а|я|ы|и|у|ю|о|е|ь)$/,'');
+// причина, по которой блюдо убрано (или null): метка продукта, свой продукт, своё слово в составе, кухня и время
+function dishBan(d){const t=banTags(),o=banOther(),A=algOf(),ne=S.noeat||[];
+  for(const [id] of d.ing){const x=KIT.it[id];const hit=(x.al||[]).find(a=>t.has(a));if(hit)return TAG_N[hit]||hit;if(o.has(x.kb)||o.has(id))return x.n.toLowerCase();
+    for(const w of A.w){const s=stem(w);if(s.length>=3&&norm_(x.n).includes(s))return w}}
+  if(ne.includes('kosher')){const al=new Set(d.ing.flatMap(([id])=>KIT.it[id].al||[]));if(al.has('meat')&&al.has('milk'))return 'мясо с молоком'}
+  if(ne.includes('nooven')&&d.eq==='духовка')return 'нужна духовка';
+  if(ne.includes('t15')&&d.min>15)return 'дольше 15 минут';if(ne.includes('t30')&&d.min>30)return 'дольше 30 минут';
+  if(ne.includes('simple')&&(d.steps.length>6||d.steps.some(([,s])=>/тест|лепит|мясорубк|блендер|отбейте|раскатай/i.test(s))))return 'сложный рецепт';
+  return null}
+const dietOn=()=>!!((S.noeat||[]).length||algOf().a.length||algOf().o.length||algOf().w.length);
+function dietList(){const A=algOf(),nm=k=>(ALLROWS().find(x=>x[0]===k)||NOEAT.find(x=>x[0]===k)||KITCHEN.find(x=>x[0]===k)||[,k])[1];
+  return [...A.a.map(k=>['alg',k,nm(k)]),...(S.noeat||[]).map(k=>['noeat',k,nm(k)]),...A.o.map(x=>['o',x.id,x.n]),...A.w.map(w=>['w',w,w])]}
+const dietSub=()=>{const l=dietList();return l.length?'Без: '+l.map(x=>x[2].toLowerCase()).join(', '):'ничего не исключено'};
+let DIETQ='';
+function openDiet(){const A=algOf(),q=norm_(DIETQ),ne=S.noeat||[],sel=dietList(),fit=r=>!q||norm_(r[1]+' '+(r[2]||'')).includes(q);
+  const row=(kind,r)=>{const on=kind==='alg'?A.a.includes(r[0]):ne.includes(r[0]);return `<button class="dietrow ${on?'on':''}" role="switch" aria-checked="${on}" onclick="dietT('${kind}','${r[0]}')"><span class="dicon">${ic(r[4]||'leaf')}</span><span class="dtx"><b>${r[1]}</b>${r[2]?`<small>${r[2]}</small>`:''}</span><span class="toggle ${on?'on':''}" aria-hidden="true"></span></button>`};
+  const sec=(t,icn,kind,rows,note)=>{const l=rows.filter(fit);return l.length?`<div class="dsec"><div class="dhead">${icn?ic(icn):''}${t}</div>${note?`<div class="tiny muted" style="margin:0 4px 6px">${note}</div>`:''}<div class="card list dlist">${l.map(r=>row(kind,r)).join('')}</div></div>`:''};
+  sheet('Не ем и аллергии',`<div class="dtop"><input class="search" type="search" placeholder="Найти: креветки, лактоза, пост…" value="${DIETQ.replace(/"/g,'&quot;')}" oninput="DIETQ=this.value;dietRe()" aria-label="Поиск по списку">
+   ${sel.length?`<div class="chips dsel">${sel.map(([k,id,n])=>`<button class="chip on" onclick="dietDrop('${k}','${String(id).replace(/'/g,'')}')" aria-label="Убрать ${esc(n)}">${esc(n)} ✕</button>`).join('')}</div>`:''}</div>
+   <div class="small muted" style="margin:6px 4px 10px">Всё необязательно. Отмеченное уберём из советов, списка блюд, покупок и замены.</div>
+   ${sec('Аллергия и непереносимость','lock','alg',ALG,'Хранится только на этом телефоне')}
+   ${sec('Непереносимость','','alg',INTOL)}
+   ${sec('Не ем','','noeat',NOEAT)}
+   ${sec('Кухня и время','','noeat',KITCHEN.map(r=>[r[0],r[1],r[2],[],'bowl']))}
+   <div class="dsec"><div class="dhead">Другое: свой продукт</div>
+    <div class="card list dlist">${[...A.o.map(x=>['o',x.id,x.n,'из базы продуктов']),...A.w.map(w=>['w',w,w,'ищем по названию в составе'])].map(([k,id,n,s])=>`<button class="dietrow on" role="switch" aria-checked="true" onclick="dietDrop('${k}','${String(id).replace(/'/g,'')}')"><span class="dicon">${ic('leaf')}</span><span class="dtx"><b>${esc(n)}</b><small>${s}</small></span><span class="toggle on" aria-hidden="true"></span></button>`).join('')||'<div class="li small muted">Найдите продукт в поиске сверху — например «кинза»</div>'}</div>
+    <div id="dietres"></div></div>
+   <div class="ddone"><button class="btn" onclick="dietDone()">Готово</button><div class="tiny muted" style="text-align:center;margin-top:6px">Аллергии хранятся только на этом телефоне. Мы убираем такие блюда из советов, но состав в магазине может отличаться — проверяйте упаковку. Не медицинская консультация.</div></div>`);
+  SHEET_FN=openDiet;if(!openDiet.n0&&KIT)openDiet.n0=KIT.recipes.filter(d=>!dishBan(d)).length;if(q)dietFind(DIETQ)}
+function dietRe(){const el=document.activeElement,pos=el&&el.selectionStart;keepScroll(openDiet);const i=$('#sbody .dtop input');if(i&&el&&el.classList&&el.classList.contains('search')){i.focus();try{i.setSelectionRange(pos,pos)}catch(_){}}}
+function dietT(kind,k){if(kind==='noeat'){const l=S.noeat=S.noeat||[],i=l.indexOf(k);i<0?l.push(k):l.splice(i,1);if(k==='t15'&&i<0)S.noeat=S.noeat.filter(x=>x!=='t30');if(k==='t30'&&i<0)S.noeat=S.noeat.filter(x=>x!=='t15')}else{const l=algOf().a,i=l.indexOf(k);i<0?l.push(k):l.splice(i,1)}
+  if(S.cook)S.cook.skip={};save();haptic(6);keepScroll(openDiet)}
+function dietDrop(kind,id){const A=algOf();if(kind==='alg')A.a=A.a.filter(x=>x!==id);else if(kind==='noeat')S.noeat=(S.noeat||[]).filter(x=>x!==id);else if(kind==='o')A.o=A.o.filter(x=>x.id!==id);else A.w=A.w.filter(x=>x!==id);if(S.cook)S.cook.skip={};save();haptic(6);keepScroll(openDiet)}
+function dietOther(id,n){const o=algOf().o;if(!o.find(x=>x.id===id))o.push({id,n});DIETQ='';if(S.cook)S.cook.skip={};save();haptic(6);keepScroll(openDiet)}
+function dietWord(w){w=String(w||'').trim().toLowerCase();if(w.length<3)return;const A=algOf();if(!A.w.includes(w))A.w.push(w);DIETQ='';if(S.cook)S.cook.skip={};save();haptic(6);keepScroll(openDiet)}
 async function dietFind(q){await loadDB();const b=$('#dietres');if(!b)return;if(!norm_(q)){b.innerHTML='';return}
-  b.innerHTML=`<div class="card list">${searchDB(q).products.filter(x=>!x.id.startsWith('off_')).slice(0,6).map(x=>`<button class="li" style="width:100%;text-align:left" onclick="dietOther('${x.id}','${x.n.replace(/'/g,'').replace(/"/g,'')}')"><div style="flex:1">${x.n}</div><span class="small" style="color:var(--accent-text);font-weight:650">Исключить</span></button>`).join('')||'<div class="li small muted">Не нашли в базе</div>'}</div>`}
+  const l=searchDB(q).products.filter(x=>!x.id.startsWith('off_')).slice(0,5),w=String(q).trim().replace(/['"<>]/g,'');
+  b.innerHTML=`<div class="card list dlist" style="margin-top:8px">${l.map(x=>`<button class="li" style="width:100%;text-align:left" onclick="dietOther('${x.id}','${x.n.replace(/['"]/g,'')}')"><div style="flex:1;min-width:0">${x.n}</div><span class="small" style="color:var(--accent-text);font-weight:650">Исключить</span></button>`).join('')}
+   ${w.length>=3?`<button class="li" style="width:100%;text-align:left" onclick="dietWord('${w}')"><div style="flex:1;min-width:0">«${esc(w)}» — любое блюдо, где это слово в составе</div><span class="small" style="color:var(--accent-text);font-weight:650">Исключить</span></button>`:''}</div>`}
+function dietDone(){const n=KIT?KIT.recipes.length:0,ok=KIT?KIT.recipes.filter(d=>!dishBan(d)).length:0;DIETQ='';closeSheet();haptic(10);
+  if(KIT)toast(n-ok?`Убрали ${pl(n-ok,'блюдо','блюда','блюд')} — осталось ${ok}`:'Подходят все блюда');openDiet.n0=0;if(S.onb)renderOnb();else rerender()}
 // предупреждение при записи блюда по фото или из базы: в составе отмеченный аллерген или «не ем»
 let ALLERG=null;
 function scanWarn(d){if(!dietOn()||!ALLERG)return '';const t=banTags(),o=banOther(),hit=new Set();
@@ -1317,7 +1401,24 @@ function dayPlan(){
     const skip=(S.cook.skip[sl]||0)%ranked.length,pick=S.cook.pick[sl]&&ranked.find(d=>d.id===S.cook.pick[sl]),d=pick||ranked[skip];
     used.add(d.id);leftK-=d.nut.k;leftB-=cst(d);out.push({sl,d,c:dishCost(d),n:ranked.length})}
   const why=out.length?'':e.k>n.kcal?'over':late?'late':remK<=250?'full':'money';
-  return {slots:out,remK,remP,budget,late,why,ing:planIng(out)}}
+  const fit=fitPlan(out,R,remK,remP,budget,used);
+  return {slots:out,remK,remP,budget,late,why,ing:planIng(out),...fit}}
+/* порции под норму: калории плана ±5 % от остатка, белок не ниже 90 %. Если белка не хватает — перекус с белком (творог, яйца, кефир);
+   все граммы масштабируются, яйца — целыми штуками. Чего не собрать (время суток, бюджет) — говорим честно */
+function scaleIng(ing,f){return ing.map(([id,g])=>{const x=KIT.it[id];let v=g*f;v=x.pc?Math.max(1,Math.round(v/x.pc))*x.pc:v>=100?Math.round(v/10)*10:Math.max(5,Math.round(v/5)*5);return [id,v]})}
+function fitPlan(out,R,remK,remP,budget,used){if(!out.length||remK<250)return {};
+  const sum=l=>l.reduce((t,x)=>({k:t.k+x.d.nut.k,p:t.p+x.d.nut.p}),{k:0,p:0}),main=out.slice(),mm=sum(main),ex=[];
+  const pool=R.filter(d=>d.m.includes('s')&&!used.has(d.id)).sort((a,b)=>b.nut.p/b.nut.k-a.nut.p/a.nut.k);
+  // основные блюда — множитель a (0,6–1,6), перекусы с белком — множитель b (0,5–2): a·Km + b·Ks = остаток калорий, белок ≥ 92 %
+  const solve=()=>{const se=sum(ex.map(d=>({d})));let a,b=0;if(!ex.length)a=remK/mm.k;else{const need=remP*.96;b=(need-remK*mm.p/mm.k)/(se.p-se.k*mm.p/mm.k);if(!isFinite(b)||b<.5)b=.5;if(b>2)b=2;a=(remK-b*se.k)/mm.k}
+    a=Math.max(.6,Math.min(1.8,a));return{a,b,k:a*mm.k+b*se.k,p:a*mm.p+b*se.p}};
+  let r=solve();
+  for(let i=0;i<2&&!(Math.abs(r.k-remK)<=remK*.05&&r.p>=remP*.9);i++){const rest=pool.filter(d=>!ex.includes(d)),sn=r.p>=remP*.9&&r.k<remK?rest.slice().sort((a,b)=>b.nut.k-a.nut.k)[0]:rest[0]; /* белка хватает, калорий нет — перекус посытнее */if(!sn)break;ex.push(sn);const r2=solve();
+    if(Math.abs(r2.k-remK)+Math.max(0,remP*.9-r2.p)*4>=Math.abs(r.k-remK)+Math.max(0,remP*.9-r.p)*4){ex.pop();break}r=r2}
+  ex.forEach(d=>{used.add(d.id);out.push({sl:'s',d,c:null,n:1,top:1})});
+  out.forEach(x=>{const f=x.top?r.b:r.a,ing=scaleIng(x.d.ing,f),d={...x.d,ing,nut:ingNut(ing,KIT.it),f};x.d=d;x.c=dishCost(d)});
+  const t=sum(out),cost=out.reduce((s,x)=>s+(x.c?x.c.r:0),0),okK=Math.abs(t.k-remK)<=remK*.05,okP=t.p>=remP*.9;
+  return {fitK:t.k,fitP:t.p,okK,okP,overB:hasPrices()&&cost>budget,cost}}
 function planIng(sl){const m={};sl.forEach(({d})=>d.ing.forEach(([id,g])=>m[id]=(m[id]||0)+g));return Object.entries(m).filter(([id])=>!(S.cook&&S.cook.have.includes(id)))}
 // для «Сегодня» и чата: следующее блюдо плана
 function suggest(){const p=dayPlan();return{list:p.slots.map(x=>({id:x.d.id,n:x.d.n,nut:x.d.nut,img:x.d.img,c:x.c,sl:x.sl,ing:x.d.ing})),remK:p.remK,remP:p.remP,budget:p.budget,why:p.why,late:p.late}}
@@ -1332,14 +1433,14 @@ function chainList(ing){const rows=chainRows(ing),cheap=Math.min(...rows.filter(
   return rows.map(x=>{const old=!x.avg&&chAge(x.c)>14,st=x.over?'выше бюджета':x.r===cheap&&rows.filter(z=>!z.avg).length>1?'дешевле':'в бюджете';
    return `<a class="li" style="text-decoration:none" href="${mapUrl(x.avg?'продукты':x.n)}" target="_blank" rel="noopener" aria-label="${x.n}: блюда около ${fmt(x.r)} рублей, чек около ${fmt(x.chk)} рублей, ${st}"><div class="ibox ${x.avg?'':'accent'}">${ic(x.avg?'wallet':'cart')}</div>
     <div style="flex:1;min-width:0"><div style="font-weight:650">${x.n}${x.d!=null?` <span class="muted" style="font-weight:500">· ${distTxt(x.d)}</span>`:''}</div>
-    <div class="small muted">${x.avg?(()=>{const nn=CLOSED_CH.map(c=>[c,nearest(c)]).filter(x=>x[1]!=null).sort((a,b)=>a[1]-b[1]).slice(0,2);return (nn.length?`рядом ${nn.map(([c,d])=>c+' '+distTxt(d)).join(', ')} — их цены закрыты. `:'')+'Средние по региону, Росстат'})():(x.have<x.tot?`есть ${x.have} из ${x.tot}, остальное — по другим ценам`:'всё есть')+` · цены на ${PRICES.chains[x.c].d}${old?' — могли измениться':''}`}</div>
+    <div class="small muted">${x.avg?(()=>{const nn=CLOSED_CH.map(c=>[c,nearest(c)]).filter(x=>x[1]!=null).sort((a,b)=>a[1]-b[1]).slice(0,2);return (nn.length?`рядом ${nn.map(([c,d])=>c+' '+distTxt(d)).join(', ')} — открытых цен у них пока нет. `:'')+'Средние по региону, Росстат'})():(x.have<x.tot?`есть ${x.have} из ${x.tot}, остальное — по другим ценам`:'всё есть')+` · цены на ${PRICES.chains[x.c].d}${old?' — могли измениться':''}`}</div>
     <div class="tiny" style="margin-top:2px;color:${x.over?'var(--warn-text)':st==='дешевле'?'var(--ok-text)':'var(--text3)'};font-weight:600">${st}</div></div>
     <div style="text-align:right;white-space:nowrap"><div class="num" style="font-size:17px">≈${NBS}${rub(x.r)}</div><div class="tiny muted">чек ≈${NBS}${rub(x.chk)}</div></div></a>`}).join('')}
 function srcNote(){if(!hasPrices())return '';const c=PRICES.chains,l=[];
   if(c.mg&&chLive('mg'))l.push(`Магнит — сайт сети, ${c.mg.d}${c.mg.store?', магазин: '+c.mg.store.replace(/^(г |город )?(Москва|Санкт-Петербург),?\s*/i,'').replace(/^[^,]*обл,?\s*/,''):''}`);
   if(c.vv&&chLive('vv'))l.push(`ВкусВилл — сайт сети, ${c.vv.d} (${c.vv.note||'цены Москвы'})`);
   if(c.rs)l.push(`средние по региону — Росстат, ${c.rs.d}`);
-  return `<div class="src" style="margin:2px 4px 14px">Цены для: ${regName(region())}. ${l.join('; ')}. «≈» — на одного человека. Обычная цена полки, без акций и карт; суммы — с запасом 3 %. ${CLOSED_CH.join(', ')} закрыли сайты от автоматического сбора — для них ориентир «примерно». «≈» — блюда: сколько уйдёт продуктов; «чек» — сколько заплатите за целые упаковки${people()>1?` на ${pl(people(),'человека','человек','человек')}`:''}. Цены справочные, окончательная цена — в магазине.${GEO&&SHOPS&&Object.keys(SHOPS.chains||{}).length?' Магазины рядом: © участники OpenStreetMap.':''}</div>`}
+  return `<div class="src" style="margin:2px 4px 14px">Цены для: ${regName(region())}. ${l.join('; ')}. «≈» — на одного человека. Обычная цена полки, без акций и карт; суммы — с запасом 3 %. Для Пятёрочки, Перекрёстка, Чижика, Ленты и Ашана открытых цен пока нет — показываем ориентир «примерно». «≈» — блюда: сколько уйдёт продуктов; «чек» — сколько заплатите за целые упаковки${people()>1?` на ${pl(people(),'человека','человек','человек')}`:''}. Цены справочные, окончательная цена — в магазине.${GEO&&SHOPS&&Object.keys(SHOPS.chains||{}).length?' Магазины рядом: © участники OpenStreetMap.':''}</div>`}
 function vFood(){
   const pr=S.profile,n=norm(pr),e=eaten(),P=dayPlan(),loaded=!!KIT,priced=hasPrices();
   const tot=P.slots.reduce((s,x)=>s+(x.c?x.c.r:0),0),kc=P.slots.reduce((s,x)=>s+x.d.nut.k,0),pp=P.slots.reduce((s,x)=>s+x.d.nut.p,0);
@@ -1348,11 +1449,13 @@ function vFood(){
   <div class="grid2">
     <div class="card" style="margin:0"><div class="small muted">Съедено</div><div class="num" style="font-size:28px">${CU(e.k)}</div><div class="small muted">из ${fmt(n.kcal)} ккал</div></div>
     <div class="card" style="margin:0"><div class="small muted">Бюджет на еду</div><div class="num" style="font-size:28px">${CU(P.budget,' ₽')}</div><div class="small muted">осталось из ${fmt(budgetOf(pr))}${S.log.some(x=>!x.cost)?' · записи без цены не считаем':''}</div></div></div>
-  <button class="pill" style="margin:0 4px 6px;border:0;cursor:pointer" onclick="openRegion()">${ic('pin','style="width:15px;height:15px"')} ${regName(region())}${S.region?'':' · определили по часовому поясу'} · сменить</button>
+  ${S.region?`<button class="pill" style="margin:0 4px 6px;border:0;cursor:pointer" onclick="openRegion()">${ic('pin','style="width:15px;height:15px"')} Цены для: ${regName(region())} · сменить</button>`:`<div class="card"><div class="row" style="gap:12px;align-items:flex-start"><div class="ibox ok">${ic('pin')}</div><div style="flex:1;min-width:0"><div class="title" style="font-size:16px">Где вы покупаете продукты?</div><div class="small muted">Цены зависят от региона. Определим по геопозиции на телефоне — на сервер уйдёт только регион. Пока показываем: ${regName(region())} (по часовому поясу).</div></div></div>
+   <div class="row" style="gap:8px;margin-top:12px"><button class="btn sm" style="flex:1" onclick="regionByGeo()">Определить</button><button class="btn sec sm" style="flex:1" onclick="openRegion()">Выбрать</button></div></div>`}
   <h2>Что приготовить сегодня</h2>
-  <button class="pill" style="margin:-4px 4px 10px;border:0;cursor:pointer" onclick="openDiet()">${dietOn()?'Учитываем: '+dietSub()+' · изменить':'Не ем и аллергии — указать'}</button>
+  <button class="pill" style="margin:-4px 4px 10px;border:0;cursor:pointer" onclick="openDiet()">${dietOn()?dietSub()+' — изменить':'Не ем и аллергии — указать'}</button>
   ${!loaded?`<div class="card small muted">Загружаем рецепты…</div>`:P.slots.length?`<div class="small muted" style="margin:-4px 4px 10px">Осталось ${u(P.remK,'ккал')} и ${u(P.remP,'г')} белка, бюджет ${rub(P.budget)}${priced?` · план ≈ ${u(kc,'ккал')}, ${u(pp,'г')} белка, ${rub(tot)}`:''}</div>
-  ${P.slots.map(x=>dishRow(x.d,x.c,`${SLOT[x.sl]}${x.n>1?` · <span role="button" tabindex="0" style="color:var(--accent-text)" onclick="event.stopPropagation();swapDish('${x.sl}')" aria-label="Заменить блюдо">заменить</span>`:''}`)).join('')}
+  ${P.slots.map(x=>dishRow(x.d,x.c,`${x.top?'Перекус · добор белка':SLOT[x.sl]+' · '+dishCat(x.d)[0]}`,x.n>1&&!x.top?x.sl:null)).join('')}
+  ${P.slots.length&&(!P.okK||!P.okP)?`<div class="small" style="margin:-2px 4px 10px;color:var(--warn-text)">${!P.okK&&P.fitK<P.remK?`Оставшихся приёмов хватит на ≈${u(P.fitK,'ккал')} из ${u(P.remK,'ккал')} — порции уже увеличены до предела. Остальное — перекусом или завтра.`:!P.okK?`План ≈${u(P.fitK,'ккал')} — порции уменьшены до предела.`:''} ${!P.okP?`Белка в плане ${u(P.fitP,'г')} из ${u(P.remP,'г')}: больше не собрать без перебора калорий — добавьте творог, яйца или кефир.`:''}</div>`:''}
   ${priced&&tot>P.budget?`<div class="small" style="margin:-2px 4px 10px;color:var(--warn-text)">Даже самые дешёвые блюда стоят больше остатка бюджета — дешевле всего крупы, яйца, творог, кефир. Отметьте, что уже есть дома, — пересчитаем.</div>`:''}
   <button class="btn ghost" onclick="openDishes()">Все блюда и рецепты</button>`
   :`<div class="card muted">${{over:`Сегодня больше нормы на ${u(e.k-n.kcal,'ккал')}. Завтра — завтрак около ${u(Math.round(n.kcal*.3/10)*10,'ккал')}, без урезания.`,late:`${new Date().getHours()<5?'Ночь':'Поздний вечер'} — на ночь не добираем. Если голодно: кефир или творог. Завтра — завтрак около ${u(Math.round(n.kcal*.3/10)*10,'ккал')}.`,full:`Норма на сегодня почти закрыта. Завтра — завтрак около ${u(Math.round(n.kcal*.3/10)*10,'ккал')}.`,money:`До нормы ${u(P.remK,'ккал')} — дешевле всего крупы, яйца, творог, кефир.`}[P.why]}</div><button class="btn ghost" onclick="openDishes()">Все блюда и рецепты</button>`}
@@ -1363,14 +1466,21 @@ function vFood(){
   ${srcNote()}`}`:''}
   <h2>Дневник</h2><div class="card list">${S.log.map((en,i)=>`<div class="li" role="button" onclick="openEntry(${i})">${en.img?`<div class="thumb" style="width:44px;height:44px;border-radius:12px">${pic(en.img,'')}</div>`:`<div class="ibox c" style="width:44px;height:44px;border-radius:12px">${ic(en.src==='этикетка'?'barcode':'food')}</div>`}<div style="flex:1;min-width:0"><div style="font-weight:600">${en.n}</div><div class="tiny muted">${en.t}</div></div><div class="num" style="white-space:nowrap">${fmt(en.k)}<small style="font:500 12px var(--font);color:var(--text2)"> ккал</small></div></div>`).join('')||`<button class="li" style="width:100%;justify-content:center;gap:8px;color:var(--accent-text);font-weight:600" onclick="openScan()">${ic('cam','style="width:18px;height:18px"')} Сфотографировать первое блюдо</button>`}</div>`;
 }
-function dishRow(d,c,eb){return `<div class="card tap dish" role="button" onclick="openDish('${d.id}')"><div class="row">
-    <div class="thumb">${d.img?pic(d.img,d.n):`<span class="dish-ic">${ic('food')}</span>`}</div>
+function dishCat(d){const t=new Set(d.ing.flatMap(([id])=>KIT.it[id].al||[])),ids=d.ing.map(x=>x[0]);
+  if(t.has('fish')||t.has('seafood'))return ['рыба','fish'];if(t.has('poultry'))return ['птица','meat'];if(t.has('meat'))return ['мясо','meat'];
+  if(/суп|щи|борщ|уха|солянк|рассольник|окрошк|свекольник|шурп/i.test(d.n))return ['суп','bowl'];
+  if(/каша|овсян|гречк|пшён|геркулес/i.test(d.n))return ['каша','bowl'];if(t.has('egg')&&ids.includes('egg'))return ['яйца','egg'];
+  if(['kefir','ryazhenka','yogurt','tvorog'].some(x=>ids.includes(x)))return ['молочное','cup'];return ['овощи и крупы','leaf']}
+function dishRow(d,c,eb,swap){return `<div class="card tap dish" role="button" onclick="openDish('${d.id}')"><div class="row">
+    <div class="thumb">${d.img?pic(d.img,d.n):`<span class="dish-ic" aria-hidden="true">${ic(dishCat(d)[1])}</span>`}</div>
     <div style="flex:1;min-width:0">${eb?`<div class="tiny" style="color:var(--text3);font-weight:600;margin-bottom:2px">${eb}</div>`:''}<div class="title" style="font-size:16px">${d.n}</div><div class="small muted">${u(d.nut.k,'ккал')} · белок&nbsp;${u(d.nut.p,'г')} · ${d.min}&nbsp;мин</div></div>
-    ${c?`<div class="num" style="font-size:17px;white-space:nowrap">${costTxt(c)}</div>`:''}</div></div>`}
+    <div style="text-align:right;flex:none">${c?`<div class="num" style="font-size:17px;white-space:nowrap">${costTxt(c)}</div>`:''}${swap?`<button class="tiny" style="margin-top:6px;color:var(--accent-text);font-weight:700;padding:6px 0" onclick="event.stopPropagation();swapDish('${swap}')" aria-label="Заменить блюдо">Заменить</button>`:''}</div></div></div>`}
 function swapDish(sl){dayPlan();S.cook.skip[sl]=(S.cook.skip[sl]||0)+1;delete S.cook.pick[sl];save();haptic(6);rerender()}
 function openFoodPlan(){sheet('Питание и бюджет',vFood().replace(/^<div class="top">[\s\S]*?<\/h1>/,''));SHEET_FN=openFoodPlan;kitchenLoad()}
 // рецепты, цены региона и магазины рядом (если человек сам дал геопозицию) — один раз на регион; потом перерисовываем открытую шторку
-async function kitchenLoad(){const k=region()+(GEO?'+':'');if(kitchenLoad.busy||(kitchenLoad.done===k&&KIT&&PRICES&&!PRICES.failed))return;
+async function geoAuto(){if(S.region||geoAuto.done||!navigator.permissions||!navigator.geolocation)return;geoAuto.done=1;
+  try{const st=await navigator.permissions.query({name:'geolocation'});if(st.state==='granted')navigator.geolocation.getCurrentPosition(p=>{GEO=[p.coords.latitude,p.coords.longitude];if(!S.region&&KIT){let b=KIT.regions[0],m=1e9;KIT.regions.forEach(r=>{const d=km(GEO,[r.lat,r.lon]);if(d<m){m=d;b=r}});S.region=b.code;save();PRICES=null;SHOPS=null;kitchenLoad.done=null;kitchenLoad()}},()=>{},{enableHighAccuracy:false,timeout:10000,maximumAge:600000})}catch(e){}}
+async function kitchenLoad(){geoAuto();const k=region()+(GEO?'+':'');if(kitchenLoad.busy||(kitchenLoad.done===k&&KIT&&PRICES&&!PRICES.failed))return;
   if(PRICES&&PRICES.failed&&kitchenLoad.done===k&&Date.now()-PRICES._t<30000)return;kitchenLoad.busy=1;
   try{await loadKit();await loadPrices(PRICES&&PRICES.failed);if(GEO)await loadShops()}finally{kitchenLoad.busy=0;kitchenLoad.done=k}
   if(SHEET_FN===openFoodPlan&&$('#sheet').classList.contains('on'))keepScroll(()=>{ANIM=false;openFoodPlan();ANIM=!RM});else if(!$('#sheet').classList.contains('on'))rerender()}
@@ -1379,11 +1489,11 @@ function openDishes(f){f=f||'all';const P=dayPlan(),R0=KIT?KIT.recipes:[],R=R0.f
   sheet('Блюда и рецепты',`<div class="chips" style="margin-bottom:10px">${[['all','Все'],['b','Завтрак'],['l','Обед'],['d','Ужин'],['s','Перекус']].map(([k,t])=>`<button class="chip ${f===k?'on':''}" onclick="openDishes('${k}')">${t}</button>`).join('')}</div>
    <div class="small muted" style="margin:0 4px 10px">${hasPrices()?`Цена порции — по самым низким ценам сетей в регионе «${regName(region())}». Сначала дешёвые.`:'Цены загрузятся, когда будет интернет.'} Осталось на сегодня ${u(P.remK,'ккал')} и ${rub(P.budget)}.${hid?` Скрыто ${pl(hid,'блюдо','блюда','блюд')} по «Не ем и аллергии».`:''}</div>
    ${l.map(({d,c})=>dishRow(d,c,[d.nut.k>P.remK+150?'больше остатка калорий':'',c&&c.r>P.budget?'выше остатка бюджета':''].filter(Boolean).join(' · ')||[...d.m].map(x=>SLOT[x]).join(' · '))).join('')}`);SHEET_FN=()=>openDishes(f)}
-function openDish(id){const d=KIT&&KIT.recipes.find(x=>x.id===id);if(!d){loadKit().then(()=>KIT&&openDish(id));return}
+function openDish(id){const d0=KIT&&KIT.recipes.find(x=>x.id===id),inP=d0&&dayPlan().slots.find(x=>x.d.id===id),d=inP?inP.d:d0;if(!d){loadKit().then(()=>KIT&&KIT.recipes.length&&openDish(id));return}
   const c=dishCost(d),n=norm(S.profile),P=dayPlan(),inPlan=P.slots.find(x=>x.d.id===id);let t=0;
   const ban=dishBan(d);
   sheet(d.n,`${ban?`<div class="card" role="alert" style="box-shadow:inset 4px 0 0 var(--warn),var(--shadow)"><div class="small"><b style="color:var(--warn-text)">В составе: ${ban}</b> — вы отметили это в «Не ем и аллергии».</div></div>`:''}${d.img?`<div class="plate" style="margin-bottom:12px">${pic(d.img,d.n)}<div class="capt"><span>${d.n}</span><span class="num">${u(d.nut.k,'ккал')}</span></div></div>${d.cr?`<div class="tiny muted" style="margin:-6px 4px 12px">Фото: ${d.cr[0]} · ${d.cr[1]} · <a href="${d.cr[2]}" target="_blank" rel="noopener" style="color:inherit">Wikimedia Commons</a></div>`:''}`:''}
-   <div class="card"><div class="row between"><div><div class="num" style="font-size:34px">${fmt(d.nut.k)}</div><div class="small muted">ккал · ${d.min} мин · 1 порция</div><div class="tiny muted" style="margin-top:2px">${d.eq==='без готовки'?'без готовки':d.eq==='духовка'?'нужна духовка':'на плите'}${d.keep?' · в холодильнике '+pl(d.keep,'день','дня','дней'):''}</div></div>${c?`<div style="text-align:right"><div class="pill ok">${costTxt(c)}</div><div class="tiny muted" style="margin-top:4px">${c.ok?'по ценам сайтов сетей':'часть цен — примерно'}</div></div>`:''}</div>
+   <div class="card"><div class="row between"><div><div class="num" style="font-size:34px">${fmt(d.nut.k)}</div><div class="small muted">ккал · ${d.min} мин · ${d.f&&Math.abs(d.f-1)>.04?'порция ×'+f1(Math.round(d.f*10)/10)+' — под ваш план':'1 порция'}</div><div class="tiny muted" style="margin-top:2px">${d.eq==='без готовки'?'без готовки':d.eq==='духовка'?'нужна духовка':'на плите'}${d.keep?' · в холодильнике '+pl(d.keep,'день','дня','дней'):''}</div></div>${c?`<div style="text-align:right"><div class="pill ok">${costTxt(c)}</div><div class="tiny muted" style="margin-top:4px">${c.ok?'по ценам сайтов сетей':'часть цен — примерно'}</div></div>`:''}</div>
    <div class="row" style="gap:14px;margin-top:14px">${macroBars(d.nut,n)}</div></div>
    <h2 style="margin-top:14px">Состав и цены</h2><div class="card list">${d.ing.map(([k,g])=>{const p=hasPrices()&&kgPrice(k),x=KIT.it[k];
      return `<div class="li"><div style="flex:1;min-width:0"><div style="font-weight:600">${x.n}</div><div class="tiny muted">${gramsTxt(k,g)}${p&&p.pk?` · ${packTxt(p.pk)} — ${rub(p.pk[2])}, ${CH_N[p.src]}${p.pk[3]?` (сейчас по акции ${rub(p.pk[3])}${p.pk[6]?' до '+p.pk[6].slice(8,10)+'.'+p.pk[6].slice(5,7):''})`:''}`:p?` · ${p.src==='rs'?'средняя цена по региону, Росстат':'оценка'}: ${rub(p.r)} за кг`:''}</div></div>
@@ -2631,7 +2741,7 @@ function resetAll(){if(AC)acLogout(true);if(S.remind&&(S.remind.on||S.remind.uns
 
 /* ---------- Анкета ---------- */
 let OB=0,D={...DEF},obDir='',obPct=0;
-const STEPS=7;
+const STEPS=8;
 /* ---------- юридическое окно перед анкетой: соглашение и политика, отдельное согласие на обработку ПДн (152-ФЗ с 01.09.2025), 14+ ----------
    Редакция документов — LEGAL_V: сменили её — спросим снова. Документы открываются внутри приложения (legal/*.html). */
 const LEGAL_V='2026-11-01.3',LEGAL={terms:'Пользовательское соглашение',privacy:'Политика обработки персональных данных',consent:'Согласие на обработку персональных данных',recurrent:'Согласие на автоматические списания',requisites:'Реквизиты'};
@@ -2702,6 +2812,12 @@ function renderOnb(){
    ()=>`<div class="q">Где тренируетесь?</div><div class="qs">Программа подстроится под инвентарь</div>
       ${[['gym','В зале','тренажёры, штанга, гантели','gym'],['home','Дома','без инвентаря или с гантелями','home'],['both','И там, и там','программа на оба случая','run']].map(([k,t,d,i])=>`<button class="opt ${D.place===k?'on':''}" onclick="D.place='${k}';renderOnb()"><div class="ibox">${ic(i)}</div><div style="flex:1"><div style="font-weight:700">${t}</div><div class="small muted">${d}</div></div></button>`).join('')}
       <div style="flex:1"></div><button class="btn" onclick="obNext()">Дальше</button>`,
+   ()=>`<div class="q">Есть продукты, которые вы не едите?</div><div class="qs">Аллергии, пост, вегетарианство, «не люблю» — уберём такие блюда из советов. Можно пропустить и указать позже в «Я»</div>
+      <div style="flex:1"></div>
+      ${dietOn()?`<div class="card"><div class="small muted">Учтём</div><div style="font-weight:650;margin-top:2px">${esc(dietSub())}</div></div>`:''}
+      <button class="btn" onclick="obNext()">${dietOn()?'Дальше':'Нет, ем всё'}</button>
+      <button class="btn sec" style="margin-top:10px" onclick="openDiet()">${dietOn()?'Изменить':'Выбрать'}</button>
+      <div class="concept" style="margin-top:8px">Аллергии хранятся только на этом телефоне</div>`,
    ()=>`<div class="q">Ваш план готов</div><div class="qs">Посчитано по вашим данным — формулами, а не нейросетью</div>
       <div class="fadeb" style="overflow-y:auto;flex:1;margin:0 -20px;padding:4px 20px 0">
       <div class="hero-today" style="text-align:center;padding:22px 18px 18px">
@@ -2753,7 +2869,8 @@ function stars(v,sz=16){const one=`<svg viewBox="0 0 24 24" width="${sz}" height
   return `<span class="stars" role="img" aria-label="Оценка ${f1(Math.round(v*10)/10)} из 5"><span class="s0">${row}</span><span class="s1" style="width:${w}px">${row}</span></span>`}
 function rvNorm(x){if(!x||typeof x!=='object')return null;const st=Math.round(+x.stars);if(!(st>=1&&st<=5))return null;
   let ts=x.ts;ts=typeof ts==='number'?(ts<1e12?ts*1000:ts):Date.parse(ts);
-  return {id:String(x.id==null?'':x.id).slice(0,64),name:String(x.name||'').trim().slice(0,40),stars:st,text:String(x.text||'').trim().slice(0,600),ts:Number.isFinite(ts)?ts:0}}
+  return {id:String(x.id==null?'':x.id).slice(0,64),name:String(x.name||'').trim().slice(0,40),stars:st,text:String(x.text||'').trim().slice(0,600),ts:Number.isFinite(ts)?ts:0,
+    ...(x.reply&&String(x.reply).trim()?{reply:String(x.reply).trim().slice(0,1000),rts:Number.isFinite(+x.reply_ts)?(+x.reply_ts<1e12?+x.reply_ts*1000:+x.reply_ts):0}:{})}}
 // (был ?demo-reviews=1 — предпросмотр с примерами; убран по просьбе Ивана)чанию — только настоящие
 const RVDEMO=false,RVDEMO_L=null; // предпросмотр с примерными отзывами убран — показываем только настоящие
 const rvList=()=>RVDEMO_L||((S.rv&&Array.isArray(S.rv.list))?S.rv.list:[]);
@@ -2776,7 +2893,17 @@ function rvEmpty(){const [t,s]=RV.st==='offline'?['Отзывы загрузят
   :RV.st==='ok'?['Пока отзывов нет — будьте первым','Расскажите, что получилось и чего не хватает']
   :RV.st==='noserver'?['Отзывы скоро появятся — будьте первым','Расскажите, что получилось и чего не хватает']:['Загружаем отзывы…',''];
   return `<div class="row" style="align-items:flex-start"><div class="ibox warn">${ic('star')}</div><div style="flex:1;min-width:0"><div style="font-weight:600;text-wrap:balance">${t}</div>${s?`<div class="small muted" style="margin-top:2px">${s}</div>`:''}</div></div>`}
-function rvItem(x,short){return `<div class="li rv-it${short?' rv-short':''}"><div style="flex:1;min-width:0"><div class="row between" style="gap:8px"><b class="rv-nm">${esc(x.name)||'Пользователь'}${x.mine?' <span class="pill ok" style="padding:2px 8px;font-size:12px">ваш</span>':''}</b><span class="tiny muted" style="flex:none">${rvDate(x.ts)}</span></div><div style="margin-top:4px">${stars(x.stars,14)}</div>${x.text?`<div class="rv-tx">${esc(x.text)}</div>`:''}</div></div>`}
+function rvItem(x,short){const unseen=x.reply&&x.mine&&(S.rvUnseen||[]).includes(x.id);
+  return `<div class="li rv-it${short?' rv-short':''}" data-rv="${esc(x.id)}"><div style="flex:1;min-width:0"><div class="row between" style="gap:8px"><b class="rv-nm">${esc(x.name)||'Пользователь'}${x.mine?' <span class="pill ok" style="padding:2px 8px;font-size:12px">ваш</span>':''}</b><span class="tiny muted" style="flex:none">${rvDate(x.ts)}</span></div><div style="margin-top:4px">${stars(x.stars,14)}</div>${x.text?`<div class="rv-tx">${esc(x.text)}</div>`:''}${x.reply?rvRep(x,unseen):''}</div></div>`}
+// ответ команды: свёрнут строкой, раскрывается нажатием; свой отзыв — сразу раскрыт
+const RVOPEN=new Set();
+function rvRep(x,unseen){const on=RVOPEN.has(x.id)||x.mine,k='rvr-'+String(x.id).replace(/[^\w-]/g,'');
+  return `<button class="rv-rep-t tap" aria-expanded="${on}" aria-controls="${k}" onclick="rvRepTog(this,'${esc(String(x.id).replace(/[^\w-]/g,''))}')">${on?'Ответ команды':'Посмотреть ответ команды'}${ic('chev')}</button>${unseen?'<span class="pill ok rv-new">новый</span>':''}
+   <div class="rv-rep" id="${k}"${on?'':' hidden'}><div class="rv-rep-h"><span class="rv-rep-ic">${ic('check')}</span><b>Команда «Мой тренер»</b><span class="tiny muted">${rvDate(x.rts)}</span></div><div class="rv-rep-tx">${esc(x.reply)}</div></div>`}
+function rvRepTog(b,id){const x=rvList().find(r=>String(r.id).replace(/[^\w-]/g,'')===id);const on=b.getAttribute('aria-expanded')!=='true';haptic(5);
+  if(x&&!x.mine){on?RVOPEN.add(x.id):RVOPEN.delete(x.id)}
+  b.setAttribute('aria-expanded',on);b.firstChild.textContent=on?'Ответ команды':'Посмотреть ответ команды';const r=b.parentNode.querySelector('.rv-rep');if(r)r.hidden=!on;
+  if(on&&x&&x.mine)rvSeen(x.id)}
 const rvAvg=L=>L.reduce((s,x)=>s+x.stars,0)/L.length;
 // «пользуются 340 человек» — по ответу сервера GET /stats, если он есть; без сервера строки нет
 function rvUsers(){const u=S.rvStats&&S.rvStats.users;if(!(u>=10))return '';const a=u%100,b=u%10;return (b===1&&a!==11?'пользуется ':'пользуются ')+pl(u,'человек','человека','человек')}
@@ -2794,8 +2921,8 @@ function rvBlock(){if(!RV.at||Date.now()-RV.at>10*60e3)setTimeout(()=>rvLoad(),0
 const RVT={sig:'',w:0,t0:Date.now(),i:0,iv:0,io:null};
 function rvtList(){return rvList().filter(x=>x.stars>=4&&x.text.length>=3).slice(0,12)} // свежие сверху, с текстом; все — в «Все отзывы»
 function rvtCut(t){t=t.replace(/\s+/g,' ').trim();if(t.length<=64)return t;const c=t.slice(0,64),sp=c.lastIndexOf(' ');return (sp>40?c.slice(0,sp):c).replace(/[\s,.;:!?—–-]+$/,'')+'…'}
-function rvtItem(x){return `<span class="rvt-it"><b>${esc(x.name)||'Пользователь'}</b><span class="rvt-st">${'★'.repeat(x.stars)}<i>${'★'.repeat(5-x.stars)}</i></span><span class="rvt-tx">— «${esc(rvtCut(x.text))}»</span></span>`}
-function rvtSig(L){return (RM?'rm|':'')+L.map(x=>x.id+':'+x.stars+':'+x.text.length).join(',')}
+function rvtItem(x){return `<span class="rvt-it"><b>${esc(x.name)||'Пользователь'}</b><span class="rvt-st">${'★'.repeat(x.stars)}<i>${'★'.repeat(5-x.stars)}</i></span><span class="rvt-tx">— «${esc(rvtCut(x.text))}»</span>${x.reply?'<span class="rvt-rep">есть ответ</span>':''}</span>`}
+function rvtSig(L){return (RM?'rm|':'')+L.map(x=>x.id+':'+x.stars+':'+x.text.length+(x.reply?'r':'')).join(',')}
 function rvTicker(){const L=rvtList();if(!L.length){RVT.sig='';return ''}
   const all=rvList(),avg=rvAvg(all).toFixed(1).replace('.',','),sig=rvtSig(L);
   const lab=`Отзывы: средняя оценка ${avg} из 5, ${pl(Math.max(all.length,(S.rvStats&&S.rvStats.reviews)||0),'отзыв','отзыва','отзывов')}. Открыть все отзывы`;
@@ -2819,7 +2946,7 @@ function rvtFix(){const el=document.querySelector('.rvtbox .rvt');if(RVT.io){RVT
     RVT.w=w;RVT.sig=sig;tr.setAttribute('style',rvtStyle(w))}
   if('IntersectionObserver' in window){RVT.io=new IntersectionObserver(es=>{es.forEach(e=>e.target.classList.toggle('off',!e.isIntersecting))});RVT.io.observe(el)}}
 function obRv(){const L=rvtList().slice(0,8);if(!L.length)return '';const solo=L.length===1;/* один отзыв — одна карточка на всю ширину, без движения */const all=rvList(),avg=rvAvg(all).toFixed(1).replace('.',',');
-  const card=x=>`<div class="obrv-c">${stars(x.stars,13)}<div class="obrv-t">«${esc(x.text.replace(/\s+/g,' ').trim())}»</div><div class="obrv-n">${esc(x.name)||'Пользователь'}</div></div>`,one=L.map(card).join('');
+  const card=x=>`<div class="obrv-c">${stars(x.stars,13)}<div class="obrv-t">«${esc(x.text.replace(/\s+/g,' ').trim())}»</div><div class="obrv-n"><span>${esc(x.name)||'Пользователь'}</span>${x.reply?'<span class="obrv-rep">есть ответ</span>':''}</div></div>`,one=L.map(card).join('');
   const d=Math.max(20,L.length*7),u=S.rvStats&&S.rvStats.users,us=u>=10?`<div class="obrv-u">Уже ${u%10===1&&u%100!==11?'пользуется':'пользуются'} ${pl(u,'человек','человека','человек')}</div>`:''; // ~36 px/с при карточке 240 px + 12 px
   return `<button class="obrv tap" onclick="openReviews()" aria-label="Отзывы: средняя оценка ${avg} из 5. Открыть все отзывы"><div class="obrv-h">${stars(rvAvg(all),14)}<b>${avg}</b><span class="muted" style="flex:none">·&nbsp;${pl(Math.max(all.length,(S.rvStats&&S.rvStats.reviews)||0),'отзыв','отзыва','отзывов')}</span>${RVDEMO?'<span class="pill obrv-demo">пример</span>':''}</div>
    <div class="obrv-win" aria-hidden="true"><div class="obrv-tr${RM||solo?' rm':''}${solo?' solo':''}" style="--obrv-d:${d}s">${one}${RM||solo?'':one}</div></div>${us}</button>`}
@@ -2846,7 +2973,8 @@ function openReviewForm(){if(S.askedReview===today0())S.askedReview='done';const
    <div class="card"><label class="small muted" for="rv_n" style="display:block;margin-bottom:6px">Имя — необязательно</label>
     <input type="text" id="rv_n" class="search plain" maxlength="40" autocomplete="off" placeholder="Как подписать отзыв" value="${esc(d.name)}" oninput="rvDraftSet('name',this.value)">
     <div class="row between" style="margin:14px 0 6px"><label class="small muted" for="rv_t">Что понравилось, чего не хватает</label><span class="tiny muted" id="rvcnt" style="flex:none">${d.text.length} / 600</span></div>
-    <textarea id="rv_t" class="ta" maxlength="600" rows="5" placeholder="Например: удобно считать калории по фото, хочется больше домашних тренировок" oninput="rvDraftSet('text',this.value)">${esc(d.text)}</textarea></div>
+    <textarea id="rv_t" class="ta" maxlength="600" rows="5" placeholder="Например: удобно считать калории по фото, хочется больше домашних тренировок" oninput="rvDraftSet('text',this.value)">${esc(d.text)}</textarea>
+    <div class="rv-hint">${ic('bell')}<span>Что-то не работает? Напишите — ответим и поправим.</span></div></div>
    <div id="rvmsg" aria-live="polite"></div>
    <button class="btn" id="rvsend" onclick="rvSend()">Отправить отзыв</button>
    <div class="concept">В отзыве уходят только оценка, текст и имя, если укажете; сервер в России. Отзыв увидят все пользователи приложения.</div>`)}
@@ -2893,6 +3021,21 @@ function rvAsk(){if(S.askedReview&&S.askedReview!==today0())return '';
     <div class="rv-acts"><button class="btn sm" onclick="openReviewForm()">Оценить</button><button class="btn sec sm" onclick="rvAskOff()">Не сейчас</button></div></div>`}
 function rvAskOff(){S.askedReview='done';save();haptic(5);rerender()}
 window.addEventListener('online',()=>{visit();if(RV.st==='offline'||RV.st==='noserver')rvLoad(true)});
+// ответы команды на мои отзывы: POST /reviews/mine {did} → [{id,reply,reply_ts,seen}]. Не видел — «На ваш отзыв ответили»
+async function rvMine(force){if(!(S.rvMine&&S.rvMine.length)||!navigator.onLine||rvMine.busy)return null;if(!force&&Date.now()-(rvMine.at||0)<10*60e3)return null;
+  rvMine.busy=1;rvMine.at=Date.now();const r=await api('/reviews/mine',{did:S.did});rvMine.busy=0;if(!r.ok||!Array.isArray(r.data))return null;
+  const got=r.data.filter(x=>x&&x.id!=null&&x.reply),L=rvList();let ch=0;
+  got.forEach(g=>{const id=String(g.id),x=L.find(v=>v.id===id),n=rvNorm({id,stars:5,reply:g.reply,reply_ts:g.reply_ts});if(x&&(x.reply!==n.reply||!x.mine)){x.reply=n.reply;x.rts=n.rts;x.mine=true;ch=1}});
+  S.rvUnseen=got.filter(g=>!g.seen).map(g=>String(g.id));save();if(ch||S.rvUnseen.length)rvPaint();return got}
+function rvSeen(id){id=String(id);if(!(S.rvUnseen||[]).includes(id))return;S.rvUnseen=S.rvUnseen.filter(v=>v!==id);save();api('/reviews/seen',{did:S.did,id:+id||id});
+  document.querySelectorAll(`[data-rv="${CSS.escape(id)}"] .rv-new`).forEach(e=>e.remove())}
+async function rvReplyCheck(){if(S.onb||!S.profile)return;const got=await rvMine();if(!got)return;const id=(S.rvUnseen||[])[0];if(!id)return;
+  const show=()=>{if(S.onb||!(S.rvUnseen||[]).includes(id))return;if($('#sheet').classList.contains('on')||document.hidden){clearTimeout(rvReplyCheck.t);rvReplyCheck.t=setTimeout(show,5000);return}
+    const x=rvList().find(v=>v.id===id);if(!x||!x.reply)return;
+    sheet('На ваш отзыв ответили',`<div class="small muted" style="margin:-4px 0 12px">Команда «Мой тренер» прочитала ваш отзыв и ответила. Ответ видят все под отзывом.</div><div class="card list">${rvItem(x)}</div><button class="btn" onclick="closeSheet()">Понятно</button><button class="btn ghost" onclick="openReviews()">Все отзывы</button>`);rvSeen(id)};
+  show()}
+async function openMyReview(id){openReviews();await Promise.all([rvLoad(true),rvMine(true)]);const L=rvList(),x=(id&&L.find(v=>v.id===String(id)&&v.reply))||L.find(v=>v.mine&&v.reply&&(S.rvUnseen||[]).includes(v.id))||L.find(v=>v.mine&&v.reply);
+  if(!x||!$('#rvall'))return;const a=$('#rvall');a.innerHTML=rvAllInner();const el=a.querySelector(`[data-rv="${CSS.escape(x.id)}"]`);if(el)el.scrollIntoView({block:'center',behavior:RM?'auto':'smooth'});rvSeen(x.id)}
 window.addEventListener('offline',()=>{if(RV.st!=='ok'||!rvList().length){RV.st='offline';rvPaint()}});
 
 /* ---------- напоминания: пуш-уведомления, как в «Здоровье» на iPhone ----------
@@ -3033,8 +3176,10 @@ function pushTick(){const R=S.remind;if(!R||!R.on||S.onb||!S.profile||pushTick.b
   api('/push/state',{did:S.did,...st}).then(r=>{pushTick.busy=0;if(r.ok){R.sig=sig;save()}else{clearTimeout(pushTick.t);pushTick.t=setTimeout(pushTick,2*60e3+300)}})}
 // нажали на напоминание: адрес вида ./#gym или ./#food открывает нужный экран
 function openHash(h){h=String(h||'').replace(/^#/,'');if(!h||S.onb)return;try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}
-  const m={gym:openProgram,food:openFoodPlan,scan:openScan,weight:openWeight,remind:openRemind,reviews:openReviews,review:()=>openReviewForm()};
+  const m={gym:openProgram,food:openFoodPlan,scan:openScan,weight:openWeight,remind:openRemind,reviews:openReviews,review:()=>openReviewForm(),myreview:openMyReview};
+  const mr=h.match(/^myreview-(\d+)$/);if(mr){setTimeout(()=>openMyReview(mr[1]),350);return} // из уведомления «ответили на ваш отзыв»
   if(m[h])setTimeout(m[h],350);else if(['today','tech','me'].includes(h)){closeSheet();go(h)}}
+window.addEventListener('hashchange',()=>openHash(location.hash));
 if('serviceWorker' in navigator)try{navigator.serviceWorker.addEventListener('message',e=>{const o=e.data&&e.data.open;if(o)try{openHash(new URL(o,location.href).hash)}catch(_){}})}catch(e){}
 window.addEventListener('online',()=>{if(S.remind&&(S.remind.on||S.remind.unsub))remSync()});
 
@@ -3044,7 +3189,7 @@ setTimeout(scanResume,600);
 if(COACH_ON&&!S.onb&&S.profile&&!S.coach)setTimeout(()=>{if(!$('#sheet').classList.contains('on'))pickCoach(true)},2500);
 if(!S.onb&&!consentOk()&&S.consentAsked!==LEGAL_V)setTimeout(()=>consentOpen('existing'),1500); // прошли анкету до окна согласия — спросим один раз, ничего не блокируя
 render();setTimeout(acInit,300);setTimeout(()=>loadKit().then(()=>loadPrices()).then(()=>{if(!S.onb&&S.tab==='today'&&!$('#sheet').classList.contains('on'))rerender()}),900);
-setTimeout(visit,1500);setTimeout(remSync,2500);openHash(location.hash);
+setTimeout(visit,1500);setTimeout(remSync,2500);openHash(location.hash);if(!/myreview/.test(location.hash))setTimeout(rvReplyCheck,3500);
 // ярлык на экране «Домой» не перезапускает страницу, а будит старую: при возвращении тихо проверяем новую версию и обновляемся,
 // только когда человек ничего не делает (нет открытой шторки, анкеты, тренировки, камеры)
 async function updCheck(){const now=Date.now();if(!navigator.onLine||now-(updCheck.at||0)<10*60e3)return;updCheck.at=now;
@@ -3053,7 +3198,7 @@ async function updCheck(){const now=Date.now();if(!navigator.onLine||now-(updChe
     const busy=()=>$('#sheet').classList.contains('on')||!$('#onb').classList.contains('hide')||document.querySelector('#cons.on')||[...document.querySelectorAll('video')].some(v=>!v.paused);
     if(!busy()){go_();return}
     const w=()=>{if(!busy())go_();else setTimeout(w,5000)};setTimeout(w,5000)}catch(e){}}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden){visit();updCheck();if(!S.onb&&S.tab==='today')rvLoad();if(S.remind&&(S.remind.on||S.remind.unsub))remSync()}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){visit();updCheck();if(!S.onb&&S.tab==='today')rvLoad();rvReplyCheck();if(S.remind&&(S.remind.on||S.remind.unsub))remSync()}});
 </script>
 </body>
 </html>

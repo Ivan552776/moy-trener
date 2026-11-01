@@ -4,7 +4,7 @@
    видео не трогаем (нужны частичные ответы 206), кроме короткого примера squat.mp4: страница берёт его целиком через fetch.
    Версия кэша меняется при выкладке — скачанное (библиотеки, базы, картинки) переносится в новую копию, старые страницы не переносятся.
    lib/ отдаётся из памяти без проверки: новую версию библиотеки класть по новому пути, иначе останется старая. */
-const V='mt-2026-11-01-r53';
+const V='mt-2026-11-02-r54';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(['./','index.html','manifest.webmanifest','icon.png','data/products.json','data/dishes.json','data/aliases.json','data/korzina.json','data/recepty.json','data/regiony.json','data/allergens.json'].map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 // страница просит сохранить себя (её адрес заранее неизвестен: index.html на сервере, yobody.html в превью)
 self.addEventListener('message',e=>{const u=e.data&&e.data.cachePage;if(u)e.waitUntil(caches.open(V).then(c=>c.add(new Request(u,{cache:'reload'}))).catch(()=>{}))});
@@ -53,7 +53,7 @@ self.addEventListener('push',e=>{let d={};try{d=e.data?e.data.json():{}}catch(_)
   if(Array.isArray(d.actions))o.actions=d.actions.slice(0,2).filter(x=>x&&ACTS[x.action]!==undefined).map(x=>({action:String(x.action),title:String(x.title||'').slice(0,24)}));
   // открытой странице говорим «пришло» — так она понимает, что пробное уведомление дошло
   e.waitUntil(self.registration.showNotification(String(d.title||'Мой тренер'),o).then(()=>self.clients.matchAll({type:'window',includeUncontrolled:true})).then(cs=>cs.forEach(c=>c.postMessage({pushed:d.tag||''}))).catch(()=>{}))});
-const ACTS={food:'./#scan',plan:'./#gym',review:'./#review',later:null}; // кнопки в уведомлении → экран приложения; «Позже» просто закрывает
+const ACTS={food:'./#scan',plan:'./#gym',review:'./#review',reply:'',later:null}; // кнопки в уведомлении → экран приложения; «Позже» просто закрывает
 self.addEventListener('notificationclick',e=>{e.notification.close();const sc=self.registration.scope;
   if(e.action&&ACTS[e.action]===null)return;
   let url=sc;try{const t=new URL((e.action&&ACTS[e.action])||(e.notification.data&&e.notification.data.url)||'./',sc);if(t.origin===location.origin&&t.href.startsWith(sc))url=t.href}catch(_){}
