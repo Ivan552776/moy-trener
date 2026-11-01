@@ -24,12 +24,13 @@
    Все цвета — переменные ниже. Тёмная тема — :root[data-scheme="dark"] (data-scheme ставит applyTheme). */
 :root{
   color-scheme:light;
-  --bg:#F2F3F7; --bg-desk:#E4E6EC; --card:#FFFFFF; --card2:#ECEEF3; --card3:#E1E4EB; --sheet:#F2F3F7; --sheet-card:#FFFFFF;
+  --bg:#F3F2F6; --bg-desk:#E4E6EC; --card:rgba(255,255,255,.72);
+  --glow:radial-gradient(110% 55% at 100% -5%,rgba(255,45,85,.16),transparent 62%),radial-gradient(90% 45% at -10% 35%,rgba(255,170,140,.18),transparent 65%),radial-gradient(80% 40% at 110% 80%,rgba(176,21,122,.08),transparent 65%); --card2:#ECEEF3; --card3:#E1E4EB; --sheet:#F2F3F7; --sheet-card:#FFFFFF;
   --text:#0B0D12; --text2:#5E6472; --text3:#8C93A1;
   --ink:#0B0D12; --paper:#FFFFFF;
   --line:rgba(16,20,40,.10); --line2:rgba(16,20,40,.18);
   --glass:rgba(242,243,247,.92); --veil:rgba(10,12,20,.32);
-  --shadow:0 0 0 .5px rgba(16,20,40,.05),0 1px 2px rgba(16,20,40,.04),0 8px 24px rgba(16,20,40,.06);
+  --shadow:inset 0 0 0 1px rgba(255,255,255,.85),0 0 0 .5px rgba(16,20,40,.05),0 1px 2px rgba(16,20,40,.04),0 12px 32px -14px rgba(120,20,60,.16);
   --shadow-pop:0 0 0 .5px rgba(16,20,40,.06),0 14px 40px rgba(16,20,40,.16);
   /* бренд: малиновый */
   --accent:#E5173F; --accent-press:#C9103A; --accent-hi:#FF2D55; --on-accent:#FFFFFF;
@@ -69,7 +70,8 @@
 @supports not (transition-timing-function:linear(0,1)){:root{--spring:var(--ease-out);--spring-sheet:var(--ease-drawer);--spring-bouncy:var(--ease-out)}}
 :root[data-scheme="dark"]{
   color-scheme:dark;
-  --bg:#0B0B0D; --bg-desk:#050506; --card:#1C1C1E; --card2:#2C2C2E; --card3:#3A3A3C; --sheet:#1C1C1E; --sheet-card:#2C2C2E;
+  --bg:#0B0B0D; --bg-desk:#050506; --card:rgba(32,32,36,.74);
+  --glow:radial-gradient(110% 55% at 100% -5%,rgba(255,45,85,.14),transparent 62%),radial-gradient(90% 45% at -10% 40%,rgba(176,21,122,.10),transparent 65%); --card2:#2C2C2E; --card3:#3A3A3C; --sheet:#1C1C1E; --sheet-card:#2C2C2E;
   --text:#F5F6FA; --text2:#A3A9B8; --text3:#7A8191;
   --ink:#F5F6FA; --paper:#0B0B0D;
   --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.16);
@@ -102,7 +104,7 @@ img{outline:1px solid var(--line);outline-offset:-1px}
 .num{font-family:var(--num);font-variant-numeric:tabular-nums;font-weight:700;letter-spacing:-.015em}
 .sf{font-family:var(--display);font-weight:700;letter-spacing:-.015em}
 .unit{font:500 15px var(--font);color:var(--text2);margin-left:2px;letter-spacing:0}
-#phone{position:relative;width:100%;height:100vh;height:100dvh;overflow:hidden;overflow:clip;background:var(--bg)}
+#phone{position:relative;width:100%;height:100vh;height:100dvh;overflow:hidden;overflow:clip;background:var(--glow),var(--bg)}
 @media (min-width:560px){
   body{align-items:center;background:var(--bg-desk)}
   #phone{max-width:430px;height:min(880px,96dvh);border-radius:48px;box-shadow:0 40px 90px rgba(20,20,30,.28),0 0 0 11px #0B0B0F,0 0 0 12px #2a2a2e}
@@ -157,7 +159,7 @@ h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.src,.lock,.calcrow span{text-
 .card{background:var(--card);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);margin-bottom:12px}
 .card.list{padding:2px 18px}
 #sbody .card{overflow-wrap:break-word}
-#sheet .card,#sheet .opt,#sheet .addopt,#sheet .stepper{background:var(--sheet-card)}
+#sheet .card,#sheet .opt,#sheet .addopt,#sheet .stepper{background:var(--sheet-card)} #toast{-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%)}
 #sheet .card.volt{background:var(--volt)}
 /* тёмная шторка: внутри карточек подложки на ступень светлее, иначе плитки и «−/+» сливаются */
 :root[data-scheme="dark"] #sheet :is(.card,.addopt,.opt,.stepper){--card2:#3A3A3C;--card3:#48484A}
@@ -582,7 +584,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .coach-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.coach-pick{text-align:left;padding:14px;display:block;width:100%}.coach-pick.on{outline:2px solid var(--accent);outline-offset:-2px}
 .rowbtn .coach-ava.sm{width:40px;display:grid;place-items:center}
 /* тёмная тема: без теней, только слои */
-:root[data-scheme="dark"] :is(.hero2,.techx,.btn,.avatar,.wk .d.today i,.ibox.primary,.bigicon){box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+:root[data-scheme="dark"] :is(.techx,.btn,.avatar,.wk .d.today i,.ibox.primary,.bigicon){box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
 .scal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-top:16px;text-align:center;width:100%}
 .scal .sc-h{font-size:11px;font-weight:600;color:var(--text3);padding-bottom:2px}
 .scal .sc-d{font:600 14px/34px var(--num);font-variant-numeric:tabular-nums;height:34px;width:34px;margin:0 auto;border-radius:50%;color:var(--text2)}
@@ -591,7 +593,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .workx{position:relative;isolation:isolate;display:block;width:100%;height:236px;border-radius:var(--r-hero);overflow:hidden;text-align:left;color:#fff;background:#16181F;margin:0 0 14px;box-shadow:0 18px 40px -24px rgba(0,0,0,.5)}
 .workx img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;outline:0}
 .workx::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,.28) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,.25) 50%,rgba(0,0,0,.82) 100%)}
-.wx-st{position:absolute;left:16px;top:16px;display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:999px;background:rgba(0,0,0,.4);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-size:13px;font-weight:600} .wx-st .ic{width:15px;height:15px}
+.wx-st{position:absolute;left:16px;top:16px;display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:999px;background:rgba(0,0,0,.5);font-size:13px;font-weight:600} .wx-st .ic{width:15px;height:15px}
 .workx.done .wx-st{background:var(--accent)}
 .wx-c{position:absolute;left:18px;right:18px;bottom:16px}
 .wx-t{font:700 26px/1.1 var(--display);letter-spacing:-.022em} .wx-s{font-size:14px;color:rgba(255,255,255,.8);margin-top:4px}
@@ -600,41 +602,44 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .mx-p{position:relative;width:84px;height:84px;border-radius:12px;overflow:hidden;flex:none;background:var(--accent-soft);color:var(--accent-text);display:grid;place-items:center} .mx-p .ic{width:30px;height:30px} .mx-p img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;outline:0}
 .mx-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px} .mx-eb{font-size:13px;font-weight:600;color:var(--accent-text)} .mx-t b{font-size:16px;line-height:1.25;font-weight:600;text-wrap:pretty} .mx-s{font-size:13px;color:var(--text2)}
 .mx-v{display:flex;flex-direction:column;align-items:flex-end;flex:none} .mx-v b{font:700 20px var(--num);font-variant-numeric:tabular-nums} .mx-v span{font-size:12px;color:var(--text2)} .mx-v .mx-pr{margin-top:4px;font-weight:600;color:var(--text)}
-.wk2{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 -16px 20px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain} .wk2::-webkit-scrollbar{display:none}
-.wk2-w{flex:none;width:100%;display:flex;justify-content:space-between;padding:0 12px;scroll-snap-align:start}
-.wk2-d{display:flex;flex-direction:column;align-items:center;gap:6px;width:44px;padding:8px 0;border-radius:999px;transition:background-color .3s var(--ease-out),transform 300ms var(--spring)}
+.wk2{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:-4px -16px 10px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain} .wk2::-webkit-scrollbar{display:none}
+.wk2-w{flex:none;width:100%;display:flex;justify-content:space-between;padding:4px 16px 12px;scroll-snap-align:start}
+.wk2-d{display:flex;flex-direction:column;align-items:center;gap:4px;width:calc((100% - 36px)/7);padding:9px 0 9px;border-radius:999px;background:var(--card);box-shadow:var(--shadow);transition:background-color .3s var(--ease-out),color .3s,transform 300ms var(--spring),box-shadow .3s}
 .wk2-d:active{transform:scale(.94);transition:transform 110ms var(--ease-out)}
-.wk2-d .n{font-size:11px;font-weight:600;color:var(--text3)}
-.wk2-d .c{position:relative;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:600 15px var(--num);font-variant-numeric:tabular-nums;color:var(--text2);box-shadow:inset 0 0 0 1.5px var(--line)}
+.wk2-d .n{font-size:11px;font-weight:600;color:var(--text3);transition:color .3s}
+.wk2-d .c{position:relative;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:700 16px var(--num);font-variant-numeric:tabular-nums;color:var(--text);transition:color .3s}
 .wk2-d .c .ic{width:16px;height:16px;stroke-width:2.6}
-.wk2-d.plan .c{box-shadow:inset 0 0 0 1.5px var(--accent-soft);color:var(--text)}
-.wk2-d.tr .c{background:var(--accent-soft);color:var(--accent-text);box-shadow:none}
+.wk2-d.plan .c::after{content:"";position:absolute;bottom:-3px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--accent)}
+.wk2-d.tr .c{color:var(--accent-text)}
 .wk2-d.fut .c{color:var(--text3)}
-.wk2-d.sel{background:var(--card);box-shadow:var(--shadow)}
-.wk2-d.today{background:var(--accent);box-shadow:0 8px 20px -10px rgba(229,23,63,.7)} .wk2-d.today .n{color:rgba(255,255,255,.8)} .wk2-d.today .c{color:#fff;box-shadow:none;font-weight:700}
-.wk2-r{position:absolute;inset:0;width:32px;height:32px;transform:rotate(-90deg)} .wk2-r circle{fill:none;stroke-width:2.6} .wk2-r .t{stroke:rgba(255,255,255,.3)} .wk2-r .v{stroke:#fff;stroke-linecap:round}
-:root[data-scheme="dark"] .wk2-d.today{box-shadow:none}
+.wk2-d.today:not(.sel) .c{color:var(--accent-text)} .wk2-d.today:not(.sel) .wk2-r .t{stroke:var(--accent-soft)} .wk2-d.today:not(.sel) .wk2-r .v{stroke:var(--accent)}
+.wk2-d.sel{background:var(--accent);box-shadow:0 10px 22px -10px rgba(229,23,63,.7)} .wk2-d.sel .n{color:rgba(255,255,255,.82)} .wk2-d.sel .c{color:#fff}
+.wk2-r{position:absolute;inset:-1px;width:32px;height:32px;transform:rotate(-90deg)} .wk2-r circle{fill:none;stroke-width:2.4} .wk2-r .t{stroke:rgba(255,255,255,.32)} .wk2-r .v{stroke:#fff;stroke-linecap:round}
+.eat .li{align-items:center} .eat-p{position:relative;width:44px;height:44px;border-radius:50%;overflow:hidden;flex:none;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-text)} .eat-p .ic{width:20px;height:20px} .eat-p img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;outline:0}
+:root[data-scheme="dark"] .wk2-d.sel{box-shadow:none}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){#tabs{background:rgba(255,255,255,.97)} :root[data-scheme="dark"] #tabs{background:rgba(44,44,46,.98)} #toast{background:var(--sheet-card)}}
 /* ---------- «Сегодня» 3.0: кольцо-герой, «Сейчас», разбор техники ---------- */
 .top-r{display:flex;align-items:center;gap:8px;flex:none}
 .streak{display:flex;align-items:center;gap:4px;height:38px;padding:0 12px 0 9px;border-radius:999px;background:var(--card);box-shadow:var(--shadow);color:var(--accent-text)} .streak .ic{width:20px;height:20px} .streak b{font:700 17px var(--num);font-variant-numeric:tabular-nums;color:var(--text)}
-.hero2{position:relative;isolation:isolate;overflow:hidden;display:block;width:100%;text-align:left;color:#fff;border-radius:var(--r-hero);padding:20px 18px 16px;margin:0 0 12px;
-  background:radial-gradient(70% 90% at 0% 0%,rgba(255,45,85,.30),transparent 65%),radial-gradient(60% 80% at 100% 100%,rgba(176,21,122,.28),transparent 70%),linear-gradient(160deg,#1B1D26 0%,#0E1015 100%);
-  box-shadow:0 20px 44px -24px rgba(229,23,63,.55),inset 0 0 0 .5px rgba(255,255,255,.08);
-  --p:#FF3358;--p-soft:rgba(255,51,88,.18);--f:#FFA3B5;--f-soft:rgba(255,163,181,.16);--c:#E0609A;--c-soft:rgba(224,96,154,.18)}
+.hero2{position:relative;isolation:isolate;overflow:hidden;display:block;width:100%;text-align:left;color:var(--text);border-radius:var(--r-hero);padding:20px 18px 16px;margin:0 0 12px;
+  background:radial-gradient(80% 100% at 0% 0%,rgba(255,45,85,.10),transparent 60%),var(--card);box-shadow:var(--shadow),0 18px 40px -22px rgba(229,23,63,.35);
+  --hw:var(--text);--hw2:var(--text2);--hw3:var(--text3);--hline:var(--line);--htrack:rgba(229,23,63,.13)}
+:root[data-scheme="dark"] .hero2{color:#fff;background:radial-gradient(70% 90% at 0% 0%,rgba(255,45,85,.30),transparent 65%),radial-gradient(60% 80% at 100% 100%,rgba(176,21,122,.28),transparent 70%),linear-gradient(160deg,#1B1D26 0%,#0E1015 100%);
+  --hw:#fff;--hw2:rgba(255,255,255,.7);--hw3:rgba(255,255,255,.45);--hline:rgba(255,255,255,.12);--htrack:rgba(255,45,85,.15)}
 .h2-row{display:flex;align-items:center;gap:18px}
 .h2-ring{position:relative;width:140px;height:140px;flex:none}
-.h2-ring .ring-t{stroke:rgba(255,45,85,.15)} .h2-ring .ring-v{stroke:url(#hg);filter:drop-shadow(0 0 6px rgba(255,45,85,.6))}
+.h2-ring .ring-t{stroke:var(--htrack)} .h2-ring .ring-v{stroke:url(#hg);filter:drop-shadow(0 0 6px rgba(255,45,85,.6))}
 .hero2.over .h2-ring .ring-t{stroke:rgba(255,45,85,.4)}
 .h2-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .h2-in .n-hero{font-size:36px;line-height:1;letter-spacing:-.03em}
-.h2-l{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.62);margin-top:4px}
+.h2-l{font-size:12.5px;font-weight:600;color:var(--hw2);margin-top:4px}
 .hero2.over .h2-l{color:#FF8FA6}
 .h2-mac{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
-.h2-ml{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:13px;font-weight:600;color:rgba(255,255,255,.7)}
-.h2-ml b{font:700 16px var(--num);font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap} .h2-ml i{font:500 12px var(--font);font-style:normal;color:rgba(255,255,255,.45)}
-.h2-m .bar{height:7px;margin-top:6px;background:var(--k-soft)} .h2-m .bar>i{background:var(--k);box-shadow:0 0 8px var(--k-soft)}
+.h2-ml{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:13px;font-weight:600;color:var(--hw2)}
+.h2-ml b{font:700 16px var(--num);font-variant-numeric:tabular-nums;color:var(--hw);white-space:nowrap} .h2-ml i{font:500 12px var(--font);font-style:normal;color:var(--hw3)}
+.h2-m .bar{height:7px;margin-top:6px;background:var(--k-soft)} .h2-m .bar>i{background:var(--k)} :root[data-scheme="dark"] .h2-m .bar>i{box-shadow:0 0 8px var(--k-soft)} :root[data-scheme="dark"] .hero2{--p:#FF3358;--p-soft:rgba(255,51,88,.18);--f:#FFA3B5;--f-soft:rgba(255,163,181,.16);--c:#E0609A;--c-soft:rgba(224,96,154,.18)}
 .m-p{--k:var(--p);--k-soft:var(--p-soft)} .m-f{--k:var(--f);--k-soft:var(--f-soft)} .m-c{--k:var(--c);--k-soft:var(--c-soft)}
-.h2-foot{margin-top:16px;padding-top:12px;box-shadow:inset 0 .5px 0 rgba(255,255,255,.12);font-size:13px;color:rgba(255,255,255,.6);display:flex;justify-content:center;font-variant-numeric:tabular-nums}
+.h2-foot{margin-top:16px;padding-top:12px;box-shadow:inset 0 .5px 0 var(--hline);font-size:13px;color:var(--hw2);display:flex;justify-content:center;font-variant-numeric:tabular-nums}
 .now{background:var(--card);border-radius:var(--r);padding:16px 16px 6px;box-shadow:var(--shadow);margin-bottom:12px}
 .now-h{display:flex;align-items:center;gap:10px;margin-bottom:10px} .now-ava{width:32px;height:32px;border-radius:50%} .now-ava .ic{width:18px;height:18px}
 .now-l{font-size:15px;font-weight:600;color:var(--accent-text)}
@@ -645,13 +650,13 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .techx img{position:absolute;left:0;top:0;width:100%;height:58%;object-fit:cover;object-position:50% 30%;z-index:-2;outline:0}
 .techx::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(11,13,18,.35) 0%,rgba(11,13,18,0) 20%,rgba(11,13,18,0) 34%,#0B0D12 55%)}
 .tx-c{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:340px;padding:18px}
-.tx-eb{align-self:flex-start;margin-bottom:auto;padding:6px 11px;border-radius:999px;background:rgba(0,0,0,.35);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-size:12.5px;font-weight:600}
+.tx-eb{align-self:flex-start;margin-bottom:auto;padding:6px 11px;border-radius:999px;background:rgba(0,0,0,.5);font-size:12.5px;font-weight:600}
 .tx-score{font:700 15px var(--num);color:rgba(255,255,255,.7)} .tx-score b{font-size:44px;color:#fff;letter-spacing:-.03em}
 .tx-t{font:700 26px/1.1 var(--display);letter-spacing:-.022em;margin-top:6px}
 .tx-s{font-size:15px;line-height:1.35;color:rgba(255,255,255,.78);margin-top:6px;text-wrap:pretty}
 .tx-b{display:flex;gap:8px;margin-top:16px}
 .tx-go,.tx-demo{display:inline-flex;align-items:center;gap:7px;height:44px;padding:0 18px;border-radius:999px;font-weight:600;font-size:16px} .tx-go .ic,.tx-demo .ic{width:19px;height:19px}
-.tx-go{background:#fff;color:#0B0D12} .tx-demo{background:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.tx-go{background:#fff;color:#0B0D12} .tx-demo{background:rgba(255,255,255,.2);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .me-i{background:var(--card2);color:var(--text)} .me-i .ic{width:21px;height:21px}
 .calm .ibox{width:36px;height:36px;border-radius:11px;color:var(--text2)} .calm .ibox .ic{width:20px;height:20px}
 @media (max-width:359px){.h2-ring{width:120px;height:120px}.h2-ring .ring{width:120px;height:120px}.h2-in .n-hero{font-size:30px}.h2-row{gap:14px}}
@@ -672,7 +677,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r28'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r29'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -813,7 +818,7 @@ const ROMAN=['I','II','III','IV','V'];
 
 /* ---------- состояние ---------- */
 const DEF={name:'',sex:'m',age:30,h:178,w:80,goal:'lose',pace:'mid',work:'sit',trains:3,level:'new',income:80000,people:1,share:.3,place:'both'}; // только стартовые значения анкеты — человек меняет их сам
-const fresh=()=>({onb:true,profile:{...DEF},log:[],done:[],sets:{},remind:{},tab:'today',theme:'auto',weights:[],forms:[],extra:[],custom:[],refs:[],v:3,day:null,week:null,doneOn:{},plan:null});
+const fresh=()=>({onb:true,profile:{...DEF},log:[],done:[],sets:{},remind:{},tab:'today',theme:'light',weights:[],forms:[],extra:[],custom:[],refs:[],v:3,day:null,week:null,doneOn:{},plan:null});
 let S=load()||fresh();if(S.demo||(S.profile&&S.profile.name==='Алексей'&&S.profile.club==='izumrud'&&S.profile.w===88)){const th=S.theme;S=fresh();S.theme=th} // старое сохранение «примера» — честно начинаем с анкеты
 if(!['today','tech','me'].includes(S.tab))S.tab='today';
 S.theme=S.theme||'auto';
@@ -1064,8 +1069,8 @@ function vToday(){
       <div class="tx-b"><span class="tx-go" onclick="event.stopPropagation();openForm()">${ic('cam')}Снять подход</span>${lf?'':`<span class="tx-demo">${ic('play')}Пример</span>`}</div></div></button>
   ${nextMeal&&mealTime?(()=>{const mi=MEALS.findIndex(x=>x.n===nextMeal.n),im=(MEALS[mi]||{}).img;return `<button class="mealx tap" onclick="openMeal(${mi})"><div class="mx-p">${ic('food')}${pic(im,nextMeal.n)}</div><div class="mx-t"><span class="mx-eb">Дальше · ${mealTime}</span><b>${nextMeal.n}</b><span class="mx-s">под остаток и бюджет</span></div><div class="mx-v"><b>${fmt(nextMeal.nut.k)}</b><span>ккал</span><span class="mx-pr">≈${nextMeal.price} ₽</span></div></button>`})():''}
   ${S.log.length?`<h2>Съедено сегодня</h2>
-  <div class="card list tl">
-    ${S.log.map((en,i)=>`<div class="li" role="button" onclick="openEntry(${i})"><time>${en.t}</time><div style="flex:1;min-width:0"><div style="font-weight:600">${en.n}</div><div class="tiny muted">Б ${fmt(en.p)} · Ж ${fmt(en.f)} · У ${fmt(en.c)} · ${en.src==='этикетка'?'по этикетке':'по базе'}${en.acc==='средняя'?', граммы уточнены':''}</div></div><span class="kc" style="white-space:nowrap">${fmt(en.k)}<small style="font:500 12px var(--font);color:var(--text2)"> ккал</small></span></div>`).join('')}
+  <div class="card list tl eat">
+    ${S.log.map((en,i)=>`<div class="li" role="button" onclick="openEntry(${i})"><span class="eat-p">${ic('food')}${pic(en.img||(MEALS.find(x=>x.n===en.n)||{}).img,en.n)}</span><div style="flex:1;min-width:0"><div style="font-weight:600">${en.n}</div><div class="tiny muted">${en.t} · Б ${fmt(en.p)} · Ж ${fmt(en.f)} · У ${fmt(en.c)}${en.acc==='средняя'?' · граммы уточнены':''}</div></div><span class="kc" style="white-space:nowrap">${fmt(en.k)}<small style="font:500 12px var(--font);color:var(--text2)"> ккал</small></span></div>`).join('')}
   </div>`:''}
   ${rvAsk()}
   <h2>Итоги дня</h2>
@@ -1104,7 +1109,7 @@ function weekStrip(){
   const e=eaten(),pct=Math.min(100,Math.round(e.k/norm(S.profile).kcal*100)),tk=today0();
   const cell=(dt,i,plan)=>{const k=ymd(dt),tr=!!(S.doneOn&&S.doneOn[k]!=null),isT=k===tk,fut=dt>today&&!isT,r=13,L=2*Math.PI*r;
     const mini=isT?`<svg class="wk2-r" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="${r}" class="t"/><circle cx="16" cy="16" r="${r}" class="v" stroke-dasharray="${L}" stroke-dashoffset="${L*(1-pct/100)}"/></svg>`:'';
-    return `<button class="wk2-d${isT?' today':''}${tr?' tr':''}${fut?' fut':''}${plan?' plan':''}" onclick="wkTap(this,'${k}',${tr?1:0},${plan?1:0})"><span class="n">${names[i]}</span><span class="c">${mini}${tr&&!isT?ic('check'):dt.getDate()}</span></button>`};
+    return `<button class="wk2-d${isT?' today sel':''}${tr?' tr':''}${fut?' fut':''}${plan?' plan':''}" onclick="wkTap(this,'${k}',${tr?1:0},${plan?1:0})"><span class="n">${names[i]}</span><span class="c">${mini}${tr&&!isT?ic('check'):dt.getDate()}</span></button>`};
   const pm=new Date(mon);pm.setDate(mon.getDate()-7);
   const wk=(m,cur)=>`<div class="wk2-w">${names.map((nm,i)=>{const dt=new Date(m);dt.setDate(m.getDate()+i);return cell(dt,i,cur&&days.includes(i)&&dt>=new Date(today0()))}).join('')}</div>`;
   return `<div class="wk2" aria-label="Неделя">${wk(pm,false)}${wk(mon,true)}</div>`;
