@@ -673,6 +673,34 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .dsel{margin-top:8px} .dsel .chip{font-size:13px;padding:6px 11px}
 .ddone{position:sticky;bottom:-16px;z-index:4;margin:12px -20px -16px;padding:12px 20px calc(env(safe-area-inset-bottom) + 22px);background:rgba(243,242,246,.82);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:0 -.5px 0 var(--line)}
 :root[data-scheme="dark"] .ddone{background:rgba(28,28,30,.82)}
+#cook{position:absolute;inset:0;z-index:26;display:flex;flex-direction:column;background:radial-gradient(120% 60% at 50% 0%,var(--accent-soft),transparent 60%),var(--bg);opacity:0;pointer-events:none;transform:translateY(24px);transition:opacity .3s var(--ease-out),transform .45s var(--spring-sheet,cubic-bezier(.2,.9,.25,1))}
+#cook.on{opacity:1;pointer-events:auto;transform:none}
+.cb-top{flex:none;display:grid;grid-template-columns:44px 1fr;grid-template-rows:auto auto;gap:6px 10px;align-items:center;padding:calc(env(safe-area-inset-top) + 12px) 16px 10px}
+.cb-x{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--glass,rgba(255,255,255,.6));-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:var(--shadow)} .cb-x .ic{width:22px;height:22px}
+.cb-tt{min-width:0;display:flex;flex-direction:column} .cb-tt b{font:700 17px/1.25 var(--display);overflow-wrap:anywhere} .cb-tt span{font-size:13px;color:var(--text2)}
+.cb-dots{grid-column:1/3;display:flex;gap:5px;flex-wrap:wrap;justify-content:center} .cb-dots i{width:7px;height:7px;border-radius:50%;background:var(--line2,var(--card3));transition:transform .3s var(--ease-out),background-color .3s} .cb-dots i.ok{background:var(--accent)} .cb-dots i.cur{transform:scale(1.5);background:var(--accent-text)}
+.cb-pages{flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch} .cb-pages::-webkit-scrollbar{display:none}
+.cb-page{flex:0 0 100%;scroll-snap-align:start;scroll-snap-stop:always;min-width:0;display:flex;padding:4px 16px calc(env(safe-area-inset-bottom) + 16px)}
+.cb-in{flex:1;min-width:0;display:flex;flex-direction:column;overflow-y:auto;background:var(--card);border-radius:28px;padding:22px 20px;box-shadow:var(--shadow-pop);transform-origin:50% 50%;will-change:transform,opacity}
+.cb-eb{font-size:13px;font-weight:650;color:var(--accent-text);letter-spacing:.02em} .cb-h{margin:6px 0 4px;font:700 26px/1.15 var(--display)} .cb-prog{font-size:15px;color:var(--text2);margin-bottom:12px} .cb-prog b{color:var(--text);font:700 20px var(--num)}
+.cb-list{display:flex;flex-direction:column;margin-bottom:16px}
+.cb-row{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;text-align:left;box-shadow:inset 0 -.5px 0 var(--line);transition:opacity .25s,transform .35s var(--ease-out)} .cb-row:last-child{box-shadow:none}
+.cb-chk{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 2px var(--line2,var(--card3));color:transparent;transition:background-color .2s,box-shadow .2s,transform .35s var(--spring-bouncy)} .cb-chk .ic{width:16px;height:16px;stroke-width:2.6}
+.cb-row.on .cb-chk{background:var(--accent);box-shadow:none;color:#fff;transform:scale(1.06)} .cb-row.on{opacity:.55} .cb-row.on .cb-nm{text-decoration:line-through}
+.cb-nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;font-weight:600;font-size:16px;overflow-wrap:anywhere} .cb-nm small{font-weight:500;font-size:14px;color:var(--text2)} .cb-row{padding:8px 0}
+.cb-time{font:700 34px var(--num);margin:6px 0 2px} .cb-txt{font-size:20px;line-height:1.45;margin:6px 0 18px;text-wrap:pretty}
+.cb-timer{align-self:center;position:relative;width:120px;height:120px;margin:0 0 18px;border-radius:50%;display:grid;place-items:center} .cb-timer>svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.cb-timer .tr{fill:none;stroke:var(--accent-soft);stroke-width:6} .cb-timer .tp{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;stroke-dasharray:176;transition:stroke-dashoffset .5s linear}
+.cb-timer>span{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--accent-text)} .cb-timer b{font:700 18px var(--num);color:var(--text)} .cb-timer .ic{width:20px;height:20px}
+.cb-done{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:60px;border-radius:var(--pill);background:var(--accent-soft);color:var(--accent-text);font:700 18px var(--font);transition:background-color .25s,color .25s,transform .35s var(--spring-bouncy)}
+.cb-done .ic{width:24px;height:24px;stroke-width:2.6} .cb-done.on{background:var(--grad);color:#fff} .cb-done.pop{animation:cbpop .45s var(--spring-bouncy)} @keyframes cbpop{40%{transform:scale(.94)}70%{transform:scale(1.04)}}
+.cb-fin .cb-in{align-items:stretch;justify-content:center} #cook .cb-fin h2.cb-h{text-align:center}
+.cb-ph{align-self:center;width:180px;height:180px;border-radius:50%;overflow:hidden;position:relative;margin:0 0 12px;box-shadow:var(--shadow-pop)} .cb-ph img{width:100%;height:100%;object-fit:cover} .cb-ph.cb-ic{display:grid;place-items:center;background:var(--grad);color:#fff} .cb-ph.cb-ic .ic{width:64px;height:64px;stroke-width:1.4}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+.badge{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:10px 4px;border-radius:16px;background:var(--card2)} .badge b{font-size:13px;line-height:1.2} .badge small{font-size:11px;color:var(--text2);line-height:1.25}
+.bd-i{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--card3);color:var(--text3)} .bd-i .ic{width:20px;height:20px}
+.badge.on .bd-i{background:var(--grad);color:#fff;box-shadow:0 6px 16px -6px rgba(4,120,87,.55);animation:bdin .6s var(--spring-bouncy)} @keyframes bdin{from{transform:scale(.6);opacity:0}}
+@media (prefers-reduced-motion:reduce){.badge.on .bd-i,.cb-done.pop{animation:none}}
 .mealx{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border-radius:var(--r);padding:12px 16px 12px 12px;box-shadow:var(--shadow);margin:0 0 12px}
 .mx-p{position:relative;width:84px;height:84px;border-radius:12px;overflow:hidden;flex:none;background:var(--accent-soft);color:var(--accent-text);display:grid;place-items:center} .mx-p .ic{width:30px;height:30px} .mx-p img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;outline:0}
 .mx-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px} .mx-eb{font-size:13px;font-weight:600;color:var(--accent-text)} .mx-t b{font-size:16px;line-height:1.25;font-weight:600;text-wrap:pretty} .mx-s{font-size:13px;color:var(--text2)}
@@ -783,7 +811,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-02-r57'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-02-r58'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -873,13 +901,13 @@ function after(root,anim,stag){
   if(stag&&anim){const w=root.querySelector('.stg');if(w){[...w.children].forEach((el,i)=>el.style.animationDelay=Math.min(i,5)*25+'ms');w.querySelectorAll('.opt').forEach((el,i)=>el.style.animationDelay=(40+i*30)+'ms')}}
 }
 const OK='<div class="okmark"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>';
-function confetti(n=80,x=.5,y=.4){
+function confetti(n=80,x=.5,y=.4,cols0,dur=1400){
   if(RM)return;const c=$('#fx'),ctx=c.getContext('2d'),r=window.devicePixelRatio||1,W=c.clientWidth,H=c.clientHeight;
   c.width=W*r;c.height=H*r;ctx.setTransform(r,0,0,r,0,0);
-  const cols=['#FF8A3D','#FF4F45','#FF2D78','#4C6FFF','#1FB57E','#F5B300','#A855F7'];
+  const cols=cols0||['#FF8A3D','#FF4F45','#FF2D78','#4C6FFF','#1FB57E','#F5B300','#A855F7'];
   const P=Array.from({length:n},()=>{const a=Math.random()*Math.PI*2,s=3+Math.random()*9;return{x:W*x,y:H*y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-7,w:5+Math.random()*5,h:3+Math.random()*4,c:cols[Math.random()*cols.length|0],r:Math.random()*6.28,vr:(Math.random()-.5)*.3}});
   const t0=performance.now();
-  const f=t=>{const k=(t-t0)/1400;ctx.clearRect(0,0,W,H);if(k>=1)return;P.forEach(p=>{p.vy+=.25;p.vx*=.985;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;ctx.save();ctx.globalAlpha=Math.max(0,1-k*k);ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore()});requestAnimationFrame(f)};
+  const f=t=>{const k=(t-t0)/dur;ctx.clearRect(0,0,W,H);if(k>=1)return;P.forEach(p=>{p.vy+=.25;p.vx*=.985;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;ctx.save();ctx.globalAlpha=Math.max(0,1-k*k);ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore()});requestAnimationFrame(f)};
   requestAnimationFrame(f);
 }
 
@@ -1441,7 +1469,7 @@ function dayPlan(){
   let leftK=remK,leftB=budget;
   for(const sl of slots){const w=W[sl]/wsum,tk=Math.max(250,remK*w),tp=remP*w,tb=budget*w;
     const ok=R.filter(d=>d.m.includes(sl)&&!used.has(d.id)&&d.nut.k<=Math.max(tk*1.6,leftK+150)),cst=d=>{const c=dishCost(d);return c?c.r:0};
-    const score=d=>(d.eq==='духовка'?-.5:0)-healthPenalty(d)-Math.abs(d.nut.k-tk)/tk+.6*Math.min(d.nut.p/Math.max(tp,1),1.2)-(hasPrices()?cst(d)/Math.max(tb,60)*.25:0)-(cst(d)>leftB&&hasPrices()?3:0);
+    const score=d=>(d.eq==='духовка'?-.5:0)+(S.likes&&S.likes[d.id]?.3:0)-healthPenalty(d)-Math.abs(d.nut.k-tk)/tk+.6*Math.min(d.nut.p/Math.max(tp,1),1.2)-(hasPrices()?cst(d)/Math.max(tb,60)*.25:0)-(cst(d)>leftB&&hasPrices()?3:0);
     const ranked=ok.map(d=>[score(d),d]).sort((a,b)=>b[0]-a[0]).map(a=>a[1]);if(!ranked.length)continue;
     const skip=(S.cook.skip[sl]||0)%ranked.length,pick=S.cook.pick[sl]&&ranked.find(d=>d.id===S.cook.pick[sl]),d=pick||ranked[skip];
     used.add(d.id);leftK-=d.nut.k;leftB-=cst(d);out.push({sl,d,c:dishCost(d),n:ranked.length})}
@@ -1569,11 +1597,78 @@ function openDish(id,n){const d=dishOf(id);if(!d){loadKit().then(()=>KIT&&KIT.re
    <div class="card list steps">${d.steps.map(([m,t,a],i)=>{const par=/^(Параллельно|Пока )/.test(t);return `<div class="li" style="align-items:flex-start"><div class="stepn">${i+1}</div><div style="flex:1;min-width:0"><div class="tiny" style="color:var(--accent-text);font-weight:650;margin-bottom:2px">Шаг ${i+1} · ${a&&a!==m?a+'–'+m:m} мин${par?' · одновременно':''}</div><div>${scaleTxt(t,K*f)}</div></div></div>`}).join('')}
      <div class="li"><div style="flex:1" class="small muted">Всего</div><div class="num">${tm} мин</div></div></div>
    ${d.safe?`<div class="card row" style="gap:12px;align-items:flex-start"><div class="ibox ok">${ic('lock')}</div><div class="small"><b>Безопасно и вкусно.</b> ${d.safe}</div></div>`:''}
+   <button class="btn" style="margin-bottom:10px" onclick="openCook('${id}')">${ic('play')} Готовить по шагам</button>
    ${inPlan?'':`<button class="btn sec" style="margin-bottom:10px" onclick="planDish('${id}')">В план на сегодня</button>`}
-   <button class="btn" onclick="cookedDish('${id}')">Приготовил — записать в дневник</button>
+   <button class="btn ghost" onclick="cookedDish('${id}')">Приготовил — записать в дневник</button>
    <div class="concept">Рецепт и цифры — ориентир, не медицинская консультация</div>`);SHEET_FN=()=>openDish(id)}
+/* ---------- Поварская книга: продукты с галочками → шаги-страницы со свайпом и таймерами → «Готово!». Экран не гаснет (Wake Lock).
+   Прогресс (страница, галочки, таймеры) — в S.cookbook на сегодня: закрыли посреди шага — откроется там же ---------- */
+let WL=null,CBT=null,CBR=0;
+const cbSt=()=>S.cookbook;
+function cbLines(d,N){const K=N,f=d.f||1,out=[];
+  d.ing.forEach(([id,g,m])=>{const x=KIT.it[id],G=near1(K)?g:g*K;out.push(['i'+id,x.n,x.pc?`${pl(Math.round(G/x.pc),'шт','шт','шт')} · ${Math.round(G/x.pc)*x.pc} г`:`${near1(K)?Math.round(G):rG(G)} г${m&&near1(K)&&near1(f)?' · '+m:''}`])});
+  (d.extra||[]).forEach(([nm,g,m])=>{const k=K*f,v=g*k,liq=/вод|бульон|сок|уксус|молок/.test(nm);out.push(['e'+nm,nm[0].toUpperCase()+nm.slice(1),near1(k)?`${numTxt(g)} ${liq?'мл':'г'}${m?' · '+m:''}`:/^соль/.test(nm)?`${numTxt(rSalt(v))} г · ${saltM(rSalt(v))}`:isSpice(nm)&&v<3?'щепоть':liq?`${rMl(v)} мл`:`${v<5?numTxt(Math.max(.5,Math.round(v*2)/2)):rG(v)} г`])});
+  return out}
+function openCook(id){const d=dishOf(id);if(!d)return;let st=cbSt();
+  if(!st||st.id!==id||st.d!==today0()){st=S.cookbook={id,d:today0(),N:DISHN||people(),page:0,got:[],done:[],tm:{}};save()}
+  let el=$('#cook');if(!el){el=document.createElement('div');el.id='cook';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Поварская книга');$('#phone').appendChild(el)}
+  closeSheet();cbRender();el.classList.add('on');wakeOn();clearInterval(CBT);CBT=setInterval(cbTick,500);haptic(8);
+  const pg=el.querySelector('.cb-pages');requestAnimationFrame(()=>{pg.scrollTo({left:st.page*pg.clientWidth,behavior:'instant'});cbFx()})}
+function cbRender(){const st=cbSt(),d=dishOf(st.id),el=$('#cook');if(!d||!el)return;const L=cbLines(d,st.N),n=d.steps.length,K=st.N*(d.f||1);
+  const got=L.filter(x=>st.got.includes(x[0])).length,sorted=[...L.filter(x=>!st.got.includes(x[0])),...L.filter(x=>st.got.includes(x[0]))];
+  el.innerHTML=`<div class="cb-top"><button class="cb-x" onclick="closeCook()" aria-label="Закрыть книгу">${ic('chevl')}</button><div class="cb-tt"><b>${d.n}</b><span>${pl(st.N,'порция','порции','порций')}</span></div>
+    <div class="cb-dots" aria-hidden="true">${['p',...d.steps.map((_,i)=>i),'f'].map((k,i)=>`<i class="${i===st.page?'cur':''}${typeof k==='number'&&st.done.includes(k)||k==='p'&&got===L.length?' ok':''}"></i>`).join('')}</div></div>
+   <div class="cb-pages">
+    <section class="cb-page"><div class="cb-in"><div class="cb-eb">Шаг 0 · подготовка</div><h2 class="cb-h">Собираем продукты</h2><div class="cb-prog"><b>${got}</b> из ${L.length}</div>
+      <div class="cb-list">${sorted.map(([k,nm,q])=>{const on=st.got.includes(k);return `<button class="cb-row ${on?'on':''}" onclick="cbGot('${k.replace(/'/g,'')}')" role="checkbox" aria-checked="${on}"><span class="cb-chk">${ic('check')}</span><span class="cb-nm">${nm}<small>${q}</small></span></button>`}).join('')}</div>
+      <button class="btn" onclick="cbGo(1)">${got===L.length?'Всё собрано':'Дальше'}</button></div></section>
+    ${d.steps.map(([m,t,a],i)=>{const tm=st.tm[i],par=/^(Параллельно|Пока )/.test(t),dn=st.done.includes(i);return `<section class="cb-page"><div class="cb-in">
+      <div class="cb-eb">Шаг ${i+1} из ${n}${par?' · одновременно с прошлым':''}</div><div class="cb-time">${a&&a!==m?a+'–'+m:m} мин</div>
+      <p class="cb-txt">${scaleTxt(t,K)}</p>
+      ${m>=2?`<button class="cb-timer ${tm?'run':''}" id="cbt${i}" onclick="cbTimer(${i},${m})" aria-label="${tm?'Остановить таймер':'Таймер на '+m+' минут'}"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" class="tr"/><circle cx="32" cy="32" r="28" class="tp" style="stroke-dashoffset:${tm?0:176}"/></svg><span>${tm?'':ic('history')}<b>${tm?'':m+' мин'}</b></span></button>`:''}
+      <button class="cb-done ${dn?'on':''}" onclick="cbDone(${i})" aria-pressed="${dn}">${ic('check')}<span>${dn?'Сделано':'Сделано — дальше'}</span></button></div></section>`}).join('')}
+    <section class="cb-page cb-fin"><div class="cb-in">${d.img?`<div class="cb-ph">${pic(d.img,d.n)}</div>`:`<div class="cb-ph cb-ic">${ic(dishCat(d)[1])}</div>`}<h2 class="cb-h">Готово!</h2>
+      <p class="small muted" style="text-align:center;margin:0 0 16px">${d.yield&&d.yield.g?`Тарелка ≈ ${u(Math.round(d.yield.g*(d.f||1)/10)*10,'г')} · `:''}${u(d.nut.k,'ккал')} в порции</p>
+      <button class="btn" onclick="cookedDish('${st.id}',1)">Записать в дневник</button>
+      <button class="btn ghost" onclick="cbLike('${st.id}')" aria-pressed="${!!(S.likes&&S.likes[st.id])}">${S.likes&&S.likes[st.id]?'♥ Понравилось':'♡ Понравилось — советовать чаще'}</button></div></section>
+   </div>`;
+  const pg=el.querySelector('.cb-pages');pg.addEventListener('scroll',cbScroll,{passive:true})}
+function cbScroll(e){const pg=e.currentTarget,i=Math.round(pg.scrollLeft/pg.clientWidth),st=cbSt();cancelAnimationFrame(CBR);CBR=requestAnimationFrame(cbFx);
+  if(st&&i!==st.page){st.page=i;save();$('#cook').querySelectorAll('.cb-dots i').forEach((x,k)=>x.classList.toggle('cur',k===i));haptic(4);
+    if(i===$('#cook').querySelectorAll('.cb-page').length-1&&!st.fin){st.fin=1;save();cbConfetti()}}}
+// перелистывание: страница чуть поворачивается и уходит в тень (только transform и opacity); «уменьшить движение» — без эффекта
+function cbFx(){if(RM)return;const pg=$('#cook .cb-pages');if(!pg)return;const W=pg.clientWidth;pg.querySelectorAll('.cb-page').forEach(p=>{const o=(p.offsetLeft-pg.scrollLeft)/W;if(Math.abs(o)>1.2)return;p.firstElementChild.style.transform=`perspective(900px) rotateY(${o*-14}deg) scale(${1-Math.abs(o)*.06})`;p.firstElementChild.style.opacity=1-Math.min(.6,Math.abs(o)*.6)})}
+function cbGo(i){const pg=$('#cook .cb-pages');pg.scrollTo({left:i*pg.clientWidth,behavior:RM?'instant':'smooth'})}
+function cbGot(k){const st=cbSt(),i=st.got.indexOf(k);i<0?st.got.push(k):st.got.splice(i,1);save();haptic(6);const y=$('#cook .cb-page .cb-in').scrollTop,pg=$('#cook .cb-pages'),x=pg.scrollLeft;cbRender();const p2=$('#cook .cb-pages');p2.scrollLeft=x;$('#cook .cb-page .cb-in').scrollTop=y;cbFx()}
+function cbDone(i){const st=cbSt();if(!st.done.includes(i))st.done.push(i);save();haptic([8,40,12]);const b=$('#cook').querySelectorAll('.cb-done')[i];if(b){b.classList.add('on','pop');b.querySelector('span').textContent='Сделано'}
+  const dots=$('#cook').querySelectorAll('.cb-dots i');if(dots[i+1])dots[i+1].classList.add('ok');setTimeout(()=>cbGo(i+2),RM?0:380)}
+function cbTimer(i,m){const st=cbSt();if(st.tm[i]){delete st.tm[i];save();cbTick(1);return}st.tm[i]=Date.now()+m*60000;save();haptic(10);cbTick(1);
+  if('Notification' in window&&Notification.permission==='default'&&!cbTimer.asked){cbTimer.asked=1;try{Notification.requestPermission()}catch(e){}}}
+function cbTick(force){const st=cbSt();if(!st||!$('#cook.on'))return;Object.entries(st.tm||{}).forEach(([i,end])=>{const d=dishOf(st.id),m=d.steps[i][0],left=Math.max(0,end-Date.now()),b=$('#cbt'+i);
+    if(b){b.classList.add('run');const c=b.querySelector('.tp');c.style.strokeDashoffset=176*(1-left/(m*60000));b.querySelector('b').textContent=left?Math.floor(left/60000)+':'+String(Math.floor(left/1000)%60).padStart(2,'0'):'Готово';const ic0=b.querySelector('svg.ic');if(ic0)ic0.remove()}
+    if(!left){delete st.tm[i];save();cbAlarm(+i)}});
+  if(force)$('#cook').querySelectorAll('.cb-timer').forEach(b=>{const i=+b.id.slice(3);if(!st.tm[i]&&!b.querySelector('b').textContent.includes('Готово')){b.classList.remove('run');b.querySelector('.tp').style.strokeDashoffset=176;const d=dishOf(st.id);b.querySelector('b').textContent=d.steps[i][0]+' мин'}})}
+function cbAlarm(i){haptic([300,120,300,120,300]);toast(`Шаг ${i+1}: время вышло`);
+  try{const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.frequency.value=880;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.001,a.currentTime);[0,.35,.7].forEach(t=>{g.gain.exponentialRampToValueAtTime(.3,a.currentTime+t+.02);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t+.25)});o.start();o.stop(a.currentTime+1)}catch(e){}
+  if(document.hidden&&'Notification' in window&&Notification.permission==='granted'&&navigator.serviceWorker)navigator.serviceWorker.ready.then(r=>r.showNotification('Мой тренер',{body:`Шаг ${i+1}: время вышло`,tag:'cook',icon:'icon-192.png',badge:'badge-96.png'})).catch(()=>{})}
+function cbConfetti(){if(RM)return;confetti(60,.5,.3,['#047857','#10B981','#34D399','#A7F3D0','#065F46'],1100)}
+function cbLike(id){S.likes=S.likes||{};S.likes[id]=S.likes[id]?0:1;if(!S.likes[id])delete S.likes[id];save();haptic(8);const st=cbSt(),pg=$('#cook .cb-pages'),x=pg.scrollLeft;cbRender();$('#cook .cb-pages').scrollLeft=x;cbFx();toast(S.likes[id]?'Будем советовать чаще':'Убрали из любимых')}
+function closeCook(){clearInterval(CBT);wakeOff();const el=$('#cook');if(el)el.classList.remove('on');haptic(6)}
+async function wakeOn(){try{if('wakeLock' in navigator&&!WL){WL=await navigator.wakeLock.request('screen');WL.addEventListener('release',()=>{WL=null})}}catch(e){}}
+function wakeOff(){try{WL&&WL.release()}catch(e){}WL=null}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&$('#cook.on')){wakeOn();cbTick(1)}});
+/* жетоны: тихие, со вкусом; считаются по приготовленному из рецептов (S.cooked) */
+const BADGES=[['first','Первое блюдо','приготовить по рецепту',c=>c.n>=1,'food'],['five','5 блюд','приготовить 5 раз',c=>c.n>=5,'bowl'],['ten','10 разных рецептов','попробовать 10 рецептов',c=>c.u>=10,'leaf'],
+ ['week','Неделя домашней еды','готовить 7 дней подряд',c=>c.run>=7,'flame'],['chef','Шеф месяца','20 блюд за месяц',c=>c.m>=20,'star']];
+function cookStats(){const l=S.cooked||[],days=[...new Set(l.map(x=>x.d))].sort(),mo=today0().slice(0,7);let run=0,best=0,prev=null;
+  days.forEach(d=>{const t=new Date(d+'T12:00');run=prev&&(t-prev)/864e5<1.5?run+1:1;best=Math.max(best,run);prev=t});
+  return{n:l.length,u:new Set(l.map(x=>x.id)).size,run:best,m:l.filter(x=>x.d.startsWith(mo)).length}}
+function badgeCheck(){const c=cookStats(),had=S.badges=S.badges||[],nw=BADGES.filter(b=>b[3](c)&&!had.includes(b[0]));nw.forEach(b=>had.push(b[0]));if(nw.length){save();setTimeout(()=>{toast('Новый жетон: '+nw[0][1]);haptic([10,60,10])},700)}return nw}
+function badgesCard(){const had=S.badges||[],c=cookStats();return `<div class="card"><div class="row between" style="margin-bottom:10px"><div style="font-weight:650">Жетоны</div><div class="tiny muted">${had.length} из ${BADGES.length}</div></div>
+  <div class="badges">${BADGES.map(b=>{const on=had.includes(b[0]);return `<div class="badge ${on?'on':''}" aria-label="${b[1]}${on?', получен':', ещё нет'}"><span class="bd-i">${ic(on?b[4]:'lock')}</span><b>${b[1]}</b><small>${on?'получен':b[2]}</small></div>`}).join('')}</div>
+  ${c.n?'':'<div class="tiny muted" style="margin-top:8px">Откройте блюдо и нажмите «Готовить» — первый жетон за первое блюдо по рецепту.</div>'}</div>`}
 function planDish(id){const d=KIT.recipes.find(x=>x.id===id),P=dayPlan(),sl=(P.slots.find(x=>d.m.includes(x.sl))||P.slots[0]||{}).sl||d.m[0];S.cook.pick[sl]=id;save();toast(`${SLOT[sl]}: ${d.n.toLowerCase()}`);haptic(8);closeSheet();openFoodPlan()}
-function cookedDish(id){const d=dishOf(id),c=dishCost(d);if(S.day!==today0())rollDay();
+function cookedDish(id,book){const d=dishOf(id),c=dishCost(d);if(S.day!==today0())rollDay();if(book)closeCook();S.cooked=S.cooked||[];S.cooked.push({id,d:today0()});if(S.cooked.length>500)S.cooked=S.cooked.slice(-500);if(S.cookbook&&S.cookbook.id===id)S.cookbook=null;badgeCheck();
   S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:d.n,img:d.img||'',k:d.nut.k,p:d.nut.p,f:d.nut.f,c:d.nut.c,cost:c?Math.round(c.r):0,acc:'высокая',src:'рецепт'});
   S.entries=(S.entries||0)+1;save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(d.nut.k,'ккал')+(c?' · '+rub(c.r):''))}
 const STAPLES=['maslo_rast','sahar','muka','tomat']; // обычно есть дома — по умолчанию не входят в сумму, можно вернуть
@@ -2509,7 +2604,8 @@ function vMe(){ // личный кабинет как «Настройки» н�
     ${row('openProgram()','volt','gym','Тренировки',`${esc(pg.name)} · ${Math.min(S.done.length,weekPlanCount())} из ${weekPlanCount()} за неделю`)}
     ${row('openFoodPlan()','accent','food','Питание и бюджет',`${fmt(budgetOf(pr))} ₽ в день`)}
     ${row('openDiet()','warn','heart','Не ем и аллергии',dietSub())}
-    ${COACH_ON?'':'<!--'}<button class="rowbtn" onclick="pickCoach()"><div class="coach-ava sm">${coachSvg(S.coach,32)}</div><div class="t">Мой тренер<small>${coach().n} — ${coach().r}</small></div><span class="chev">${ic('chev')}</span></button>${COACH_ON?'':'-->'}
+    ${COACH_ON?'':'<!--'}<button class="rowbtn" onclick="pickCoach()"><div class="coach-ava sm">${coachSvg(S.coach,32)}</div>
+  ${badgesCard()}<div class="t">Мой тренер<small>${coach().n} — ${coach().r}</small></div><span class="chev">${ic('chev')}</span></button>${COACH_ON?'':'-->'}
   </div>
   <div class="card list">
     ${row('openWeight()','c','weight','Вес',w.length?`${(''+lastW).replace('.',',')} кг · ${pl(w.length,'запись','записи','записей')}`:'записать сегодняшний')}
