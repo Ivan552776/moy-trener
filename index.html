@@ -755,7 +755,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r46'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r47'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -2364,9 +2364,9 @@ function openAuth(title){if(!consentOk())return consentOpen('auth');
    <button class="btn ghost" onclick="closeSheet()">${title?'Не сейчас':'Отмена'}</button>`)}
 function authOffer(){if(AC||S.onb||S.authAsked||$('#sheet').classList.contains('on')||$('#cons.on'))return;S.authAsked=1;save();openAuth('Сохранить прогресс?')}
 function oauthGo(o,url){if(!navigator.onLine)return toast('Нет интернета',true);try{localStorage.setItem('mt-oauth-go',JSON.stringify({...o,back:location.href.split('#')[0],at:Date.now()}))}catch(e){}location.href=url}
-function authYa(){const st=rndHex();oauthGo({kind:'yandex',st},'https://oauth.yandex.ru/authorize?response_type=token&client_id='+YA_ID+'&redirect_uri='+encodeURIComponent(AUTH_BASE+'yandex.html')+'&state='+st)}
+function authYa(){const st=rndHex();oauthGo({kind:'yandex',st},'https://oauth.yandex.ru/authorize?response_type=token&client_id='+YA_ID+'&redirect_uri='+encodeURIComponent(AUTH_BASE+'yandex.html')+'&state='+st+'&force_confirm=yes')}
 async function authVk(){const st=rndHex(),v=rndHex()+rndHex();let ch;try{ch=btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v))))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}catch(e){return toast('Этот браузер не умеет входить через VK ID — войдите по почте',true)}
-  oauthGo({kind:'vk',st,v},'https://id.vk.ru/authorize?response_type=code&client_id='+VK_ID+'&scope=email&redirect_uri='+encodeURIComponent(AUTH_BASE+'vk.html')+'&state='+st+'&code_challenge='+ch+'&code_challenge_method=S256')}
+  oauthGo({kind:'vk',st,v},'https://id.vk.ru/authorize?response_type=code&client_id='+VK_ID+'&scope=email&redirect_uri='+encodeURIComponent(AUTH_BASE+'vk.html')+'&state='+st+'&code_challenge='+ch+'&code_challenge_method=S256&prompt=login')}
 // вернулись со страницы Яндекса или VK: auth/*.html положила ответ в mt-oauth
 function oauthResume(){let r,go;try{r=JSON.parse(localStorage.getItem('mt-oauth'));go=JSON.parse(localStorage.getItem('mt-oauth-go'))}catch(e){}if(!r)return;
   try{localStorage.removeItem('mt-oauth');localStorage.removeItem('mt-oauth-go')}catch(e){}
@@ -2419,10 +2419,10 @@ async function acLogout(quiet){if(!AC)return;if(AC.dirty&&!AC.wait)await syncPus
 function acOutAsk(){sheet('Выйти из аккаунта?',`<div class="card" style="text-wrap:pretty">Данные в аккаунте сохранятся — войдёте снова, и всё на месте. Что сделать с данными на этом телефоне?</div>
    <button class="btn sec" onclick="acLogout()">Оставить на этом телефоне</button><button class="btn danger" onclick="acOutWipe()">Удалить с этого телефона</button><button class="btn ghost" onclick="openAccount()">Отмена</button>`)}
 async function acOutWipe(){await acLogout(true);toast('Вы вышли, данные с телефона удалены');resetAll()}
-function acDelAsk(){sheet('Удалить аккаунт?',`<div class="card" style="text-wrap:pretty">Аккаунт и копия данных на сервере удалятся навсегда — вернуть их будет нельзя. На этом телефоне данные останутся: их можно удалить в «Данные и конфиденциальность».</div>
+function acDelAsk(){sheet('Удалить аккаунт?',`<div class="card" style="text-wrap:pretty">Аккаунт и все данные удалятся навсегда — и на сервере, и на этом телефоне. Вернуть их будет нельзя. Потом можно начать заново с чистого листа.</div>
    <button class="btn danger" id="acDel" onclick="acDelete()">Да, удалить аккаунт</button><button class="btn ghost" onclick="openAccount()">Отмена</button>`)}
 async function acDelete(){if(!AC)return closeSheet();const b=$('#acDel');if(b){b.disabled=true;b.textContent='Удаляем…'}const r=await api('/auth/delete',{token:AC.t},15000);
-  if(r.ok||r.status===401){AC=null;acSave();closeSheet();toast('Аккаунт и данные на сервере удалены');if(S.tab==='me')rerender();return}
+  if(r.ok||r.status===401){AC=null;acSave();resetAll();toast('Аккаунт и все данные удалены');return}
   if(b){b.disabled=false;b.textContent='Да, удалить аккаунт'}toast(r.status===0?'Нет интернета — аккаунт не удалён':'Не получилось удалить — попробуйте позже',true)}
 function acInit(){oauthResume();if(AC&&AC.t){if(AC.wait)syncAgain().then(()=>{if(SYNC.srv&&!S.onb)setTimeout(chooseData,800)});else syncPull()}
   addEventListener('online',()=>{if(AC&&AC.t)AC.dirty?syncPush():syncPull()});
@@ -2440,10 +2440,10 @@ function openData(){
    <div class="card list">${['terms','privacy','consent','recurrent','requisites'].map(k=>`<button class="rowbtn" onclick="docView('${k}')"><div class="ibox">${ic('doc')}</div><div class="t">${LEGAL[k]}</div><span class="chev">${ic('chev')}</span></button>`).join('')}</div>
    ${S.consent?`<div class="small muted" style="margin:-4px 4px 10px">Согласие дано ${new Date(S.consent.at).toLocaleDateString('ru-RU')} · редакция от ${LEGAL_V.slice(0,10).split('-').reverse().join('.')}</div>`:''}
    <div class="card list"><a class="rowbtn" href="mailto:ncochetow@yandex.ru?subject=${encodeURIComponent('Отзыв согласия на обработку персональных данных — Мой тренер')}&body=${encodeURIComponent('Прошу прекратить обработку моих персональных данных. Номер устройства в приложении: '+(S.did||''))}"><div class="ibox warn">${ic('lock')}</div><div class="t">Отозвать согласие<small>письмо на ncochetow@yandex.ru</small></div><span class="chev">${ic('chev')}</span></a></div>
-   <div class="concept">Данные о весе, питании и здоровье хранятся на вашем телефоне. На сервер в России уходят только номер устройства, отзывы и цифры дня для напоминаний — если вы их включили.</div>`);
+   <div class="concept">Данные о весе, питании и здоровье хранятся на вашем телефоне${AC?' и в вашем аккаунте на сервере в России':''}. Без аккаунта на сервер в России уходят только номер устройства, отзывы и цифры дня для напоминаний — если вы их включили.</div>`);
 }
 function exportData(){try{const blob=new Blob([JSON.stringify(S,null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='moy-trener-'+today0()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast('Файл сохранён')}catch(e){toast('Не удалось сохранить файл',true)}}
-function confirmReset(){sheet('Удалить всё?',`<div class="card">Профиль, дневник, вес и разборы техники будут удалены с этого телефона. Вернуть их будет нельзя.</div><button class="btn danger" onclick="resetAll()">Да, удалить всё</button><button class="btn ghost" onclick="openData()">Отмена</button>`)}
+function confirmReset(){sheet('Удалить всё?',`<div class="card">Профиль, дневник, вес и разборы техники будут удалены с этого телефона${AC?' и вместе с аккаунтом — с сервера':''}. Вернуть их будет нельзя.</div><button class="btn danger" id="acDel" onclick="${AC?'acDelete()':'resetAll()'}">Да, удалить всё</button><button class="btn ghost" onclick="openData()">Отмена</button>`)}
 function openSub(){
   sheet('Подписка',`<div class="card"><div class="small muted">Что будет платным</div><div class="title" style="margin-top:4px">Разбор техники без лимита, тренер и тренды</div><div class="small muted" style="margin-top:6px">Запись еды и база продуктов останутся бесплатными. Цена и условия ещё не определены.</div></div>
    <div class="card list">${[['Запись еды по фото, базе и штрихкоду','бесплатно'],['Норма, программа, вес и история','бесплатно'],['Атлас упражнений','бесплатно'],['Разбор техники по видео','3 видео в неделю бесплатно, дальше по подписке'],['Тренер без лимита и тренды за месяцы','по подписке']].map(([a,b])=>`<div class="li" style="align-items:flex-start"><div style="flex:1"><div style="font-weight:600">${a}</div><div class="small muted">${b}</div></div>${b.startsWith('бесплатно')?`<span style="color:var(--ok-text)">${ic('check','style="width:18px;height:18px"')}</span>`:`<span class="pill accent" style="flex:none">${ic('lock','style="width:14px;height:14px"')} Плюс</span>`}</div>`).join('')}</div>
