@@ -673,29 +673,52 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .dsel{margin-top:8px} .dsel .chip{font-size:13px;padding:6px 11px}
 .ddone{position:sticky;bottom:-16px;z-index:4;margin:12px -20px -16px;padding:12px 20px calc(env(safe-area-inset-bottom) + 22px);background:rgba(243,242,246,.82);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:0 -.5px 0 var(--line)}
 :root[data-scheme="dark"] .ddone{background:rgba(28,28,30,.82)}
-#cook{position:absolute;inset:0;z-index:26;display:flex;flex-direction:column;background:radial-gradient(120% 60% at 50% 0%,var(--accent-soft),transparent 60%),var(--bg);opacity:0;pointer-events:none;transform:translateY(24px);transition:opacity .3s var(--ease-out),transform .45s var(--spring-sheet,cubic-bezier(.2,.9,.25,1))}
+#cook{position:absolute;inset:0;z-index:26;background:var(--bg);opacity:0;pointer-events:none;transform:translateY(24px);transition:opacity .3s var(--ease-out),transform .45s var(--spring-sheet,cubic-bezier(.2,.9,.25,1))}
 #cook.on{opacity:1;pointer-events:auto;transform:none}
-.cb-top{flex:none;display:grid;grid-template-columns:44px 1fr;grid-template-rows:auto auto;gap:6px 10px;align-items:center;padding:calc(env(safe-area-inset-top) + 12px) 16px 10px}
-.cb-x{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--glass,rgba(255,255,255,.6));-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:var(--shadow)} .cb-x .ic{width:22px;height:22px}
-.cb-tt{min-width:0;display:flex;flex-direction:column} .cb-tt b{font:700 17px/1.25 var(--display);overflow-wrap:anywhere} .cb-tt span{font-size:13px;color:var(--text2)}
-.cb-dots{grid-column:1/3;display:flex;gap:5px;flex-wrap:wrap;justify-content:center} .cb-dots i{width:7px;height:7px;border-radius:50%;background:var(--line2,var(--card3));transition:transform .3s var(--ease-out),background-color .3s} .cb-dots i.ok{background:var(--accent)} .cb-dots i.cur{transform:scale(1.5);background:var(--accent-text)}
-.cb-pages{flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch} .cb-pages::-webkit-scrollbar{display:none}
-.cb-page{flex:0 0 100%;scroll-snap-align:start;scroll-snap-stop:always;min-width:0;display:flex;padding:4px 16px calc(env(safe-area-inset-bottom) + 16px)}
-.cb-in{flex:1;min-width:0;display:flex;flex-direction:column;overflow-y:auto;background:var(--card);border-radius:28px;padding:22px 20px;box-shadow:var(--shadow-pop);transform-origin:50% 50%;will-change:transform,opacity}
-.cb-eb{font-size:13px;font-weight:650;color:var(--accent-text);letter-spacing:.02em} .cb-h{margin:6px 0 4px;font:700 26px/1.15 var(--display)} .cb-prog{font-size:15px;color:var(--text2);margin-bottom:12px} .cb-prog b{color:var(--text);font:700 20px var(--num)}
-.cb-list{display:flex;flex-direction:column;margin-bottom:16px}
-.cb-row{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;text-align:left;box-shadow:inset 0 -.5px 0 var(--line);transition:opacity .25s,transform .35s var(--ease-out)} .cb-row:last-child{box-shadow:none}
-.cb-chk{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 2px var(--line2,var(--card3));color:transparent;transition:background-color .2s,box-shadow .2s,transform .35s var(--spring-bouncy)} .cb-chk .ic{width:16px;height:16px;stroke-width:2.6}
-.cb-row.on .cb-chk{background:var(--accent);box-shadow:none;color:#fff;transform:scale(1.06)} .cb-row.on{opacity:.55} .cb-row.on .cb-nm{text-decoration:line-through}
-.cb-nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;font-weight:600;font-size:16px;overflow-wrap:anywhere} .cb-nm small{font-weight:500;font-size:14px;color:var(--text2)} .cb-row{padding:8px 0}
-.cb-time{font:700 34px var(--num);margin:6px 0 2px} .cb-txt{font-size:20px;line-height:1.45;margin:6px 0 18px;text-wrap:pretty}
-.cb-timer{align-self:center;position:relative;width:120px;height:120px;margin:0 0 18px;border-radius:50%;display:grid;place-items:center} .cb-timer>svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
-.cb-timer .tr{fill:none;stroke:var(--accent-soft);stroke-width:6} .cb-timer .tp{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;stroke-dasharray:176;transition:stroke-dashoffset .5s linear}
-.cb-timer>span{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--accent-text)} .cb-timer b{font:700 18px var(--num);color:var(--text)} .cb-timer .ic{width:20px;height:20px}
-.cb-done{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:60px;border-radius:var(--pill);background:var(--accent-soft);color:var(--accent-text);font:700 18px var(--font);transition:background-color .25s,color .25s,transform .35s var(--spring-bouncy)}
-.cb-done .ic{width:24px;height:24px;stroke-width:2.6} .cb-done.on{background:var(--grad);color:#fff} .cb-done.pop{animation:cbpop .45s var(--spring-bouncy)} @keyframes cbpop{40%{transform:scale(.94)}70%{transform:scale(1.04)}}
-.cb-fin .cb-in{align-items:stretch;justify-content:center} #cook .cb-fin h2.cb-h{text-align:center}
-.cb-ph{align-self:center;width:180px;height:180px;border-radius:50%;overflow:hidden;position:relative;margin:0 0 12px;box-shadow:var(--shadow-pop)} .cb-ph img{width:100%;height:100%;object-fit:cover} .cb-ph.cb-ic{display:grid;place-items:center;background:var(--grad);color:#fff} .cb-ph.cb-ic .ic{width:64px;height:64px;stroke-width:1.4}
+.cb-top{position:absolute;z-index:2;top:0;left:0;right:0;display:flex;align-items:center;gap:10px;height:calc(env(safe-area-inset-top) + 60px);padding:calc(env(safe-area-inset-top) + 8px) 16px 8px;background:var(--bg)}
+.cb-top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:.5px;background:var(--line);opacity:0;transition:opacity .25s var(--ease-out)}
+.cb-tt{flex:1;min-width:0;font:650 16px/1.25 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;transform:translateY(6px);transition:opacity .25s var(--ease-out),transform .25s var(--ease-out)}
+#cook.sc .cb-tt{opacity:1;transform:none} #cook.sc .cb-top::after{opacity:1}
+.cb-tbar{position:absolute;left:16px;right:16px;bottom:2px;height:3px;border-radius:2px;background:var(--accent-soft);overflow:hidden;opacity:0;transition:opacity .25s var(--ease-out)} .cb-tbar i{display:block;height:100%;background:var(--grad);transform-origin:left;transition:transform .45s var(--ease-out)} #cook.sc .cb-tbar{opacity:1}
+.cb-x{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--glass,rgba(255,255,255,.6));-webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6);box-shadow:var(--shadow)} .cb-x .ic{width:22px;height:22px}
+.cb-scroll{position:absolute;inset:calc(env(safe-area-inset-top) + 60px) 0 0;overflow-y:auto;overscroll-behavior:contain;padding:4px 16px calc(env(safe-area-inset-bottom) + 40px)}
+.cb-hero{margin-bottom:24px}
+.cb-ph{width:100%;aspect-ratio:16/10;border-radius:24px;overflow:hidden;position:relative;margin-bottom:16px;background:var(--card2);box-shadow:0 18px 40px -18px rgba(4,60,40,.45),var(--shadow)} .cb-ph img{width:100%;height:100%;object-fit:cover;display:block}
+.cb-ph.cb-ic{display:grid;place-items:center;aspect-ratio:16/8;background:var(--grad);color:#fff} .cb-ph.cb-ic .ic{width:72px;height:72px;stroke-width:1.3}
+.cb-h{margin:0 2px 4px;font:700 28px/1.12 var(--display);letter-spacing:-.01em;text-wrap:balance;overflow-wrap:anywhere}
+.cb-meta{margin:0 2px 14px;font-size:15px;color:var(--text2)}
+.cb-bar{height:6px;margin:0 2px;border-radius:3px;background:var(--accent-soft);overflow:hidden} .cb-bar i{display:block;height:100%;border-radius:inherit;background:var(--grad);transform-origin:left;transition:transform .45s var(--ease-out)}
+.cb-sec{margin-bottom:24px} .cb-sh{position:sticky;top:0;z-index:1;display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 -16px 0;padding:8px 20px 8px;background:var(--bg)} .cb-sh h2{margin:0;font:700 20px var(--display)} .cb-cnt{font:600 14px var(--num);color:var(--text2);white-space:nowrap}
+.cb-list,.cb-steps{display:flex;flex-direction:column;padding:2px 16px;border-radius:22px;background:var(--card);box-shadow:var(--shadow)}
+.cb-row,.cb-st{display:flex;align-items:center;gap:14px;width:100%;min-height:56px;padding:10px 0;text-align:left;box-shadow:inset 0 -.5px 0 var(--line)} .cb-list>:last-child,.cb-steps>:last-child{box-shadow:none}
+.cb-chk{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 2px var(--line2,var(--card3));color:transparent;transition:background-color .2s var(--ease-out),box-shadow .2s var(--ease-out),color .2s var(--ease-out)} .cb-chk .ic{width:16px;height:16px;stroke-width:2.8}
+.cb-row.on .cb-chk{background:var(--accent);box-shadow:none;color:#fff}
+.cb-nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-weight:600;font-size:16px;line-height:1.3;overflow-wrap:anywhere;transition:opacity .3s var(--ease-out)} .cb-nm small{font-weight:500;font-size:14px;color:var(--text2)}
+.cb-row.on .cb-nm,.cb-st.on .cb-s1,.cb-st.striking .cb-txt{opacity:.45}
+/* зачёркивание: линия прорисовывается слева направо по всем строкам текста и так же втягивается обратно (фон строчного элемента — переносы не ломают линию) */
+.cb-s{background:linear-gradient(currentColor,currentColor) 0 60%/0 1.5px no-repeat;-webkit-box-decoration-break:slice;transition:background-size .3s var(--ease-out)}
+.cb-row.on .cb-s,.cb-st.on .cb-s,.cb-st.striking .cb-s{background-size:100% 1.5px}
+.cb-n{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:600 14px var(--num);color:var(--text2);box-shadow:inset 0 0 0 1.5px var(--line2,var(--card3))} .cb-n .ic{width:15px;height:15px;stroke-width:2.8}
+.cb-st.on .cb-n{background:var(--accent-soft);color:var(--accent-text);box-shadow:none}
+.cb-s1{flex:1;min-width:0;font-size:15px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;transition:opacity .3s var(--ease-out)}
+.cb-m{flex:none;font:500 13px var(--num);color:var(--text2);white-space:nowrap}
+.cb-st.cur{display:block;padding:10px 0;margin:0 -8px;width:auto}
+.cb-card{padding:16px 16px 14px;border-radius:20px;background:linear-gradient(180deg,var(--accent-soft),transparent 75%),var(--card);box-shadow:inset 0 0 0 1px var(--accent-line,var(--line))}
+.cb-ch{display:flex;align-items:baseline;gap:8px} .cb-big{font:300 46px/1 var(--num);letter-spacing:-.03em;color:var(--accent-text)} .cb-of{font-size:14px;color:var(--text2)}
+.cb-txt{margin:10px 0 12px;font-size:19px;line-height:1.45;text-wrap:pretty;transition:opacity .3s var(--ease-out)} .cb-txt b{font-weight:650}
+.cb-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px} .cb-chip{display:inline-flex;align-items:center;gap:5px;max-width:100%;padding:6px 10px;border-radius:999px;background:var(--card);font-size:13.5px;font-weight:500;box-shadow:inset 0 0 0 1px var(--line)} .cb-chip .ic{flex:none;width:15px;height:15px;color:var(--accent-text)}
+.cb-act{display:flex;align-items:center;gap:12px}
+.cb-timer{flex:none;position:relative;width:76px;height:76px;border-radius:50%;display:grid;place-items:center} .cb-timer>svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.cb-timer .tr{fill:none;stroke:var(--accent-soft);stroke-width:5} .cb-timer .tp{fill:none;stroke:var(--accent);stroke-width:5;stroke-linecap:round;stroke-dasharray:176;transition:stroke-dashoffset .25s linear}
+.cb-timer>span{position:relative;display:flex;flex-direction:column;align-items:center;line-height:1.1} .cb-timer b{font:700 17px var(--num)} .cb-timer small{font-size:11px;color:var(--text2)}
+.cb-timer.end{animation:cbpulse 1s ease-in-out infinite} @keyframes cbpulse{50%{transform:scale(1.06)}}
+.cb-done{flex:1;min-width:0;height:56px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:var(--pill);background:var(--grad);color:#fff;font:700 17px var(--font);box-shadow:0 10px 24px -12px rgba(4,120,87,.7);transition:transform .16s var(--ease-out)} .cb-done:active{transform:scale(.97)} .cb-done .ic{width:22px;height:22px;stroke-width:2.6}
+.cb-fin-in{display:flex;flex-direction:column;gap:10px;padding:26px 20px 18px;border-radius:24px;background:var(--card);box-shadow:var(--shadow-pop);text-align:center}
+.cb-fin-ic{align-self:center;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--grad);color:#fff;box-shadow:0 12px 28px -12px rgba(4,120,87,.7)} .cb-fin-ic .ic{width:32px;height:32px;stroke-width:2.4}
+.cb-fin h2{margin:6px 0 0;font:700 27px/1.15 var(--display)} .cb-fin p{margin:0 0 6px;font-size:15px;color:var(--text2)}
+.cb-bdg{display:flex;align-items:center;gap:12px;margin-bottom:4px;padding:10px 12px;border-radius:16px;background:var(--accent-soft);text-align:left} .cb-bdg b{display:block;font-size:15px} .cb-bdg small{font-size:13px;color:var(--text2)} .cb-bdg .bd-i{flex:none;background:var(--grad);color:#fff}
+.cb-fin.in .cb-fin-in{animation:cbin .5s var(--ease-out)} .cb-fin.in .cb-bdg{animation:cbin .5s .3s var(--ease-out) backwards} @keyframes cbin{from{opacity:0;transform:translateY(16px) scale(.97)}}
+@media (prefers-reduced-motion:reduce){.cb-timer.end,.cb-fin.in .cb-fin-in,.cb-fin.in .cb-bdg{animation:none} .cb-s,.cb-bar i,.cb-nm,.cb-s1,.cb-txt,.cb-chk{transition:none}}
 .badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
 .badge{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:10px 4px;border-radius:16px;background:var(--card2)} .badge b{font-size:13px;line-height:1.2} .badge small{font-size:11px;color:var(--text2);line-height:1.25}
 .bd-i{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--card3);color:var(--text3)} .bd-i .ic{width:20px;height:20px}
@@ -815,7 +838,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-02-r62'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-02-r63'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1615,7 +1638,7 @@ function openDish(id,n){const d=dishOf(id);if(!d){loadKit().then(()=>KIT&&KIT.re
    <h2 style="margin-top:14px">Состав и цены</h2><div class="card list">${d.ing.map(([k,g,m])=>{const p=hasPrices()&&kgPrice(k),x=KIT.it[k];
      return `<div class="li"><div style="flex:1;min-width:0"><div style="font-weight:600">${x.n} · ${ingTxt(k,g,m)}</div><div class="tiny muted">${p&&p.pk?`${packTxt(p.pk)} — ${rub(p.pk[2])}, ${chName(p.src)}${p.pk[3]?` (сейчас по акции ${rub(p.pk[3])}${p.pk[6]?' до '+p.pk[6].slice(8,10)+'.'+p.pk[6].slice(5,7):''})`:''}`:p?`${p.src==='rs'?'средняя цена по региону, Росстат':'оценка'}: ${rub(p.r)} за кг`:''} ${p?`<button class="pfix" onclick="openPriceFix('${k}')">Цена другая?</button>`:''}</div></div>
        <div class="num" style="white-space:nowrap">${p?'≈'+NBS+rub(p.r*g*K/1000*RESERVE):'—'}</div></div>`}).join('')}
-     ${(d.extra||[]).map(([nm,g,m])=>{const k=fam?f+N-1:K*f,v=g*k,liq=/вод|бульон|сок|уксус|молок/.test(nm),txt=near1(k)?`${numTxt(g)} ${liq?'мл':'г'}${m?' · '+m:''}`:/^соль/.test(nm)?`${numTxt(rSalt(v))} г · ${saltM(rSalt(v))}`:isSpice(nm)&&v<3?'щепоть':liq?`${rMl(v)} мл`:`${v<5?numTxt(Math.max(.5,Math.round(v*2)/2)):rG(v)} г`;return `<div class="li"><div style="flex:1;min-width:0"><div style="font-weight:600">${nm[0].toUpperCase()+nm.slice(1)} · ${txt}</div></div><div class="tiny muted">из дома</div></div>`}).join('')}
+     ${(d.extra||[]).map(([nm,g,m])=>{const txt=exTxt(nm,g,m,fam?f+N-1:K*f);return `<div class="li"><div style="flex:1;min-width:0"><div style="font-weight:600">${nm[0].toUpperCase()+nm.slice(1)} · ${txt}</div></div><div class="tiny muted">из дома</div></div>`}).join('')}
      ${c?`<div class="li"><div style="flex:1;font-weight:650">${N>1?`Всего на ${pl(N,'порцию','порции','порций')}`:'Порция'}</div><div class="num" style="font-weight:700">≈${NBS}${rub(c.r*K)}</div></div>`:''}</div>
    <div class="tiny muted" style="margin:-4px 4px 12px">Граммы — сырых продуктов. Калории и цену считает код; соль, специи и вода в цену не входят.</div>
    ${hasPrices()?`<h2>Где купить</h2><div class="card list">${chainList(d.ing)}</div>${srcNote()}`:''}
@@ -1628,59 +1651,107 @@ function openDish(id,n){const d=dishOf(id);if(!d){loadKit().then(()=>KIT&&KIT.re
    <button class="btn ghost" onclick="cookedDish('${id}')">Приготовил — записать в дневник</button>
    <div class="row" style="gap:8px;justify-content:center;margin-top:4px;flex-wrap:wrap"><button class="chip ${S.likes&&S.likes[id]?'on':''}" onclick="dishTaste('${id}',1)" aria-pressed="${!!(S.likes&&S.likes[id])}">♥ Нравится</button><button class="chip ${S.dislikes&&S.dislikes[id]?'on':''}" onclick="dishTaste('${id}',-1)" aria-pressed="${!!(S.dislikes&&S.dislikes[id])}">Не понравилось</button></div>
    <div class="concept">Рецепт и цифры — ориентир, не медицинская консультация</div>`);SHEET_FN=()=>openDish(id)}
-/* ---------- Поварская книга: продукты с галочками → шаги-страницы со свайпом и таймерами → «Готово!». Экран не гаснет (Wake Lock).
-   Прогресс (страница, галочки, таймеры) — в S.cookbook на сегодня: закрыли посреди шага — откроется там же ---------- */
-let WL=null,CBT=null,CBR=0;
-const cbSt=()=>S.cookbook;
+/* ---------- «Готовить по шагам»: один экран с вертикальной прокруткой. Шапка с общим прогрессом → «Продукты» (нажал — кружок наполняется,
+   строку прочёркивает линия, через миг она уезжает вниз) → «Шаги» (текущий раскрыт карточкой: огонь, время, посуда, таймер; остальные — строкой) → финал.
+   Экран не гаснет (Wake Lock). Прогресс (галочки, сделанные шаги, таймеры) — в S.cookbook на сегодня: закрыли посреди — откроется там же ---------- */
+let WL=null,CBT=null;
+const cbSt=()=>S.cookbook,EASE='cubic-bezier(.23,1,.32,1)';
+// соль, специи, вода и прочее «из дома»: специи и соль меньше грамма — без граммов, просто «щепоть»
+const exTxt=(nm,g,m,k)=>{const v=g*k,liq=/вод|бульон|сок|уксус|молок/.test(nm),salt=/^соль/.test(nm);
+  if((salt||isSpice(nm))&&v<1.2)return m&&!/\d/.test(m)?m:'щепоть';
+  if(near1(k))return `${numTxt(g)} ${liq?'мл':'г'}${m?' · '+m:''}`;
+  return salt?`${numTxt(rSalt(v))} г · ${saltM(rSalt(v))}`:isSpice(nm)&&v<3?'щепоть':liq?`${rMl(v)} мл`:`${v<5?numTxt(Math.max(.5,Math.round(v*2)/2)):rG(v)} г`};
 function cbLines(d,N){const K=N,f=d.f||1,out=[];
   d.ing.forEach(([id,g,m])=>{const x=KIT.it[id],G=near1(K)?g:g*K;out.push(['i'+id,x.n,x.pc?`${pl(Math.round(G/x.pc),'шт','шт','шт')} · ${Math.round(G/x.pc)*x.pc} г`:`${near1(K)?Math.round(G):rG(G)} г${m&&near1(K)&&near1(f)?' · '+m:''}`])});
-  (d.extra||[]).forEach(([nm,g,m])=>{const k=K*f,v=g*k,liq=/вод|бульон|сок|уксус|молок/.test(nm);out.push(['e'+nm,nm[0].toUpperCase()+nm.slice(1),near1(k)?`${numTxt(g)} ${liq?'мл':'г'}${m?' · '+m:''}`:/^соль/.test(nm)?`${numTxt(rSalt(v))} г · ${saltM(rSalt(v))}`:isSpice(nm)&&v<3?'щепоть':liq?`${rMl(v)} мл`:`${v<5?numTxt(Math.max(.5,Math.round(v*2)/2)):rG(v)} г`])});
+  (d.extra||[]).forEach(([nm,g,m])=>out.push(['e'+nm,nm[0].toUpperCase()+nm.slice(1),exTxt(nm,g,m,K*f)]));
   return out}
+// чипсы шага: огонь, время, посуда — из текста шага; в тексте полужирным огонь, минуты и признак готовности
+const FIRE=/((?:на )?(?:очень )?(?:сильн|средн|слаб|умеренн|мал|небольш|максимальн)[а-яё]*(?:-(?:сильн|слаб|средн)[а-яё]*)? огн[а-яё]*|\d+\s?°C)/i,
+  FIRES=/(сильн|средн|слаб|умеренн|мал|небольш|максимальн)[а-яё]*(?:-(сильн|слаб|средн)[а-яё]*)?(?: огн[а-яё]*)?(?:\s?\((\d+(?:[–-]\d+)? из \d+)\))?/gi,
+  FIRE_N={сильн:'сильный',средн:'средний',слаб:'слабый',умеренн:'умеренный',мал:'малый',небольш:'небольшой',максимальн:'максимальный'};
+// огонь для чипса — последний в шаге («доведите на сильном, убавьте до слабого (2–3 из 9)» → «слабый огонь · 2–3 из 9»), в именительном падеже
+function cbFire(t){const l=[...t.matchAll(FIRES)].filter(x=>/огн/.test(x[0])||x[3]);if(!l.length){const c=t.match(/\d+\s?°C/);return c?'духовка '+c[0]:null}
+  const x=l[l.length-1],k=w=>FIRE_N[w.toLowerCase()];return (x[2]?k(x[1]).replace(/ий$|ый$|ой$/,'е')+'-'+k(x[2]):k(x[1]))+' огонь'+(x[3]?' · '+x[3]:'')}
+function cbChips(t,m,a,tools){const out=[],f=cbFire(t);if(f)out.push(['flame',f]);out.push(['history',(a&&a!==m?a+'–'+m:m)+' мин']);
+  const p=t.match(/(сковород|кастрюл|сотейник|ковш|форм[уеы]|противен|миск|чайник)[а-яё]*/i);
+  if(p){const tl=(tools||'').split(/;\s*/).find(x=>x.toLowerCase().startsWith(p[1].toLowerCase()));out.push(['bowl',tl||p[0].toLowerCase()])}
+  return out}
+const cbBold=t=>t.replace(FIRE,'<b>$1</b>').replace(/(\d+(?:[–-]\d+)?\s?(?:мин(?:ут[а-я]*)?|сек[а-я]*)\.?)(?![а-яё])/g,'<b>$1</b>')
+  .replace(/((?:до|пока не?) (?:золотист|румян|мягк|прозрачн|загуст|корочк|готовност|кипени|без розов|хруст|впита)[^,.;]*)/gi,'<b>$1</b>');
+const cbCur=(st,d)=>st.cur!=null&&!st.done.includes(st.cur)?st.cur:d.steps.findIndex((_,i)=>!st.done.includes(i));
+const cbRow=(k,nm,q,on,n)=>`<button class="cb-row ${on?'on':''}" data-k="${k.replace(/"/g,'&quot;')}" data-n="${n}" onclick="cbGot(this)" role="checkbox" aria-checked="${on}"><span class="cb-chk">${ic('check')}</span><span class="cb-nm"><span><span class="cb-s">${nm}</span></span><small>${q}</small></span></button>`;
+function cbNewBadges(id){const c0=S.cooked;S.cooked=[...(c0||[]),{id,d:today0()}];const c=cookStats();S.cooked=c0;return BADGES.filter(b=>b[3](c)&&!(S.badges||[]).includes(b[0]))}
 function openCook(id){const d=dishOf(id);if(!d)return;let st=cbSt();
-  if(!st||st.id!==id||st.d!==today0()){st=S.cookbook={id,d:today0(),N:DISHN||people(),page:0,got:[],done:[],tm:{}};save()}
-  let el=$('#cook');if(!el){el=document.createElement('div');el.id='cook';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Поварская книга');$('#phone').appendChild(el)}
-  closeSheet();cbRender();el.classList.add('on');wakeOn();clearInterval(CBT);CBT=setInterval(cbTick,500);haptic(8);
-  const pg=el.querySelector('.cb-pages');requestAnimationFrame(()=>{pg.scrollTo({left:st.page*pg.clientWidth,behavior:'instant'});cbFx()})}
-function cbRender(){const st=cbSt(),d=dishOf(st.id),el=$('#cook');if(!d||!el)return;const L=cbLines(d,st.N),n=d.steps.length,K=st.N*(d.f||1);
-  const got=L.filter(x=>st.got.includes(x[0])).length,sorted=[...L.filter(x=>!st.got.includes(x[0])),...L.filter(x=>st.got.includes(x[0]))];
-  el.innerHTML=`<div class="cb-top"><button class="cb-x" onclick="closeCook()" aria-label="Закрыть книгу">${ic('chevl')}</button><div class="cb-tt"><b>${d.n}</b><span>${pl(st.N,'порция','порции','порций')}</span></div>
-    <div class="cb-dots" aria-hidden="true">${['p',...d.steps.map((_,i)=>i),'f'].map((k,i)=>`<i class="${i===st.page?'cur':''}${typeof k==='number'&&st.done.includes(k)||k==='p'&&got===L.length?' ok':''}"></i>`).join('')}</div></div>
-   <div class="cb-pages">
-    <section class="cb-page"><div class="cb-in"><div class="cb-eb">Шаг 0 · подготовка</div><h2 class="cb-h">Собираем продукты</h2><div class="cb-prog"><b>${got}</b> из ${L.length}</div>
-      <div class="cb-list">${sorted.map(([k,nm,q])=>{const on=st.got.includes(k);return `<button class="cb-row ${on?'on':''}" onclick="cbGot('${k.replace(/'/g,'')}')" role="checkbox" aria-checked="${on}"><span class="cb-chk">${ic('check')}</span><span class="cb-nm">${nm}<small>${q}</small></span></button>`}).join('')}</div>
-      <button class="btn" onclick="cbGo(1)">${got===L.length?'Всё собрано':'Дальше'}</button></div></section>
-    ${d.steps.map(([m,t,a],i)=>{const tm=st.tm[i],par=/^(Параллельно|Пока )/.test(t),dn=st.done.includes(i);return `<section class="cb-page"><div class="cb-in">
-      <div class="cb-eb">Шаг ${i+1} из ${n}${par?' · одновременно с прошлым':''}</div><div class="cb-time">${a&&a!==m?a+'–'+m:m} мин</div>
-      <p class="cb-txt">${scaleTxt(t,K)}</p>
-      ${m>=2?`<button class="cb-timer ${tm?'run':''}" id="cbt${i}" onclick="cbTimer(${i},${m})" aria-label="${tm?'Остановить таймер':'Таймер на '+m+' минут'}"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" class="tr"/><circle cx="32" cy="32" r="28" class="tp" style="stroke-dashoffset:${tm?0:176}"/></svg><span>${tm?'':ic('history')}<b>${tm?'':m+' мин'}</b></span></button>`:''}
-      <button class="cb-done ${dn?'on':''}" onclick="cbDone(${i})" aria-pressed="${dn}">${ic('check')}<span>${dn?'Сделано':'Сделано — дальше'}</span></button></div></section>`}).join('')}
-    <section class="cb-page cb-fin"><div class="cb-in">${d.img?`<div class="cb-ph">${pic(d.img,d.n)}</div>`:`<div class="cb-ph cb-ic">${ic(dishCat(d)[1])}</div>`}<h2 class="cb-h">Готово!</h2>
-      <p class="small muted" style="text-align:center;margin:0 0 16px">${d.yield&&d.yield.g?`Тарелка ≈ ${u(Math.round(d.yield.g*(d.f||1)/10)*10,'г')} · `:''}${u(d.nut.k,'ккал')} в порции</p>
-      <button class="btn" onclick="cookedDish('${st.id}',1)">Записать в дневник</button>
-      <button class="btn ghost" onclick="cbLike('${st.id}')" aria-pressed="${!!(S.likes&&S.likes[st.id])}">${S.likes&&S.likes[st.id]?'♥ Понравилось':'♡ Понравилось — советовать чаще'}</button></div></section>
-   </div>`;
-  const pg=el.querySelector('.cb-pages');pg.addEventListener('scroll',cbScroll,{passive:true})}
-function cbScroll(e){const pg=e.currentTarget,i=Math.round(pg.scrollLeft/pg.clientWidth),st=cbSt();cancelAnimationFrame(CBR);CBR=requestAnimationFrame(cbFx);
-  if(st&&i!==st.page){st.page=i;save();$('#cook').querySelectorAll('.cb-dots i').forEach((x,k)=>x.classList.toggle('cur',k===i));haptic(4);
-    if(i===$('#cook').querySelectorAll('.cb-page').length-1&&!st.fin){st.fin=1;save();cbConfetti()}}}
-// перелистывание: страница чуть поворачивается и уходит в тень (только transform и opacity); «уменьшить движение» — без эффекта
-function cbFx(){if(RM)return;const pg=$('#cook .cb-pages');if(!pg)return;const W=pg.clientWidth;pg.querySelectorAll('.cb-page').forEach(p=>{const o=(p.offsetLeft-pg.scrollLeft)/W;if(Math.abs(o)>1.2)return;p.firstElementChild.style.transform=`perspective(900px) rotateY(${o*-14}deg) scale(${1-Math.abs(o)*.06})`;p.firstElementChild.style.opacity=1-Math.min(.6,Math.abs(o)*.6)})}
-function cbGo(i){const pg=$('#cook .cb-pages');pg.scrollTo({left:i*pg.clientWidth,behavior:RM?'instant':'smooth'})}
-function cbGot(k){const st=cbSt(),i=st.got.indexOf(k);i<0?st.got.push(k):st.got.splice(i,1);save();haptic(6);const y=$('#cook .cb-page .cb-in').scrollTop,pg=$('#cook .cb-pages'),x=pg.scrollLeft;cbRender();const p2=$('#cook .cb-pages');p2.scrollLeft=x;$('#cook .cb-page .cb-in').scrollTop=y;cbFx()}
-function cbDone(i){const st=cbSt();if(!st.done.includes(i))st.done.push(i);save();haptic([8,40,12]);const b=$('#cook').querySelectorAll('.cb-done')[i];if(b){b.classList.add('on','pop');b.querySelector('span').textContent='Сделано'}
-  const dots=$('#cook').querySelectorAll('.cb-dots i');if(dots[i+1])dots[i+1].classList.add('ok');setTimeout(()=>cbGo(i+2),RM?0:380)}
+  if(!st||st.id!==id||st.d!==today0()){st=S.cookbook={id,d:today0(),N:DISHN||people(),got:[],done:[],tm:{}};save()}
+  let el=$('#cook');if(!el){el=document.createElement('div');el.id='cook';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Готовить по шагам');$('#phone').appendChild(el)}
+  closeSheet();cbRender();el.classList.add('on');wakeOn();clearInterval(CBT);CBT=setInterval(cbTick,250);cbTick(1);haptic(8);
+  if(st.done.length)requestAnimationFrame(()=>cbCenter(1))}
+function cbRender(){const st=cbSt(),d=dishOf(st.id),el=$('#cook');if(!d||!el)return;const L=cbLines(d,st.N),n=d.steps.length,K=st.N*(d.f||1),tm=d.min0&&d.min0!==d.min?`${d.min0}–${d.min}`:d.min;
+  const order=L.map((x,i)=>[x,i]).sort((a,b)=>st.got.includes(a[0][0])-st.got.includes(b[0][0])||a[1]-b[1]),p=cbProg();
+  el.innerHTML=`<div class="cb-top"><button class="cb-x" onclick="closeCook()" aria-label="Закрыть">${ic('chevl')}</button><div class="cb-tt" aria-hidden="true">${d.n}</div><div class="cb-tbar" aria-hidden="true"><i></i></div></div>
+   <div class="cb-scroll">
+    <header class="cb-hero">${d.img?`<div class="cb-ph">${pic(d.img,d.n)}</div>`:`<div class="cb-ph cb-ic">${ic(dishCat(d)[1])}</div>`}
+     <h1 class="cb-h">${d.n}</h1><div class="cb-meta">≈ ${tm} мин · ${pl(st.N,'порция','порции','порций')}${d.yield&&d.yield.g?` · ${Math.round(d.yield.g*(d.f||1)*st.N/10)*10} г`:''}</div>
+     <div class="cb-bar" role="progressbar" aria-label="Сделано" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p*100)}"><i style="transform:scaleX(${p})"></i></div></header>
+    <section class="cb-sec"><div class="cb-sh"><h2>Продукты</h2><span class="cb-cnt" id="cbGotN"></span></div>
+     <div class="cb-list" id="cbList">${order.map(([[k,nm,q],i])=>cbRow(k,nm,q,st.got.includes(k),i)).join('')}</div></section>
+    <section class="cb-sec"><div class="cb-sh"><h2>Шаги</h2><span class="cb-cnt" id="cbDoneN"></span></div>
+     <div class="cb-steps" id="cbSteps">${cbStepsHtml(st,d,K,cbCur(st,d))}</div></section>
+    ${st.done.length>=n?cbFinHtml(st,d):''}
+   </div>`;cbProgUpd();const sc=el.querySelector('.cb-scroll'),h=el.querySelector('.cb-h');sc.addEventListener('scroll',()=>el.classList.toggle('sc',sc.scrollTop>h.offsetTop+h.offsetHeight-8),{passive:true})}
+function cbStepsHtml(st,d,K,cur){const n=d.steps.length;return d.steps.map(([m,t,a],i)=>{const dn=st.done.includes(i),par=/^(Параллельно|Пока )/.test(t),txt=scaleTxt(t,K),mm=a&&a!==m?a+'–'+m:m;
+  if(i!==cur)return `<button class="cb-st ${dn?'on':''}" data-i="${i}" onclick="cbOpenStep(${i})" aria-label="Шаг ${i+1}${dn?', сделан':''}. ${txt.replace(/"/g,'')}"><span class="cb-n">${dn?ic('check'):i+1}</span><span class="cb-s1"><span class="cb-s">${txt}</span></span><span class="cb-m">${mm} мин</span></button>`;
+  const tm=st.tm[i];
+  return `<div class="cb-st cur" data-i="${i}"><div class="cb-card"><div class="cb-ch"><span class="cb-big">${i+1}</span><span class="cb-of">из ${n}${par?' · одновременно с прошлым':''}</span></div>
+    <p class="cb-txt"><span class="cb-s">${cbBold(txt)}</span></p>
+    <div class="cb-chips">${cbChips(t,m,a,d.tools).map(([g,x])=>`<span class="cb-chip">${ic(g)}${x}</span>`).join('')}</div>
+    <div class="cb-act">${m>=2?`<button class="cb-timer ${tm?'run':''}" id="cbt${i}" onclick="cbTimer(${i},${m})" aria-label="${tm?'Остановить таймер':'Таймер на '+m+' мин'}"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" class="tr"/><circle cx="32" cy="32" r="28" class="tp" style="stroke-dashoffset:${tm?0:176}"/></svg><span><b>${m}:00</b><small>таймер</small></span></button>`:''}
+     <button class="cb-done" onclick="cbDone(${i})">${ic('check')}<span>Сделано</span></button></div></div></div>`}).join('')}
+function cbFinHtml(st,d){const nb=cbNewBadges(st.id),lk=!!(S.likes&&S.likes[st.id]);
+  return `<section class="cb-fin" id="cbFin"><div class="cb-fin-in"><div class="cb-fin-ic">${ic('check')}</div><h2>Приятного аппетита!</h2>
+   <p>${u(d.nut.k,'ккал')} в порции${d.yield&&d.yield.g?` · тарелка ≈ ${u(Math.round(d.yield.g*(d.f||1)/10)*10,'г')}`:''}</p>
+   ${nb.length?`<div class="cb-bdg"><span class="bd-i">${ic(nb[0][4])}</span><div><b>Новый жетон: ${nb[0][1]}</b><small>появится, когда запишете блюдо</small></div></div>`:''}
+   <button class="btn" onclick="cookedDish('${st.id}',1)">Записать в дневник</button>
+   <button class="btn ghost" onclick="cbLike('${st.id}')" aria-pressed="${lk}">${lk?'♥ Нравится':'♡ Нравится — советовать чаще'}</button></div></section>`}
+function cbProg(){const st=cbSt(),d=dishOf(st.id),L=cbLines(d,st.N);return (L.filter(x=>st.got.includes(x[0])).length+st.done.length)/(L.length+d.steps.length)}
+function cbProgUpd(){const st=cbSt(),d=dishOf(st.id),L=cbLines(d,st.N),p=cbProg(),b=$('#cook .cb-bar');if(!b)return;b.firstElementChild.style.transform=$('#cook .cb-tbar i').style.transform=`scaleX(${p})`;b.setAttribute('aria-valuenow',Math.round(p*100));
+  $('#cbGotN').textContent=`${L.filter(x=>st.got.includes(x[0])).length} из ${L.length}`;$('#cbDoneN').textContent=`${st.done.length} из ${d.steps.length}`}
+// FLIP: запомнили, где были строки → переставили → плавно довели из старого места в новое (только transform)
+function cbFlip(box,mutate,enter){const r0=new Map([...box.children].map(x=>[x.dataset.i??x.dataset.k,x.getBoundingClientRect().top]));mutate();if(RM)return;
+  [...box.children].forEach(x=>{const k=x.dataset.i??x.dataset.k,dy=r0.has(k)?r0.get(k)-x.getBoundingClientRect().top:0;
+    if(enter&&enter(x))x.firstElementChild.animate([{opacity:0,transform:'translateY(10px) scale(.98)'},{opacity:1,transform:'none'}],{duration:320,easing:EASE});
+    else if(Math.abs(dy)>.5)x.animate([{transform:`translateY(${dy}px)`},{transform:'none'}],{duration:380,easing:EASE})})}
+function cbGot(b){const st=cbSt(),k=b.dataset.k,i=st.got.indexOf(k),on=i<0;on?st.got.push(k):st.got.splice(i,1);save();haptic(on?8:4);
+  b.classList.toggle('on',on);b.setAttribute('aria-checked',on);
+  if(on&&!RM)b.querySelector('.cb-chk').animate([{transform:'scale(.8)'},{transform:'scale(1.1)',offset:.6},{transform:'scale(1)'}],{duration:260,easing:EASE});
+  cbProgUpd();clearTimeout(cbGot.t);cbGot.t=setTimeout(cbSort,RM?0:420)}
+function cbSort(){const box=$('#cbList'),st=cbSt();if(!box)return;const it=[...box.children],want=[...it].sort((a,b)=>st.got.includes(a.dataset.k)-st.got.includes(b.dataset.k)||a.dataset.n-b.dataset.n);
+  if(want.every((x,i)=>x===it[i]))return;cbFlip(box,()=>want.forEach(x=>box.appendChild(x)))}
+function cbSteps(){const st=cbSt(),d=dishOf(st.id),box=$('#cbSteps');if(!box)return;cbFlip(box,()=>{box.innerHTML=cbStepsHtml(st,d,st.N*(d.f||1),cbCur(st,d))},x=>x.classList.contains('cur'));cbTick(1)}
+// текущий шаг — мягко в центр экрана (длинная карточка — к верху)
+function cbCenter(now){const sc=$('#cook .cb-scroll'),c=$('#cbSteps .cur')||$('#cbFin');if(!sc||!c)return;const r=c.getBoundingClientRect(),r0=sc.getBoundingClientRect(),h=sc.clientHeight;
+  const top=sc.scrollTop+r.top-r0.top-(r.height<h-140?(h-r.height)/2:80);sc.scrollTo({top:Math.max(0,top),behavior:now||RM?'instant':'smooth'})}
+function cbOpenStep(i){const st=cbSt();st.done=st.done.filter(x=>x!==i);st.cur=i;st.fin=0;save();haptic(6);const f=$('#cbFin');if(f)f.remove();cbSteps();cbProgUpd();setTimeout(cbCenter,RM?0:60)}
+function cbDone(i){const st=cbSt(),d=dishOf(st.id);if(!st.done.includes(i))st.done.push(i);delete st.tm[i];st.cur=null;save();haptic([8,40,12]);
+  const c=$(`#cbSteps .cb-st[data-i="${i}"]`);if(c)c.classList.add('striking');cbProgUpd();
+  setTimeout(()=>{cbSteps();if(st.done.length>=d.steps.length)cbFinish();else cbCenter()},RM?0:420)}
+function cbFinish(){const st=cbSt(),d=dishOf(st.id),sc=$('#cook .cb-scroll');if(!sc)return;if(!$('#cbFin'))sc.insertAdjacentHTML('beforeend',cbFinHtml(st,d));const f=$('#cbFin');f.classList.add('in');
+  setTimeout(cbCenter,RM?0:120);if(!st.fin){st.fin=1;save();setTimeout(cbConfetti,RM?0:380)}}
 function cbTimer(i,m){const st=cbSt();if(st.tm[i]){delete st.tm[i];save();cbTick(1);return}st.tm[i]=Date.now()+m*60000;save();haptic(10);cbTick(1);
   if('Notification' in window&&Notification.permission==='default'&&!cbTimer.asked){cbTimer.asked=1;try{Notification.requestPermission()}catch(e){}}}
-function cbTick(force){const st=cbSt();if(!st||!$('#cook.on'))return;Object.entries(st.tm||{}).forEach(([i,end])=>{const d=dishOf(st.id),m=d.steps[i][0],left=Math.max(0,end-Date.now()),b=$('#cbt'+i);
-    if(b){b.classList.add('run');const c=b.querySelector('.tp');c.style.strokeDashoffset=176*(1-left/(m*60000));b.querySelector('b').textContent=left?Math.floor(left/60000)+':'+String(Math.floor(left/1000)%60).padStart(2,'0'):'Готово';const ic0=b.querySelector('svg.ic');if(ic0)ic0.remove()}
+// таймер: кольцо идёт плавно, последние 10 секунд мягко пульсирует
+function cbTick(force){const st=cbSt();if(!st||!$('#cook.on'))return;const d=dishOf(st.id);
+  Object.entries(st.tm||{}).forEach(([i,end])=>{const m=d.steps[i][0],left=Math.max(0,end-Date.now()),b=$('#cbt'+i);
+    if(b){b.classList.add('run');b.classList.toggle('end',left>0&&left<=10000);b.querySelector('.tp').style.strokeDashoffset=176*(1-left/(m*60000));
+      b.querySelector('b').textContent=left?Math.floor(left/60000)+':'+String(Math.floor(left/1000)%60).padStart(2,'0'):'Готово';b.querySelector('small').textContent=left?'стоп':'';b.setAttribute('aria-label',left?'Остановить таймер':'Время вышло')}
     if(!left){delete st.tm[i];save();cbAlarm(+i)}});
-  if(force)$('#cook').querySelectorAll('.cb-timer').forEach(b=>{const i=+b.id.slice(3);if(!st.tm[i]&&!b.querySelector('b').textContent.includes('Готово')){b.classList.remove('run');b.querySelector('.tp').style.strokeDashoffset=176;const d=dishOf(st.id);b.querySelector('b').textContent=d.steps[i][0]+' мин'}})}
+  if(force)document.querySelectorAll('#cook .cb-timer').forEach(b=>{const i=+b.id.slice(3);if(!st.tm[i]){b.classList.remove('run','end');b.querySelector('.tp').style.strokeDashoffset=176;b.querySelector('b').textContent=d.steps[i][0]+':00';b.querySelector('small').textContent='таймер';b.setAttribute('aria-label','Таймер на '+d.steps[i][0]+' мин')}})}
 function cbAlarm(i){haptic([300,120,300,120,300]);toast(`Шаг ${i+1}: время вышло`);
   try{const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.frequency.value=880;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.001,a.currentTime);[0,.35,.7].forEach(t=>{g.gain.exponentialRampToValueAtTime(.3,a.currentTime+t+.02);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t+.25)});o.start();o.stop(a.currentTime+1)}catch(e){}
   if(document.hidden&&'Notification' in window&&Notification.permission==='granted'&&navigator.serviceWorker)navigator.serviceWorker.ready.then(r=>r.showNotification('Мой тренер',{body:`Шаг ${i+1}: время вышло`,tag:'cook',icon:'icon-192.png',badge:'badge-96.png'})).catch(()=>{})}
-function cbConfetti(){if(RM)return;confetti(60,.5,.3,['#047857','#10B981','#34D399','#A7F3D0','#065F46'],1100)}
+function cbConfetti(){if(RM)return;confetti(44,.5,.42,['#047857','#10B981','#34D399','#FFFFFF','#D1FAE5'],1500)} // мягко: меньше частиц, изумрудные и белые
 function dishTaste(id,v){S.likes=S.likes||{};S.dislikes=S.dislikes||{};const L=v>0?S.likes:S.dislikes,O=v>0?S.dislikes:S.likes;if(L[id])delete L[id];else{L[id]=1;delete O[id]}if(S.cook)S.cook.skip={};save();haptic(8);toast(L[id]?(v>0?'Будем советовать чаще':'Будем советовать реже'):'Сняли отметку');keepScroll(()=>openDish(id))}
-function cbLike(id){S.likes=S.likes||{};S.likes[id]=S.likes[id]?0:1;if(!S.likes[id])delete S.likes[id];save();haptic(8);const st=cbSt(),pg=$('#cook .cb-pages'),x=pg.scrollLeft;cbRender();$('#cook .cb-pages').scrollLeft=x;cbFx();toast(S.likes[id]?'Будем советовать чаще':'Убрали из любимых')}
+function cbLike(id){S.likes=S.likes||{};S.likes[id]=S.likes[id]?0:1;if(!S.likes[id])delete S.likes[id];save();haptic(8);const sc=$('#cook .cb-scroll'),y=sc.scrollTop;cbRender();$('#cook .cb-scroll').scrollTop=y;toast(S.likes[id]?'Будем советовать чаще':'Убрали из любимых')}
 function closeCook(){clearInterval(CBT);wakeOff();const el=$('#cook');if(el)el.classList.remove('on');haptic(6)}
 async function wakeOn(){try{if('wakeLock' in navigator&&!WL){WL=await navigator.wakeLock.request('screen');WL.addEventListener('release',()=>{WL=null})}}catch(e){}}
 function wakeOff(){try{WL&&WL.release()}catch(e){}WL=null}
@@ -1696,7 +1767,7 @@ function badgesCard(){const had=S.badges||[],c=cookStats();return `<div class="c
   <div class="badges">${BADGES.map(b=>{const on=had.includes(b[0]);return `<div class="badge ${on?'on':''}" aria-label="${b[1]}${on?', получен':', ещё нет'}"><span class="bd-i">${ic(on?b[4]:'lock')}</span><b>${b[1]}</b><small>${on?'получен':b[2]}</small></div>`}).join('')}</div>
   ${c.n?'':'<div class="tiny muted" style="margin-top:8px">Откройте блюдо и нажмите «Готовить» — первый жетон за первое блюдо по рецепту.</div>'}</div>`}
 /* «Цена другая?»: человек пишет цену с полки — на сервер уходит без личных данных (сеть, регион, продукт, цена, упаковка, дата).
-   Две совпадающие отметки за 2 недели — сервер поправляет цену сети в этом регионе */
+   Сервер засчитывает только отметки разных людей: отличие от сайта 5–30 % — нужны двое, больше 30 % — трое; номер устройства уходит только солёным хешем */
 const FIX_CH=[['mg','Магнит'],['vv','ВкусВилл'],['p5','Пятёрочка'],['pr','Перекрёсток'],['ch','Чижик'],['le','Лента'],['au','Ашан'],['dx','Дикси'],['ot','Другой магазин']];
 let PFX=null;
 function openPriceFix(id,ch){const x=KIT.it[id],p=kgPrice(id),pk=p&&p.pk;PFX={id,ch:ch||(p&&p.ok?p.src:'mg'),g:pk&&!pk[5]?Math.round(pk[1]):1000,kg:!!(pk&&pk[5])};
@@ -1706,11 +1777,11 @@ function openPriceFix(id,ch){const x=KIT.it[id],p=kgPrice(id),pk=p&&p.pk;PFX={id
     <div class="small muted">За что эта цена</div><div class="chips" style="margin-top:6px"><button class="chip ${PFX.kg?'':'on'}" onclick="PFX.kg=false;openPriceFix('${id}','${PFX.ch}')">упаковку</button><button class="chip ${PFX.kg?'on':''}" onclick="PFX.kg=true;openPriceFix('${id}','${PFX.ch}')">1 кг (на развес)</button></div>
     ${PFX.kg?'':`<div class="row" style="gap:8px;margin-top:10px;align-items:center"><span class="small muted">Вес упаковки, г</span><input id="pfg" class="search" type="number" inputmode="numeric" min="10" max="10000" value="${PFX.g}" style="width:110px"></div>`}</div>
    <button class="btn" onclick="sendPriceFix()">Отправить</button>
-   <div class="tiny muted" style="margin:8px 4px 12px">Отправляем без личных данных: сеть, регион, продукт, цену и дату. Когда цена подтвердится второй отметкой — поправим её для всех.</div>`);SHEET_FN=null}
+   <div class="tiny muted" style="margin:8px 4px 12px">Отправляем без личных данных: сеть, регион, продукт, цену и дату. Когда такую же цену отметят другие покупатели — поправим её для всех.</div>`);SHEET_FN=null}
 async function sendPriceFix(){const r=parseFloat(String($('#pfr').value).replace(',','.')),g=PFX.kg?1000:+(($('#pfg')||{}).value||PFX.g);
   if(!(r>0&&r<20000)||!(g>=10&&g<=10000)){toast('Проверьте цену и вес упаковки',true);return}
-  const res=await api('/price-report',{r:region(),ch:PFX.ch,item:PFX.id,rub:Math.round(r*100)/100,g:Math.round(g)});
-  if(res.ok){toast('Спасибо! Проверим и поправим');haptic(10);closeSheet()}else toast(res.offline?'Нет интернета — отправьте позже':'Не получилось отправить, попробуйте позже',true)}
+  const res=await api('/price-report',{did:S.did,r:region(),ch:PFX.ch,item:PFX.id,rub:Math.round(r*100)/100,g:Math.round(g)});
+  if(res.ok){toast(res.data&&res.data.same?'Спасибо! Цена совпадает с сайтом':res.data&&res.data.fixed?'Спасибо! Цена поправлена':'Спасибо! Поправим, когда подтвердят другие покупатели');haptic(10);closeSheet()}else toast(res.offline?'Нет интернета — отправьте позже':'Не получилось отправить, попробуйте позже',true)}
 function planDish(id){const d=KIT.recipes.find(x=>x.id===id),P=dayPlan(),x0=P.slots.find(x=>!x.top&&d.m.includes(x.m))||P.slots.find(x=>!x.top)||{},sl=x0.sl||d.m[0];S.cook.pick[sl]=id;save();toast(`${(x0.lab||SLOT[d.m[0]]).split(' · ')[0]}: ${d.n.toLowerCase()}`);haptic(8);closeSheet();openFoodPlan()}
 function cookedDish(id,book){const d=dishOf(id),c=dishCost(d);if(S.day!==today0())rollDay();if(book)closeCook();S.cooked=S.cooked||[];S.cooked.push({id,d:today0()});if(S.cooked.length>500)S.cooked=S.cooked.slice(-500);if(S.cookbook&&S.cookbook.id===id)S.cookbook=null;badgeCheck();
   S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:d.n,img:d.img||'',k:d.nut.k,p:d.nut.p,f:d.nut.f,c:d.nut.c,cost:c?Math.round(c.r):0,acc:'высокая',src:'рецепт'});
