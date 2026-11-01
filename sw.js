@@ -4,7 +4,7 @@
    видео не трогаем (нужны частичные ответы 206), кроме короткого примера squat.mp4: страница берёт его целиком через fetch.
    Версия кэша меняется при выкладке — скачанное (библиотеки, базы, картинки) переносится в новую копию, старые страницы не переносятся.
    lib/ отдаётся из памяти без проверки: новую версию библиотеки класть по новому пути, иначе останется старая. */
-const V='mt-2026-11-01-r30';
+const V='mt-2026-11-01-r31';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(['./','index.html','manifest.webmanifest','icon.png','data/products.json','data/dishes.json','data/aliases.json'].map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 // страница просит сохранить себя (её адрес заранее неизвестен: index.html на сервере, yobody.html в превью)
 self.addEventListener('message',e=>{const u=e.data&&e.data.cachePage;if(u)e.waitUntil(caches.open(V).then(c=>c.add(new Request(u,{cache:'reload'}))).catch(()=>{}))});
@@ -32,7 +32,8 @@ self.addEventListener('fetch',e=>{
   if(u.origin!==location.origin)return;
   const p=u.pathname;
   if(p.startsWith('/trener-api/'))return; // отзывы и уведомления — всегда свежие, мимо памяти
-  if(p.endsWith('/sw.js'))return; // проверка новой версии (updCheck) — всегда с сервера
+  if(p.endsWith('/sw.js'))return;
+  if(p.includes('/auth/'))return; // возврат со входа Яндекса/VK — в адресе одноразовый код, не храним // проверка новой версии (updCheck) — всегда с сервера
   if(/\.(webm|mov|ogv)$/i.test(p)||(/\.mp4$/i.test(p)&&!p.endsWith('/squat.mp4'))||p.includes('/models/mobileclip'))return;
   if(r.mode==='navigate'||p.endsWith('.html')||p.endsWith('/')){
     e.respondWith(timeout(fetch(r),4000).then(res=>put(r,res)).catch(()=>caches.match(r,{ignoreSearch:true}).then(m=>m||caches.match('./',{ignoreSearch:true}))));return}

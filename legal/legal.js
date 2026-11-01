@@ -12,8 +12,8 @@ window.REQ = {
   price: '700 ₽ в месяц',
   trial: '7 дней',
   payment: 'ООО «Продамус» (платёжный сервис Prodamus)',
-  server: 'сервер, расположенный на территории Российской Федерации',
-  date: '30 октября 2026 г.'
+  server: 'сервере хостинг-провайдера RuWeb в Москве (Российская Федерация)',
+  date: '1 ноября 2026 г.'
 };
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-r]').forEach(el => { const v = window.REQ[el.dataset.r]; if (v) el.textContent = v; else el.closest('.opt')?.remove(); });
