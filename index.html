@@ -350,11 +350,29 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .search:focus{box-shadow:var(--shadow),0 0 0 3px var(--accent-soft)}
 #sheet .search{background-color:var(--sheet-card)}
 .ibox.brand-ya,.ibox.brand-vk{color:#fff!important;font-weight:800;font-size:17px;letter-spacing:-.02em} .ibox.brand-ya{background:#FC3F1D!important} .ibox.brand-vk{background:#0077FF!important;font-size:13px}
-.codein{display:block;width:100%;height:64px;border:0;border-radius:20px;background:var(--card);box-shadow:var(--shadow);text-align:center;font:700 32px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.35em;padding-left:.35em;color:var(--text);outline:0}
-.st-login.off{opacity:.45} .st-login.off .rowbtn{pointer-events:none}
+.st-login{transition:opacity .3s var(--ease-out)} .st-login.off{opacity:.45}
+.st-hint{font-size:13px;color:var(--warn-text,#C2410C);text-align:center;margin:0 4px;max-height:0;opacity:0;overflow:hidden;transition:max-height .25s,opacity .25s,margin .25s}
+.st-hint.on{max-height:40px;opacity:1;margin:0 4px 10px}
+.cons-row{min-height:44px;align-items:center}
+.cbx{transition:background-color .15s,box-shadow .15s,transform .35s cubic-bezier(.34,1.56,.64,1)!important}
+.cons-row:active .cbx{transform:scale(.88)}
+.cbx .ic path{stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .28s var(--ease-out) .05s}
+.cons-row[aria-checked="true"] .cbx .ic path{stroke-dashoffset:0}
+.shake{animation:shake .38s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+.otp{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:0 2px}
+.otp input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;font-size:16px;color:transparent;background:transparent;caret-color:transparent;z-index:1}
+.otp-c{height:56px;border-radius:14px;background:var(--card);box-shadow:var(--shadow),inset 0 0 0 1.5px var(--line2);display:grid;place-items:center;font:700 26px/1 var(--display,inherit);color:var(--text);transition:box-shadow .2s,background-color .3s,color .3s}
+.otp-c.fill,.otp-c.cur{box-shadow:var(--shadow),inset 0 0 0 2px var(--accent)}
+.otp-c.pop{animation:otpop .32s cubic-bezier(.34,1.56,.64,1)}
+@keyframes otpop{from{transform:scale(.8);opacity:.4}to{transform:none;opacity:1}}
+.otp.wait .otp-c{opacity:.6}
+.otp.bad{animation:shake .36s cubic-bezier(.36,.07,.19,.97)} .otp.bad .otp-c{box-shadow:var(--shadow),inset 0 0 0 2px var(--bad)}
+.otp.done .otp-c{background:var(--ok);color:#fff;box-shadow:none;transition-delay:calc(var(--i,0)*60ms)}
+.otp.done .otp-c:nth-child(3){--i:1}.otp.done .otp-c:nth-child(4){--i:2}.otp.done .otp-c:nth-child(5){--i:3}.otp.done .otp-c:nth-child(6){--i:4}.otp.done .otp-c:nth-child(7){--i:5}
+@media (prefers-reduced-motion: reduce){.shake,.otp.bad,.otp-c.pop{animation:none}.cbx .ic path{transition:none}.st-login,.st-hint{transition:none}.otp.done .otp-c{transition-delay:0s}}
 .st-skip{display:block;width:100%;background:none;border:0;padding:12px 8px;font:500 13px/1.35 var(--font,inherit);color:var(--text3);text-align:center;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}
 .st-skip:disabled{opacity:.6}
-.codein:focus{box-shadow:0 0 0 2px var(--accent)}
 .search::placeholder,.field input::placeholder{color:var(--text3);font-weight:500}
 .spark{display:block;width:100%;height:64px}
 
@@ -683,7 +701,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r32'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r33'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -2188,7 +2206,7 @@ function openHistory(){
    Токен хранится отдельно от S (localStorage mt-token). Фото еды и миниатюры разборов на сервер не уходят.
    Изменения уходят через ~3 с после save() и при уходе в фон; без сети копятся и уходят позже. */
 const YA_ID='2e79d1aead1043668b762b669a9a6833',VK_ID='54870088',AUTH_BASE='https://moytrener-app.ru/auth/';
-const SYNC_LOCAL=['did','remind','tab','theme','offline','visitAt','visitOk','consent','consentAsked','sets','startedAt','authAsked','useDay']; // своё у каждого телефона
+const SYNC_LOCAL=['did','remind','tab','theme','offline','visitAt','visitOk','consentAsked','sets','startedAt','authAsked','useDay']; // своё у каждого телефона
 const HOWN={yandex:'через Яндекс ID',vk:'через VK ID',mail:'по почте'};
 var AC=(()=>{try{return JSON.parse(localStorage.getItem('mt-token'))||null}catch(e){return null}})(),SYNC={}; // var: save() зовут раньше, чем дойдём до этой строки
 function acSave(){try{AC?localStorage.setItem('mt-token',JSON.stringify(AC)):localStorage.removeItem('mt-token')}catch(e){}}
@@ -2224,7 +2242,8 @@ function mergeData(a,b,amt){const bmt=b.mt||0,[n,o]=amt>bmt?[a,b]:[b,a],r=JSON.p
   r.workouts=Math.max(a.workouts||0,b.workouts||0);r.mt=Math.max(amt,bmt);return r}
 function applyData(d){const keep={},pics={},shots={};SYNC_LOCAL.forEach(k=>{if(S[k]!==undefined)keep[k]=S[k]});
   (S.log||[]).forEach(x=>{if(x.img)pics[logKey(x)]=x.img});(S.forms||[]).forEach(x=>{if(x.shot)shots[x.t]=x.shot});
-  SYNC.applying=1;try{S=Object.assign(fresh(),d,keep);(S.log||[]).forEach(x=>{if(!x.img&&pics[logKey(x)])x.img=pics[logKey(x)]});(S.forms||[]).forEach(x=>{if(!x.shot&&shots[x.t])x.shot=shots[x.t]});
+  const myCons=S.consent;SYNC.applying=1;try{S=Object.assign(fresh(),d,keep);if(myCons&&(!S.consent||(myCons.at||0)>(S.consent.at||0)))S.consent=myCons; // согласие — самое свежее из телефона и аккаунта
+    (S.log||[]).forEach(x=>{if(!x.img&&pics[logKey(x)])x.img=pics[logKey(x)]});(S.forms||[]).forEach(x=>{if(!x.shot&&shots[x.t])x.shot=shots[x.t]});
     S.profile.name=cleanName(S.profile.name);rollDay();try{localStorage.setItem('yb-demo2',JSON.stringify(S))}catch(e){}}finally{SYNC.applying=0}
   applyTheme();if(!S.onb)$('#onb').classList.add('hide');DIR='';if($('#sheet').classList.contains('on'))rerender.dirty=1;else render()}
 function acLost(){AC=null;acSave();toast('Вход в аккаунт истёк — войдите снова',true);if(S.tab==='me')rerender()}
@@ -2242,21 +2261,23 @@ function chooseData(){const srv=SYNC.srv;if(!srv)return;
 function chooseKeep(w){if(!AC||!SYNC.srv)return closeSheet();const ver=AC.wait,srv=SYNC.srv;delete AC.wait;SYNC.srv=null;AC.ver=ver;acSave();closeSheet();
   if(w==='acc'){applyData(srv);AC.h=hashStr(JSON.stringify(syncData()));acSave();toast('Оставили данные из аккаунта')}else{syncPush(true);toast('Оставили данные с телефона')}}
 // старт: вход и галочки согласия в одной шторке перед анкетой; без входа — можно, данные останутся на телефоне
-let ST={a:false,b:false,c:false};
-const stOk=()=>consentOk()||(ST.a&&ST.b&&ST.c);
-function openStart(){const row=(k,html)=>`<div class="cons-row" role="checkbox" tabindex="0" aria-checked="${!!ST[k]}" onclick="stTick('${k}')" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();stTick('${k}')}"><span class="cbx">${ic('check')}</span><span>${html}</span></div>`,ok=stOk(),dis=ok?'':' disabled aria-disabled="true"';
+let ST={a:false,b:false};
+const stOk=()=>consentOk()||(ST.a&&ST.b);
+const consRow=(k,html,on,fn)=>`<div class="cons-row" role="checkbox" tabindex="0" aria-checked="${!!on}" data-k="${k}" onclick="${fn}('${k}')" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();${fn}('${k}')}"><span class="cbx">${ic('check')}</span><span>${html}</span></div>`;
+const CONS_A=()=>`Принимаю ${docA('terms','Пользовательское соглашение')} и ${docA('privacy','Политику обработки данных')}, мне есть 14 лет`,CONS_B=()=>`Даю ${docA('consent','Согласие на обработку персональных данных')}`;
+function openStart(){const ok=stOk();
   sheet('Сохраним ваш прогресс',`<div class="small muted" style="margin:0 4px 12px;text-wrap:pretty">Чтобы ваш план, дневник и прогресс по дням сохранялись и были на любом телефоне.</div>
-   ${consentOk()?'':`<div class="card" style="padding:0 14px;margin-bottom:12px">${row('a',`Принимаю ${docA('terms','Пользовательское соглашение')} и ознакомлен(а) с ${docA('privacy','Политикой обработки персональных данных')}`)}${row('b',`Даю ${docA('consent','Согласие на обработку персональных данных')}`)}${row('c','Мне есть 14 лет')}</div>`}
+   ${consentOk()?'':`<div class="card st-cons" style="padding:0 14px;margin-bottom:8px">${consRow('a',CONS_A(),ST.a,'stTick')}${consRow('b',CONS_B(),ST.b,'stTick')}</div><div class="st-hint" role="status" aria-live="polite"></div>`}
    <div class="card list st-login${ok?'':' off'}">
-    <button class="rowbtn" onclick="stGo('ya')"${dis}><div class="ibox brand-ya" aria-hidden="true">Я</div><div class="t">Войти через Яндекс</div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="stGo('vk')"${dis}><div class="ibox brand-vk" aria-hidden="true">VK</div><div class="t">Войти через VK ID</div><span class="chev">${ic('chev')}</span></button>
-    <button class="rowbtn" onclick="stGo('mail')"${dis}><div class="ibox">${ic('mail')}</div><div class="t">По почте<small>пришлём код, пароль не нужен</small></div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="stGo('ya')"><div class="ibox brand-ya" aria-hidden="true">Я</div><div class="t">Войти через Яндекс</div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="stGo('vk')"><div class="ibox brand-vk" aria-hidden="true">VK</div><div class="t">Войти через VK ID</div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="stGo('mail')"><div class="ibox">${ic('mail')}</div><div class="t">По почте<small>пришлём код, пароль не нужен</small></div><span class="chev">${ic('chev')}</span></button>
    </div>
-   ${ok?'':'<div class="small muted" style="margin:-4px 4px 8px;text-align:center">Отметьте галочки — и можно входить</div>'}
-   <button class="st-skip" onclick="stGo('skip')"${dis}>Продолжить без входа — данные останутся только на этом телефоне</button>
+   <button class="st-skip" onclick="stGo('skip')">Продолжить без входа — данные останутся только на этом телефоне</button>
    <div class="cons-foot">Исполнитель: Кочетов Иван Максимович, самозанятый, ИНН 771570623556 · ${docA('requisites','Реквизиты')}</div>`);SHEET_FN=openStart}
-function stTick(k){ST[k]=!ST[k];haptic(5);const sb=$('#sbody'),y=sb.scrollTop;openStart();sb.scrollTop=y;sb.classList.remove('swap');const r=sb.querySelector(`.cons-row[onclick="stTick('${k}')"]`);if(r)r.focus({preventScroll:true})}
-function stGo(w){if(!stOk())return;if(!consentOk()){S.consent={v:LEGAL_V,at:Date.now()};save();haptic([10,40,10])}
+function stTick(k){ST[k]=!ST[k];haptic(5);const r=$(`#sbody .cons-row[data-k="${k}"]`);if(r)r.setAttribute('aria-checked',ST[k]);const l=$('#sbody .st-login');if(l)l.classList.toggle('off',!stOk());if(stOk()){const h=$('#sbody .st-hint');if(h)h.classList.remove('on')}}
+function consNudge(box,hint){haptic([20,40,20]);const c=$(box);if(c){c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake')}const h=$(hint);if(h){h.textContent='Отметьте обе галочки — это нужно по закону';h.classList.add('on')}}
+function stGo(w){if(!stOk())return consNudge('#sbody .st-cons','#sbody .st-hint');if(!consentOk()){S.consent={v:LEGAL_V,at:Date.now()};save();haptic([10,40,10])}
   if(w==='ya')authYa();else if(w==='vk')authVk();else if(w==='mail')authMail();else{S.authAsked=1;save();closeSheet();setTimeout(obNext,120)}}
 function openAuth(title){if(!consentOk())return consentOpen('auth');
   sheet(title||'Вход',`<div class="small muted" style="margin:0 4px 12px;text-wrap:pretty">Войдите — и план, дневник, вес и история сохранятся. Сменили телефон — войдите снова, всё на месте.</div>
@@ -2285,35 +2306,45 @@ const AM_ERR={bad_email:'Проверьте адрес почты',too_many:'С�
 const amErr=t=>{const e=$('#amErr');if(e)e.textContent=t||'';if(t)haptic([20,40,20])};
 function authMail(){if(!consentOk())return consentOpen('auth');
   sheet('Вход по почте',`<div class="small muted" style="margin:0 4px 12px">Пришлём код из 6 цифр. Пароль не нужен.</div>
-   <div class="card" style="padding:4px 14px;margin-bottom:0"><div class="field"><label for="amE">Почта</label><input id="amE" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="name@mail.ru" value="${esc(AM.e)}" onkeydown="if(event.key==='Enter')amSend()"></div></div>
+   <div class="card" style="padding:4px 14px;margin-bottom:0"><div class="field"><label for="amE">Почта</label><input id="amE" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="name@mail.ru" value="${esc(AM.e)}" oninput="amValid()" onkeydown="if(event.key==='Enter')amSend()"></div></div>
    <div id="amErr" class="small" role="alert" style="color:var(--bad);min-height:20px;margin:8px 4px"></div>
-   <button class="btn" id="amB" onclick="amSend()">Прислать код</button><button class="btn ghost" onclick="openAuth()">Другой способ</button>`);SHEET_FN=authMail}
-async function amSend(again){const i=$('#amE'),e=((i?i.value:AM.e)||'').trim().toLowerCase();if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(e))return amErr('Проверьте адрес почты');
-  if(!navigator.onLine)return amErr('Нет интернета');AM.e=e;const b=$('#amB');if(b){b.disabled=true;b.textContent='Отправляем…'}
-  const r=await api('/auth/email/start',{email:e},15000),er=r.data&&r.data.error;
+   <button class="btn" id="amB" onclick="amSend()" ${AM_RE.test(AM.e)?'':'disabled'}>Получить код</button><button class="btn ghost" onclick="${S.onb?'openStart()':'openAuth()'}">Другой способ</button>`);SHEET_FN=authMail}
+const AM_RE=/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
+function amValid(){const i=$('#amE'),b=$('#amB');if(i&&b&&!amSend.busy)b.disabled=!AM_RE.test(i.value.trim());amErr('')}
+async function amSend(again){const i=$('#amE'),e=((i?i.value:AM.e)||'').trim().toLowerCase();if(!AM_RE.test(e))return amErr('Проверьте адрес почты');
+  if(!navigator.onLine)return amErr('Нет интернета');AM.e=e;const b=$('#amB');if(b){b.disabled=true;b.textContent='Отправляем…'}amSend.busy=1;
+  const r=await api('/auth/email/start',{email:e},15000),er=r.data&&r.data.error;amSend.busy=0;
   if(r.ok||er==='wait'){if(r.ok)AM.at=Date.now();else AM.at=AM.at||Date.now();amCode(er==='wait'?'Код уже отправлен — проверьте почту':'');return}
-  if(b){b.disabled=false;b.textContent=again?'Прислать снова':'Прислать код'}amErr(AM_ERR[er]||(r.status===0?'Нет связи с сервером — попробуйте позже':'Не получилось — попробуйте ещё раз'))}
-function amCode(msg){sheet('Код из письма',`<div class="small muted" style="margin:0 4px 12px;text-wrap:pretty">Отправили на <b style="color:var(--text);word-break:break-all">${esc(AM.e)}</b>. Если письма нет — загляните в «Спам».</div>
-   <input id="amC" class="codein" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" aria-label="Код из письма" oninput="this.value=this.value.replace(/\\D/g,'').slice(0,6);amErr('');if(this.value.length===6)amVerify()">
-   <div id="amErr" class="small" role="alert" style="color:var(--bad);min-height:20px;margin:8px 4px">${msg?`<span style="color:var(--text2)">${msg}</span>`:''}</div>
-   <button class="btn" id="amV" onclick="amVerify()">Войти</button><button class="btn ghost" id="amR" onclick="amResend()"></button>
-   <button class="btn ghost" onclick="authMail()">Другая почта</button>`);SHEET_FN=null;amTick();setTimeout(()=>{const c=$('#amC');if(c)c.focus()},350)}
+  if(b){b.disabled=false;b.textContent='Получить код'}amErr(AM_ERR[er]||(r.status===0?'Нет связи с сервером — попробуйте позже':'Не получилось — попробуйте ещё раз'))}
+function amCode(msg){sheet('Код из письма',`<div class="small muted" style="margin:0 4px 14px;text-wrap:pretty">Отправили на <b style="color:var(--text);word-break:break-all">${esc(AM.e)}</b>. Если письма нет — загляните в «Спам».</div>
+   <label class="otp" id="otp"><input id="amC" type="text" inputmode="numeric" pattern="\\d*" autocomplete="one-time-code" maxlength="6" aria-label="Код из письма, 6 цифр" oninput="amInput(this)" onkeydown="if(event.key==='Enter')amVerify()" onfocus="amPaint()" onblur="amPaint()">${[0,1,2,3,4,5].map(i=>`<span class="otp-c" aria-hidden="true"></span>`).join('')}</label>
+   <div id="amErr" class="small" role="alert" style="color:var(--bad);min-height:20px;margin:10px 4px;text-align:center">${msg?`<span style="color:var(--text2)">${msg}</span>`:''}</div>
+   <button class="btn ghost" id="amR" onclick="amResend()"></button>
+   <button class="btn ghost" onclick="authMail()">Другая почта</button>`);SHEET_FN=null;amTick();amPaint();setTimeout(()=>{const c=$('#amC');if(c)c.focus()},350)}
+function amPaint(){const c=$('#amC'),o=$('#otp');if(!c||!o)return;const v=c.value,f=document.activeElement===c;o.querySelectorAll('.otp-c').forEach((el,i)=>{const d=v[i]||'';if(el.textContent!==d){el.textContent=d;if(d&&!RM){el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop')}}el.classList.toggle('fill',!!d);el.classList.toggle('cur',f&&i===Math.min(v.length,5)&&!o.classList.contains('done'))})}
+function amInput(c){c.value=c.value.replace(/\D/g,'').slice(0,6);const o=$('#otp');if(o)o.classList.remove('bad');amErr('');amPaint();if(c.value.length===6)amVerify()}
 function amTick(){clearInterval(amTick.i);const f=()=>{const b=$('#amR');if(!b)return clearInterval(amTick.i);const s=Math.ceil(55-(Date.now()-AM.at)/1000);b.disabled=s>0;b.textContent=s>0?`Прислать снова через ${s} с`:'Прислать код снова'};f();amTick.i=setInterval(f,1000)}
 async function amResend(){const b=$('#amR');if(b)b.disabled=true;const r=await api('/auth/email/start',{email:AM.e},15000),er=r.data&&r.data.error;if(r.ok){AM.at=Date.now();toast('Отправили новый код')}else amErr(AM_ERR[er]||(er==='wait'?'Подождите минуту':'Не получилось — попробуйте позже'));amTick()}
-async function amVerify(){const c=$('#amC'),code=c?c.value:'';if(code.length!==6)return amErr('Введите 6 цифр из письма');if(amVerify.busy)return;amVerify.busy=1;const b=$('#amV');if(b){b.disabled=true;b.textContent='Проверяем…'}
-  const r=await api('/auth/email/verify',{email:AM.e,code},15000);amVerify.busy=0;if(r.ok&&r.data&&r.data.token){clearInterval(amTick.i);return acDone(r.data,'mail')}
-  if(b){b.disabled=false;b.textContent='Войти'}const er=r.data&&r.data.error;amErr(AM_ERR[er]||(r.status===0?'Нет связи с сервером — попробуйте ещё раз':'Не получилось — попробуйте ещё раз'));if(c&&er==='code_wrong'){c.value='';c.focus()}}
+async function amVerify(){const c=$('#amC'),o=$('#otp'),code=c?c.value:'';if(code.length!==6)return amErr('Введите 6 цифр из письма');if(amVerify.busy)return;amVerify.busy=1;if(o)o.classList.add('wait');
+  const r=await api('/auth/email/verify',{email:AM.e,code},15000);amVerify.busy=0;if(o)o.classList.remove('wait');
+  if(r.ok&&r.data&&r.data.token){clearInterval(amTick.i);haptic([10,40,10]);if(o){o.classList.add('done');c.blur();amPaint()}setTimeout(()=>acDone(r.data,'mail'),RM?150:650);return}
+  const er=r.data&&r.data.error;amErr(AM_ERR[er]||(r.status===0?'Нет связи с сервером — попробуйте ещё раз':'Не получилось — попробуйте ещё раз'));
+  if(o){o.classList.remove('bad');void o.offsetWidth;o.classList.add('bad')}haptic([30,50,30]);
+  setTimeout(()=>{if(!c||!c.isConnected)return;c.value='';amPaint();c.focus()},RM?200:500)}
 const syncTxt=()=>AC.wait?'Нужно выбрать, какие данные оставить':AC.dirty?(navigator.onLine?'Сохраняем изменения…':'Нет интернета — сохраним, когда появится'):AC.at?'Сохранено '+new Date(AC.at).toLocaleString('ru-RU',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):'Всё сохранено';
 function openAccount(){if(!AC)return openAuth();const u=AC.u||{};
   sheet('Аккаунт',`<div class="card"><div class="small muted">Вы вошли ${HOWN[AC.how]||''}</div><div class="title" style="margin-top:4px;word-break:break-all">${esc(u.email||(AC.how==='vk'?'VK ID':AC.how==='yandex'?'Яндекс ID':'Аккаунт'))}</div><div class="small muted" style="margin-top:6px">${syncTxt()}</div>
     ${AC.wait?`<button class="btn" style="margin-top:12px" onclick="chooseData()">Выбрать</button>`:''}</div>
    <div class="lock">${ic('lock')}<div>План, дневник, вес и история хранятся в аккаунте на сервере в России. Фото еды и видео — только на этом телефоне.</div></div>
    <div class="card list">
-    <button class="rowbtn" onclick="acLogout()"><div class="ibox">${ic('chevl')}</div><div class="t">Выйти<small>данные останутся на телефоне и в аккаунте</small></div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="acOutAsk()"><div class="ibox">${ic('chevl')}</div><div class="t">Выйти<small>данные в аккаунте сохранятся</small></div><span class="chev">${ic('chev')}</span></button>
     <button class="rowbtn" onclick="acDelAsk()"><div class="ibox bad">${ic('trash')}</div><div class="t" style="color:var(--bad)">Удалить аккаунт и данные<small>с сервера; на телефоне ничего не удалится</small></div><span class="chev">${ic('chev')}</span></button>
    </div>`);SHEET_FN=openAccount;if(AC.wait&&!SYNC.srv)syncAgain()}
 async function syncAgain(){const t=AC&&AC.t;if(!t)return;const r=await api('/sync/get',{token:t},20000);if(r.ok&&r.data&&r.data.data&&AC){SYNC.srv=r.data.data;AC.wait=r.data.ver;acSave()}}
 async function acLogout(quiet){if(!AC)return;if(AC.dirty&&!AC.wait)await syncPush();const t=AC.t;AC=null;acSave();api('/auth/logout',{token:t});if(quiet)return;closeSheet();toast('Вы вышли. Данные остались на телефоне');if(S.tab==='me')rerender()}
+function acOutAsk(){sheet('Выйти из аккаунта?',`<div class="card" style="text-wrap:pretty">Данные в аккаунте сохранятся — войдёте снова, и всё на месте. Что сделать с данными на этом телефоне?</div>
+   <button class="btn sec" onclick="acLogout()">Оставить на этом телефоне</button><button class="btn danger" onclick="acOutWipe()">Удалить с этого телефона</button><button class="btn ghost" onclick="openAccount()">Отмена</button>`)}
+async function acOutWipe(){await acLogout(true);toast('Вы вышли, данные с телефона удалены');resetAll()}
 function acDelAsk(){sheet('Удалить аккаунт?',`<div class="card" style="text-wrap:pretty">Аккаунт и копия данных на сервере удалятся навсегда — вернуть их будет нельзя. На этом телефоне данные останутся: их можно удалить в «Данные и конфиденциальность».</div>
    <button class="btn danger" id="acDel" onclick="acDelete()">Да, удалить аккаунт</button><button class="btn ghost" onclick="openAccount()">Отмена</button>`)}
 async function acDelete(){if(!AC)return closeSheet();const b=$('#acDel');if(b){b.disabled=true;b.textContent='Удаляем…'}const r=await api('/auth/delete',{token:AC.t},15000);
@@ -2333,7 +2364,7 @@ function openData(){
    </div>
    <h2 style="margin-top:18px">Документы</h2>
    <div class="card list">${['terms','privacy','consent','recurrent','requisites'].map(k=>`<button class="rowbtn" onclick="docView('${k}')"><div class="ibox">${ic('doc')}</div><div class="t">${LEGAL[k]}</div><span class="chev">${ic('chev')}</span></button>`).join('')}</div>
-   ${S.consent?`<div class="small muted" style="margin:-4px 4px 10px">Согласие дано ${new Date(S.consent.at).toLocaleDateString('ru-RU')} · редакция от ${LEGAL_V.split('-').reverse().join('.')}</div>`:''}
+   ${S.consent?`<div class="small muted" style="margin:-4px 4px 10px">Согласие дано ${new Date(S.consent.at).toLocaleDateString('ru-RU')} · редакция от ${LEGAL_V.slice(0,10).split('-').reverse().join('.')}</div>`:''}
    <div class="card list"><a class="rowbtn" href="mailto:ncochetow@yandex.ru?subject=${encodeURIComponent('Отзыв согласия на обработку персональных данных — Мой тренер')}&body=${encodeURIComponent('Прошу прекратить обработку моих персональных данных. Номер устройства в приложении: '+(S.did||''))}"><div class="ibox warn">${ic('lock')}</div><div class="t">Отозвать согласие<small>письмо на ncochetow@yandex.ru</small></div><span class="chev">${ic('chev')}</span></a></div>
    <div class="concept">Данные о весе, питании и здоровье хранятся на вашем телефоне. На сервер в России уходят только номер устройства, отзывы и цифры дня для напоминаний — если вы их включили.</div>`);
 }
@@ -2399,23 +2430,22 @@ let OB=0,D={...DEF},obDir='',obPct=0;
 const STEPS=7;
 /* ---------- юридическое окно перед анкетой: соглашение и политика, отдельное согласие на обработку ПДн (152-ФЗ с 01.09.2025), 14+ ----------
    Редакция документов — LEGAL_V: сменили её — спросим снова. Документы открываются внутри приложения (legal/*.html). */
-const LEGAL_V='2026-11-01',LEGAL={terms:'Пользовательское соглашение',privacy:'Политика обработки персональных данных',consent:'Согласие на обработку персональных данных',recurrent:'Согласие на автоматические списания',requisites:'Реквизиты'};
+const LEGAL_V='2026-11-01.2',LEGAL={terms:'Пользовательское соглашение',privacy:'Политика обработки персональных данных',consent:'Согласие на обработку персональных данных',recurrent:'Согласие на автоматические списания',requisites:'Реквизиты'};
 const consentOk=()=>!!(S.consent&&S.consent.v===LEGAL_V);
 let CONS={a:false,b:false,c:false,after:''};
 const docA=(k,txt)=>`<a class="doclink" href="legal/${k}.html" onclick="event.preventDefault();event.stopPropagation();docView('${k}')">${txt}</a>`;
-function consentOpen(after){CONS={a:false,b:false,c:false,after};let o=$('#cons');if(!o){o=document.createElement('div');o.id='cons';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Согласие с документами');o.addEventListener('click',e=>{if(e.target===o)consentClose()});$('#phone').appendChild(o)}
+function consentOpen(after){CONS={a:false,b:false,after};let o=$('#cons');if(!o){o=document.createElement('div');o.id='cons';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Согласие с документами');o.addEventListener('click',e=>{if(e.target===o)consentClose()});$('#phone').appendChild(o)}
   o.innerHTML=consentBody();requestAnimationFrame(()=>o.classList.add('on'))}
-function consentBody(){const row=(k,html)=>`<div class="cons-row" role="checkbox" tabindex="0" aria-checked="${!!CONS[k]}" onclick="consentTick('${k}')" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();consentTick('${k}')}"><span class="cbx">${ic('check')}</span><span>${html}</span></div>`,ok=CONS.a&&CONS.b&&CONS.c;
+function consentBody(){const row=(k,html)=>consRow(k,html,CONS[k],'consentTick'),ok=CONS.a&&CONS.b;
   return `<div class="cons-card"><div class="grab"></div><button class="x" onclick="consentClose()" aria-label="Закрыть">✕</button>
-   <div class="cons-t">Перед началом</div><div class="small muted" style="margin-bottom:6px">Отметьте всё — без этого мы не можем составить ваш план. Документы открываются по нажатию.</div>
-   ${row('a',`Принимаю ${docA('terms','Пользовательское соглашение')} и ознакомлен(а) с ${docA('privacy','Политикой обработки персональных данных')}`)}
-   ${row('b',`Даю ${docA('consent','Согласие на обработку персональных данных')}`)}
-   ${row('c','Мне есть 14 лет')}
+   <div class="cons-t">Перед началом</div><div class="small muted" style="margin-bottom:6px">Мы обновили документы. Отметьте обе галочки — это нужно по закону. Документы открываются по нажатию.</div>
+   ${row('a',CONS_A())}
+   ${row('b',CONS_B())}
    <button class="btn" style="margin-top:10px" ${ok?'':'disabled'} onclick="consentAccept()">Продолжить</button>
    ${CONS.after==='existing'?'<button class="btn ghost" onclick="consentLater()">Позже</button>':''}
    <div class="cons-foot">Исполнитель: Кочетов Иван Максимович, самозанятый, ИНН 771570623556 · ${docA('requisites','Реквизиты')}</div></div>`}
 function consentTick(k){CONS[k]=!CONS[k];haptic(5);const o=$('#cons');if(!o)return;const y=o.querySelector('.cons-card').scrollTop;o.innerHTML=consentBody();o.classList.add('on');o.querySelector('.cons-card').scrollTop=y;const r=o.querySelector(`.cons-row[onclick="consentTick('${k}')"]`);if(r)r.focus({preventScroll:true})}
-function consentAccept(){if(!(CONS.a&&CONS.b&&CONS.c))return;S.consent={v:LEGAL_V,at:Date.now()};save();haptic([10,40,10]);const after=CONS.after;consentClose();if(after==='onb')setTimeout(obNext,120);if(after==='auth')setTimeout(openAuth,120)}
+function consentAccept(){if(!(CONS.a&&CONS.b))return;S.consent={v:LEGAL_V,at:Date.now()};save();haptic([10,40,10]);const after=CONS.after;consentClose();if(after==='onb')setTimeout(obNext,120);if(after==='auth')setTimeout(openAuth,120)}
 function consentLater(){S.consentAsked=LEGAL_V;save();consentClose()} // уже пользуется — спросили один раз, данные не блокируем
 function consentClose(){const o=$('#cons');if(!o)return;if(CONS.after==='existing'&&!consentOk()){S.consentAsked=LEGAL_V;save()}o.classList.remove('on');setTimeout(()=>{if(!o.classList.contains('on'))o.remove()},300)}
 function docView(k){let o=$('#docv');if(!o){o=document.createElement('div');o.id='docv';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');$('#phone').appendChild(o)}
