@@ -612,7 +612,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .wk2-d.plan .c::after{content:"";position:absolute;bottom:-3px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--accent)}
 .wk2-d.tr .c{color:var(--accent-text)}
 .wk2-d.fut .c{color:var(--text3)}
-.wk2-d.today:not(.sel) .c{color:var(--accent-text)} .wk2-d.today:not(.sel) .wk2-r .t{stroke:var(--accent-soft)} .wk2-d.today:not(.sel) .wk2-r .v{stroke:var(--accent)}
+.wk2-d.today:not(.sel) .c{color:var(--accent-text)} .wk2-d:not(.sel) .wk2-r .t{stroke:var(--accent-soft)} .wk2-d:not(.sel) .wk2-r .v{stroke:var(--accent)} .wk2-d.nod .c{box-shadow:inset 0 0 0 1.5px var(--line);color:var(--text2)}
 .wk2-d.sel{background:var(--accent);box-shadow:0 10px 22px -10px rgba(229,23,63,.7)} .wk2-d.sel .n{color:rgba(255,255,255,.82)} .wk2-d.sel .c{color:#fff}
 .wk2-r{position:absolute;inset:-1px;width:32px;height:32px;transform:rotate(-90deg)} .wk2-r circle{fill:none;stroke-width:2.4} .wk2-r .t{stroke:rgba(255,255,255,.32)} .wk2-r .v{stroke:#fff;stroke-linecap:round}
 .eat .li{align-items:center} .eat-p{position:relative;width:44px;height:44px;border-radius:50%;overflow:hidden;flex:none;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-text)} .eat-p .ic{width:20px;height:20px} .eat-p img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;outline:0}
@@ -677,7 +677,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r29'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r30'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -818,7 +818,7 @@ const ROMAN=['I','II','III','IV','V'];
 
 /* ---------- состояние ---------- */
 const DEF={name:'',sex:'m',age:30,h:178,w:80,goal:'lose',pace:'mid',work:'sit',trains:3,level:'new',income:80000,people:1,share:.3,place:'both'}; // только стартовые значения анкеты — человек меняет их сам
-const fresh=()=>({onb:true,profile:{...DEF},log:[],done:[],sets:{},remind:{},tab:'today',theme:'light',weights:[],forms:[],extra:[],custom:[],refs:[],v:3,day:null,week:null,doneOn:{},plan:null});
+const fresh=()=>({onb:true,profile:{...DEF},log:[],done:[],sets:{},remind:{},tab:'today',theme:'light',weights:[],forms:[],extra:[],custom:[],refs:[],v:3,day:null,week:null,doneOn:{},plan:null,hist:[]});
 let S=load()||fresh();if(S.demo||(S.profile&&S.profile.name==='Алексей'&&S.profile.club==='izumrud'&&S.profile.w===88)){const th=S.theme;S=fresh();S.theme=th} // старое сохранение «примера» — честно начинаем с анкеты
 if(!['today','tech','me'].includes(S.tab))S.tab='today';
 S.theme=S.theme||'auto';
@@ -834,7 +834,12 @@ if(!S.did)S.did=newDid(); // случайный номер устройства 
 if(S.v<3){S.done=[...Array(Math.min(S.done.length,effTrains())).keys()];if(S.plan&&(S.plan.length>effTrains()||S.profile.level==='new'))S.plan=null;S.v=3} // сохранения до лимита новичка: план пересобирается с учётом сделанных дней
 // новый день — новый дневник и подходы; новая неделя — новые отметки тренировок
 function rollDay(){const td=today0(),wk=monday0();let ch=false;if(!S.day){const utc=new Date().toISOString().slice(0,10),now=new Date().toTimeString().slice(0,5);S.log=S.log.filter(e=>!e.d||e.d===td||(e.d===utc&&utc!==td&&e.t<=now))}
-  if(S.day&&S.day!==td){S.log=S.log.filter(e=>e.d===td);if(!(S.startedAt&&Date.now()-S.startedAt<4*3600e3)){S.sets={};S.startedAt=null}ch=true}
+  if(S.day&&S.day!==td){const by={};S.log.forEach(e=>{const d=e.d||S.day;if(d===td)return;const b=by[d]=by[d]||{k:0,p:0,f:0,c:0};['k','p','f','c'].forEach(x=>b[x]+=+e[x]||0)});
+    if(S.doneOn&&S.doneOn[S.day]!=null&&!by[S.day])by[S.day]={k:0,p:0,f:0,c:0};
+    let nk=0;try{nk=S.profile?norm(S.profile).kcal:0}catch(_){}
+    S.hist=(S.hist||[]).filter(h=>!by[h.d]);Object.keys(by).forEach(d=>{const b=by[d];S.hist.push({d,k:Math.round(b.k),p:Math.round(b.p),f:Math.round(b.f),c:Math.round(b.c),n:nk,w:!!(S.doneOn&&S.doneOn[d]!=null)})});
+    S.hist.sort((a,b)=>a.d<b.d?-1:1);if(S.hist.length>400)S.hist=S.hist.slice(-400); // итог каждого дня — для ленты недели; без фото, чтобы не переполнить память
+    S.log=S.log.filter(e=>e.d===td);if(!(S.startedAt&&Date.now()-S.startedAt<4*3600e3)){S.sets={};S.startedAt=null}ch=true}
   if(S.week&&S.week!==wk){S.lastDone=Object.keys(S.doneOn||{}).sort().pop()||S.lastDone;S.rot=(S.rot||0)+S.done.length;S.doneOn=Object.fromEntries(Object.entries(S.doneOn||{}).filter(([d])=>d>=wk));S.done=[...new Set(Object.values(S.doneOn))];S.plan=null;ch=true}
   if(S.useDay!==td){S.useDay=td;S.useDays=(S.useDays||0)+1} // дни, когда открывали приложение (для просьбы оставить отзыв)
   S.day=td;S.week=wk;S.doneOn=S.doneOn||{};save();return ch}
@@ -1100,16 +1105,17 @@ function hlCards(n,e){const hr=new Date().getHours(),pg=program(),ti=curDay(),do
   return `<h2>Подсказки дня</h2><div class="hl">${cards.slice(0,3).join('')}</div>`}
 function ago(t){const d=Date.now()-t,m=Math.round(d/60000);if(m<60)return 'только что';if(m<60*20)return Math.round(m/60)+' ч назад';const dd=Math.round(m/1440);return dd<=1?'вчера':dd+' дн. назад'}
 function wkTap(el,k,tr,plan){el.closest('.wk2').querySelectorAll('.sel').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');haptic(5);
-  const d=new Date(k+'T12:00'),lab=d.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});toast(lab[0].toUpperCase()+lab.slice(1)+' — '+(tr?'тренировка сделана':k===today0()?'сегодня':plan?'тренировка по плану':d>new Date()?'день отдыха':'без тренировки'))}
+  const d=new Date(k+'T12:00'),lab=d.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'});const h=(S.hist||[]).find(x=>x.d===k),kc=h&&h.k?`${fmt(h.k)} из ${fmt(h.n||norm(S.profile).kcal)} ккал`:'';toast(lab[0].toUpperCase()+lab.slice(1)+' — '+[kc,tr?'тренировка сделана':k===today0()?'сегодня':plan?'тренировка по плану':d>new Date()?'день отдыха':kc?'':'нет записей'].filter(Boolean).join(', '))}
 function weekStrip(){
   const names=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],wd=(new Date().getDay()+6)%7,n=effTrains(),ti=curDay(),days=[];
   for(let i=0;i<n;i++){let d=Math.max(0,Math.min(6,wd+(i-ti)*2));while(days.includes(d)&&d<6)d++;if(days.includes(d))continue;days.push(d)}
   if(!S.plan){S.plan=planWeek();save()}days.length=0;days.push(...S.plan); // план недели — один раз в неделю, с первого дня, когда открыли приложение
   const today=new Date(),mon=new Date(today);mon.setDate(today.getDate()-wd);
   const e=eaten(),pct=Math.min(100,Math.round(e.k/norm(S.profile).kcal*100)),tk=today0();
-  const cell=(dt,i,plan)=>{const k=ymd(dt),tr=!!(S.doneOn&&S.doneOn[k]!=null),isT=k===tk,fut=dt>today&&!isT,r=13,L=2*Math.PI*r;
-    const mini=isT?`<svg class="wk2-r" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="${r}" class="t"/><circle cx="16" cy="16" r="${r}" class="v" stroke-dasharray="${L}" stroke-dashoffset="${L*(1-pct/100)}"/></svg>`:'';
-    return `<button class="wk2-d${isT?' today sel':''}${tr?' tr':''}${fut?' fut':''}${plan?' plan':''}" onclick="wkTap(this,'${k}',${tr?1:0},${plan?1:0})"><span class="n">${names[i]}</span><span class="c">${mini}${tr&&!isT?ic('check'):dt.getDate()}</span></button>`};
+  const H={};(S.hist||[]).forEach(h=>H[h.d]=h);const nNow=norm(S.profile).kcal;
+  const cell=(dt,i,plan)=>{const k=ymd(dt),h=H[k],tr=!!(S.doneOn&&S.doneOn[k]!=null)||!!(h&&h.w),isT=k===tk,fut=dt>today&&!isT,r=13,L=2*Math.PI*r,dp=isT?pct:h&&h.k>0?Math.min(100,Math.round(h.k/(h.n||nNow)*100)):-1;
+    const mini=dp>=0?`<svg class="wk2-r" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="${r}" class="t"/><circle cx="16" cy="16" r="${r}" class="v" stroke-dasharray="${L}" stroke-dashoffset="${L*(1-dp/100)}"/></svg>`:'';
+    return `<button class="wk2-d${isT?' today sel':''}${tr?' tr':''}${fut?' fut':''}${plan?' plan':''}${!isT&&!fut&&dp<0?' nod':''}" onclick="wkTap(this,'${k}',${tr?1:0},${plan?1:0})"><span class="n">${names[i]}</span><span class="c">${mini}${tr&&!isT?ic('check'):dt.getDate()}</span></button>`};
   const pm=new Date(mon);pm.setDate(mon.getDate()-7);
   const wk=(m,cur)=>`<div class="wk2-w">${names.map((nm,i)=>{const dt=new Date(m);dt.setDate(m.getDate()+i);return cell(dt,i,cur&&days.includes(i)&&dt>=new Date(today0()))}).join('')}</div>`;
   return `<div class="wk2" aria-label="Неделя">${wk(pm,false)}${wk(mon,true)}</div>`;
@@ -2336,7 +2342,7 @@ function updBud(){const b=budgetOf(D);const a=$('#incv'),bv=$('#budv'),sv=$('#st
 function obAdj(k,d,mn,mx){if(k==='h'||k==='w')D._body=1;D[k]=Math.max(mn,Math.min(mx,D[k]+d));haptic(4);renderOnb()}
 function obNext(){obDir='sl';OB=Math.min(OB+1,STEPS-1);haptic(8);renderOnb()}
 function obBack(){obDir='sr';OB=Math.max(0,OB-1);haptic(5);renderOnb()}
-function obFinish(){const p={...D};delete p._body;p.name=cleanName(p.name);S.profile=p;delete S.demo;S.onb=false;S.done=[];S.sets={};S.log=[];S.weights=[];S.forms=[];S.extra=[];S.workouts=0;S.rot=0;S.lastDone=null;S.lastForm=null;S.startedAt=null;S.day=today0();S.week=monday0();S.doneOn={};S.plan=null;S.v=3;save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+progName(p)+'» готов'),450);if(COACH_ON)setTimeout(()=>pickCoach(true),900);else{visit.tried=0;S.visitAt=0;visit()}}
+function obFinish(){const p={...D};delete p._body;p.name=cleanName(p.name);S.profile=p;delete S.demo;S.onb=false;S.done=[];S.sets={};S.log=[];S.weights=[];S.forms=[];S.extra=[];S.hist=[];S.workouts=0;S.rot=0;S.lastDone=null;S.lastForm=null;S.startedAt=null;S.day=today0();S.week=monday0();S.doneOn={};S.plan=null;S.v=3;save();$('#onb').classList.add('hide');haptic([10,40,10]);DIR='';render();toTop();setTimeout(()=>toast('План «'+progName(p)+'» готов'),450);if(COACH_ON)setTimeout(()=>pickCoach(true),900);else{visit.tried=0;S.visitAt=0;visit()}}
 
 /* ---------- сервер: номер устройства, счётчик заходов, отзывы ----------
    Сервера может ещё не быть или не быть сети — всё молча (console.warn), интерфейс честно пишет, что не получилось.
