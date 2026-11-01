@@ -362,7 +362,9 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .shake{animation:shake .38s cubic-bezier(.36,.07,.19,.97)}
 @keyframes shake{0%,100%{transform:none}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
 .otp{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:0 2px}
-.otp input{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;font-size:16px;color:transparent;background:transparent;caret-color:transparent;z-index:1}
+.otp input{position:absolute;inset:0;width:100%;height:100%;opacity:1;-webkit-user-select:text;user-select:text;-webkit-touch-callout:default;border:0;outline:0;font-size:16px;color:transparent;-webkit-text-fill-color:transparent;text-shadow:none;background:transparent;caret-color:transparent;z-index:1;letter-spacing:-.5em}
+.otp input::selection{background:transparent;color:transparent} /* поле видимое (не opacity:0), но текст прозрачный — иначе iPhone не показывает «Вставить» при удержании пальца на клеточках */
+.otp input:-webkit-autofill{-webkit-box-shadow:0 0 0 100px transparent inset;transition:background-color 9999s}
 .otp-c{height:56px;border-radius:14px;background:var(--card);box-shadow:var(--shadow),inset 0 0 0 1.5px var(--line2);display:grid;place-items:center;font:700 26px/1 var(--display,inherit);color:var(--text);transition:box-shadow .2s,background-color .3s,color .3s}
 .otp-c.fill,.otp-c.cur{box-shadow:var(--shadow),inset 0 0 0 2px var(--accent)}
 .otp-c.pop{animation:otpop .32s cubic-bezier(.34,1.56,.64,1)}
@@ -755,7 +757,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r48'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r49'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -2391,11 +2393,17 @@ async function amSend(again){const i=$('#amE'),e=((i?i.value:AM.e)||'').trim().t
   if(r.ok||er==='wait'){if(r.ok)AM.at=Date.now();else AM.at=AM.at||Date.now();amCode(er==='wait'?'Код уже отправлен — проверьте почту':'');return}
   if(b){b.disabled=false;b.textContent='Получить код'}amErr(AM_ERR[er]||(r.status===0?'Нет связи с сервером — попробуйте позже':'Не получилось — попробуйте ещё раз'))}
 function amCode(msg){sheet('Код из письма',`<div class="small muted" style="margin:0 4px 14px;text-wrap:pretty">Отправили на <b style="color:var(--text);word-break:break-all">${esc(AM.e)}</b>. ${/@(yandex\.(ru|com|by|kz|ua)|ya\.ru|narod\.ru)$/i.test(AM.e||'')?'Если письма нет во «Входящих» — оно во вкладке «Рассылки». Откройте его там и нажмите «Не рассылка»: следующие коды придут во «Входящие» и подставятся сами.':'Если письма нет — загляните в «Спам» или «Промоакции».'}</div>
-   <label class="otp" id="otp"><input id="amC" type="text" inputmode="numeric" pattern="\\d*" autocomplete="one-time-code" maxlength="6" aria-label="Код из письма, 6 цифр" oninput="amInput(this)" onkeydown="if(event.key==='Enter')amVerify()" onfocus="amPaint()" onblur="amPaint()">${[0,1,2,3,4,5].map(i=>`<span class="otp-c" aria-hidden="true"></span>`).join('')}</label>
+   <label class="otp" id="otp"><input id="amC" type="text" inputmode="numeric" pattern="\\d*" autocomplete="one-time-code" aria-label="Код из письма, 6 цифр" oninput="amInput(this)" onpaste="amPaste(event)" onkeydown="if(event.key==='Enter')amVerify()" onfocus="amPaint()" onblur="amPaint()">${[0,1,2,3,4,5].map(i=>`<span class="otp-c" aria-hidden="true"></span>`).join('')}</label>
    <div id="amErr" class="small" role="alert" style="color:var(--bad);min-height:20px;margin:10px 4px;text-align:center">${msg?`<span style="color:var(--text2)">${msg}</span>`:''}</div>
+   ${navigator.clipboard&&navigator.clipboard.readText?`<button class="btn sec" onclick="amPasteBtn()">${ic('doc')} Вставить код</button>`:''}
    <button class="btn ghost" id="amR" onclick="amResend()"></button>
    <button class="btn ghost" onclick="authMail()">Другая почта</button>`);SHEET_FN=null;amTick();amPaint();setTimeout(()=>{const c=$('#amC');if(c)c.focus()},350)}
 function amPaint(){const c=$('#amC'),o=$('#otp');if(!c||!o)return;const v=c.value,f=document.activeElement===c;o.querySelectorAll('.otp-c').forEach((el,i)=>{const d=v[i]||'';if(el.textContent!==d){el.textContent=d;if(d&&!RM){el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop')}}el.classList.toggle('fill',!!d);el.classList.toggle('cur',f&&i===Math.min(v.length,5)&&!o.classList.contains('done'))})}
+// из скопированного текста берём 6 цифр подряд («123456 — ваш код…», «Код: 123 456») — maxlength не ставим, иначе телефон обрежет вставку до 6 знаков
+const amPick=t=>{t=String(t||'');const m=t.match(/(?:^|\D)(\d{6})(?!\d)/)||t.replace(/[\s-]/g,'').match(/(\d{6})/);return m?m[1]:t.replace(/\D/g,'').slice(0,6)};
+function amSet(t){const c=$('#amC');if(!c)return;c.value=amPick(t);c.focus();amInput(c)}
+function amPaste(e){const t=(e.clipboardData||window.clipboardData||{getData:()=>''}).getData('text');if(!t)return;e.preventDefault();amSet(t)}
+async function amPasteBtn(){try{const t=await navigator.clipboard.readText();if(!amPick(t)||amPick(t).length<6)return amErr('В скопированном нет кода из 6 цифр');amSet(t)}catch(e){amErr('Не получилось вставить — нажмите и подержите на клеточках, затем «Вставить»')}}
 function amInput(c){c.value=c.value.replace(/\D/g,'').slice(0,6);const o=$('#otp');if(o)o.classList.remove('bad');amErr('');amPaint();if(c.value.length===6)amVerify()}
 function amTick(){clearInterval(amTick.i);const f=()=>{const b=$('#amR');if(!b)return clearInterval(amTick.i);const s=Math.ceil(55-(Date.now()-AM.at)/1000);b.disabled=s>0;b.textContent=s>0?`Прислать снова через ${s} с`:'Прислать код снова'};f();amTick.i=setInterval(f,1000)}
 async function amResend(){const b=$('#amR');if(b)b.disabled=true;const r=await api('/auth/email/start',{email:AM.e},15000),er=r.data&&r.data.error;if(r.ok){AM.at=Date.now();toast('Отправили новый код')}else amErr(AM_ERR[er]||(er==='wait'?'Подождите минуту':'Не получилось — попробуйте позже'));amTick()}
