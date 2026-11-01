@@ -815,7 +815,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-02-r60'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-02-r61'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1417,7 +1417,10 @@ function scanWarn(d){if(!dietOn()||!ALLERG)return '';const t=banTags(),o=banOthe
    Калории и рубли считает код: граммы × КБЖУ, граммы × цена за кг. Координаты человека не покидают телефон — сервер знает только регион. */
 let KIT=null,PRICES=null,SHOPS=null;
 const SLOT={b:'Завтрак',l:'Обед',d:'Ужин',s:'Перекус'};
-const OPEN_CH=['mg','vv']; // сети, чьи сайты отдают цены
+const OPEN_CH0=['mg','vv']; // сети, чьи сайты отдают цены
+// сети с ценами в регионе: сайты (Магнит, ВкусВилл) и подтверждённые отметки покупателей «Цена другая?» по остальным
+const chName=c=>CH_N[c]||((PRICES&&PRICES.chains&&PRICES.chains[c])||{}).n||c;
+const chOpen=()=>Object.keys((PRICES&&PRICES.chains)||{}).filter(c=>c!=='rs');
 const CH_N={mg:'Магнит',vv:'ВкусВилл',rs:'В среднем по региону'};
 const CLOSED_CH=['Пятёрочка','Перекрёсток','Чижик','Лента','Ашан']; // сайты закрыты от автосбора — для них только ориентир «примерно»
 const TZ_REG={'Europe/Moscow':'msk','Europe/Simferopol':'krm','Europe/Kaliningrad':'kgd','Europe/Samara':'sam','Europe/Ulyanovsk':'uly','Europe/Saratov':'sar','Europe/Astrakhan':'ast','Europe/Volgograd':'vgg','Europe/Kirov':'kir','Asia/Yekaterinburg':'svr','Asia/Omsk':'oms','Asia/Novosibirsk':'nsk','Asia/Barnaul':'alt','Asia/Tomsk':'tom','Asia/Novokuznetsk':'kem','Asia/Krasnoyarsk':'krs','Asia/Irkutsk':'irk','Asia/Chita':'zab','Asia/Yakutsk':'yak','Asia/Vladivostok':'prm','Asia/Sakhalin':'sah','Asia/Magadan':'mag','Asia/Srednekolymsk':'yak','Asia/Kamchatka':'kam','Asia/Anadyr':'chuk'};
@@ -1454,7 +1457,7 @@ const RESERVE=1.03; // цена одного магазина, разброс п
 function kgPrice(id,ch){const x=PRICES&&PRICES.items&&PRICES.items[id];if(!x)return null;
   if(ch==='rs')return x.rs?{r:x.rs[0],src:'rs'}:x.est?{r:x.est[0],src:'est'}:null;
   if(ch)return x[ch]&&chLive(ch)?{r:x[ch][0],src:ch,ok:1,pk:x[ch]}:null;
-  let b=null;OPEN_CH.forEach(c=>{if(x[c]&&chLive(c)&&(!b||x[c][0]<b.r))b={r:x[c][0],src:c,ok:1,pk:x[c]}});
+  let b=null;chOpen().forEach(c=>{if(x[c]&&chLive(c)&&(!b||x[c][0]<b.r))b={r:x[c][0],src:c,ok:1,pk:x[c]}});
   return b||(x.rs?{r:x.rs[0],src:'rs'}:x.est?{r:x.est[0],src:'est'}:null)}
 // стоимость продуктов [[id, г]]: r — что уйдёт в блюда, chk — чек за целые упаковки; в одной сети (чего нет — по другой цене) или по самым низким
 function costOf(ing,ch){let r=0,chk=0,ok=true,have=0;const none=[];ing.forEach(([id,g])=>{let p=ch?kgPrice(id,ch):null;if(p&&(ch!=='rs'||p.src==='rs'))have++;else if(ch)ok=false;if(!p)p=kgPrice(id);if(!p){none.push(id);ok=false;return}if(!p.ok)ok=false;
@@ -1525,7 +1528,7 @@ function planIng(sl){const m={};sl.forEach(({d})=>d.ing.forEach(([id,g])=>m[id]=
 function suggest(){const p=dayPlan();return{list:p.slots.map(x=>({id:x.d.id,n:x.d.n,nut:x.d.nut,img:x.d.img,c:x.c,sl:x.sl,m:x.m,lab:x.lab,ing:x.d.ing})),remK:p.remK,remP:p.remP,budget:p.budget,why:p.why,late:p.late}}
 function chainRows(ing){ // сети по стоимости списка: сначала то, что влезает в бюджет и где есть почти всё
   const b=dayPlan().budget,rows=[];if(!hasPrices()||!ing.length)return rows;
-  const fam=ing.map(([id,g])=>[id,g*people()]);OPEN_CH.filter(chLive).forEach(c=>{const x=costOf(ing,c);if(x.have>=x.tot/2)rows.push({c,n:CH_N[c],...x,chk:costOf(fam,c).chk,d:nearest(CH_N[c])})}); // сеть, где нет и половины продуктов, не сравниваем
+  const fam=ing.map(([id,g])=>[id,g*people()]);chOpen().filter(chLive).forEach(c=>{const x=costOf(ing,c);if(x.have>=x.tot/2)rows.push({c,n:CH_N[c]||PRICES.chains[c].n,...x,chk:costOf(fam,c).chk,d:nearest(CH_N[c])})}); // сеть, где нет и половины продуктов, не сравниваем
   if(PRICES.chains.rs){const x=costOf(ing,'rs');rows.push({c:'rs',n:CH_N.rs,...x,chk:costOf(fam,'rs').chk,ok:false,avg:true})}
   rows.forEach(x=>x.over=x.r>b);
   rows.sort((a,z)=>(!!a.avg-!!z.avg)||(!!a.over-!!z.over)||(z.have/z.tot-a.have/a.tot>.15?1:a.have/a.tot-z.have/z.tot>.15?-1:0)||a.r-z.r);
@@ -1534,12 +1537,13 @@ function chainList(ing){const rows=chainRows(ing),cheap=Math.min(...rows.filter(
   return rows.map(x=>{const old=!x.avg&&chAge(x.c)>14,st=x.over?'выше бюджета':x.r===cheap&&rows.filter(z=>!z.avg).length>1?'дешевле':'в бюджете';
    return `<a class="li" style="text-decoration:none" href="${mapUrl(x.avg?'продукты':x.n)}" target="_blank" rel="noopener" aria-label="${x.n}: блюда около ${fmt(x.r)} рублей, чек около ${fmt(x.chk)} рублей, ${st}"><div class="ibox ${x.avg?'':'accent'}">${ic(x.avg?'wallet':'cart')}</div>
     <div style="flex:1;min-width:0"><div style="font-weight:650">${x.n}${x.d!=null?` <span class="muted" style="font-weight:500">· ${distTxt(x.d)}</span>`:''}</div>
-    <div class="small muted">${x.avg?(()=>{const nn=CLOSED_CH.map(c=>[c,nearest(c)]).filter(x=>x[1]!=null).sort((a,b)=>a[1]-b[1]).slice(0,2);return (nn.length?`рядом ${nn.map(([c,d])=>c+' '+distTxt(d)).join(', ')} — открытых цен у них пока нет. `:'')+'Средние по региону, Росстат'})():(x.have<x.tot?`есть ${x.have} из ${x.tot}, остальное — по другим ценам`:'всё есть')+` · цены на ${PRICES.chains[x.c].d}${old?' — могли измениться':''}${(()=>{const st=PRICES.chains[x.c].store,m=st&&st.match(/(?:^|,\s*)г\.?\s+([А-ЯЁ][^,]+)/),c=cityName();return m&&c&&m[1].trim()!==c?' · по данным: '+m[1].trim():''})()}`}</div>
+    <div class="small muted">${x.avg?(()=>{const nn=CLOSED_CH.map(c=>[c,nearest(c)]).filter(x=>x[1]!=null).sort((a,b)=>a[1]-b[1]).slice(0,2);return (nn.length?`рядом ${nn.map(([c,d])=>c+' '+distTxt(d)).join(', ')} — открытых цен у них пока нет. `:'')+'Средние по региону, Росстат'})():(x.have<x.tot?`есть ${x.have} из ${x.tot}, остальное — по другим ценам`:'всё есть')+` · ${PRICES.chains[x.c].src==='отметки покупателей'?'по отметкам покупателей, ':'цены на '}${PRICES.chains[x.c].d}${old?' — могли измениться':''}${(()=>{const st=PRICES.chains[x.c].store,m=st&&st.match(/(?:^|,\s*)г\.?\s+([А-ЯЁ][^,]+)/),c=cityName();return m&&c&&m[1].trim()!==c?' · по данным: '+m[1].trim():''})()}`}</div>
     <div class="tiny" style="margin-top:2px;color:${x.over?'var(--warn-text)':st==='дешевле'?'var(--ok-text)':'var(--text3)'};font-weight:600">${st}</div></div>
     <div style="text-align:right;white-space:nowrap"><div class="num" style="font-size:17px">≈${NBS}${rub(x.r)}</div><div class="tiny muted">чек ≈${NBS}${rub(x.chk)}</div></div></a>`}).join('')}
 function srcNote(){if(!hasPrices())return '';const c=PRICES.chains,l=[];
   if(c.mg&&chLive('mg'))l.push(`Магнит — сайт сети, ${c.mg.d}${c.mg.store?', магазин: '+c.mg.store.replace(/^(г |город )?(Москва|Санкт-Петербург),?\s*/i,'').replace(/^[^,]*обл,?\s*/,''):''}`);
   if(c.vv&&chLive('vv'))l.push(`ВкусВилл — сайт сети, ${c.vv.d} (${c.vv.note||'цены Москвы'})`);
+  Object.keys(c).filter(k=>c[k].src==='отметки покупателей'&&chLive(k)).forEach(k=>l.push(`${c[k].n} — по отметкам покупателей «Цена другая?», ${c[k].d}`));
   if(c.rs)l.push(`средние по региону — Росстат, ${c.rs.d}`);
   return `<div class="src" style="margin:2px 4px 14px">Цены для: ${placeTxt()}. ${l.join('; ')}. «≈» — на одного человека. Обычная цена полки, без акций и карт; суммы — с запасом 3 %. Для Пятёрочки, Перекрёстка, Чижика, Ленты и Ашана открытых цен пока нет — показываем ориентир «примерно». «≈» — блюда: сколько уйдёт продуктов; «чек» — сколько заплатите за целые упаковки${people()>1?` на ${pl(people(),'человека','человек','человек')}`:''}. Цены справочные, окончательная цена — в магазине.${GEO&&SHOPS&&Object.keys(SHOPS.chains||{}).length?' Магазины рядом: © участники OpenStreetMap.':''}</div>`}
 function vFood(){
@@ -1609,7 +1613,7 @@ function openDish(id,n){const d=dishOf(id);if(!d){loadKit().then(()=>KIT&&KIT.re
    <div class="card row between" style="gap:10px"><div style="min-width:0"><div style="font-weight:650">Готовлю на</div><div class="tiny muted">${fam?`вам — порция ×${f1(Math.round(f*10)/10)}${d.yield&&d.yield.g?` (≈${Math.round(d.yield.g*f/10)*10} г)`:''}, остальным — обычная${d.yield&&d.yield.g?` (≈${Math.round(d.yield.g/10)*10} г)`:''}`:N>1?'все граммы, вода и соль пересчитаны':'граммы на одну порцию'}</div></div>
     <div class="ctl" role="group" aria-label="Порций"><button class="rb" onclick="openDish('${id}',Math.max(1,DISHN-1))" aria-label="Меньше порций">−</button><span class="num" style="font-size:20px;min-width:64px;text-align:center">${pl(N,'порция','порции','порций')}</span><button class="rb" onclick="openDish('${id}',Math.min(10,DISHN+1))" aria-label="Больше порций">+</button></div></div>
    <h2 style="margin-top:14px">Состав и цены</h2><div class="card list">${d.ing.map(([k,g,m])=>{const p=hasPrices()&&kgPrice(k),x=KIT.it[k];
-     return `<div class="li"><div style="flex:1;min-width:0"><div style="font-weight:600">${x.n} · ${ingTxt(k,g,m)}</div><div class="tiny muted">${p&&p.pk?`${packTxt(p.pk)} — ${rub(p.pk[2])}, ${CH_N[p.src]}${p.pk[3]?` (сейчас по акции ${rub(p.pk[3])}${p.pk[6]?' до '+p.pk[6].slice(8,10)+'.'+p.pk[6].slice(5,7):''})`:''}`:p?`${p.src==='rs'?'средняя цена по региону, Росстат':'оценка'}: ${rub(p.r)} за кг`:''} ${p?`<button class="pfix" onclick="openPriceFix('${k}')">Цена другая?</button>`:''}</div></div>
+     return `<div class="li"><div style="flex:1;min-width:0"><div style="font-weight:600">${x.n} · ${ingTxt(k,g,m)}</div><div class="tiny muted">${p&&p.pk?`${packTxt(p.pk)} — ${rub(p.pk[2])}, ${chName(p.src)}${p.pk[3]?` (сейчас по акции ${rub(p.pk[3])}${p.pk[6]?' до '+p.pk[6].slice(8,10)+'.'+p.pk[6].slice(5,7):''})`:''}`:p?`${p.src==='rs'?'средняя цена по региону, Росстат':'оценка'}: ${rub(p.r)} за кг`:''} ${p?`<button class="pfix" onclick="openPriceFix('${k}')">Цена другая?</button>`:''}</div></div>
        <div class="num" style="white-space:nowrap">${p?'≈'+NBS+rub(p.r*g*K/1000*RESERVE):'—'}</div></div>`}).join('')}
      ${(d.extra||[]).map(([nm,g,m])=>{const k=fam?f+N-1:K*f,v=g*k,liq=/вод|бульон|сок|уксус|молок/.test(nm),txt=near1(k)?`${numTxt(g)} ${liq?'мл':'г'}${m?' · '+m:''}`:/^соль/.test(nm)?`${numTxt(rSalt(v))} г · ${saltM(rSalt(v))}`:isSpice(nm)&&v<3?'щепоть':liq?`${rMl(v)} мл`:`${v<5?numTxt(Math.max(.5,Math.round(v*2)/2)):rG(v)} г`;return `<div class="li"><div style="flex:1;min-width:0"><div style="font-weight:600">${nm[0].toUpperCase()+nm.slice(1)} · ${txt}</div></div><div class="tiny muted">из дома</div></div>`}).join('')}
      ${c?`<div class="li"><div style="flex:1;font-weight:650">${N>1?`Всего на ${pl(N,'порцию','порции','порций')}`:'Порция'}</div><div class="num" style="font-weight:700">≈${NBS}${rub(c.r*K)}</div></div>`:''}</div>
@@ -1696,7 +1700,7 @@ function badgesCard(){const had=S.badges||[],c=cookStats();return `<div class="c
 const FIX_CH=[['mg','Магнит'],['vv','ВкусВилл'],['p5','Пятёрочка'],['pr','Перекрёсток'],['ch','Чижик'],['le','Лента'],['au','Ашан'],['dx','Дикси'],['ot','Другой магазин']];
 let PFX=null;
 function openPriceFix(id,ch){const x=KIT.it[id],p=kgPrice(id),pk=p&&p.pk;PFX={id,ch:ch||(p&&p.ok?p.src:'mg'),g:pk&&!pk[5]?Math.round(pk[1]):1000,kg:!!(pk&&pk[5])};
-  sheet('Цена в магазине',`<div class="card"><div style="font-weight:650">${x.n}</div><div class="small muted" style="margin-top:2px">У нас: ${p?(pk?`${packTxt(pk)} — ${rub(pk[2])}, ${CH_N[p.src]}`:rub(p.r)+' за кг'):'нет цены'}</div></div>
+  sheet('Цена в магазине',`<div class="card"><div style="font-weight:650">${x.n}</div><div class="small muted" style="margin-top:2px">У нас: ${p?(pk?`${packTxt(pk)} — ${rub(pk[2])}, ${chName(p.src)}`:rub(p.r)+' за кг'):'нет цены'}</div></div>
    <div class="small muted" style="margin:0 4px 6px">Где видели</div><div class="chips" style="margin-bottom:12px">${FIX_CH.map(([k,n])=>`<button class="chip ${PFX.ch===k?'on':''}" onclick="PFX.ch='${k}';openPriceFix('${id}','${k}')">${n}</button>`).join('')}</div>
    <div class="card"><label class="small muted" for="pfr">Цена на полке, ₽ (обычная, без акции)</label><input id="pfr" class="search" type="text" inputmode="decimal" autocomplete="off" placeholder="например, 89,90" style="margin:6px 0 12px">
     <div class="small muted">За что эта цена</div><div class="chips" style="margin-top:6px"><button class="chip ${PFX.kg?'':'on'}" onclick="PFX.kg=false;openPriceFix('${id}','${PFX.ch}')">упаковку</button><button class="chip ${PFX.kg?'on':''}" onclick="PFX.kg=true;openPriceFix('${id}','${PFX.ch}')">1 кг (на развес)</button></div>
@@ -1716,7 +1720,7 @@ function openShopList(){const P=dayPlan(),all={},k=people();P.slots.forEach(({d}
   const C=S.cook;C.got=C.got||[];if(!C.st){C.st=1;STAPLES.forEach(x=>{if(!C.have.includes(x))C.have.push(x)})}
   const need=Object.entries(all).filter(([id])=>!C.have.includes(id)).map(([id,g])=>[id,g*k]),c=hasPrices()?costOf(need):null;
   const row=([id,g1])=>{const g=g1*k,x=KIT.it[id],p=hasPrices()&&kgPrice(id),h=C.have.includes(id),got=C.got.includes(id);
-    let buy='';if(p&&p.pk){if(p.pk[5])buy=`на развес — ${rub(p.pk[2])} за кг, ${CH_N[p.src]}`;else{const n=Math.max(1,Math.ceil(g/p.pk[1])),rest=n*p.pk[1]-g,more=Math.floor(rest/g);buy=`купить: ${n>1?n+' × ':''}${packTxt(p.pk).replace('упаковка ','')} — ${rub(p.pk[2]*n)}, ${CH_N[p.src]}${more>0&&!h?` · хватит ещё на ${pl(more,'раз','раза','раз')}`:''}`}}else if(p)buy=`${p.src==='rs'?'средняя по региону':'оценка'}: ${rub(p.r)} за кг`;
+    let buy='';if(p&&p.pk){if(p.pk[5])buy=`на развес — ${rub(p.pk[2])} за кг, ${chName(p.src)}`;else{const n=Math.max(1,Math.ceil(g/p.pk[1])),rest=n*p.pk[1]-g,more=Math.floor(rest/g);buy=`купить: ${n>1?n+' × ':''}${packTxt(p.pk).replace('упаковка ','')} — ${rub(p.pk[2]*n)}, ${chName(p.src)}${more>0&&!h?` · хватит ещё на ${pl(more,'раз','раза','раз')}`:''}`}}else if(p)buy=`${p.src==='rs'?'средняя по региону':'оценка'}: ${rub(p.r)} за кг`;
     return `<div class="li" style="${h?'opacity:.55':''}"><button style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;text-align:left" onclick="toggleGot('${id}')" aria-pressed="${got}" aria-label="${x.n}${got?', в корзине':''}"><div class="ibox ${got?'ok':''}">${ic(got?'check':'cart')}</div>
       <div style="flex:1;min-width:0"><div style="font-weight:600;${got?'text-decoration:line-through':''}">${x.n} · ${gramsTxt(id,Math.round(g))}</div><div class="tiny muted">${h?'есть дома — не считаем':buy}</div></div></button>
       <div style="text-align:right;flex:none"><div class="num" style="white-space:nowrap">${h||!p?'':'≈'+NBS+rub(p.r*g/1000*RESERVE)}</div><button class="tiny" style="color:var(--accent-text);font-weight:650" onclick="toggleHave('${id}')">${h?'купить':'есть дома'}</button></div></div>`};
