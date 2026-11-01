@@ -569,6 +569,12 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .ntf .nb{font-size:14px;line-height:1.35;margin-top:1px;text-wrap:pretty}
 .ntf-stage .ntf:nth-child(2){transform:scale(.97);opacity:.92}
 .rem-steps{counter-reset:st;display:grid;gap:0}
+.rem-ok{display:flex;gap:12px;align-items:center;padding:16px;border-radius:20px;background:var(--ok-soft);margin-bottom:12px}
+.rem-ok>.ic{flex:none;width:36px;height:36px;padding:8px;border-radius:50%;background:var(--ok);color:#fff;stroke-width:3}
+.rem-wait{display:flex;gap:10px;align-items:center;justify-content:center;padding:14px;color:var(--text2);font-size:15px}
+.rem-wait .spin{width:18px;height:18px;border-radius:50%;border:2px solid var(--line2);border-top-color:var(--accent);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.rem-wait .spin{animation-duration:2.4s}}
 .a2h{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .a2h-s{display:flex;flex-direction:column;gap:8px;min-width:0}
 .a2h-pic{height:92px;border-radius:14px;background:var(--card2,rgba(120,120,128,.12));display:grid;place-items:center;overflow:hidden;padding:8px}
@@ -749,7 +755,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r39'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r40'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -2752,12 +2758,29 @@ const isStandalone=()=>navigator.standalone===true||matchMedia('(display-mode: s
 const pushOk=()=>'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window&&window.isSecureContext!==false;
 // ios — нужно открыть с экрана «Домой»; no — браузер не умеет; denied — запрещено в настройках; ok — можно включать
 function remEnv(){if(isIOS()&&!isStandalone())return 'ios';if(!pushOk())return 'no';if(Notification.permission==='denied')return 'denied';return 'ok'}
-const REMST={busy:false,msg:null};
+const REMST={busy:false,msg:null,mode:'full',wait:false,got:false,miss:false};
+const UA=navigator.userAgent;
+const DEV={inApp:/Telegram|VKAndroidApp|VKClient|Instagram|FBAN|FBAV|OKApp|; wv\)/i.test(UA),miBr:/MiuiBrowser|XiaoMi\//i.test(UA),xiaomi:/Xiaomi|Redmi|POCO|MIUI|HyperOS|MiuiBrowser/i.test(UA),
+  huawei:/HUAWEI|HONOR|HuaweiBrowser|HMSCore|; (ELS|ANA|NOH|LIO|VOG|JNY|NAM|CDY|FOA|BAH|AGS|LGE)-/i.test(UA),samsung:/SamsungBrowser|SM-[A-Z]\d/i.test(UA),android:/Android/i.test(UA),
+  br:/YaBrowser|YaApp/i.test(UA)?'Яндекс Браузер':/SamsungBrowser/i.test(UA)?'Samsung Internet':/Firefox/i.test(UA)?'Firefox':/OPR\//i.test(UA)?'Opera':/EdgA?\//i.test(UA)?'Edge':/MiuiBrowser/i.test(UA)?'Браузер Xiaomi':'Chrome'};
+// уведомления на этом устройстве невозможны — одна короткая подсказка, что сделать
+function remNoHint(){if(DEV.inApp)return 'Сайт открыт внутри другого приложения — там уведомлений нет. Нажмите «⋮» или «…» вверху → «Открыть в браузере» и включите там.';
+  if(DEV.miBr)return 'Браузер Xiaomi не присылает уведомления. Откройте moytrener-app.ru в Chrome или Яндекс Браузере и включите там.';
+  if(isIOS())return 'Обновите iPhone: «Настройки» → «Основные» → «Обновление ПО» (нужен iOS 16.4 или новее).';
+  return 'Этот браузер не присылает уведомления. Откройте moytrener-app.ru в Chrome или Яндекс Браузере и включите там.'}
+// включили, а пробное не пришло за 10 секунд — что поправить именно на этом телефоне
+function remDeviceHint(){const b=DEV.br;
+  if(isIOS())return 'Откройте «Настройки» → «Уведомления» → «Мой тренер» и включите «Допуск уведомлений». Проверьте, что не включён режим «Не беспокоить» или «Фокус».';
+  if(DEV.huawei)return `На Huawei и Honor уведомления из ${b==='Chrome'?'Chrome':'этого браузера'} часто не доходят. Откройте moytrener-app.ru в Яндекс Браузере и включите уведомления там.`;
+  if(DEV.xiaomi)return `На Xiaomi уведомления браузера часто приглушены. «Настройки» → «Приложения» → «${b}»: «Уведомления» — разрешить, «Автозапуск» — включить, «Контроль активности» — «Нет ограничений».`;
+  if(DEV.samsung)return `«Настройки» → «Приложения» → «${b}»: «Уведомления» — разрешить, «Батарея» — «Без ограничений».`;
+  if(DEV.android)return `«Настройки» → «Приложения» → «${b}» → «Уведомления» — разрешить. Если включена экономия батареи — снимите ограничения для браузера.`;
+  return 'Проверьте, что уведомления разрешены для сайта и что на компьютере выключен режим «Не беспокоить».'}
 function b64u(s){s=String(s).replace(/-/g,'+').replace(/_/g,'/');s+='==='.slice((s.length+3)%4);const b=atob(s),a=new Uint8Array(b.length);for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}
 function sameKey(sub,key){try{const k=sub.options&&sub.options.applicationServerKey;if(!k)return false;const a=new Uint8Array(k);return a.length===key.length&&a.every((v,i)=>v===key[i])}catch(e){return false}}
 const swReg=ms=>'serviceWorker' in navigator?Promise.race([navigator.serviceWorker.ready,new Promise(r=>setTimeout(()=>r(null),ms||5000))]).catch(()=>null):Promise.resolve(null);
 function remSub(R){if(!R.on)return 'выключены';const p=remPrefs(R);return `утром, днём и вечером · тишина ${p.quiet_from}–${p.quiet_to}`}
-function remHowOn(){return isIOS()?'Откройте «Настройки» → «Уведомления» → «Мой тренер» и включите «Допуск уведомлений». Потом вернитесь сюда.'
+function remHowOn(){return DEV.android?`Нажмите на значок слева от адреса сайта → «Разрешения» → «Уведомления» → «Разрешить». Не получается — «Настройки» телефона → «Приложения» → «${DEV.br}» → «Уведомления».`:isIOS()?'Откройте «Настройки» → «Уведомления» → «Мой тренер» и включите «Допуск уведомлений». Потом вернитесь сюда.'
   :/Android/i.test(navigator.userAgent)?'Нажмите на значок слева от адреса сайта → «Разрешения» → «Уведомления» → «Разрешить». Или «Настройки» телефона → «Приложения» → браузер → «Уведомления».'
   :'Нажмите на значок замка слева от адреса сайта и разрешите уведомления для этого сайта. Потом вернитесь сюда.'}
 function remNote(){const m=REMST.msg;if(!m)return '';const ok=m[0]==='ok';
@@ -2776,12 +2799,12 @@ function remBody(){const R=remR(),env=remEnv(),p=remPrefs(R),dis=env!=='ok'&&!R.
   const tm=(k,t,sub)=>`<label class="rem-row"><span class="t">${t}<small>${sub}</small></span><input type="time" class="tin" value="${p[k]}" onchange="remPref('${k}',this.value)" aria-label="${t}"></label>`;
   let env1='';
   if(env==='ios')env1=`<div class="card"><div class="title" style="font-size:17px">Сначала — на экран «Домой»</div><div class="small muted" style="margin:4px 0 10px">На iPhone напоминания приходят, только если открыть «Мой тренер» со значка на экране «Домой». Это бесплатно и займёт 10 секунд:</div>${a2hs()}</div>`;
-  else if(env==='no')env1=`<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('bell')}</span><div><b>Этот браузер не умеет присылать напоминания.</b> ${isIOS()?'Нужен iOS 16.4 или новее — обновите iPhone в «Настройки» → «Основные» → «Обновление ПО».':'Откройте приложение в Chrome, Яндекс Браузере, Samsung Internet или Edge — настройки ниже сохранятся.'}</div></div>`;
+  else if(env==='no')env1=`<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('bell')}</span><div>${remNoHint()}</div></div>`;
   else if(env==='denied')env1=`<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('bell')}</span><div><b>Уведомления для приложения запрещены.</b> ${remHowOn()}</div></div>`;
   return `${ntfStage()}
    ${env1}
    <div class="card"><div class="rem-row" style="box-shadow:none;padding:0"><div class="ibox primary">${ic('bell')}</div><div class="t">Напоминания<small id="remst">${REMST.busy?'Включаем…':R.on?'включены · '+remSub(R):'выключены'}</small></div>${sw}</div></div>
-   <div id="remmsg" aria-live="polite">${remNote()}</div>
+   <div id="remmsg" aria-live="polite">${remNote()}${R.on&&REMST.wait?'<div class="rem-wait"><span class="spin" aria-hidden="true"></span>Отправили пробное уведомление…</div>':''}${R.on&&REMST.got?`<div class="rem-ok">${ic('check')}<div><b>Пробное пришло</b> — всё работает.</div></div>`:''}${R.on&&REMST.miss?`<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('bell')}</span><div><b>Пробное не пришло?</b> ${remDeviceHint()} <a href="#" onclick="event.preventDefault();remHello()">Прислать ещё раз</a></div></div>`:''}</div>
    <h2 style="margin-top:6px">О чём напоминать</h2>
    <div class="card">${tg('plan','План на день','утром: калории, белок и тренировка')}${tg('food','Еда и белок','днём: сколько белка добрать, что съесть')}${tg('workout','Тренировка','вечером, если по плану и ещё не сделана')}${tg('praise','Похвала','когда день закрыт: тренировка, белок, серия')}${tg('streak','Серия под угрозой','если сегодня ещё ничего не отмечено')}${tg('weekly','Итоги недели','в воскресенье вечером')}</div>
    <h2 style="margin-top:6px">Когда</h2>
@@ -2790,13 +2813,27 @@ function remBody(){const R=remR(),env=remEnv(),p=remPrefs(R),dis=env!=='ok'&&!R.
    <div class="card">${tm('quiet_from','С','ничего не присылаем')}${tm('quiet_to','До','')}</div>
    <div class="concept">Не чаще 3 раз в день и только когда есть что сказать. Для напоминаний на сервер в России уходят номер устройства и цифры дня (норма, сколько осталось белка, была ли тренировка, серия) — без веса и фото.<br>Не медицинская консультация.</div>`}
 // мягкое предложение после первого полезного действия: один раз, без давления
-function remOffer(){const R=remR(),env=remEnv();if(R.on||S.remAsked||S.onb||env==='no'||env==='denied'||$('#sheet').classList.contains('on')||$('#cons.on'))return;S.remAsked=1;save();
-  sheet('Напоминать о главном?',`${ntfStage()}<div class="small muted" style="margin:0 4px 12px;text-wrap:pretty">Утром — план на день, днём — сколько белка добрать, вечером — тренировка, если она по плану. Не чаще 3 раз в день, ночью — тишина.</div>
-   ${env==='ios'?`<div class="card"><div class="title" style="font-size:17px;margin-bottom:10px">На iPhone — сначала на экран «Домой»</div>${a2hs()}</div><button class="btn" onclick="closeSheet()">Понятно</button>`:`<button class="btn" onclick="openRemind();remToggle()">Включить</button>`}
-   <button class="btn ghost" onclick="closeSheet()">Не сейчас</button>`)}
+function remOffer(){const R=remR(),env=remEnv();if(R.on||S.remAsked||S.onb||env==='denied'||$('#sheet').classList.contains('on')||$('#cons.on'))return;S.remAsked=1;save();remOpenQuick('Напоминать о главном?')}
+function remOpenQuick(t){REMST.mode='offer';REMST.msg=null;REMST.got=REMST.miss=REMST.wait=false;sheet(t||'Уведомления',`<div id="remall">${remQuickBody()}</div>`);SHEET_FN=null}
+// простой вид: одна кнопка, после включения — ждём пробное уведомление
+function remQuickBody(){const R=remR(),env=remEnv();
+  if(R.on&&REMST.got)return `<div class="rem-ok">${ic('check')}<div><b>Готово, уведомления включены</b><div class="small muted">Первое уже пришло — так будут выглядеть подсказки на день.</div></div></div><button class="btn" onclick="closeSheet()">Отлично</button>`;
+  if(R.on&&REMST.wait)return `${ntfStage()}<div class="rem-wait"><span class="spin" aria-hidden="true"></span>Отправили пробное уведомление…</div>`;
+  if(R.on&&REMST.miss)return `<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('bell')}</span><div><b>Пробное уведомление не пришло?</b> ${remDeviceHint()}</div></div>
+    <button class="btn" onclick="remHello()">Прислать ещё раз</button><button class="btn ghost" onclick="closeSheet()">Пришло, всё хорошо</button>`;
+  const lead=`${ntfStage()}<div class="small muted" style="margin:0 4px 12px;text-wrap:pretty">Утром — план на день, днём — сколько белка добрать, вечером — тренировка. Не чаще 3 раз в день, ночью — тишина.</div>`;
+  if(env==='ios')return `${lead}<div class="card"><div class="title" style="font-size:17px;margin-bottom:10px">На iPhone — сначала на экран «Домой»</div>${a2hs()}</div><button class="btn" onclick="closeSheet()">Понятно</button>`;
+  if(env==='no')return `${lead}<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('bell')}</span><div>${remNoHint()}</div></div><button class="btn sec" onclick="closeSheet()">Понятно</button>`;
+  if(env==='denied')return `${lead}<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('bell')}</span><div><b>Уведомления запрещены.</b> ${remHowOn()}</div></div><button class="btn sec" onclick="closeSheet()">Понятно</button>`;
+  return `${lead}<div id="remmsg" aria-live="polite">${remNote()}</div><button class="btn" onclick="remToggle()" ${REMST.busy?'disabled':''}>${REMST.busy?'Включаем…':'Включить уведомления'}</button><button class="btn ghost" onclick="closeSheet()">Не сейчас</button>`}
+async function remHello(){REMST.wait=true;REMST.got=REMST.miss=false;remPaint();clearTimeout(remHello.t);
+  const r=await api('/push/hello',{did:S.did},15000);
+  if(!r.ok||!r.data||!(r.data.code>=200&&r.data.code<300)){remDiag('hello',r.status+'/'+(r.data&&r.data.code));REMST.wait=false;REMST.miss=true;return remPaint()}
+  remHello.t=setTimeout(()=>{if(REMST.wait){REMST.wait=false;REMST.miss=true;remDiag('hello','timeout');remPaint()}},10000)}
+if('serviceWorker' in navigator)try{navigator.serviceWorker.addEventListener('message',e=>{if(e.data&&e.data.pushed==='hello'&&REMST.wait){clearTimeout(remHello.t);REMST.wait=false;REMST.got=true;haptic([10,40,10]);remPaint()}})}catch(e){}
 const remDiag=(step,err)=>api('/push/diag',{step,err:String((err&&err.name)||err||'').slice(0,80),env:`${isIOS()?'ios':/Android/i.test(navigator.userAgent)?'android':'pc'} sa=${isStandalone()?1:0} perm=${'Notification' in window?Notification.permission:'-'}`});
-function openRemind(){REMST.msg=null;if(!S.hlRemOff){S.hlRemOff=1;save();rerender.dirty=1}sheet('Напоминания',`<div id="remall">${remBody()}</div>`);remCheck().then(ch=>{if(ch)remPaint()})}
-function remPaint(){const b=$('#remall');if(b){const y=$('#sbody').scrollTop;b.innerHTML=remBody();$('#sbody').scrollTop=y}rerender.dirty=1}
+function openRemind(){if(!remR().on)return remOpenQuick('Уведомления');REMST.mode='full';REMST.msg=null;if(!S.hlRemOff){S.hlRemOff=1;save();rerender.dirty=1}sheet('Напоминания',`<div id="remall">${remBody()}</div>`);remCheck().then(ch=>{if(ch)remPaint()})}
+function remPaint(){const b=$('#remall');if(b){const y=$('#sbody').scrollTop;b.innerHTML=REMST.mode==='offer'?remQuickBody():remBody();$('#sbody').scrollTop=y}rerender.dirty=1}
 const remSay=(k,t)=>{REMST.msg=[k,t];remPaint()};
 async function remToggle(){if(REMST.busy)return;haptic(8);if(remR().on)return remOff();return remOn()}
 async function remOn(){const R=remR(),env=remEnv();if(env!=='ok'){remPaint();return}
@@ -2818,7 +2855,7 @@ async function remOn(){const R=remR(),env=remEnv();if(env!=='ok'){remPaint();ret
   if(!r.ok){remDiag('server',r.status);try{await sub.unsubscribe()}catch(e){}return done('warn',r.offline?'<b>Пропал интернет.</b> Попробуйте ещё раз, когда появится сеть.':'<b>Напоминания заработают, когда подключим сервер.</b> Настройки сохранили — включите чуть позже.')}
   R.on=true;R.sig='';R.stAt=0;R.dirty=false;R.unsub=false;R.tz=tzName();save();haptic([10,40,10]);
   done('ok',`<b>Напоминания включены.</b> Утром, днём и вечером — только когда есть что сказать, ночью тишина.`);
-  toast('Напоминания включены');setTimeout(pushTick,300)}
+  setTimeout(pushTick,300);if(REMST.mode==='offer'){REMST.msg=null;remHello()}else{toast('Уведомления включены');remHello()}}
 async function remOff(){const R=remR();R.on=false;R.unsub=true;REMST.msg=null;save();remPaint();toast('Напоминания выключены');
   await remDrop();remUnsub()}
 async function remDrop(){try{const reg=await swReg(3000),sub=reg&&reg.pushManager&&await reg.pushManager.getSubscription();if(sub)await sub.unsubscribe()}catch(e){console.warn('Отписка:',(e&&e.name)||e)}}
