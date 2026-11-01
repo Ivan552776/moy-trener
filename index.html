@@ -65,9 +65,10 @@
   --spring:linear(0,.055,.172,.308,.44,.557,.655,.735,.799,.848,.887,.916,.938,.954,.967,.976,.982,.987,.991,.993,.995,.997,.997,.998,1);
   --spring-sheet:linear(0,.051,.167,.308,.448,.576,.685,.774,.843,.895,.933,.96,.979,.99,.998,1.002,1.004,1.005,1.005,1.004,1.004,1.003,1.002,1.002,1);
   --spring-bouncy:var(--spring);
+  --spring-soft:linear(0,.06,.19,.34,.49,.62,.73,.82,.89,.94,.98,1.005,1.02,1.028,1.03,1.028,1.023,1.017,1.012,1.007,1.004,1.002,1.001,1);
   --d-press:140ms; --d-tab:220ms; --d-sheet-in:520ms; --d-sheet-out:300ms; --d-card:360ms; --d-ring:900ms;
 }
-@supports not (transition-timing-function:linear(0,1)){:root{--spring:var(--ease-out);--spring-sheet:var(--ease-drawer);--spring-bouncy:var(--ease-out)}}
+@supports not (transition-timing-function:linear(0,1)){:root{--spring-soft:var(--ease-out);--spring:var(--ease-out);--spring-sheet:var(--ease-drawer);--spring-bouncy:var(--ease-out)}}
 :root[data-scheme="dark"]{
   color-scheme:dark;
   --bg:#0B0B0D; --bg-desk:#050506; --card:rgba(32,32,36,.74);
@@ -262,7 +263,7 @@ h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.src,.lock,.calcrow span{text-
 #tabs{position:absolute;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom) + 8px);height:64px;padding:0 4px;border-radius:999px;background:var(--tabglass);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);box-shadow:var(--tabshadow);touch-action:none;display:flex;align-items:center;z-index:5;view-transition-name:tabs}
 @media (prefers-reduced-transparency: reduce){#tabs,#hdr{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}}
 #tabbtns{position:relative;z-index:1;display:flex;align-items:center;width:100%;height:100%}
-#tabpill{position:absolute;left:0;top:5px;bottom:5px;width:72px;border-radius:999px;background:var(--accent-soft);opacity:0;z-index:0;transition:transform 480ms var(--spring-bouncy),width 300ms var(--spring),opacity .2s;will-change:transform} #tabpill.drag{transition:width 200ms var(--ease-out),opacity .2s}
+#tabpill{position:absolute;left:0;top:5px;bottom:5px;width:72px;border-radius:999px;background:var(--accent-soft);opacity:0;z-index:0;transition:transform 520ms var(--spring-soft),width 320ms var(--spring),opacity .2s;will-change:transform} #tabpill.drag{transition:width 200ms var(--ease-out),opacity .2s}
 .tab{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;font-weight:600;letter-spacing:.01em;color:var(--text2);transition:color var(--d-tab) var(--ease-out)} .tab .ic{transition:transform 260ms var(--spring)!important} .tab.mag .ic{transform:scale(1.15)!important}
 .tab .ic{width:25px;height:25px;opacity:.8;transition:transform var(--d-press) var(--ease-out),opacity .2s} .tab:active .ic{transform:scale(.88)}
 .tab.on{color:var(--accent-text)} .tab.on .ic{opacity:1;stroke-width:2.3;animation:tabpop 420ms var(--spring-bouncy)} @keyframes tabpop{30%{transform:scale(.86)}}
@@ -406,7 +407,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .msg.me{background:var(--accent);color:#fff;margin-left:auto;border-bottom-right-radius:6px} .msg.bot{background:var(--sheet-card);box-shadow:var(--shadow);border-bottom-left-radius:6px}
 @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.97)}}
 #toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top) + 12px);transform:translate(-50%,-160%);background:var(--card);box-shadow:var(--shadow-pop);padding:12px 18px;border-radius:var(--pill);font-weight:600;font-size:15px;z-index:30;transition:transform .3s var(--ease-out);display:flex;gap:8px;align-items:center;max-width:calc(100% - 32px);width:max-content;white-space:normal;text-wrap:balance;line-height:1.3}
-#toast.on{transform:translate(-50%,0);transition:transform .5s var(--spring-bouncy)}
+#toast.on{transform:translate(-50%,0);transition:transform .5s var(--spring-soft)}
 #phone:not(.modal) #toast{top:auto;bottom:calc(env(safe-area-inset-bottom) + 84px);transform:translate(-50%,calc(100% + 100px))} #phone:not(.modal) #toast.on{transform:translate(-50%,0)}
 :root[data-scheme="dark"] #toast{background:var(--card3)}
 
@@ -629,7 +630,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .wk2{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:-4px -16px 10px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain} .wk2::-webkit-scrollbar{display:none}
 .wk2-w{flex:none;width:100%;display:flex;justify-content:space-between;padding:4px 16px 12px;scroll-snap-align:start}
 .wk2-d{display:flex;flex-direction:column;align-items:center;gap:4px;width:calc((100% - 36px)/7);padding:9px 0 9px;border-radius:999px;background:var(--card);box-shadow:var(--shadow);transition:background-color .3s var(--ease-out),color .3s,transform 300ms var(--spring),box-shadow .3s}
-.wk2-d:active{transform:scale(.94);transition:transform 110ms var(--ease-out)}
+.wk2-d:active{transform:scale(.94);transition:transform 110ms var(--ease-out)} .wk2-d.sel{animation:wksel 420ms var(--spring-soft)} @keyframes wksel{from{transform:scale(.92)}}
 .wk2-d .n{font-size:11px;font-weight:600;color:var(--text3);transition:color .3s}
 .wk2-d .c{position:relative;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:700 16px var(--num);font-variant-numeric:tabular-nums;color:var(--text);transition:color .3s}
 .wk2-d .c .ic{width:16px;height:16px;stroke-width:2.6}
@@ -725,7 +726,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-01-r37'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-01-r38'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
