@@ -227,7 +227,7 @@ h1,.q,.title{text-wrap:balance} .small,.muted,.qs,.src,.lock,.calcrow span{text-
 .bar.go>i{background:var(--volt-ink)}
 .hero{background:var(--grad-hero);color:#fff;border-radius:var(--r-hero);padding:20px;margin-bottom:12px;position:relative;overflow:hidden;box-shadow:var(--shadow-hero)}
 .hero>*{position:relative;z-index:1}
-.glasschip{background:rgba(0,0,0,.18);border-radius:12px;padding:10px 12px;flex:1;min-width:0}
+.glasschip{background:rgba(0,0,0,.18);border-radius:12px;padding:10px 12px;flex:1 1 0;min-width:min-content} /* не уже своего слова: при крупном системном шрифте «Углеводы» не вылезает */
 .glasschip .bar{background:rgba(255,255,255,.22)} .glasschip .bar>i{background:#fff}
 
 /* ---------- герой «Сегодня» и кольцо ---------- */
@@ -765,7 +765,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* всплывающее сообщение — компактное, над панелью вкладок */
 #toast{font-size:14px;padding:9px 14px;max-width:min(320px,calc(100% - 32px));gap:6px}
 /* узкие экраны (iPhone SE 320): без переносов посреди слова и цифр */
-.glasschip .n-m,.h2-ml b,.mx-v b,.n-s{white-space:nowrap} .stage,.small,.tiny,.qt,.rowbtn .t{hyphens:auto;-webkit-hyphens:auto}
+.glasschip .n-m,.h2-ml b,.mx-v b,.n-s{white-space:nowrap} .exrow .t,.tl .li{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere} /* крупный системный шрифт: длинное слово («Балансировочная») переносится, а не вылезает */ .stage,.small,.tiny,.qt,.rowbtn .t{hyphens:auto;-webkit-hyphens:auto}
 @media (max-width:359px){.stage{padding:8px 6px} .stage>div:nth-child(2){font-size:13px!important} .glasschip{padding:8px 8px;flex:1 1 auto;min-width:min-content} .glasschip .n-m{font-size:20px}
   #sheet .row>div[style*="flex:1;min-width:0;background"]{padding:8px 7px!important} #sheet .row>div[style*="flex:1;min-width:0;background"] .small{font-size:12px} #sheet .row>div[style*="flex:1;min-width:0;background"] .num{font-size:17px!important}}
 /* стартовый экран: фото свежих фруктов + стеклянная карточка */
@@ -796,7 +796,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .h2-l{font-size:12px;line-height:1.2;font-weight:600;color:var(--hw2);margin-top:4px;max-width:78%;text-wrap:balance}
 .hero2.over .h2-l{color:var(--accent-text)} :root[data-scheme="dark"] .hero2.over .h2-l{color:#6EE7B7}
 .h2-mac{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
-.h2-ml{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:13px;font-weight:600;color:var(--hw2)}
+.h2-ml{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:0 6px;font-size:13px;font-weight:600;color:var(--hw2)}
 .h2-ml b{font:700 16px var(--num);font-variant-numeric:tabular-nums;color:var(--hw);white-space:nowrap} .h2-ml i{font:500 12px var(--font);font-style:normal;color:var(--hw3)}
 .h2-m .bar{height:7px;margin-top:6px;background:var(--k-soft)} .h2-m .bar>i{background:var(--k)}  :root[data-scheme="dark"] .hero2{--p:#10B981;--p-soft:rgba(16,185,129,.18);--f:#6EE7B7;--f-soft:rgba(110,231,183,.16);--c:#2FA37E;--c-soft:rgba(47,163,126,.18)}
 .m-p{--k:var(--p);--k-soft:var(--p-soft)} .m-f{--k:var(--f);--k-soft:var(--f-soft)} .m-c{--k:var(--c);--k-soft:var(--c-soft)}
@@ -838,7 +838,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-02-r64'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-02-r65'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -3018,7 +3018,7 @@ function openProfile(){
   const pr=S.profile,n=norm(pr);
   sheet('Мой план',`${calcCard(pr)}
    ${n.minor?`<div class="lock" style="background:var(--warn-soft);margin-bottom:12px"><span style="color:var(--warn-text)">${ic('heart')}</span><div><b>До 18 лет</b> калории не урезаем${pr.goal==='muscle'?', набор — только плавный':''}: норма — ориентир. Покажите план родителям, силовые — под присмотром тренера.</div></div>`:''}
-   <div class="card list" style="font-size:15px">${[['Цель',GOALS[pr.goal].n+(paceTxt(pr,n)?' · '+paceTxt(pr,n):'')],['Рост и вес',pr.h+' см · '+pr.w+' кг'],['Работа',WORK[pr.work][0]+' · '+pl(effTrains(pr),'тренировка','тренировки','тренировок')+'&nbsp;в&nbsp;неделю'],['Бюджет на еду',fmt(budgetOf(pr))+' ₽ в день']].map(([a,b])=>`<div class="li"><div style="flex:1" class="muted">${a}</div><div style="font-weight:600;text-align:right">${b}</div></div>`).join('')}</div>
+   <div class="card list" style="font-size:15px">${[['Цель',GOALS[pr.goal].n+(paceTxt(pr,n)?' · '+paceTxt(pr,n):'')],['Рост и вес',pr.h+' см · '+pr.w+' кг'],['Работа',WORK[pr.work][0]+' · '+pl(effTrains(pr),'тренировка','тренировки','тренировок')+' в&nbsp;неделю'],['Бюджет на еду',fmt(budgetOf(pr))+' ₽ в день']].map(([a,b])=>`<div class="li" style="gap:12px"><div style="flex:none" class="muted">${a}</div><div style="flex:1;min-width:0;font-weight:600;text-align:right;overflow-wrap:anywhere">${b}</div></div>`).join('')}</div>
    <div class="lock" style="margin-bottom:12px">${ic('lock')}<div>Доход, вес и цели видите только вы и храните на своём телефоне.</div></div>
    ${SOURCES}<button class="btn sec" onclick="openEdit()">Изменить данные</button>
    <div class="concept">Норма — ориентир, а не предписание · не&nbsp;медицинская консультация</div>`);
