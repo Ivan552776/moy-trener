@@ -7,10 +7,10 @@
 <title>Анатомия · Мой тренер</title>
 <link rel="icon" href="../favicon-32.png">
 <!-- всё для первого кадра — сразу и параллельно: просмотрщик, облегчённые мышцы, студийный свет -->
-<link rel="modulepreload" href="ten.js?v=r80">
-<link rel="preload" href="m/anatomy_xs.json?v=r80" as="fetch" crossorigin="anonymous">
-<link rel="preload" href="m/muscles_xs.bin?v=r80" as="fetch" crossorigin="anonymous">
-<link rel="preload" href="env.hdr?v=r80" as="fetch" crossorigin="anonymous">
+<link rel="modulepreload" href="ten.js?v=r81">
+<link rel="preload" href="m/anatomy_xs.json?v=r81" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="m/muscles_xs.bin?v=r81" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="env.hdr?v=r81" as="fetch" crossorigin="anonymous">
 <style>
 :root{--stage-hi:#F4F4F2;--stage-lo:#D9DAD7;--glass:rgba(255,255,255,.66);--glass-b:rgba(255,255,255,.8);--line:rgba(11,13,18,.08);
   --text:#0B0D12;--text2:#5E6472;--text3:#8C93A1;--accent:#047857;--accent-hi:#10B981;--accent-text:#047857;--accent-soft:rgba(4,120,87,.10);
@@ -97,6 +97,30 @@ button{font:inherit;color:inherit}
 body.embed .top,body.embed #chg,body.embed .cr,body.embed .leg{display:none}
 body.embed .dock{left:6px;right:6px;bottom:6px;border-radius:22px}
 body.poster .top,body.poster .dock,body.poster .cr,body.poster #labels,body.poster .hint,body.poster .info,body.poster .pick{display:none!important}
+.info{max-height:min(58vh,calc(100% - env(safe-area-inset-top) - 120px));display:flex;flex-direction:column;padding:16px 0 12px}
+.info>.k,.info>b,.info>.la{padding-left:16px;padding-right:16px}.info>b{padding-right:52px}
+.info .sc{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px;margin-top:4px;min-height:0;flex:1 1 auto;overscroll-behavior:contain}
+.info .sc h4{margin:14px 0 0;font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em}
+.info .sc p{margin:6px 0 0}.info .sc p.fn{color:var(--text);font-size:16px;margin-top:8px}
+.info .sc p .t{color:var(--text);font-weight:600}
+.info .ex a,.info .ex span{font-size:13px;padding:6px 10px;border-radius:10px;background:var(--chip);color:var(--text);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.info .ex a{background:var(--accent-soft);color:var(--accent-text)}
+.info .ex a i{font-style:normal;font-size:10px;font-weight:700;padding:1px 4px;border-radius:5px;background:var(--accent);color:#fff}
+.info .src{font-size:12px;color:var(--text3);margin-top:14px!important}
+.info .acts{padding:0 16px;flex:none}
+.info .acts .btn{padding:0 8px;font-size:14px}
+#allb2{min-height:42px}
+.atl .q{margin:0 14px 8px;display:flex;align-items:center;gap:8px;background:var(--chip);border-radius:14px;padding:0 12px;min-height:44px}
+.atl .q input{flex:1;min-width:0;border:0;background:none;outline:0;font:inherit;font-size:16px;color:var(--text)}
+.atl .q svg{flex:none;color:var(--text3)}
+.atl .gr{padding:0 14px 8px}
+.atl .gr .chip{min-height:34px;font-size:13px;padding:0 11px}
+.atl .sh{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 8px 6px;font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.04em;background:var(--glass);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);z-index:1}
+.atl .sh button{border:0;background:var(--accent-soft);color:var(--accent-text);font:600 13px var(--font);text-transform:none;letter-spacing:0;border-radius:10px;min-height:30px;padding:0 10px;cursor:pointer}
+.atl .it small{font-style:italic}
+.atl .no{padding:24px 8px;color:var(--text2);font-size:15px}
+.atl .it mark{background:none;color:var(--accent-text)}
+.pick .xx{position:absolute;right:10px;top:10px}
 .nogl{position:fixed;inset:auto 16px 45% 16px;text-align:center;color:var(--text2)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -107,11 +131,12 @@ body.poster .top,body.poster .dock,body.poster .cr,body.poster #labels,body.post
 <div class="load" id="load"><i></i>Загружаем анатомию…</div>
 <div class="top">
   <div class="seg glass" role="tablist"><button class="on" data-m="body" role="tab">Тело</button><button data-m="ex" role="tab">Упражнения</button></div>
+  <button class="ibtn glass" id="allb" aria-label="Все мышцы — список и поиск"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></button>
   <button class="ibtn glass" id="reset" aria-label="Вернуть вид"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
 </div>
 <div class="hint glass" id="hint"><b>Коснитесь мышцы</b> — расскажем, что она делает</div>
 <div class="fps" id="fps"></div>
-<div class="dock glass" id="dockBody"><div class="row" id="layers" style="overflow:visible"></div></div>
+<div class="dock glass" id="dockBody"><div class="row" id="layers" style="overflow:visible"></div><button class="btn" id="allb2"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>Все мышцы</button></div>
 <div class="dock glass off" id="dockEx">
   <div class="ex-head"><b id="exName">Приседания</b><div class="ph" id="exPh"></div><button class="chg" id="chg">Сменить</button></div>
   <div class="tl" id="tl" aria-label="Фазы движения — перемотка пальцем"></div>
@@ -123,18 +148,21 @@ body.poster .top,body.poster .dock,body.poster .cr,body.poster #labels,body.post
   </div>
 </div>
 <div class="pick glass" id="pick" role="dialog"><h3>Упражнения</h3><div class="sub">Выберите — покажем движение и какие мышцы работают</div><div class="lst" id="lst"></div></div>
+<div class="pick glass atl" id="atlas" role="dialog" aria-label="Все мышцы"><button class="x xx" id="ax" aria-label="Закрыть">×</button><h3>Все мышцы</h3>
+  <label class="q"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><input id="aq" type="search" placeholder="Поиск: бицепс, ягодичная, икры…" autocomplete="off" enterkeyhint="search" aria-label="Поиск мышцы по-русски"></label>
+  <div class="row gr" id="agr"></div><div class="lst" id="alst"></div></div>
 <div class="info glass" id="info" role="dialog" aria-live="polite">
   <button class="x" id="ix" aria-label="Закрыть">×</button>
   <div class="k" id="ik"></div><b id="in"></b><div class="la" id="il"></div>
-  <p id="ifn"></p><div class="exh" id="iexh">Тренируют</div><div class="ex" id="iex"></div>
-  <div class="acts"><button class="btn sec" id="iso">Показать отдельно</button><button class="btn sec" id="ifly">Приблизить</button></div>
+  <div class="sc" id="isc"></div>
+  <div class="acts"><button class="btn sec" id="iso">Отдельно</button><button class="btn sec" id="igrp">Группа</button><button class="btn sec" id="ifly">Приблизить</button></div>
 </div>
 <div class="cr">3D-анатомия: BodyParts3D © DBCLS, Z-Anatomy · <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.ru" target="_blank" rel="noopener">CC BY-SA 4.0</a> · свет: Poly Haven CC0</div>
 <script type="module">
 const qs = new URLSearchParams(location.search);
 if (qs.get('embed')) document.body.classList.add('embed'); if (qs.has('poster')) document.body.classList.add('poster');
 if (qs.has('close')) { const b = document.createElement('button'); b.className = 'x0 glass'; b.setAttribute('aria-label', 'Закрыть'); b.textContent = '×'; b.onclick = () => parent.postMessage({ ten: 'close' }, location.origin); document.querySelector('.top').prepend(b) }
-const VER = 'r80'; // менять вместе с файлами модели и упражнений (и в ссылках предзагрузки выше)
+const VER = 'r81'; // менять вместе с файлами модели и упражнений (и в ссылках предзагрузки выше)
 const { mountAnatomy } = await (async () => { for (let i = 0; ; i++) { try { return await import('./ten.js?v=' + VER + (i ? '&r=' + i : '')) } catch (e) { if (i >= 2) throw e; await new Promise(r => setTimeout(r, 900 * (i + 1))) } } })(); // сеть мигнула при выкладке — повторяем (новый адрес: браузер помнит неудачный импорт)
 const $ = s => document.querySelector(s);
 if (qs.get('theme')) document.documentElement.dataset.theme = qs.get('theme');
@@ -147,8 +175,12 @@ const LAY = [['skin', 'Кожа', '#E0AE94'], ['muscles', 'Мышцы', '#8A3530
 const GRP = { quads: 'Квадрицепс', glutes: 'Ягодичные', gmed: 'Средняя ягодичная', adductors: 'Приводящие', hams: 'Задняя поверхность бедра', calves: 'Икры', lowerback: 'Разгибатели спины',
   abs: 'Пресс', obliques: 'Косые мышцы живота', chest: 'Грудные', frontdelt: 'Передняя дельта', sidedelt: 'Средняя дельта', reardelt: 'Задняя дельта', triceps: 'Трицепс', biceps: 'Бицепс',
   lats: 'Широчайшие', traps: 'Трапеция', midtraps: 'Середина трапеции', rhomboids: 'Ромбовидные', serratus: 'Зубчатая', cuff: 'Вращатели плеча', hipflex: 'Сгибатели бедра', tibialis: 'Передняя голени', forearm: 'Предплечье' };
-let RU = {}; fetch('names-ru.json?v=' + VER).then(r => r.ok ? r.json() : {}).then(j => RU = j).catch(() => {});
-let A, mode = 'body', labels = [], slow = false, side = true, picked = null, isoOn = false;
+// каталог: names-ru.json — русское и латинское имя, что это, группа (сразу); opisanie-ru.json — тексты карточек (в фоне, при первой карточке)
+const GN = { head: 'Голова и шея', shoulder: 'Плечо', forearm: 'Предплечье и кисть', chest: 'Грудь', back: 'Спина', abs: 'Живот', hip: 'Таз и бедро', leg: 'Голень и стопа' };
+let RU = {}, OP = null, opP = null;
+const ruP = fetch('names-ru.json?v=' + VER).then(r => r.ok ? r.json() : {}).then(j => RU = j).catch(() => {});
+const loadOp = () => opP || (opP = fetch('opisanie-ru.json?v=' + VER).then(r => { if (!r.ok) throw 0; return r.json() }).then(j => OP = j).catch(() => { opP = null; return null }));
+let A, mode = 'body', labels = [], slow = false, side = true, picked = null, isoOn = false, isoMode = null, cardInset = false;
 const tick = () => navigator.vibrate && navigator.vibrate(6);
 const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const base = n => n.replace(/\.(l|r)$/, '');
@@ -162,11 +194,12 @@ window.A = A; window.__show = showInfo;
 function frame() { // фигура — между верхней плашкой и нижней панелью
   if (document.body.classList.contains('poster')) { A.inset(0, 0); return }
   const top = document.querySelector('.top').getBoundingClientRect().bottom + 8;
-  const dock = mode === 'body' ? $('#dockBody') : $('#dockEx'), bot = innerHeight - dock.getBoundingClientRect().top + 8;
+  const inf = $('#info'), dock = mode === 'body' ? $('#dockBody') : $('#dockEx');
+  const bot = cardInset && inf.classList.contains('on') ? innerHeight - inf.offsetTop + 8 : innerHeight - dock.getBoundingClientRect().top + 8; // карточка открыта после перелёта — мышца над карточкой
   A.inset(top, bot);
 }
 addEventListener('resize', () => setTimeout(frame, 50)); setTimeout(frame, 0); $('#load').remove(); if (qs.has('fps')) $('#fps').style.display = 'block';
-setTimeout(() => { if (!picked && mode === 'body') $('#hint').classList.add('on') }, 900);
+setTimeout(() => { if (!picked && mode === 'body') $('#hint').classList.add('on') }, 900); setTimeout(loadOp, 2500);
 if (!qs.has('still')) A.turntable(true);
 
 // ---------- слои
@@ -263,29 +296,114 @@ function drawLabels() {
 const inBotPx = () => innerHeight - $('#dockEx').getBoundingClientRect().top + 8;
 new ResizeObserver(() => dockH = $('#dockEx').offsetHeight).observe($('#dockEx'));
 
-// ---------- карточка мышцы
-function showInfo(p) {
+// ---------- карточка: имя по-русски, латынь мелко; у мышцы — что делает, начало и прикрепление, движения, упражнения, растяжка, травмы
+const H = x => String(x ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const KIND = { muscles: 'Мышца', skeleton: 'Кость', tendons: 'Связка', organs: 'Орган', skin: 'Кожа' };
+const SRC = '<p class="src">Сверено с учебниками Синельникова и Сапина, Kenhub, TeachMeAnatomy, OpenStax. Не медицинская консультация: при боли — к врачу.</p>';
+function cardHtml(b, L) {
+  const d = OP && OP[b]; if (!d) return OP ? '' : '<p>Загружаем описание…</p>';
+  if (L !== 'muscles') return `<p class="fn">${H(d.d)}</p>` + SRC;
+  const ex = (d.ex || []).map(([id, n, t]) => t ? `<a href="?ex=${encodeURIComponent(id)}" data-ex="${H(id)}"><i>3D</i>${H(n)}</a>` : `<span>${H(n)}</span>`).join('');
+  return `<p class="fn">${H(d.fn)}</p><h4>Начало и прикрепление</h4><p><span class="t">Начало:</span> ${H(d.o)}</p><p><span class="t">Прикрепление:</span> ${H(d.i)}</p>`
+    + `<h4>Движения</h4><p>${H(d.mv)}</p>` + (ex ? `<h4>Упражнения</h4><div class="ex">${ex}</div>` : '')
+    + `<h4>Как растянуть</h4><p>${H(d.st)}</p><h4>Частые травмы</h4><p>${H(d.inj)}</p>` + SRC;
+}
+function showInfo(p, o = {}) {
   if (!p) { closeInfo(); return }
-  picked = p; $('#hint').classList.remove('on');
-  const b = base(p.name), r = RU[b] || {}, sd = /\.l$/.test(p.name) ? 'слева' : /\.r$/.test(p.name) ? 'справа' : '';
-  const kind = ({ muscles: 'Мышца', skeleton: 'Кость', tendons: 'Сухожилие · связка', organs: 'Орган', skin: 'Кожа' })[p.layer];
-  $('#ik').textContent = kind + (sd ? ' · ' + sd : '');
-  $('#in').textContent = r.ru || b; $('#il').textContent = r.ru ? b : '';
-  $('#ifn').textContent = r.fn || ''; $('#ifn').style.display = r.fn ? '' : 'none';
-  $('#iex').innerHTML = (r.ex || []).map(x => `<span>${x}</span>`).join(''); $('#iexh').style.display = (r.ex || []).length ? '' : 'none';
-  const m = p.layer === 'muscles'; $('#iso').style.display = $('#ifly').style.display = m ? '' : 'none';
-  $('#iso').textContent = isoOn ? 'Показать всё' : 'Показать отдельно';
+  picked = p; $('#hint').classList.remove('on'); $('#atlas').classList.remove('on');
+  const b = base(p.name), r = RU[b] || {}, sd = o.both ? '' : /\.l$/.test(p.name) ? 'слева' : /\.r$/.test(p.name) ? 'справа' : '';
+  $('#ik').textContent = (r.k || KIND[p.layer] || '') + (r.g && GN[r.g] ? ' · ' + GN[r.g].toLowerCase() : '') + (sd ? ' · ' + sd : '');
+  $('#in').textContent = r.ru || b; $('#il').textContent = r.la || '';
+  $('#isc').innerHTML = cardHtml(b, p.layer); $('#isc').scrollTop = 0;
+  if (!OP) loadOp().then(() => { if (picked === p) $('#isc').innerHTML = cardHtml(b, p.layer) });
+  const m = p.layer === 'muscles'; $('#iso').style.display = $('#ifly').style.display = m ? '' : 'none'; $('#igrp').style.display = m && r.g ? '' : 'none';
+  isoBtns();
   $('#info').classList.add('on'); $('#dockBody').classList.add('off'); $('#dockEx').classList.add('off'); drawLabels(); tick();
 }
-function closeInfo() { $('#info').classList.remove('on'); if (A) A.select(null); $('#dockBody').classList.toggle('off', mode !== 'body'); $('#dockEx').classList.toggle('off', mode === 'body'); drawLabels() }
-$('#ix').onclick = () => { closeInfo(); if (isoOn) { isoOn = false; A.isolate('muscles', null) } };
+function isoBtns() { $('#iso').textContent = isoMode === 'one' ? 'Показать всё' : 'Отдельно'; $('#igrp').textContent = isoMode === 'grp' ? 'Показать всё' : 'Группа' }
+function closeInfo() { $('#info').classList.remove('on'); if (A) A.select(null); $('#dockBody').classList.toggle('off', mode !== 'body'); $('#dockEx').classList.toggle('off', mode === 'body'); if (cardInset) { cardInset = false; if (A) frame() } drawLabels() }
+function unIso() { if (!isoMode && !isoOn) return; isoMode = null; isoOn = false; A.isolate('muscles', null); if (mode === 'body') A.highlight([]) }
+$('#ix').onclick = () => { closeInfo(); unIso() };
+$('#isc').onclick = e => { const a = e.target.closest('a[data-ex]'); if (!a) return; e.preventDefault(); closeInfo(); unIso(); setMode('ex', a.dataset.ex) };
+const reOf = keys => new RegExp('^(' + keys.map(esc).join('|') + ')(\\.(l|r))?$');
+const grpKeys = g => Object.keys(RU).filter(k => RU[k].l === 'muscles' && RU[k].g === g);
 $('#iso').onclick = () => {
-  isoOn = !isoOn; const b = base(picked.name);
-  A.isolate('muscles', isoOn ? new RegExp('^' + esc(b) + '(\\.(l|r))?$') : null);
-  $('#iso').textContent = isoOn ? 'Показать всё' : 'Показать отдельно'; tick();
+  const b = base(picked.name); isoMode = isoMode === 'one' ? null : 'one'; isoOn = !!isoMode;
+  A.isolate('muscles', isoMode ? reOf([b]) : null); isoBtns(); tick();
 };
-$('#ifly').onclick = () => { const ids = A.ids(new RegExp('^' + esc(picked.name) + '$')), c = A.center(ids); if (c) A.fly(c, Math.max(.45, A.size(ids) * 2.2), A.azimuth, .12, 900); tick() };
-$('#reset').onclick = () => { A.reset(800); tick() };
+$('#igrp').onclick = () => {
+  const g = (RU[base(picked.name)] || {}).g; if (!g) return; isoMode = isoMode === 'grp' ? null : 'grp'; isoOn = !!isoMode;
+  if (!isoMode) { A.isolate('muscles', null); isoBtns(); tick(); return }
+  const keys = grpKeys(g); A.isolate('muscles', reOf(keys)); isoBtns(); tick(); flyTo(A.ids(reOf(keys)), true);
+};
+$('#ifly').onclick = () => { flyTo(A.ids(new RegExp('^' + esc(picked.name) + '$'))); tick() };
+
+// ---------- перелёт камеры к мышце: смотрим на неё снаружи — от оси своей части тела (туловище, рука, нога) на той же высоте
+let CEN = null;
+const centers = () => CEN || (CEN = A.ids(/./).map(i => A.center([i])));
+let GOF = null; const grpOf = () => GOF || (GOF = (() => { const o = []; for (const [k, v] of Object.entries(RU)) if (v.l === 'muscles') A.ids(reOf([k])).forEach(i => o[i] = v.g); return o })());
+function flyTo(ids, group = false) {
+  if (!ids.length) return; const c = A.center(ids); if (!c) return;
+  const C = centers(), G = grpOf(), g0 = G[ids[0]]; let sx = 0, sz = 0, n = 0, lo = [9, 9, 9], hi = [-9, -9, -9];
+  const near = (q, i, same) => q && Math.abs(q[1] - c[1]) < .07 && Math.abs(q[0] - c[0]) < .12 && (!same || G[i] === g0);
+  for (const same of [true, false]) { C.forEach((q, i) => { if (near(q, i, same)) { sx += q[0]; sz += q[2]; n++ } }); if (n >= 3 || group) break; sx = sz = n = 0 } // ось — по мышцам своей группы (плечо — по мышцам руки, не по рёбрам)
+  for (const i of ids) { const q = C[i]; if (q) for (let k = 0; k < 3; k++) { lo[k] = Math.min(lo[k], q[k]); hi[k] = Math.max(hi[k], q[k]) } }
+  let dx = n ? c[0] - sx / n : 0, dz = n ? c[2] - sz / n : 1;
+  if (!group && g0 === 'back') { dx *= .5; dz = -Math.abs(dz) - .03 } else if (!group && (g0 === 'chest' || g0 === 'abs')) { dx *= .5; dz = Math.abs(dz) + .03 } // туловище — сзади или спереди, чуть с поворотом
+  const az = Math.hypot(dx, dz) < .008 ? (dz >= 0 ? 0 : Math.PI) : Math.atan2(dx, dz);
+  const span = Math.max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2], 0), sz1 = A.size(ids);
+  cardInset = $('#info').classList.contains('on'); frame();
+  // расстояние — чтобы мышца (группа) с запасом влезла в свободное окно между плашкой и карточкой (кадр сдвинут setViewOffset)
+  const W = innerWidth, Hh = innerHeight, top = document.querySelector('.top').getBoundingClientRect().bottom + 8, inf = $('#info');
+  const bot = cardInset ? Hh - inf.offsetTop + 8 : Hh - $('#dockBody').getBoundingClientRect().top + 8, full = Hh + Math.abs(bot - top), t2 = 2 * Math.tan(A.camInfo.fov * Math.PI / 360);
+  const k = Math.min(t2 * Math.max(120, Hh - top - bot) / full, t2 * W / full), ext = group ? span + sz1 * .6 : sz1;
+  const d = Math.min(4.2, Math.max(.45, ext * 1.25 / k));
+  A.turntable(false); A.fly(c, d, az, group ? .1 : .14, 1000);
+}
+
+// ---------- «Все мышцы»: список по группам, поиск по-русски (и по-бытовому: бицепс, пресс, икры…)
+const nrm = x => String(x || '').toLowerCase().replace(/ё/g, 'е');
+const SYN = [['бицепс бедр', 'двуглавая мышца бедра'], ['бицепс', 'двуглав'], ['трицепс', 'трехглав'], ['квадрицепс', 'четырехглав|прямая мышца бедра|широкая мышца'], ['квадр', 'четырехглав|прямая мышца бедра|широкая мышца'],
+  ['пресс', 'мышца живота'], ['кубик', 'прямая мышца живота'], ['кор', 'живота|поясниц|многораздельн'], ['икр', 'икронож|камбаловид|подошвенная мышца'], ['ягодиц', 'ягодичн'], ['попа', 'ягодичн'], ['дельт', 'дельтовид'],
+  ['трапец', 'трапециевидн'], ['широчайш', 'широчайш'], ['крыл', 'широчайш'], ['грудь', 'грудн'], ['грудн', 'грудн|межребер|зубчат'], ['ромб', 'ромбовид'], ['разгибател', 'разгибател|выпрямляющ|подвздошно-реберн|длиннейш|остист'],
+  ['вращательн', 'надостн|подостн|малая круглая|подлопаточн'], ['ротатор', 'надостн|подостн|малая круглая|подлопаточн'], ['пресс', 'живот'], ['хамстринг', 'двуглавая мышца бедра|полусухожил|полуперепончат'], ['задняя поверхность', 'двуглавая мышца бедра|полусухожил|полуперепончат'],
+  ['приводящ', 'приводящ|гребенчат|тонкая'], ['поясниц', 'поясниц'], ['шея', 'шеи'], ['шеи', 'шеи'], ['лиц', 'рта|глаза|носа|губы|бров|лоб|щек|скулов|подбород|жеват|височн'], ['жеват', 'жевательн|височн|крыловидн'], ['глаз', 'глаз|век'],
+  ['кист', 'кисти|пальц|ладон|запясть'], ['предплеч', 'предплеч|запясть|пальц|пронатор|супинатор|плечелучев'], ['стоп', 'стопы|пальц|подошв'], ['голен', 'голени|большеберц|малоберц|икронож|камбалов'], ['дыхан', 'диафрагм|межребер|лестничн']];
+let aBuilt = false;
+function atlasOpen() { renderAtlas(); $('#atlas').classList.add('on'); $('#hint').classList.remove('on'); tick(); if (matchMedia('(pointer:fine)').matches) setTimeout(() => $('#aq').focus(), 300) }
+function matchQ(k, v, q) {
+  const t = nrm(v.ru + ' ' + v.la + ' ' + k + ' ' + GN[v.g]); if (t.includes(q)) return true;
+  return SYN.some(([w, re]) => (q.startsWith(w) || (q.length >= 3 && w.startsWith(q))) && new RegExp(re).test(nrm(v.ru)));
+}
+function renderAtlas() { // роговица, склера и т. п. лежат в слое мышц модели — в список не берём, касанием открываются
+  const q = nrm($('#aq').value.trim()), by = {}; let n = 0;
+  for (const [k, v] of Object.entries(RU)) { if (v.l !== 'muscles' || !v.g || !/мышц/i.test(v.k)) continue; if (q && !matchQ(k, v, q)) continue; (by[v.g] = by[v.g] || []).push([k, v]); n++ }
+  const hl = x => { const t = H(x); if (!q) return t; const i = nrm(x).indexOf(q); return i < 0 ? t : H(x.slice(0, i)) + '<mark>' + H(x.slice(i, i + q.length)) + '</mark>' + H(x.slice(i + q.length)) };
+  $('#alst').innerHTML = n ? Object.keys(GN).filter(g => by[g]).map(g => `<div class="sh" id="ag-${g}"><span>${GN[g]} · ${by[g].length}</span><button data-g="${g}">Показать группу</button></div>`
+    + by[g].sort((a, b) => a[1].ru.localeCompare(b[1].ru, 'ru')).map(([k, v]) => `<button class="it" data-k="${H(k)}"><div class="tx"><b>${hl(v.ru)}</b><small>${H(v.la)}</small></div><span class="go">›</span></button>`).join('')).join('')
+    : '<div class="no">Ничего не нашли. Попробуйте «бицепс», «икры», «пресс» или название группы.</div>';
+  if (!aBuilt) { aBuilt = true; $('#agr').innerHTML = Object.entries(GN).map(([g, t]) => `<button class="chip" data-g="${g}">${t}</button>`).join('') }
+  $('#agr').querySelectorAll('.chip').forEach(c => c.style.display = by[c.dataset.g] ? '' : 'none');
+}
+$('#allb').onclick = $('#allb2').onclick = () => ruP.then(atlasOpen);
+$('#ax').onclick = () => { $('#atlas').classList.remove('on'); tick() };
+$('#aq').oninput = () => { renderAtlas(); $('#alst').scrollTop = 0 };
+$('#agr').onclick = e => { const c = e.target.closest('.chip'); if (!c) return; const h = $('#ag-' + c.dataset.g); if (h) $('#alst').scrollTo({ top: h.offsetTop - 4, behavior: 'smooth' }); tick() };
+$('#alst').onclick = e => { const g = e.target.closest('button[data-g]'); if (g) { openGroup(g.dataset.g); return } const b = e.target.closest('.it'); if (b) openMuscle(b.dataset.k) };
+async function toBody() { $('#atlas').classList.remove('on'); if (mode !== 'body') await setMode('body'); setChip('skin', false); setChip('muscles', true); A.turntable(false) }
+async function openMuscle(k) {
+  tick(); await toBody();
+  const re = reOf([k]), all = A.ids(re); if (!all.length) return;
+  isoMode = 'one'; isoOn = true; A.isolate('muscles', re); A.highlight(all, 1);
+  const near = ['.r', '.l', ''].map(s => ({ s, a: A.ids(new RegExp('^' + esc(k + s) + '$')) })).filter(x => x.a.length).map(x => ({ ...x, sc: A.screen(x.a) })).sort((x, y) => (x.sc ? x.sc.dist : 9) - (y.sc ? y.sc.dist : 9))[0];
+  const p = { layer: 'muscles', id: near.a[0], name: k + near.s };
+  A.select(p); showInfo(p, { both: all.length > 1 }); flyTo(near.a);
+}
+function openGroup(g) {
+  tick(); toBody().then(() => { const keys = grpKeys(g), re = reOf(keys); closeInfo(); isoMode = 'grp'; isoOn = true; A.isolate('muscles', re); A.highlight([]); flyTo(A.ids(re), true);
+    const h = $('#hint'); h.innerHTML = `<b>${GN[g]}</b> — коснитесь мышцы`; h.classList.add('on'); setTimeout(() => h.classList.remove('on'), 3500) });
+}
+$('#reset').onclick = () => { A.reset(800); if (mode === 'body') { unIso(); closeInfo() } tick() };
 if (qs.get('ex')) setMode('ex', qs.get('ex'));
 </script>
 </body>
