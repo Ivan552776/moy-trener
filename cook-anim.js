@@ -4,6 +4,7 @@
    CA.mount(el, CA.cut('morkov')) — сцена в элемент; CA.sound(true) — звук; «уменьшить движение» — статичный кадр. */
 (function () {
 const BASE = ((document.currentScript && document.currentScript.src) || location.href).replace(/[^/]*$/, ''); // рядом лежит папка snd/
+const SQ = ((document.currentScript && document.currentScript.src) || '').replace(/^[^?]*/, ''); // версия звуков = версия скрипта (обход кэша)
 const NS = 'http://www.w3.org/2000/svg', RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let UID = 0;
 function E(tag, a, p) { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e }
@@ -224,9 +225,8 @@ function cut(f = 'morkov') {
   H(svg, shade(id, `<rect x="40" y="26" width="262" height="128" rx="14"/>`, 7, 10, .42) + `<rect x="40" y="26" width="262" height="128" rx="14" fill="#A86A33"/>${shade(id, '<rect x="40" y="26" width="262" height="128" rx="14"/>', 1.4, 2, .4).replace(`filter="url(#sb${id})"`, `filter="url(#sbs${id})"`)}<rect x="40" y="26" width="262" height="128" rx="14" fill="#A86A33"/><rect x="42" y="27.5" width="258" height="124" rx="12.5" fill="url(#wood${id})"/>
    ${[...Array(9)].map((_, i) => `<path d="M${48 + R(i, 0, 14)} ${36 + i * 13 + R(i + 1, -2, 2)}Q${150 + R(i + 2, -30, 30)} ${34 + i * 13 + R(i + 3, -3, 3)} ${300 - R(i + 4, 0, 16)} ${37 + i * 13}" stroke="#A9692F" stroke-width=".7" fill="none" opacity="${R(i + 5, .14, .28).toFixed(2)}"/>`).join('')}
    <rect x="42.5" y="28" width="257" height="123" rx="12" fill="none" stroke="#fff" stroke-width="1" opacity=".35"/><rect x="40" y="26" width="262" height="128" rx="14" fill="none" stroke="#8E5626" stroke-width="1" opacity=".55"/><circle cx="286" cy="42" r="5" fill="#A9692F" opacity=".45"/>`);
-  const CX = 196, CY = 90, prod = E('g', {}, svg);
-  if (f === 'morkov') H(prod, shade(id, `<path d="M100 76.5C130 76 166 80 ${CX} 82L${CX} 98C166 100 130 104.5 100 104C90 103 86 97 86 90C86 83 90 77.5 100 76.5Z"/>`, 4, 6, .28) +
-    `<g stroke-linecap="round" fill="none">${[['#2F6B22', 4, 'M88 88Q72 80 60 70'], ['#3F8A2E', 3.4, 'M88 86Q76 70 76 54'], ['#5FA641', 3, 'M87 92Q70 96 56 96'], ['#7BC05A', 2.4, 'M89 84Q86 68 94 56'], ['#4E9A38', 2.6, 'M88 94Q74 106 64 114']].map(([c, w, d]) => `<path d="${d}" stroke="${c}" stroke-width="${w}"/>`).join('')}
+  const CX = 196, CY = 90, prod = E('g', { id: `art${id}` }, E('defs', {}, svg));
+  if (f === 'morkov') H(prod, `<g stroke-linecap="round" fill="none">${[['#2F6B22', 4, 'M88 88Q72 80 60 70'], ['#3F8A2E', 3.4, 'M88 86Q76 70 76 54'], ['#5FA641', 3, 'M87 92Q70 96 56 96'], ['#7BC05A', 2.4, 'M89 84Q86 68 94 56'], ['#4E9A38', 2.6, 'M88 94Q74 106 64 114']].map(([c, w, d]) => `<path d="${d}" stroke="${c}" stroke-width="${w}"/>`).join('')}
      <path d="M76 54q-6-4-4-10M94 56q-3-6 3-10M60 70q-8-2-10-8M56 96q-8 0-12-6M64 114q-6 3-12 0" stroke="#7BC05A" stroke-width="2"/></g>
      <path d="M100 76.5C130 76 166 80 ${CX} 82L${CX} 98C166 100 130 104.5 100 104C90 103 86 97 86 90C86 83 90 77.5 100 76.5Z" fill="url(#car${id})"/>
      ${[...Array(9)].map((_, i) => { const x = 104 + i * 10.2, h = lerp(26, 16, i / 9); return `<path d="M${x} ${90 - h / 2}q1.8 ${h / 2} 0 ${h}" stroke="${P.d}" stroke-width=".8" fill="none" opacity="${R(i, .22, .4).toFixed(2)}"/>` }).join('')}
@@ -235,42 +235,69 @@ function cut(f = 'morkov') {
     defs(svg, `<radialGradient id="pearl${id}" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#FFFEFA"/><stop offset=".7" stop-color="#F7F0DE"/><stop offset="1" stop-color="#EADBB8"/></radialGradient>
      <linearGradient id="skin${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E8BE78"/><stop offset=".6" stop-color="#C98C3E"/><stop offset="1" stop-color="#9C6528"/></linearGradient><clipPath id="oc${id}"><rect x="0" y="0" width="${CX + 1}" height="200"/></clipPath>`);
     const og = E('g', { 'clip-path': `url(#oc${id})` }, prod);
-    H(og, shade(id, `<ellipse cx="${ox}" cy="${oy}" rx="45" ry="33"/>`, 4, 6, .3) + `<ellipse cx="${ox}" cy="${oy}" rx="45" ry="33" fill="url(#skin${id})"/><ellipse cx="${ox}" cy="${oy}" rx="42" ry="30.5" fill="url(#pearl${id})"/>
+    H(og, `<ellipse cx="${ox}" cy="${oy}" rx="45" ry="33" fill="url(#skin${id})"/><ellipse cx="${ox}" cy="${oy}" rx="42" ry="30.5" fill="url(#pearl${id})"/>
      ${[.82, .66, .5, .34, .2].map(k => `<ellipse cx="${(L + 42 * k).toFixed(1)}" cy="${oy}" rx="${(42 * k).toFixed(1)}" ry="${(30.5 * k).toFixed(1)}" fill="none" stroke="#E2D1A9" stroke-width="1.1"/>`).join('')}
      <path d="M${L + 1} ${oy - 4}q-6 -1 -9 -5M${L + 1} ${oy}h-10M${L + 1} ${oy + 4}q-6 1 -9 5" stroke="#8E6232" stroke-width="1.2" stroke-linecap="round"/><ellipse cx="${L + 3}" cy="${oy}" rx="3" ry="4.5" fill="#B9874A"/>
      <path d="M${ox - 24} ${oy - 20}Q${ox} ${oy - 30} ${ox + 22} ${oy - 22}" stroke="#fff" stroke-width="2.4" fill="none" opacity=".75" stroke-linecap="round"/>
      <path d="M${ox + 30} ${oy - 22}Q${ox + 44} ${oy - 8} ${ox + 42} ${oy + 10}" stroke="#7E4E1E" stroke-width="1" fill="none" opacity=".45"/>`) }
-  else if (f !== 'kur' && !IS_KUR(f)) H(prod, shade(id, '<ellipse cx="140" cy="128" rx="40" ry="8"/>', 2, 3, .3) + artAt(f, 82, 32, 116));
-  else H(prod, shade(id, `<path d="M88 72Q130 64 ${CX} 74L${CX} 106Q130 116 88 108Q74 90 88 72Z"/>`, 4, 6, .28) + `<path d="M88 72Q130 64 ${CX} 74L${CX} 106Q130 116 88 108Q74 90 88 72Z" fill="url(#chk${id})"/>`);
+  else if (f !== 'kur' && !IS_KUR(f)) H(prod, artAt(f, 82, 32, 116).replace(/<ellipse cx="32" cy="56" rx="[\d.]+" ry="4" fill="#000" opacity=".12"\/>/, ''));
+  else H(prod, `<path d="M88 72Q130 64 ${CX} 74L${CX} 106Q130 116 88 108Q74 90 88 72Z" fill="url(#chk${id})"/>`);
   // нож сверху: клинок поперёк продукта, рукоять к зрителю (вниз)
-  const ksh = E('g', { filter: `url(#sb${id})` }, svg), ksp = E('path', { d: 'M3 -74Q6 -68 7 -58L8 24L-16 24Q-17 -12 -6 -50Q-1 -66 3 -74Z', fill: '#000' }, ksh);
-  const knife = E('g', {}, svg);
+  const KS = E('g', {}), ksh = E('g', { filter: `url(#sb${id})` }, KS), ksp = E('path', { d: 'M3 -74Q6 -68 7 -58L8 24L-16 24Q-17 -12 -6 -50Q-1 -66 3 -74Z', fill: '#000' }, ksh);
+  const knife = E('g', {}, KS);
   H(knife, `<path d="M3 -74Q6 -68 7 -58L8 24L-16 24Q-17 -12 -6 -50Q-1 -66 3 -74Z" fill="url(#bld${id})"/>
    <path d="M3 -74Q-1 -66 -6 -50Q-17 -12 -16 24" stroke="#fff" stroke-width="1.3" fill="none" opacity=".95"/><path d="M1 -66Q-4 -52 -9 -34Q-13 -12 -12 22" stroke="#B9C1C8" stroke-width="2.2" fill="none" opacity=".8"/>
    <path d="M6 -58L7 22" stroke="#5E666E" stroke-width="1.6" opacity=".85"/><path d="M-2 -40Q-5 -12 -4 18" stroke="#fff" stroke-width="3" fill="none" opacity=".35" stroke-linecap="round"/>
    <path d="M-17 23H9V30H-17Z" fill="#C9D0D6"/><path d="M-17 29H9" stroke="#8E979F" stroke-width="1"/><path d="M-9 30H6Q8 30 8 33V78Q8 85 -0.5 85Q-9 85 -9 78V33Q-9 30 -7 30Z" fill="url(#khd${id})"/>
    <circle cx="-.5" cy="44" r="2" fill="#D7DDE2"/><circle cx="-.5" cy="58" r="2" fill="#D7DDE2"/><circle cx="-.5" cy="72" r="2" fill="#D7DDE2"/><path d="M-6 35V80" stroke="#fff" stroke-width=".9" opacity=".25"/>`);
-  const pile = E('g', {}, svg), N = 6, T = 4.2, STEP = .55, T0 = .25, sl = [];
-  for (let i = 0; i < N; i++) { const w = E('g', { opacity: 0 }, pile); const k = KIND[f] || 'chunk';
-    H(w, shade(id, k === 'coin' ? '<circle r="7.6"/>' : k === 'cube' ? '<rect x="-4.4" y="-4.4" width="8.8" height="8.8" rx="2"/>' : '<circle r="8"/>', 1.6, 2.2, .3).replace(`filter="url(#sb${id})"`, `filter="url(#sbs${id})"`));
-    top(w, f, k, 1, i, id); sl.push({ w, sx: 216 + (i % 3) * 11 + R(i, -2.5, 2.5), sy: 78 + Math.floor(i / 3) * 12 + R(i + 4, -3, 3) + (P.cut === 'coin' ? 0 : 6) }) }
-  let last = -1;
+  /* продукт по-настоящему укорачивается: каждый удар отрезает ломтик от правого края.
+     Рисунок продукта один (в defs), на доске — его копия, обрезанная по линии реза; ломтик — та же копия, обрезанная полоской
+     [рез; рез + толщина]: он отделяется от продукта в месте удара, выходит из-под ножа, ложится в горку и опрокидывается срезом вверх.
+     Между ударами продукт подвигается под нож на толщину ломтика. Когда продукт кончается — огрызок и горка уходят, появляется целый. */
+  const kd = KIND[f] || 'chunk', N = 8, STEP = .55, T0 = .5, T = T0 + N * STEP + .55 + .45, FL = P.core || mixc(P.l, '#ffffff', .25);
+  defs(svg, `<filter id="fl${id}" x="-5%" y="-5%" width="110%" height="110%"><feFlood flood-color="${FL}"/><feComposite in2="SourceAlpha" operator="in"/></filter>
+   <filter id="ps${id}" x="-20%" y="-30%" width="140%" height="160%"><feFlood flood-color="#000"/><feComposite in2="SourceAlpha" operator="in"/><feGaussianBlur stdDeviation="2.2"/></filter>
+   <clipPath id="cp${id}" clipPathUnits="userSpaceOnUse"><rect x="-400" y="-400" width="1200" height="1000"/></clipPath><clipPath id="cf${id}" clipPathUnits="userSpaceOnUse"><rect x="0" y="-400" width="0" height="1000"/></clipPath>` +
+   [...Array(N)].map((_, k) => `<clipPath id="cs${id}_${k}" clipPathUnits="userSpaceOnUse"><rect x="0" y="-400" width="0" height="1000"/></clipPath>`).join(''));
+  const cpR = svg.querySelector(`#cp${id} rect`), cfR = svg.querySelector(`#cf${id} rect`), use = (p, a = {}) => E('use', Object.assign({ href: `#art${id}` }, a), p);
+  const board = E('g', {}, svg), pg = E('g', { 'clip-path': `url(#cp${id})` }, board), fg = E('g', { 'clip-path': `url(#cf${id})` }, board), sh0 = use(pg, { filter: `url(#ps${id})`, opacity: .3, transform: 'translate(4 6)' }), pu = use(pg);
+  use(fg, { filter: `url(#fl${id})`, opacity: .95 });
+  const pile = E('g', {}, svg), per = kd === 'cube' ? 2 : 1, spots = [...Array(N * per)].map((_, j) => { const a = R(j + 3, -1, 1), r = Math.sqrt(R(j + 11, 0, 1));
+    return { x: 252 + a * 26 * r + R(j, -4, 4), y: 92 + (R(j + 7, -1, 1)) * 26 * r } });
+  const sl = [...Array(N)].map((_, k) => { const o = E('g', { opacity: 0 }, pile), ic = E('g', { 'clip-path': `url(#cs${id}_${k})` }, o); use(ic, { filter: `url(#ps${id})`, opacity: .3, transform: 'translate(1.5 2.5)' }); use(ic);
+    const pcs = [...Array(per)].map((_, q) => { const w = E('g', { opacity: 0 }, pile), j = k * per + q; H(w, shade(id, kd === 'coin' ? '<circle r="7.6"/>' : kd === 'cube' ? '<rect x="-4.4" y="-4.4" width="8.8" height="8.8" rx="2"/>' : '<circle r="7"/>', 1.6, 2.2, .3).replace(`filter="url(#sb${id})"`, `filter="url(#sbs${id})"`)); top(w, f, kd, 1, j, id); return { w, s: spots[j] } });
+    return { o, r: svg.querySelector(`#cs${id}_${k} rect`), pcs } });
+  svg.appendChild(KS);
+  let L = 0, Rb = 0, W = 8, last = -1;
+  const measure = () => { if (W && Rb) return; try { const bb = pu.getBBox(); if (bb.width > 4) { L = f === 'morkov' ? 86 : bb.x; Rb = bb.x + bb.width } } catch (e) {}
+    if (!Rb) { L = f === 'morkov' ? 86 : 96; Rb = f === 'morkov' || f === 'luk' || f === 'kur' || IS_KUR(f) ? CX : 187 }
+    W = clamp((Rb - L) * .74 / N, 5.5, 11) };
   function frame(t, emit) {
-    t %= T; const tc = t - T0, i = Math.floor(tc / STEP), ph = tc - i * STEP;
+    measure(); t %= T; const tc = t - T0, i = Math.floor(tc / STEP), ph = tc - i * STEP, B = CX + W - Rb;
     // подъём (замедляется) — пауза — быстрый удар — отскок; «выше» = ближе к камере: крупнее, тень дальше и мягче
     let up = 0;
     if (tc >= 0 && i < N) { up = ph < .24 ? eOut(ph / .24) : ph < .31 ? 1 : ph < .4 ? 1 - eIn((ph - .31) / .09) : ph < .47 ? .1 * Math.sin((ph - .4) / .07 * Math.PI) : 0;
       if (ph >= .4 && i !== last) { last = i; emit && emit('chop', f) } }
-    else if (tc >= N * STEP) up = .7 * Math.sin(clamp((tc - N * STEP) / 1.4) * Math.PI);
+    else if (tc >= N * STEP) up = .6 * Math.sin(clamp((tc - N * STEP) / 1.2) * Math.PI);
     if (t < T0) last = -1;
-    const done = tc < 0 ? 0 : Math.min(N, Math.floor((tc - .4) / STEP) + 1), back = eIO(clamp((tc - N * STEP - .5) / .8)), feed = done * 3.2 * (1 - back);
-    prod.setAttribute('transform', `translate(${feed.toFixed(1)} 0)`);
-    const kx = CX + 3 + feed, ky = CY;
+    const cuts = tc < 0 ? 0 : Math.min(N, i + (ph >= .4 ? 1 : 0)), edge = Rb - cuts * W;   // правый край продукта (в рисунке)
+    const push = eIO(clamp((ph - .04) / .24)), fx = B + (tc < 0 || i < 1 ? 0 : i >= N ? N - 1 : i - 1 + push) * W;   // между ударами продукт подвигается под нож
+    cpR.setAttribute('width', (edge + 400).toFixed(2)); cfR.setAttribute('x', (edge - 4).toFixed(2)); cfR.setAttribute('width', cuts ? 4 : 0);
+    const fin = t < T0 ? eOut(clamp(t / (T0 * .8))) : 1, fout = t > T - .45 ? 1 - eIO(clamp((t - (T - .45)) / .4)) : 1;
+    board.setAttribute('transform', `translate(${fx.toFixed(2)} 0)`); board.setAttribute('opacity', (fin * fout).toFixed(2));
+    const kx = CX + 17, ky = CY;
     knife.setAttribute('transform', `translate(${kx.toFixed(1)} ${(ky - up * 3).toFixed(1)}) scale(${(1 + up * .07).toFixed(3)}) rotate(${(up * -3).toFixed(1)})`);
     ksh.setAttribute('transform', `translate(${(kx + 3 + up * 9).toFixed(1)} ${(ky + 4 + up * 11).toFixed(1)})`); ksh.setAttribute('opacity', (.32 - up * .14).toFixed(2));
-    sl.forEach((s, k) => { const ts = tc - (k * STEP + .4); if (ts < 0) { s.w.setAttribute('opacity', 0); return }
-      const fl = eOut(clamp(ts / .5)), x = lerp(kx + 9, s.sx, fl) + back * 30, y = lerp(ky + R(k, -6, 6), s.sy, fl), hopS = 1 + Math.sin(clamp(ts / .5) * Math.PI) * .12;
-      s.w.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${hopS.toFixed(3)})`); s.w.setAttribute('opacity', ((1 - back) * clamp(ts / .05)).toFixed(2)) })
+    sl.forEach((s, k) => { const ts = tc - (k * STEP + .4), x0 = Rb - (k + 1) * W;
+      s.r.setAttribute('x', x0.toFixed(2)); s.r.setAttribute('width', (W + .4).toFixed(2));
+      if (ts < 0) { s.o.setAttribute('opacity', 0); s.pcs.forEach(q => q.w.setAttribute('opacity', 0)); return }
+      // ломтик: в момент удара — на месте отреза, затем выходит из-под ножа вправо и опрокидывается в горку
+      const at = B + k * W, sx = at + x0 + W / 2, sy = CY, tgt = s.pcs[0].s, mv = eOut(clamp((ts - .03) / .42)), tip = clamp((ts - .3) / .18);
+      const x = lerp(sx, tgt.x, mv), y = lerp(sy, tgt.y, mv) - Math.sin(mv * Math.PI) * 4;
+      s.o.setAttribute('transform', `translate(${(x - sx).toFixed(2)} ${(y - sy).toFixed(2)}) translate(${sx.toFixed(1)} ${sy.toFixed(1)}) rotate(${(mv * R(k, -25, 25)).toFixed(1)}) translate(${(-sx).toFixed(1)} ${(-sy).toFixed(1)}) translate(${at.toFixed(2)} 0)`);
+      s.o.setAttribute('opacity', ((1 - tip) * fout).toFixed(2));
+      s.pcs.forEach((q, n) => { const qx = lerp(x, q.s.x, eOut(clamp((ts - .3) / .25))), qy = lerp(y, q.s.y, eOut(clamp((ts - .3) / .25)));
+        q.w.setAttribute('transform', `translate(${qx.toFixed(1)} ${qy.toFixed(1)}) scale(${lerp(.35, 1, eOut(tip)).toFixed(3)} 1)`); q.w.setAttribute('opacity', (tip * fout).toFixed(2)) }) })
   }
   return { svg, frame, T, title: 'Нарезать', sub: `${P.n} — ${P.cut === 'coin' ? 'кружками' : P.cut === 'cube' ? 'кубиком' : 'кусочками'}`, sound: 'chop' }
 }
@@ -285,29 +312,31 @@ function pour(liq = 'voda', items = []) {
   const wat = E('circle', { cx: pot.cx, cy: pot.cy, r: pot.r, fill: `url(#wat${id})`, opacity: 0 }, pot.inner), cres = E('path', { d: `M${pot.cx - pot.r * .78} ${pot.cy - pot.r * .1}A${pot.r * .8} ${pot.r * .8} 0 0 1 ${pot.cx + pot.r * .1} ${pot.cy - pot.r * .78}A${pot.r * .95} ${pot.r * .95} 0 0 0 ${pot.cx - pot.r * .78} ${pot.cy - pot.r * .1}Z`, fill: '#fff', opacity: 0 }, pot.inner), glint = E('ellipse', { rx: 18, ry: 5, fill: '#fff', opacity: .28, transform: `rotate(-30 ${pot.cx - 18} ${pot.cy - 20})` }, pot.inner);
   const rg = rings(pot.inner, 7), splash = E('circle', { r: 5, fill: '#E6F6FF', opacity: 0 }, pot.inner), drops = [...Array(8)].map(() => E('circle', { r: 1.6, fill: '#E6F6FF', opacity: 0 }, pot.inner));
   // кувшин сверху: горловина-капля с носиком, ручка-петля; вода внутри смещается к носику при наклоне; тень отходит
-  const JD = 'M-30 0A30 30 0 0 1 22 -20Q38 -7 47 0Q38 7 22 20A30 30 0 0 1 -30 0Z';
-  defs(svg, `<clipPath id="jc${id}"><path d="${JD}" transform="scale(.9)"/></clipPath>`);
-  const jsh = E('g', { filter: `url(#sb${id})` }, svg); E('path', { d: JD, fill: '#000' }, jsh);
+  // кувшин сверху: белая эмаль с изумрудной полосой (как кастрюля), открытое горло с водой, явный носик к кастрюле, ручка-петля сзади
+  const JD = 'M-28 -12Q-26 -28 -6 -30Q18 -32 28 -16L50 -4Q54 0 50 4L28 16Q18 32 -6 30Q-26 28 -28 12Z';
+  defs(svg, `<clipPath id="jc${id}"><ellipse rx="21" ry="20" cx="-2"/></clipPath>`);
+  const jsh = E('g', { filter: `url(#sb${id})` }, svg); E('path', { d: JD, fill: '#000' }, jsh); E('path', { d: 'M-26 -10Q-54 -16 -54 0Q-54 16 -26 10', stroke: '#000', 'stroke-width': 8, fill: 'none' }, jsh);
   const jug = E('g', {}, svg);
-  H(jug, `<path d="M-28 -12Q-52 -14 -52 2Q-52 18 -28 14" stroke="rgba(255,255,255,.92)" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M-28 -12Q-52 -14 -52 2Q-52 18 -28 14" stroke="#BFDCEB" stroke-width="1.2" fill="none" opacity=".8"/>
-   <path d="${JD}" fill="url(#jug${id})"/>`);
-  const jw = E('g', { 'clip-path': `url(#jc${id})` }, jug), jwat = E('ellipse', { rx: 30, ry: 26, fill: LQ[1], opacity: .8 }, jw); E('ellipse', { rx: 10, ry: 5, cx: -6, cy: -8, fill: '#fff', opacity: .35 }, jw);
-  H(jug, `<path d="${JD}" fill="none" stroke="rgba(255,255,255,.95)" stroke-width="2.2"/><path d="M-22 -16A27 27 0 0 1 6 -27" stroke="#fff" stroke-width="2.6" fill="none" opacity=".85" stroke-linecap="round"/>`);
+  H(jug, `<path d="M-26 -10Q-54 -16 -54 0Q-54 16 -26 10" stroke="url(#emh${id})" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M-27 -9Q-50 -13 -50 0" stroke="#34D399" stroke-width="2" fill="none" opacity=".7" stroke-linecap="round"/>
+   <path d="${JD}" fill="url(#emw${id})" stroke="#CDD6D1" stroke-width="1"/><path d="M-27 -9Q-25 -25 -6 -27Q16 -29 26 -14" stroke="#10B981" stroke-width="3" fill="none" opacity=".85"/>
+   <path d="M30 -9L49 -2Q51 0 49 2L30 9" fill="#F4F7F5" stroke="#B7C2BC" stroke-width="1"/><ellipse rx="22" ry="21" cx="-2" fill="#E9EEEB"/>`);
+  const jw = E('g', { 'clip-path': `url(#jc${id})` }, jug), jwat = E('ellipse', { rx: 22, ry: 20, fill: LQ[1], opacity: .9 }, jw); E('ellipse', { rx: 8, ry: 4, cx: -8, cy: -8, fill: '#fff', opacity: .45 }, jw);
+  H(jug, `<ellipse rx="22" ry="21" cx="-2" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M-20 -12A20 20 0 0 1 2 -21" stroke="#fff" stroke-width="2.4" fill="none" opacity=".9" stroke-linecap="round"/>`);
   // струя сверху: короткий яркий «столб» у носика (вода уходит от камеры вниз) и пятно удара с брызгами
   const stream = E('path', { fill: '#BFE6FB', opacity: 0 }, svg), core = E('ellipse', { rx: 3, ry: 2, fill: '#fff', opacity: 0 }, svg);
-  const T = 4.8, JX = 126, JY = 62, JA = 36, JR = JA * Math.PI / 180;
+  const T = 5.6, JX = 126, JY = 62, JA = 36, JR = JA * Math.PI / 180;
   function frame(t, emit) {
     t %= T;
     const tilt = t < .6 ? eIO(t / .6) : t < 3.6 ? 1 : 1 - eIO(clamp((t - 3.6) / .5)), flow = t > .5 && t < 3.75, fk = clamp((t - .5) / .15) * (1 - clamp((t - 3.6) / .15));
     // наклон сверху: кувшин чуть сжимается вдоль оси наклона, вода в нём уходит к носику, тень отходит дальше
-    jug.setAttribute('transform', `translate(${JX} ${JY}) rotate(${JA}) scale(${(1 - tilt * .1).toFixed(3)} 1)`);
-    jsh.setAttribute('transform', `translate(${(JX + 9 + tilt * 6).toFixed(1)} ${(JY + 12 + tilt * 6).toFixed(1)}) rotate(${JA}) scale(${(1 - tilt * .1).toFixed(3)} 1)`); jsh.setAttribute('opacity', (.24 - tilt * .06).toFixed(2));
-    const empty = clamp((t - .6) / 3.1) * (t < 4.4 ? 1 : 1 - eIO(clamp((t - 4.4) / .4)));
+    jug.setAttribute('transform', offT(t, T, -170, -120) + `translate(${JX} ${JY}) rotate(${JA}) scale(${(1 - tilt * .1).toFixed(3)} 1)`);
+    jsh.setAttribute('transform', offT(t, T, -170, -120) + `translate(${(JX + 9 + tilt * 6).toFixed(1)} ${(JY + 12 + tilt * 6).toFixed(1)}) rotate(${JA}) scale(${(1 - tilt * .1).toFixed(3)} 1)`); jsh.setAttribute('opacity', (.24 - tilt * .06).toFixed(2));
+    const empty = clamp((t - .6) / 3.1);
     jwat.setAttribute('transform', `translate(${(tilt * 12 + empty * 6).toFixed(1)} 0) scale(${(1 - empty * .5).toFixed(3)} ${(1 - empty * .35).toFixed(3)})`);
-    const fill = t < .6 ? 0 : t < 3.7 ? eIO((t - .6) / 3.1) : t < 4.3 ? 1 : 1 - eIO((t - 4.3) / .5);
-    wat.setAttribute('opacity', (lerp(.22, .92, fill) * (t < 4.3 ? 1 : 1 - Math.sin(clamp((t - 4.3) / .5) * Math.PI) * .5)).toFixed(2)); cres.setAttribute('opacity', (fill * .38).toFixed(2));
+    const fill = t < .6 ? 0 : t < 3.7 ? eIO((t - .6) / 3.1) : 1, wout = t > T - .3 ? 1 - eIO((t - (T - .3)) / .3) : 1;   // вода набирается и держится до конца цикла
+    wat.setAttribute('opacity', (lerp(.22, .92, fill * wout)).toFixed(2)); cres.setAttribute('opacity', (fill * wout * .38).toFixed(2));
     glint.setAttribute('cx', (pot.cx - 18).toFixed(1)); glint.setAttribute('cy', (pot.cy - 20).toFixed(1)); glint.setAttribute('opacity', (.12 + fill * .2).toFixed(2));
-    const sx = JX + Math.cos(JR) * 47 * (1 - tilt * .1), sy = JY + Math.sin(JR) * 47, ex = sx + 5 + wob(t, 2) * .8, ey = sy + 7 + wob(t, 5) * .6;
+    const sx = JX + Math.cos(JR) * 50 * (1 - tilt * .1), sy = JY + Math.sin(JR) * 50, ex = sx + 13 + wob(t, 2) * .8, ey = sy + 15 + wob(t, 5) * .6;   // струя заметной длины: от носика к воде
     if (fk > 0) { const w = 3.4 * fk;
       stream.setAttribute('d', `M${(sx - w).toFixed(1)} ${(sy - 1).toFixed(1)}Q${(sx + 1).toFixed(1)} ${(sy + 4).toFixed(1)} ${(ex - w * .7).toFixed(1)} ${ey.toFixed(1)}A${(w * .8).toFixed(1)} ${(w * .8).toFixed(1)} 0 0 0 ${(ex + w * .7).toFixed(1)} ${ey.toFixed(1)}Q${(sx + 4).toFixed(1)} ${(sy + 2).toFixed(1)} ${(sx + w).toFixed(1)} ${(sy - 1).toFixed(1)}Z`); stream.setAttribute('opacity', .95);
       core.setAttribute('cx', (lerp(sx, ex, .55)).toFixed(1)); core.setAttribute('cy', (lerp(sy, ey, .55)).toFixed(1)); core.setAttribute('opacity', (.9 * fk).toFixed(2));
@@ -352,7 +381,7 @@ function salt(kind = 'grechka') {
     t %= T;
     const tilt = t < .6 ? eIO(t / .6) : t < 2.1 ? 1 : t < 2.6 ? 1 - eIO((t - 2.1) / .5) : 0, sx = 214 - tilt * 6, sy = 52 + tilt * 3;
     // наклон сверху: ложка поворачивается и чуть сжимается поперёк
-    sp.setAttribute('transform', `translate(${sx.toFixed(1)} ${sy.toFixed(1)}) rotate(${(-8 - tilt * 10 + wob(t * 2, 2)).toFixed(1)}) scale(1 ${(1 - tilt * .3).toFixed(3)})`);
+    sp.setAttribute('transform', offT(t, T, 150, -110) + `translate(${sx.toFixed(1)} ${sy.toFixed(1)}) rotate(${(-8 - tilt * 10 + wob(t * 2, 2)).toFixed(1)}) scale(1 ${(1 - tilt * .3).toFixed(3)})`);
     mound.setAttribute('transform', `translate(${(-tilt * 3).toFixed(1)} 0) scale(${(1 - clamp((t - .7) / 1.3) * .6 * (t < 2.8 ? 1 : 1 - clamp((t - 2.8) / .3))).toFixed(3)})`);
     G.forEach(g => { const st = .65 + (g.s / G.length) * 1.4, k = (t - st) / .55;
       if (k < 0 || k > 1) { g.e.setAttribute('opacity', 0); if (k > 1 && g.hit !== Math.floor(t / T) + 1 && g.s % 3 === 0) { g.hit = Math.floor(t / T) + 1; rg.at(g.x, g.y, t, .4); emit && emit('grain') } return }
@@ -455,25 +484,37 @@ function bowlTop(svg, id, cx, cy, R0) {
   defs(svg, `<clipPath id="bw${id}"><circle cx="${cx}" cy="${cy}" r="${R0 - 7}"/></clipPath>`);
   return { inner: E('g', { 'clip-path': `url(#bw${id})` }, svg), cx, cy, r: R0 - 7 } }
 // «вверх-вниз» инструмента (нож, молоток): ближе к камере — крупнее, тень дальше
+// инструмент в руке за кадром: входит из-за края в начале цикла и уходит туда же в конце (не висит и не появляется из воздуха)
+const away = (t, T, a = .45) => (1 - eOut(clamp(t / a))) + eIn(clamp((t - (T - a)) / a));
+const offT = (t, T, dx, dy, a) => { const k = away(t, T, a); return `translate(${(dx * k).toFixed(1)} ${(dy * k).toFixed(1)}) ` };
 function hit(ph, per = .55) { const p = ph % per; return p < .24 ? eOut(p / .24) : p < .31 ? 1 : p < .4 ? 1 - eIn((p - .31) / .09) : p < .47 ? .1 * Math.sin((p - .4) / .07 * Math.PI) : 0 }
 const sc0 = (id, svg, frame, T, title, sub, sound) => ({ svg, frame, T, title, sub, sound });
 
-/* натереть на тёрке: морковь короче тёрки ходит вверх-вниз с наклоном, стружка вылетает снизу и копится горкой под тёркой */
+/* натереть на тёрке: продукт ходит вверх-вниз по тёрке и с каждым проходом становится короче (нижний край — свежий срез),
+   стружка выходит из-под тёрки и копится горкой; когда остаётся огрызок — он уходит, появляется целый продукт */
 function grate(f = 'morkov') {
-  const { id, svg } = scene(), P = F[f]; defs(svg, metalDefs(id)); boardTop(svg, id); decor(svg, id, ['dill']);
-  const pile = E('g', {}, svg), N = 40, sh = [...Array(N)].map((_, i) => { const w = E('g', { opacity: 0 }, pile); H(w, `<path d="M-5 0Q0 -2 5 0" stroke="${P.c}" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M-3 -.6Q0 -1.6 3 -.6" stroke="${P.l}" stroke-width=".7" fill="none"/>`);
-    const a = R(i, 0, 3.14), r = Math.sqrt(R(i + 3, 0, 1)); return { w, x: 178 + Math.cos(a) * r * 26 * (R(i + 7) > .5 ? 1 : -1), y: 132 + Math.sin(a) * r * 10, r: R(i, 0, 180) } });
+  const { id, svg } = scene(), P = F[f]; defs(svg, metalDefs(id) + `<linearGradient id="gp${id}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${P.l}"/><stop offset=".55" stop-color="${P.c}"/><stop offset="1" stop-color="${P.d}"/></linearGradient>`); boardTop(svg, id); decor(svg, id, ['dill']);
+  const SK = f === 'morkov' ? null : P.s && P.s !== P.c ? P.s : null; // у продуктов с кожурой (свёкла, кабачок) бока — кожура, срез — мякоть
+  // горка стружки под тёркой: основание растёт, стружки крупные и ложатся от центра к краям — видно, сколько натёрто
+  const pile = E('g', {}, svg), mound = E('ellipse', { cx: 178, cy: 136, rx: 2, ry: 1, fill: P.d, opacity: 0 }, pile), N = 64, sh = [...Array(N)].map((_, i) => { const w = E('g', { opacity: 0 }, pile); H(w, `<path d="M-7 0Q0 -3 7 0" stroke="${i % 3 ? P.c : P.d}" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M-4.5 -.8Q0 -2.2 4.5 -.8" stroke="${P.l}" stroke-width="1" fill="none"/>`);
+    const q = i / N, a = R(i, 0, 6.283), r = Math.sqrt(q) * R(i + 3, .55, 1); return { w, x: 178 + Math.cos(a) * r * 34, y: 136 + Math.sin(a) * r * 11 - (1 - q) * 3, r: R(i, 0, 180) } });
   H(svg, shade(id, '<rect x="150" y="30" width="56" height="96" rx="8"/>', 5, 7, .3) + `<rect x="150" y="30" width="56" height="96" rx="8" fill="url(#rim${id})"/><rect x="156" y="36" width="44" height="84" rx="5" fill="#B9C1C8"/>
    ${[...Array(9)].map((_, r) => [...Array(5)].map((_, c) => `<path d="M${161 + c * 8 + (r % 2) * 4} ${42 + r * 8.6}q3 -2 6 0" stroke="#5E666E" stroke-width="1.6" fill="none"/>`).join('')).join('')}<path d="M152 36V120" stroke="#fff" stroke-width="1.6" opacity=".6"/><rect x="160" y="18" width="36" height="12" rx="6" fill="url(#khd${id})"/>`);
-  const pr = E('g', {}, svg);
-  H(pr, shade(id, '<rect x="-10" y="-22" width="20" height="44" rx="9"/>', 5, 7, .3) + `<rect x="-10" y="-22" width="20" height="44" rx="9" fill="url(#coin${id})"/><path d="M-5 -16V14" stroke="#fff" stroke-width="2" opacity=".45" stroke-linecap="round"/>${[0, 1, 2].map(i => `<path d="M-9 ${-10 + i * 10}q9 2 18 0" stroke="${P.d}" stroke-width=".7" fill="none" opacity=".4"/>`).join('')}<path d="M-9 22q9 3 18 0" stroke="${P.core || P.d}" stroke-width="3" opacity=".9"/>`);
+  const pr = E('g', {}, svg), L0 = 46, L1 = 16, top0 = -24;
+  const shd = E('rect', { x: -10, y: top0, width: 20, height: L0, rx: 9, fill: '#000', opacity: .3, filter: `url(#sb${id})`, transform: 'translate(5 7)' }, pr);
+  const body = E('rect', { x: -10, y: top0, width: 20, height: L0, rx: 9, fill: SK ? SK : `url(#gp${id})` }, pr);
+  H(pr, `<path d="M-5 -18V-2" stroke="#fff" stroke-width="2" opacity=".45" stroke-linecap="round"/><path d="M-9 -14q9 2 18 0" stroke="${P.d}" stroke-width=".7" fill="none" opacity=".4"/>`);
+  const face = E('ellipse', { cx: 0, rx: 9.6, ry: 3.2, fill: P.core || mixc(P.l, '#ffffff', .2), stroke: P.c, 'stroke-width': 1 }, pr);   // свежий срез — мякоть
   const fly = [...Array(10)].map(() => E('path', { d: 'M-4 0Q0 -2 4 0', stroke: P.c, 'stroke-width': 2, fill: 'none', 'stroke-linecap': 'round', opacity: 0 }, svg));
-  const T = 3.2;
-  function frame(t, emit) { t %= T; const k = (t % .62) / .62, y = 74 + Math.sin(k * 2 * Math.PI) * 22, tilt = Math.cos(k * 2 * Math.PI) * 8;
-    pr.setAttribute('transform', `translate(178 ${y.toFixed(1)}) rotate(${tilt.toFixed(1)})`);
-    if (Math.floor(t / .31) !== frame._g) { frame._g = Math.floor(t / .31); emit && emit('grate') }
-    fly.forEach((e, i) => { const q = ((t * 2.2 + i / fly.length) % 1); e.setAttribute('transform', `translate(${(178 + R(i, -14, 14) * q).toFixed(1)} ${(122 + q * 12).toFixed(1)}) rotate(${(i * 40 + q * 200).toFixed(0)})`); e.setAttribute('opacity', (Math.sin(q * Math.PI) * .9).toFixed(2)) });
-    const n = Math.floor(clamp(t / (T * .85)) * N); sh.forEach((s, i) => { s.w.setAttribute('opacity', i < n ? (t > T * .9 ? 1 - (t - T * .9) / (T * .1) : 1).toFixed(2) : 0); s.w.setAttribute('transform', `translate(${s.x.toFixed(1)} ${s.y.toFixed(1)}) rotate(${s.r.toFixed(0)})`) }) }
+  const T = 4.4, GR = T * .84;
+  function frame(t, emit) { t %= T; const k = (t % .62) / .62, used = eIO(clamp(t / GR)), L = lerp(L0, L1, used), osc = Math.sin(k * 2 * Math.PI) * 22, tilt = Math.cos(k * 2 * Math.PI) * 8;
+    const y = 74 + osc + (L0 - L) * .6, rub = t < GR;   // рука держит за верх: с укорачиванием продукт опускается, низ трётся о тёрку
+    const fin = eOut(clamp(t / .35)), fout = t > GR + .25 ? 1 - eIO(clamp((t - GR - .25) / .4)) : 1;
+    body.setAttribute('height', L.toFixed(1)); shd.setAttribute('height', L.toFixed(1)); face.setAttribute('cy', (top0 + L - 3).toFixed(1)); face.setAttribute('opacity', clamp(t / .5).toFixed(2));
+    pr.setAttribute('transform', `translate(178 ${(rub ? y : y - eIO(clamp((t - GR) / .5)) * 30).toFixed(1)}) rotate(${(rub ? tilt : 0).toFixed(1)})`); pr.setAttribute('opacity', (fin * fout).toFixed(2));
+    if (rub && Math.floor(t / .31) !== frame._g) { frame._g = Math.floor(t / .31); emit && emit('grate') }
+    fly.forEach((e, i) => { const q = ((t * 2.2 + i / fly.length) % 1); e.setAttribute('transform', `translate(${(178 + R(i, -14, 14) * q).toFixed(1)} ${(122 + q * 12).toFixed(1)}) rotate(${(i * 40 + q * 200).toFixed(0)})`); e.setAttribute('opacity', (rub && t > .2 ? Math.sin(q * Math.PI) * .9 : 0).toFixed(2)) });
+    const n = Math.floor(used * N); mound.setAttribute('rx', (2 + used * 34).toFixed(1)); mound.setAttribute('ry', (1 + used * 11).toFixed(1)); mound.setAttribute('opacity', (used * .45 * fout).toFixed(2)); sh.forEach((s, i) => { s.w.setAttribute('opacity', i < n ? fout.toFixed(2) : 0); s.w.setAttribute('transform', `translate(${s.x.toFixed(1)} ${s.y.toFixed(1)}) rotate(${s.r.toFixed(0)})`) }) }
   return sc0(id, svg, frame, T, 'Натереть', `${P.n} — на тёрке`, 'grate') }
 
 /* промыть: в миске вода кружит крупу, сверху льётся вода, круги */
@@ -501,18 +542,31 @@ function peel(f = 'kartofel') {
    <ellipse cx="-14" cy="-14" rx="14" ry="5" fill="#fff" opacity=".22"/>`);
   const bandsG = E('g', { 'clip-path': `url(#pk${id})` }, pot), NB = 4, bands = [...Array(NB)].map((_, i) => { const y = -22 + i * 14.5, g = E('g', {}, bandsG); E('rect', { x: -48, y: y - 7, width: 96, height: 14, rx: 6, fill: `url(#flesh${id})` }, g); E('path', { d: `M-40 ${y - 3}H40`, stroke: '#fff', 'stroke-width': 1.4, opacity: .6, 'stroke-linecap': 'round' }, g); return { g, y } });
   const peeler = E('g', {}, svg); H(peeler, shade(id, '<rect x="-6" y="-6" width="12" height="52" rx="5"/>', 4, 6, .3) + `<rect x="-11" y="-10" width="22" height="12" rx="4" fill="url(#rim${id})"/><path d="M-8 -4H8" stroke="#5E666E" stroke-width="1.3"/><rect x="-6" y="2" width="12" height="46" rx="5" fill="url(#emh${id})"/><path d="M-3 8V42" stroke="#fff" stroke-width="1" opacity=".4"/>`);
-  // лента кожуры: спираль коричневая снаружи, светлая изнутри
-  const spir = (n) => { let d = ''; for (let a = 0; a <= n; a += .25) { const r = 2 + a * 2.2; d += (a ? 'L' : 'M') + (Math.cos(a) * r).toFixed(1) + ' ' + (Math.sin(a) * r * .7).toFixed(1) } return d };
-  const curl = E('g', {}, svg); E('path', { d: spir(9), stroke: shade2(SK), 'stroke-width': 4.6, fill: 'none', 'stroke-linecap': 'round' }, curl); E('path', { d: spir(9), stroke: P.l, 'stroke-width': 1.6, fill: 'none', 'stroke-linecap': 'round', opacity: .9 }, curl);
-  const pileP = [...Array(NB)].map((_, i) => { const w = E('g', { opacity: 0 }, svg); H(w, `<path d="${spir(7)}" stroke="${shade2(SK)}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="${spir(7)}" stroke="${P.l}" stroke-width="1.3" fill="none" opacity=".8"/>`); return { w, x: 236 + (i % 2) * 22 + R(i, -4, 4), y: 70 + Math.floor(i / 2) * 28 + R(i + 2, -4, 4), r: R(i, 0, 360) } });
-  const T = 4.8, PASS = T * .85 / NB;
-  function frame(t, emit) { t %= T; const pi = Math.min(NB - 1, Math.floor(t / PASS)), pk = clamp((t - pi * PASS) / (PASS * .8)), fade = t > T * .93 ? 1 - (t - T * .93) / (T * .07) : 1;
-    bands.forEach((b, i) => { const s = i < pi ? 1 : i === pi ? eIO(pk) : 0; b.g.setAttribute('transform', `translate(-48 0) scale(${s.toFixed(3)} 1) translate(48 0)`); b.g.setAttribute('opacity', fade.toFixed(2)) });
-    const by = bands[pi].y, a = -8 * Math.PI / 180, lx = -44 + pk * 88, px = CX + Math.cos(a) * lx * SX - Math.sin(a) * by * SY, py = CY + Math.sin(a) * lx * SX + Math.cos(a) * by * SY;
-    peeler.setAttribute('transform', `translate(${px.toFixed(1)} ${(py - 4).toFixed(1)}) rotate(-80)`);
-    if (pk > .05 && pk < .1 && frame._p !== pi) { frame._p = pi; emit && emit('peel') }
-    const drop = clamp((t - pi * PASS - PASS * .8) / (PASS * .2)); curl.setAttribute('transform', `translate(${(px + 10 + drop * 30).toFixed(1)} ${(py - 6 + drop * 10).toFixed(1)}) scale(${(.3 + pk * .7).toFixed(2)}) rotate(${(pk * 180).toFixed(0)})`); curl.setAttribute('opacity', pk > .05 && t < T * .9 ? (1 - drop).toFixed(2) : 0);
-    pileP.forEach((p, i) => { p.w.setAttribute('opacity', (i < pi || (i === pi && pk >= 1) ? fade : 0).toFixed(2)); p.w.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) rotate(${p.r.toFixed(0)})`) }) }
+  // кожура снимается с продукта: за овощечисткой тянется лента кожуры (снаружи кожура, по краю видна светлая изнанка), чуть приподнятая над мякотью;
+  // в конце прохода лента отрывается, сминается и ложится в очистки. Когда очищено всё — продукт уходит, появляется новый, в кожуре.
+  const a8 = -8 * Math.PI / 180, toS = (lx, ly) => [CX + Math.cos(a8) * lx * SX - Math.sin(a8) * ly * SY, CY + Math.sin(a8) * lx * SX + Math.cos(a8) * ly * SY];
+  const ribG = E('g', {}, svg), ribO = E('path', { stroke: shade2(SK), 'stroke-width': 13 * SY + 1.6, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, ribG),
+    ribS = E('path', { stroke: `url(#skn${id})`, 'stroke-width': 13 * SY, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, ribG),
+    ribI = E('path', { stroke: P.l, 'stroke-width': 2.2, fill: 'none', 'stroke-linecap': 'round', opacity: .95 }, ribG);
+  const wav = n => { let d = ''; for (let j = 0; j <= n; j++) { const x = -20 + j * 40 / n, y = Math.sin(j * 1.7) * 3.4; d += (j ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1) } return d };
+  const pileP = [...Array(NB)].map((_, i) => { const w = E('g', { opacity: 0 }, svg); H(w, `<path d="${wav(10)}" stroke="${shade2(SK)}" stroke-width="${(10 * SY + 2).toFixed(1)}" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${wav(10)}" stroke="${SK}" stroke-width="${(10 * SY).toFixed(1)}" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${wav(10)}" stroke="${P.l}" stroke-width="2" fill="none" transform="translate(0 ${(3.4 * SY).toFixed(1)})" opacity=".9"/>`);
+    return { w, x: 252 + (i % 2) * 18 + R(i, -4, 4), y: 66 + i * 17 + R(i + 2, -3, 3), r: R(i, -25, 25) } });
+  svg.appendChild(peeler);
+  const T = 5.2, T0 = .4, PASS = (T - T0) * .86 / NB;
+  function frame(t, emit) { t %= T; const tp = t - T0, pi = clamp(Math.floor(tp / PASS), 0, NB - 1), pk = tp < 0 ? 0 : clamp((tp - pi * PASS) / (PASS * .78)), drop = tp < 0 ? 0 : clamp((tp - pi * PASS - PASS * .78) / (PASS * .22));
+    const fin = eOut(clamp(t / T0)), fout = t > T - .4 ? 1 - eIO(clamp((t - (T - .4)) / .4)) : 1, end = tp > NB * PASS;
+    pot.setAttribute('opacity', (fin * fout).toFixed(2));
+    const by = bands[pi].y, hw = 46 * Math.sqrt(Math.max(.2, 1 - (by / 31) ** 2)) - 2, lx = -hw + eIO(pk) * 2 * hw, [px, py] = toS(end ? hw + 12 : lx, by);
+    bands.forEach((b, i) => { const s = tp < 0 ? 0 : i < pi || end ? 1 : i === pi ? clamp((lx + 48) / 96) * (pk > 0) : 0; b.g.setAttribute('transform', `translate(-48 0) scale(${s.toFixed(3)} 1) translate(48 0)`) });
+    peeler.setAttribute('transform', `translate(${px.toFixed(1)} ${(py - 4).toFixed(1)}) rotate(-80)`); peeler.setAttribute('opacity', (fin * fout).toFixed(2));
+    if (tp >= 0 && pk > .02 && pk < .2 && frame._p !== pi) { frame._p = pi; emit && emit('peel') } if (tp < 0) frame._p = -1;
+    // лента: от начала полосы до овощечистки, приподнята (сдвиг вверх растёт к началу — там она уже закручивается)
+    if (tp >= 0 && !end && pk > .01) { let d = ''; const n = 12, x1 = lx; for (let j = 0; j <= n; j++) { const lxj = lerp(-hw, x1, j / n), lift = (1 - j / n) * (2 + pk * 5), [sx, sy] = toS(lxj, by - lift + Math.sin(j * 1.3 + pi) * 1.2); d += (j ? 'L' : 'M') + sx.toFixed(1) + ' ' + sy.toFixed(1) }
+      [ribO, ribS].forEach(e => e.setAttribute('d', d)); ribI.setAttribute('d', d); ribI.setAttribute('transform', `translate(0 ${(4.2 * SY).toFixed(1)})`);
+      const pp = pileP[pi], [cx0, cy0] = toS(0, by), g = eIO(drop), sc = 1 - g * .55;
+      ribG.setAttribute('transform', `translate(${lerp(0, pp.x - cx0, g).toFixed(1)} ${(lerp(0, pp.y - cy0, g) - Math.sin(g * Math.PI) * 8).toFixed(1)}) translate(${cx0.toFixed(1)} ${cy0.toFixed(1)}) scale(${sc.toFixed(3)}) rotate(${(g * pp.r).toFixed(1)}) translate(${(-cx0).toFixed(1)} ${(-cy0).toFixed(1)})`);
+      ribG.setAttribute('opacity', (1 - clamp((drop - .6) / .4)).toFixed(2)) } else ribG.setAttribute('opacity', 0);
+    pileP.forEach((p, i) => { p.w.setAttribute('opacity', (tp < 0 ? 0 : (i < pi || end ? 1 : i === pi ? clamp((drop - .55) / .45) : 0) * fout).toFixed(2)); p.w.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) rotate(${p.r.toFixed(0)})`) }) }
   return sc0(id, svg, frame, T, 'Очистить', `${P.n} — овощечисткой`, 'peel') }
 
 /* отбить: молоток вверх-вниз (тень), кусок мяса с каждым ударом шире */
@@ -538,22 +592,22 @@ function pepper(kind = 'borsch') {
   const mill = E('g', {}, svg); H(mill, shade(id, '<circle r="20"/>', 10, 14, .22) + `<circle r="20" fill="url(#spat${id})"/><circle r="12" fill="url(#rim${id})"/><circle r="4" fill="#5E666E"/>`);
   const cap = E('g', {}, mill); H(cap, `<path d="M0 -12V-6M0 6V12M-12 0H-6M6 0H12" stroke="#6E767E" stroke-width="1.4"/>`);
   const T = 3.2;
-  function frame(t, emit) { t %= T; const tw = Math.sin(t * 9) * 25 * (t < 2.6 ? 1 : 0); mill.setAttribute('transform', 'translate(132 60)'); cap.setAttribute('transform', `rotate(${tw.toFixed(1)})`);
+  function frame(t, emit) { t %= T; const tw = Math.sin(t * 9) * 25 * (t < 2.6 ? 1 : 0); mill.setAttribute('transform', offT(t, T, -60, -130) + 'translate(132 60)'); cap.setAttribute('transform', `rotate(${tw.toFixed(1)})`);
     if (t < 2.6 && Math.floor(t / .25) !== frame._m) { frame._m = Math.floor(t / .25); emit && emit('grind') }
     specks.forEach(s => s.e.setAttribute('cx', s.x.toFixed(1)) || s.e.setAttribute('cy', s.y.toFixed(1)) || s.e.setAttribute('opacity', t > s.st ? (t > T - .4 ? (T - t) / .4 : 1).toFixed(2) : 0)); fl(t) }
   return sc0(id, svg, frame, T, 'Поперчить', 'щепоть молотого перца', 'grind') }
 
 /* налить масло: бутылка над сковородой, золотое пятно растекается и бликует */
 function oil() {
-  const { id, svg } = scene(); defs(svg, metalDefs(id) + `<radialGradient id="ol${id}" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#FFE59A"/><stop offset=".7" stop-color="#F2B83A" stop-opacity=".75"/><stop offset="1" stop-color="#E09A1A" stop-opacity=".3"/></radialGradient>`); decor(svg, id, ['dill']);
-  const pan = panTop(svg, id, 150, 88, 76), pool = E('ellipse', { cx: pan.cx - 6, cy: pan.cy - 4, rx: 4, ry: 3, fill: `url(#ol${id})` }, svg), gl = E('ellipse', { rx: 6, ry: 2, fill: '#fff', opacity: 0 }, svg);
+  const { id, svg } = scene(); defs(svg, metalDefs(id) + `<radialGradient id="ol${id}" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#FFFBEA" stop-opacity=".42"/><stop offset=".45" stop-color="#FFE9A6" stop-opacity=".16"/><stop offset=".9" stop-color="#FFDE80" stop-opacity=".1"/><stop offset="1" stop-color="#FFF3C8" stop-opacity=".85"/></radialGradient>`); decor(svg, id, ['dill']);
+  const pan = panTop(svg, id, 150, 88, 76), pool = E('ellipse', { cx: pan.cx - 6, cy: pan.cy - 4, rx: 4, ry: 3, fill: `url(#ol${id})`, stroke: '#FFE9A8', 'stroke-width': 1.2, 'stroke-opacity': .7 }, svg), gl = E('ellipse', { rx: 6, ry: 2, fill: '#fff', opacity: 0 }, svg), gl2 = E('ellipse', { rx: 3, ry: 1.2, fill: '#fff', opacity: 0 }, svg); const arc = E('path', { stroke: '#fff', 'stroke-width': 2.2, fill: 'none', 'stroke-linecap': 'round', opacity: 0 }, svg);   // масло — тонкая прозрачная плёнка с бликами, а не мутное пятно
   const bt = E('g', {}, svg); H(bt, shade(id, '<circle r="18"/><rect x="10" y="-6" width="24" height="12" rx="5"/>', 10, 14, .22) + `<circle r="18" fill="#F4B92E" opacity=".9"/><circle r="12" fill="#FFE08A" opacity=".8"/><rect x="12" y="-6" width="20" height="12" rx="5" fill="#2F7D57"/><path d="M-10 -10A14 14 0 0 1 4 -16" stroke="#fff" stroke-width="2" fill="none" opacity=".7" stroke-linecap="round"/>`);
   const drip = E('ellipse', { rx: 3, ry: 2.2, fill: '#FFD26A', opacity: 0 }, svg);
   const T = 3.6;
-  function frame(t, emit) { t %= T; const k = t < .4 ? 0 : t < 2.6 ? eOut((t - .4) / 2.2) : 1, fade = t > 3.2 ? 1 - (t - 3.2) / .4 : 1;
-    bt.setAttribute('transform', `translate(${(108 + (t > .2 && t < 2.8 ? 4 : 0)).toFixed(0)} 54) rotate(40)`);
-    pool.setAttribute('rx', (4 + k * 46).toFixed(1)); pool.setAttribute('ry', (3 + k * 34).toFixed(1)); pool.setAttribute('opacity', fade.toFixed(2));
-    gl.setAttribute('cx', (pan.cx - 20 - k * 10).toFixed(1)); gl.setAttribute('cy', (pan.cy - 14 - k * 6).toFixed(1)); gl.setAttribute('rx', (4 + k * 14).toFixed(1)); gl.setAttribute('opacity', (k * .5 * fade).toFixed(2));
+  function frame(t, emit) { t %= T; const k = t < .4 ? 0 : t < 2.6 ? eOut((t - .4) / 2.2) : 1, fade = t > T - .3 ? 1 - eIO((t - (T - .3)) / .3) : 1;
+    bt.setAttribute('transform', offT(t, T, -150, -110) + `translate(${(108 + (t > .2 && t < 2.8 ? 4 : 0)).toFixed(0)} 54) rotate(40)`);
+    pool.setAttribute('rx', (4 + k * 46).toFixed(1)); pool.setAttribute('ry', (3 + k * 34).toFixed(1)); pool.setAttribute('opacity', (clamp((t - .4) / .12) * fade).toFixed(2));   // масло появляется, только когда потекло из бутылки
+    gl.setAttribute('cx', (pan.cx - 20 - k * 10).toFixed(1)); gl.setAttribute('cy', (pan.cy - 14 - k * 6).toFixed(1)); gl.setAttribute('rx', (4 + k * 14).toFixed(1)); gl.setAttribute('opacity', (k * .75 * fade).toFixed(2)); { const rx = 4 + k * 46, ry = 3 + k * 34, cx = pan.cx - 6, cy = pan.cy - 4; arc.setAttribute('d', `M${(cx - rx * .8).toFixed(1)} ${(cy - ry * .25).toFixed(1)}A${(rx * .85).toFixed(1)} ${(ry * .85).toFixed(1)} 0 0 1 ${(cx - rx * .1).toFixed(1)} ${(cy - ry * .82).toFixed(1)}`); arc.setAttribute('opacity', (k * .6 * fade).toFixed(2)) } gl2.setAttribute('cx', (pan.cx + 14 + k * 8).toFixed(1)); gl2.setAttribute('cy', (pan.cy + 12 + k * 6).toFixed(1)); gl2.setAttribute('rx', (2 + k * 6).toFixed(1)); gl2.setAttribute('opacity', (k * .45 * fade * (.8 + Math.sin(t * 3) * .2)).toFixed(2));
     drip.setAttribute('cx', 140); drip.setAttribute('cy', 82); drip.setAttribute('opacity', t > .4 && t < 2.6 ? .95 : 0); pan.shine(t); emit && emit(t > .4 && t < 2.6 ? 'oil' : 'oil-stop') }
   return sc0(id, svg, frame, T, 'Масло', 'налейте на сковороду', 'oil') }
 
@@ -608,12 +662,18 @@ function whisk(items = []) { const W0 = items.find(k => F[k] && k !== 'sol') || 
 
 /* сформовать котлеты: шарик фарша приплющивается в котлету, ряд растёт */
 function form(f = 'kur', balls = false) { if (!f) f = 'kur';
+  // слева горка фарша: каждая котлета/шарик берётся из неё (горка убывает), формуется по дороге и ложится в ряд; в конце всё уходит, появляется новая горка
   const { id, svg } = scene(); defs(svg, metalDefs(id)); boardTop(svg, id); decor(svg, id, ['dill']);
-  const pat = [...Array(5)].map((_, i) => { const w = E('g', { opacity: 0 }, svg); const rx = balls ? 11 : 17, ry = balls ? 11 : 14; H(w, shade(id, `<ellipse rx="${rx}" ry="${ry}"/>`, 3, 4, .3) + `<ellipse rx="${rx}" ry="${ry}" fill="${MEAT(f, id)}"/>${[...Array(8)].map((_, j) => `<circle cx="${R(i * 9 + j, -12, 12).toFixed(1)}" cy="${R(i * 9 + j + 3, -9, 9).toFixed(1)}" r="1" fill="#C98A45" opacity=".6"/>`).join('')}<ellipse cx="-5" cy="-5" rx="6" ry="3" fill="#fff" opacity=".35"/>`); return { w, x: 92 + i * 40, y: 90 + (i % 2) * 6 } });
-  const T = 5, per = T / 5;
-  function frame(t, emit) { t %= T; pat.forEach((p, i) => { const k = (t - i * per) / per; if (k < 0) { p.w.setAttribute('opacity', 0); return } const q = clamp(k * 1.6), sq = k < 1 ? eOut(q) : 1;
-    p.w.setAttribute('transform', `translate(${p.x} ${p.y}) scale(${lerp(.6, 1, sq).toFixed(3)} ${lerp(.75, 1, sq).toFixed(3)})`); p.w.setAttribute('opacity', (t > T - .3 ? (T - t) / .3 : 1).toFixed(2));
-    if (k > .2 && k < .3 && p._e !== Math.floor(t / T)) { p._e = Math.floor(t / T); emit && emit('pat') } }) }
+  const specks = (n, sx, sy, s0) => [...Array(n)].map((_, j) => `<circle cx="${R(s0 + j, -sx, sx).toFixed(1)}" cy="${R(s0 + j + 3, -sy, sy).toFixed(1)}" r="1" fill="#C98A45" opacity=".6"/>`).join('');
+  const heap = E('g', {}, svg); H(heap, shade(id, '<path d="M-26 6Q-28 -14 -8 -20Q10 -26 24 -12Q32 4 18 16Q0 26 -16 18Q-26 14 -26 6Z"/>', 3, 5, .3) + `<path d="M-26 6Q-28 -14 -8 -20Q10 -26 24 -12Q32 4 18 16Q0 26 -16 18Q-26 14 -26 6Z" fill="${MEAT(f, id)}"/>${specks(22, 20, 15, 77)}<ellipse cx="-6" cy="-10" rx="9" ry="4" fill="#fff" opacity=".3"/>`);
+  const pat = [...Array(5)].map((_, i) => { const w = E('g', { opacity: 0 }, svg); const rx = balls ? 11 : 17, ry = balls ? 11 : 14; H(w, shade(id, `<ellipse rx="${rx}" ry="${ry}"/>`, 3, 4, .3) + `<ellipse rx="${rx}" ry="${ry}" fill="${MEAT(f, id)}"/>${specks(8, 12, 9, i * 9)}<ellipse cx="-5" cy="-5" rx="6" ry="3" fill="#fff" opacity=".35"/>`); return { w, x: 124 + i * 36, y: 88 + (i % 2) * 8 } });
+  const HX = 74, HY = 90, T = 5.4, per = (T - .7) / 5;
+  function frame(t, emit) { t %= T; const fin = eOut(clamp(t / .3)), fout = t > T - .35 ? 1 - eIO((t - (T - .35)) / .35) : 1, taken = clamp((t - .3) / (per * 5));
+    heap.setAttribute('transform', `translate(${HX} ${HY}) scale(${lerp(1, .18, taken).toFixed(3)})`); heap.setAttribute('opacity', (fin * (taken > .98 ? 0 : 1) * fout).toFixed(2));
+    pat.forEach((p, i) => { const k = (t - .3 - i * per) / per; if (k < 0) { p.w.setAttribute('opacity', 0); return }
+      const mv = eIO(clamp(k / .7)), sq = eOut(clamp((k - .55) / .35)), x = lerp(HX + 8, p.x, mv), y = lerp(HY - 4, p.y, mv) - Math.sin(mv * Math.PI) * 6, sc = lerp(.45, 1, mv);
+      p.w.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${(sc * lerp(.92, 1, sq)).toFixed(3)} ${(sc * lerp(1.08, 1, sq)).toFixed(3)})`); p.w.setAttribute('opacity', fout.toFixed(2));
+      if (k > .6 && k < .75 && p._e !== Math.floor(t / T)) { p._e = Math.floor(t / T); emit && emit('pat') } }) }
   return sc0(id, svg, frame, T, 'Сформовать', balls ? 'шарики мокрыми руками' : 'котлеты мокрыми руками', 'pat') }
 
 /* раскатать: скалка ходит вверх-вниз, пласт теста растёт, мука пылит */
@@ -623,7 +683,7 @@ function roll() {
   const dough = E('ellipse', { cx: 170, cy: 90, rx: 30, ry: 26, fill: '#F6E3B8', stroke: '#E3C98E', 'stroke-width': 1 }, svg), dHi = E('ellipse', { cx: 160, cy: 82, rx: 14, ry: 6, fill: '#fff', opacity: .4 }, svg);
   const pin = E('g', {}, svg); H(pin, shade(id, '<rect x="-80" y="-9" width="160" height="18" rx="9"/>', 5, 7, .3) + `<rect x="-62" y="-10" width="124" height="20" rx="10" fill="url(#spat${id})"/><rect x="-90" y="-5" width="30" height="10" rx="5" fill="#C98F55"/><rect x="60" y="-5" width="30" height="10" rx="5" fill="#C98F55"/><path d="M-58 -5H58" stroke="#fff" stroke-width="1.4" opacity=".5"/>`);
   const T = 3.6;
-  function frame(t, emit) { t %= T; const k = clamp(t / (T * .85)), g = t > T - .4 ? 1 - (t - (T - .4)) / .4 : 1; dough.setAttribute('rx', (30 + k * 52 * g).toFixed(1)); dough.setAttribute('ry', (26 + k * 30 * g).toFixed(1));
+  function frame(t, emit) { t %= T; const k = clamp(t / (T * .85)), g = (t > T - .4 ? 1 - eIO((t - (T - .4)) / .4) : 1) * eOut(clamp(t / .3)); dough.setAttribute('rx', (30 + k * 52).toFixed(1)); dough.setAttribute('ry', (26 + k * 30).toFixed(1)); dough.setAttribute('opacity', g.toFixed(2)); dHi.setAttribute('opacity', (.4 * g).toFixed(2));
     const y = 90 + Math.sin(t * 2 * Math.PI / .9) * (18 + k * 20); pin.setAttribute('transform', `translate(170 ${y.toFixed(1)})`);
     if (Math.floor(t / .45) !== frame._r) { frame._r = Math.floor(t / .45); emit && emit('roll') } }
   return sc0(id, svg, frame, T, 'Раскатать', 'тесто скалкой в тонкий пласт', 'roll') }
@@ -635,8 +695,9 @@ function batter() {
   const pores = [...Array(26)].map((_, i) => E('circle', { r: R(i, .8, 1.8), fill: '#E2BE6E', opacity: 0, cx: pan.cx + Math.cos(i * 2.4) * R(i, 10, 52), cy: pan.cy + Math.sin(i * 2.4) * R(i, 10, 52) }, svg));
   const ld = E('g', {}, svg); H(ld, shade(id, '<circle r="16"/>', 9, 12, .22) + `<circle r="16" fill="url(#rim${id})"/><circle r="12" fill="#F7DFA0"/><rect x="12" y="-3" width="70" height="6" rx="3" fill="url(#hnd${id})" transform="rotate(-30)"/>`);
   const T = 4;
-  function frame(t, emit) { t %= T; const k = t < .3 ? 0 : t < 2 ? eOut((t - .3) / 1.7) : 1, f = t > 3.6 ? 1 - (t - 3.6) / .4 : 1; bt.setAttribute('r', (4 + k * 54).toFixed(1)); bt.setAttribute('opacity', f.toFixed(2)); bh.setAttribute('r', (3 + k * 14).toFixed(1)); bh.setAttribute('opacity', (.3 * f).toFixed(2));
-    ld.setAttribute('transform', `translate(${(pan.cx - 4 + (t < 2 ? Math.sin(t * 3) * 6 : 30)).toFixed(1)} ${(pan.cy - 6 - (t < 2 ? 0 : 40)).toFixed(1)}) scale(${(t < 2 ? 1 : .9).toFixed(2)})`); ld.setAttribute('opacity', t < 2.4 ? 1 : 0);
+  function frame(t, emit) { t %= T; const k = t < .3 ? 0 : t < 2 ? eOut((t - .3) / 1.7) : 1, f = 1, br = clamp((t - 2.2) / 1.2), out = eIn(clamp((t - 3.55) / .45)); bt.setAttribute('r', (4 + k * 54).toFixed(1)); bt.setAttribute('opacity', clamp((t - .3) / .1).toFixed(2)); bt.setAttribute('fill', mixc('#F7DFA0', '#F2C66B', br)); bt.setAttribute('stroke', '#D99A3E'); bt.setAttribute('stroke-width', (br * 3.2).toFixed(2)); bt.setAttribute('stroke-opacity', (br * .8).toFixed(2));
+    [bt, bh, ...pores].forEach(e => e.setAttribute('transform', `translate(${(out * 200).toFixed(1)} ${(-out * 30).toFixed(1)})`));   // готовый блин золотистый с румяным краем, в конце уезжает на тарелку за кадр bh.setAttribute('r', (3 + k * 14).toFixed(1)); bh.setAttribute('opacity', (.3 * f * clamp((t - .3) / .1)).toFixed(2));
+    ld.setAttribute('transform', `translate(${(pan.cx - 4 + (t < 2 ? Math.sin(t * 3) * 6 : 30)).toFixed(1)} ${(pan.cy - 6 - (t < 2 ? 0 : 40)).toFixed(1)}) scale(${(t < 2 ? 1 : .9).toFixed(2)})`); ld.setAttribute('transform', `translate(${(eIn(clamp((t - 2) / .5)) * 170 + (1 - eOut(clamp(t / .3))) * 170).toFixed(1)} ${(-eIn(clamp((t - 2) / .5)) * 150 - (1 - eOut(clamp(t / .3))) * 150).toFixed(1)}) ` + ld.getAttribute('transform')); ld.setAttribute('opacity', 1);   // половник приходит из-за кадра и уходит туда же
     pores.forEach((p, i) => p.setAttribute('opacity', t > 2.2 + i * .04 ? (.7 * f).toFixed(2) : 0)); emit && emit(t < 2 ? 'pourThick' : 'sizzle') }
   return sc0(id, svg, frame, T, 'Налить тесто', 'половник на сковороду, тонким слоем', 'sizzle') }
 
@@ -647,10 +708,21 @@ function plateUp(items = ['grechka', 'kur']) {
   H(svg, shade(id, '<circle cx="176" cy="90" r="74"/>', 6, 8, .3) + `<circle cx="176" cy="90" r="74" fill="url(#emw${id})"/><circle cx="176" cy="90" r="54" fill="#FFFFFF"/><circle cx="176" cy="90" r="54" fill="none" stroke="#E5EAE7" stroke-width="1.2"/><circle cx="176" cy="90" r="70" fill="none" stroke="#10B981" stroke-width="1.6" opacity=".7"/>`);
   const por = E('g', {}, svg); const c = { cx: 176, cy: 90, r: 36 }; [...Array(Math.min(70, countOf(items[0]) * 2))].forEach((_, i) => { const a = R(i, 0, 6.283), r = Math.sqrt(R(i + 3, 0, 1)) * 30, w = E('g', {}, por); top(w, items[0], KIND[items[0]], GRAINY.has(KIND[items[0]]) ? .9 : 1.1, i, id); w.setAttribute('transform', `translate(${(164 + Math.cos(a) * r).toFixed(1)} ${(92 + Math.sin(a) * r * .8).toFixed(1)})`) });
   const side = E('g', {}, svg); (items[1] ? [0, 1, 2, 3] : []).forEach(i => { const w = E('g', {}, side); top(w, items[1], KIND[items[1]], 1.2, i, id); w.setAttribute('transform', `translate(${198 + (i % 2) * 14} ${76 + i * 10})`) });
-  const T = 4;
-  function frame(t, emit) { t %= T; const a = clamp((t - .2) / .6), b = clamp((t - 1) / .6), f = t > 3.6 ? 1 - (t - 3.6) / .4 : 1;
-    por.setAttribute('transform', `translate(0 ${((1 - eOut(a)) * -10).toFixed(1)}) scale(1)`); por.setAttribute('opacity', (a * f).toFixed(2)); side.setAttribute('transform', `translate(${((1 - eOut(b)) * 14).toFixed(1)} ${((1 - eOut(b)) * -8).toFixed(1)})`); side.setAttribute('opacity', (b * f).toFixed(2));
-    if (a > 0 && !frame._p) { frame._p = 1; emit && emit('plate') } if (a === 0) frame._p = 0 }
+  // порцию приносит ложка из-за кадра справа сверху: еда в ложке, ложка наклоняется — еда ложится и расправляется, ложка уходит за следующей
+  const spoon = E('g', {}, svg); H(spoon, shade(id, '<ellipse rx="26" ry="19"/><path d="M20 -12L96 -64" stroke="#000" stroke-width="7"/>', 5, 8, .25) + `<path d="M18 -10L96 -64" stroke="url(#hnd${id})" stroke-width="7" stroke-linecap="round"/><ellipse rx="26" ry="19" fill="url(#rim${id})"/><ellipse rx="22" ry="15.5" fill="url(#wal${id})"/><path d="M-18 -6Q-10 -14 4 -14" stroke="#fff" stroke-width="2" fill="none" opacity=".7" stroke-linecap="round"/>`);
+  svg.insertBefore(spoon, por);   // еда лежит в ложке (поверх неё)
+  const T = 4.4, PX = 166, PY = 90, SX2 = 206, SY2 = 84;
+  const carry = (t, t0, x, y) => { const k = clamp((t - t0) / .55), d = clamp((t - t0 - .55) / .3), o = clamp((t - t0 - .85) / .45); return { k, d, o, sx: lerp(x + 150, x, eOut(k)) + eIn(o) * 160, sy: lerp(y - 110, y, eOut(k)) - eIn(o) * 120 } };
+  function frame(t, emit) { t %= T; const A = carry(t, .05, PX, PY), Bq = carry(t, 1.5, SX2, SY2), f = t > T - .4 ? 1 - (t - (T - .4)) / .4 : 1, two = !!items[1];
+    // порция: пока в ложке — едет с ней и сжата; после опускания — на тарелке, расправляется
+    const pa = A.d > 0 ? 1 : .5, ax = A.d > 0 ? 0 : A.sx - PX, ay = A.d > 0 ? 0 : A.sy - PY;
+    por.setAttribute('transform', `translate(${(PX + ax).toFixed(1)} ${(PY + ay).toFixed(1)}) scale(${lerp(.5, 1, eOut(A.d)).toFixed(3)}) translate(${-PX} ${-PY})`); por.setAttribute('opacity', (A.k > 0 ? f : 0).toFixed(2));
+    const bx = Bq.d > 0 ? 0 : Bq.sx - SX2, by2 = Bq.d > 0 ? 0 : Bq.sy - SY2;
+    side.setAttribute('transform', `translate(${(SX2 + bx).toFixed(1)} ${(SY2 + by2).toFixed(1)}) scale(${lerp(.7, 1, eOut(Bq.d)).toFixed(3)}) translate(${-SX2 - 6} ${-SY2 - 10})`); side.setAttribute('opacity', (two && Bq.k > 0 ? f : 0).toFixed(2));
+    const S = t < 1.5 || !two ? A : Bq, tilt = Math.sin(clamp(S.d) * Math.PI) * 18; spoon.setAttribute('transform', `translate(${S.sx.toFixed(1)} ${S.sy.toFixed(1)}) rotate(${tilt.toFixed(1)})`);
+    spoon.setAttribute('opacity', (t < 1.5 || two ? (S.o >= 1 ? 0 : 1) : (A.o >= 1 ? 0 : 1)));
+    if (A.d > 0 && !frame._p) { frame._p = 1; emit && emit('plate') } if (A.d === 0) frame._p = 0;
+    if (two && Bq.d > 0 && !frame._q) { frame._q = 1; emit && emit('plate') } if (Bq.d === 0) frame._q = 0 }
   return sc0(id, svg, frame, T, 'Выложить на тарелку', 'и подать', 'plate') }
 
 /* настоять: накрытая кастрюля, полотенце сверху, лёгкий пар, тонкое кольцо времени */
@@ -797,8 +869,8 @@ function dry(f) { const { id, svg } = scene(); defs(svg, metalDefs(id)); boardTo
   const it = f ? [f] : [], prod = E('g', {}, svg); if (f) { if (solid(f) && ['chunk', 'leaf', 'speck', 'floret', 'berry', 'shrimp', 'ring'].includes(KIND[f])) fillPieces(prod, id, { cx: 170, cy: 90, r: 44 }, it, 9); else H(prod, artAt(f, 118, 38, 104)) }
   const tw = E('g', {}, svg); H(tw, shade(id, '<rect x="-46" y="-34" width="92" height="68" rx="6"/>', 4, 6, .25) + `<rect x="-46" y="-34" width="92" height="68" rx="6" fill="#FFFFFF"/>${[...Array(40)].map((_, i) => `<circle cx="${-40 + (i % 8) * 11.4}" cy="${-28 + Math.floor(i / 8) * 13}" r="1.1" fill="#E5E9EC"/>`).join('')}`);
   const wet = [...Array(6)].map((_, i) => E('circle', { r: R(i, 5, 10), fill: '#D9E8F2', opacity: 0 }, tw)), T = 3.2;
-  function frame(t, emit) { t %= T; const up = hit(t, 1.05); tw.setAttribute('transform', `translate(170 ${(88 - up * 4).toFixed(1)}) scale(${(1 + up * .06).toFixed(3)}) rotate(-6)`); tw.setAttribute('opacity', (t > T - .35 ? (T - t) / .35 : 1).toFixed(2));
-    wet.forEach((e, i) => { e.setAttribute('cx', R(i, -30, 30).toFixed(1)); e.setAttribute('cy', R(i + 4, -20, 20).toFixed(1)); e.setAttribute('opacity', t > .4 + i * .3 ? .7 : 0) }) }
+  function frame(t, emit) { t %= T; const up = hit(t, 1.05); const io2 = (1 - eOut(clamp(t / .35))) + eIn(clamp((t - (T - .4)) / .4)); tw.setAttribute('transform', `translate(170 ${(88 - up * 4 - io2 * 150).toFixed(1)}) scale(${(1 + up * .06).toFixed(3)}) rotate(-6)`);   // полотенце кладут сверху и убирают вверх
+    wet.forEach((e, i) => { e.setAttribute('cx', R(i, -30, 30).toFixed(1)); e.setAttribute('cy', R(i + 4, -20, 20).toFixed(1)); e.setAttribute('opacity', t > .4 + i * .3 && t < T - .4 ? .7 : 0) }) }
   return sc0(id, svg, frame, T, 'Обсушить', names(it) + ' бумажным полотенцем', null) }
 
 function crack(vessel = 'bowl') { const { id, svg } = scene(['towel']); defs(svg, metalDefs(id));
@@ -809,7 +881,7 @@ function crack(vessel = 'bowl') { const { id, svg } = scene(['towel']); defs(svg
   H(L, `<path d="M0 -15A12 15 0 0 0 0 15L-2 6L2 0L-2 -6Z" fill="url(#sh${id})"/>`); H(Rr, `<path d="M0 -15A12 15 0 0 1 0 15L-2 6L2 0L-2 -6Z" fill="url(#sh${id})"/>`);
   const T = 3.6, cx = v.cx - 6, cy = v.cy - 4;
   function frame(t, emit) { t %= T; const k = clamp((t - .5) / .4), sp = clamp((t - .9) / 1.2), f = t > T - .4 ? (T - t) / .4 : 1;
-    egg.setAttribute('transform', `translate(${cx} ${(cy - 30 + eOut(clamp(t / .5)) * 18).toFixed(1)}) scale(${(1.2 - clamp(t / .5) * .2).toFixed(3)})`); egg.setAttribute('opacity', t < 1.6 ? 1 : 0);
+    const gone = eIn(clamp((t - 1.05) / .6)); egg.setAttribute('transform', `translate(${cx} ${(lerp(-24, cy - 12, eOut(clamp(t / .5))) - gone * (cy + 30)).toFixed(1)}) scale(${(1.2 - clamp(t / .5) * .2).toFixed(3)})`); egg.setAttribute('opacity', t < 1.7 ? 1 : 0);   // скорлупа приходит сверху и уходит вверх (в руке)
     L.setAttribute('transform', `translate(${(-k * 14).toFixed(1)} 0) rotate(${(-k * 30).toFixed(1)})`); Rr.setAttribute('transform', `translate(${(k * 14).toFixed(1)} 0) rotate(${(k * 30).toFixed(1)})`);
     if (k > 0 && k < .1 && frame._c !== Math.floor(t / T)) { frame._c = Math.floor(t / T); emit && emit('crack') }
     const r = eOut(sp) * 34; white.setAttribute('d', `M${cx - r} ${cy}Q${cx - r} ${cy - r * .9} ${cx} ${cy - r * .85}Q${cx + r * 1.1} ${cy - r * .8} ${cx + r} ${cy + r * .1}Q${cx + r * .8} ${cy + r} ${cx} ${cy + r * .9}Q${cx - r * 1.05} ${cy + r * .8} ${cx - r} ${cy}Z`); white.setAttribute('opacity', (sp > 0 ? .97 * f : 0).toFixed(2));
@@ -821,14 +893,18 @@ function vesselOf(svg, id, vessel) { return vessel === 'pan' ? panTop(svg, id, 1
 function add(items = [], vessel = 'pot', reverse = false) { const { id, svg } = scene(['towel']); defs(svg, metalDefs(id));
   const v = vesselOf(svg, id, vessel), c = { cx: v.cx, cy: v.cy, r: v.r * .8 }, it = items.filter(solid), lay = E('g', {}, svg), drops = [];
   const P = it.length ? fillPieces(lay, id, c, it, Math.min(26, it.reduce((a, k) => a + Math.min(countOf(k), 14), 0))) : [];
-  P.forEach(q => { q.d = R(q.s + 11, 0, .9); q.oy = -60 - R(q.s, 0, 30) });
+  P.forEach(q => { q.d = R(q.s + 11, 0, .9); q.oy = -(q.y + 24) - R(q.s, 0, 30) });   // кусочки входят сверху из-за кадра (из рук), а не из воздуха
   if (!it.length && items.length) { const liq = items[0]; E('circle', { cx: v.cx, cy: v.cy, r: v.r * .6, fill: F[liq] ? F[liq].c : '#fff', opacity: .0, class: 'lq' }, v.inner || svg) }
   for (let i = 0; i < 6; i++) drops.push(E('circle', { r: 1.6, fill: '#E6F6FF', opacity: 0 }, svg));
+  const rg = vessel !== 'pan' ? rings(v.inner || svg, 8) : null, sz = vessel === 'pan' ? [...Array(10)].map(() => E('circle', { r: 1.2, fill: '#FFF6D6', opacity: 0 }, svg)) : [];
   const T = 3.6;
   function frame(t, emit) { t %= T; v.shine && v.shine(t);
-    P.forEach(q => { let k = clamp((t - q.d) / .7); if (reverse) k = 1 - clamp((t - .4 - q.d) / .9); const e = reverse ? eIO(k) : eOut(k), y = q.y + (1 - e) * q.oy, s = 1 + (1 - e) * .5;
+    P.forEach(q => { let k = clamp((t - q.d) / .7); if (reverse) k = 1 - clamp((t - .4 - q.d) / .9); const e = reverse ? eIO(k) : eIn(k), land = !reverse && k >= 1, bob = land ? (vessel === 'pot' ? Math.sin(t * 2.2 + q.s) * 1.2 : 0) : 0, y = q.y + (1 - e) * q.oy + bob, s = 1 + (1 - e) * .5;   // падает с ускорением, в кастрюле покачивается на воде — стал частью содержимого
+      if (!reverse && k >= 1 && q._r !== Math.floor(t / T)) { q._r = Math.floor(t / T); if (rg) rg.at(q.x, q.y, t, .5); else q.sp = t }
       q.w.setAttribute('transform', `translate(${q.x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(3)})`); q.w.setAttribute('opacity', (reverse ? (k > .05 ? 1 : 0) : (t > T - .35 ? (T - t) / .35 : k > 0 ? 1 : 0)).toFixed(2));
       if (!reverse && k > .95 && q._l !== Math.floor(t / T) && q.s % 4 === 0) { q._l = Math.floor(t / T); emit && emit(vessel === 'pan' ? 'sizzle' : 'bubble') } });
+    rg && rg.frame(t); sz.forEach((e, i) => { const q = P[i % Math.max(1, P.length)]; if (!q || q.sp == null) { e.setAttribute('opacity', 0); return } const k = clamp((t - q.sp) / .5), a = i * 2.4; e.setAttribute('cx', (q.x + Math.cos(a) * (4 + k * 8)).toFixed(1)); e.setAttribute('cy', (q.y + Math.sin(a) * (4 + k * 8)).toFixed(1)); e.setAttribute('opacity', (k > 0 && k < 1 ? (1 - k) * .9 : 0).toFixed(2)) });   // на сковороде — брызги масла
+    if (t < .05) P.forEach(q => q.sp = null);
     const lq = svg.querySelector('.lq'); if (lq) lq.setAttribute('opacity', (clamp(t / 1.5) * .8 * (t > T - .35 ? (T - t) / .35 : 1)).toFixed(2));
     drops.forEach((e, i) => { const q = ((t * 1.3 + i / 6) % 1); e.setAttribute('cx', (v.cx - 20 + i * 8).toFixed(1)); e.setAttribute('cy', (v.cy - 40 + q * 30).toFixed(1)); e.setAttribute('opacity', reverse && t > .8 ? (1 - q).toFixed(2) : 0) }) }
   return sc0(id, svg, frame, T, reverse ? 'Вынуть' : 'Добавить', names(items), vessel === 'pan' ? 'sizzle' : 'bubble') }
@@ -931,18 +1007,29 @@ function ac() { if (!AC) AC = new (window.AudioContext || window.webkitAudioCont
 const G = .8, LOOPL = { terka: 3, melnica: 2.4, skalka: 1.7, venchik: 3, voda: 3, shkvor: 3, kip: 3, bulk: 3, gul: 3 };
 const SAMP = {}, SND = ['nozh-1', 'nozh-2', 'nozh-3', 'nozh-4', 'hrust-1', 'hrust-2', 'hrust-3', 'luk-1', 'luk-2', 'luk-3', 'kapusta-1', 'kapusta-2', 'kapusta-3', 'chistka', 'sol', 'kryshka',
   'lozhka-1', 'lozhka-2', 'lozhka-3', 'zvonok', ...Object.keys(LOOPL)], SLOOP = {};
-function loadSamples() { SND.forEach(n => { if (SAMP[n]) return; SAMP[n] = 'loading'; fetch(BASE + 'snd/' + n + '.mp3').then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(b => ac().decodeAudioData(b)).then(buf => SAMP[n] = buf).catch(() => delete SAMP[n]) }) }
+function loadSamples() { SND.forEach(n => { if (SAMP[n]) return; SAMP[n] = 'loading'; fetch(BASE + 'snd/' + n + '.mp3' + SQ).then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(b => ac().decodeAudioData(b)).then(buf => SAMP[n] = buf).catch(() => delete SAMP[n]) }) }
 function play(n, vol = G, delay = 0, rate = 1) { const b = SAMP[n]; if (!b || b === 'loading') return false; if (window.__snd) window.__snd.push(n); const a = ac(), s = a.createBufferSource(), g = a.createGain(); s.buffer = b; s.playbackRate.value = rate; g.gain.value = vol; s.connect(g); g.connect(a.destination); s.start(a.currentTime + delay); return true }
 // цикл: мягкий вход 0,3 с; keep — сколько секунд держать без новых событий анимации (мельница крутится, скалка ходит), потом мягко гаснет
 function sloop(n, vol = G, keep = 0, rate = 1) { const L = LOOPL[n], b = SAMP[n]; let l = SLOOP[n];
   if (!l) { if (!b || b === 'loading') return false; const a = ac(), s = a.createBufferSource(), g = a.createGain(); s.buffer = b; s.loop = true; s.loopStart = .1; s.loopEnd = .1 + L; s.playbackRate.value = rate;
     g.gain.value = 0; g.gain.linearRampToValueAtTime(vol, a.currentTime + .3); s.connect(g); g.connect(a.destination); s.start(0, .1 + Math.random() * L); l = SLOOP[n] = { s, g }; if (window.__snd) window.__snd.push(n) }
   clearTimeout(l.t); if (keep) l.t = setTimeout(() => sunloop(n), keep * 1000); return true }
-function sunloop(n) { const l = SLOOP[n]; if (!l) return; clearTimeout(l.t); const a = ac(); l.g.gain.cancelScheduledValues(a.currentTime); l.g.gain.setValueAtTime(l.g.gain.value, a.currentTime); l.g.gain.linearRampToValueAtTime(0, a.currentTime + .25); l.s.stop(a.currentTime + .3); delete SLOOP[n] }
+function sunloop(n) { const l = SLOOP[n]; if (!l) return; clearTimeout(l.t); const a = ac(); l.g.gain.cancelScheduledValues(a.currentTime); l.g.gain.setValueAtTime(l.g.gain.value, a.currentTime); l.g.gain.linearRampToValueAtTime(0, a.currentTime + .45); l.s.stop(a.currentTime + .5); delete SLOOP[n] }
+// смена шага: фон не обрывается — если новая сцена играет тот же цикл, он продолжается без шва; иначе мягко гаснет за 0,5 с, пока входит новый
+// iPhone с переключателем «Без звука»: Web Audio по умолчанию молчит. Safari 16.4+ — сессия 'playback' (звук идёт и в беззвучном режиме);
+// старые iOS — тихий зацикленный <audio playsinline>, запущенный в касании, переводит страницу в тот же режим. Вызывается только из касания («Начать готовить», «Звук»).
+let SIL = null;
+function iosPlayback() { try { if (navigator.audioSession) { navigator.audioSession.type = 'playback'; return } } catch (e) {}
+  try { if (!SIL) { const n = 4410, b = new ArrayBuffer(44 + n * 2), v = new DataView(b), w = (o, t) => [...t].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+      w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVEfmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 44100, true); v.setUint32(28, 88200, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
+      SIL = new Audio(URL.createObjectURL(new Blob([b], { type: 'audio/wav' }))); SIL.loop = true; SIL.setAttribute('playsinline', ''); SIL.setAttribute('x-webkit-airplay', 'deny') }
+    const r = SIL.play(); r && r.catch && r.catch(() => {}) } catch (e) {} }
+// sound(on) в касании проигрывает пустой буфер — так iPhone (и старые iOS) открывают звук страницы
+function soft() { Object.keys(SLOOP).forEach(n => { const l = SLOOP[n]; clearTimeout(l.t); l.t = setTimeout(() => sunloop(n), 500) }) }
 const pick = (p, n) => p + (1 + Math.floor(Math.random() * n)); let solAt = 0;
 function sfx(ev, arg) { if (!ON) return;
   // нарезать: лук и капуста — свои записи (нож + хруст вместе); морковь — нож и хруст моркови; остальное — нож по доске
-  if (ev === 'chop') { if (arg === 'luk') play(pick('luk-', 3)); else if (arg === 'kapusta') play(pick('kapusta-', 3)); else { play(pick('nozh-', 4), G, 0, .96 + Math.random() * .08); if (arg === 'morkov') play(pick('hrust-', 3), G * .8, .004) } }
+  if (ev === 'chop') { if (arg === 'luk') play(pick('luk-', 3)); else if (arg === 'kapusta') play(pick('kapusta-', 3)); else if (arg === 'morkov') { play(pick('nozh-', 4), G * .62, 0, .96 + Math.random() * .08); play(pick('hrust-', 3), G * .62, .004) } else play(pick('nozh-', 4), G, 0, .96 + Math.random() * .08) }   // морковь: нож и хруст вместе — каждый тише, в сумме та же громкость
   else if (ev === 'pound') play(pick('nozh-', 4), G, 0, .5);                 // отбить: тот же стук, на октаву ниже — глухой удар молотка
   else if (ev === 'pat') play(pick('nozh-', 4), G * .6, 0, .45);             // сформовать: мягкий шлепок
   else if (ev === 'crack') play(pick('lozhka-', 3), G, 0, .8);               // яйцо о край миски
@@ -961,8 +1048,8 @@ const scenes = new Set(); let raf = 0, SRC = null;
 const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => e.target._sc && (e.target._sc.vis = e.isIntersecting)), { threshold: .2 }) : null;
 function mount(el, sc, opts = {}) { el.innerHTML = ''; el.appendChild(sc.svg); sc.el = el; sc.vis = true; sc.t0 = performance.now() - (opts.offset || 0) * 1000; el._sc = sc; scenes.add(sc); io && io.observe(el);
   if (RM) { sc.frame(sc.T * .45); return sc } if (!raf) raf = requestAnimationFrame(tick); return sc }
-function unmount(el) { const sc = el._sc; if (!sc) return; scenes.delete(sc); io && io.unobserve(el); if (SRC === sc) { SRC = null; stopAll() } el._sc = null }
+function unmount(el) { const sc = el._sc; if (!sc) return; scenes.delete(sc); io && io.unobserve(el); if (SRC === sc) { SRC = null; soft() } el._sc = null }
 function tick(now) { raf = requestAnimationFrame(tick); const br = (1 + .005 * (1 - Math.cos(now / 6000 * 2 * Math.PI))).toFixed(4); scenes.forEach(sc => { if (!sc.vis) return; sc.svg.style.transform = `scale(${br})`; sc.frame((now - sc.t0) / 1000, SRC === sc ? sfx : null) }) }
 window.CA = { soak, dry, crack, add, drain, spread, show, CAT, prodsIn, verbs, iconFor, names, VERB, cut, pour, salt, fry, boil, stir, grate, rinse, peel, pound, pepper, oil, bringBoil, simmer, bake, whisk, form, roll, batter, plateUp, rest, forStep, mount, unmount, F, icon,
-  ding() { if (ON) play('zvonok') }, sound(on) { ON = on; if (on) { ac().resume(); loadSamples() } else stopAll(); return ON }, source(sc) { if (SRC !== sc) stopAll(); SRC = sc }, get on() { return ON } };
+  ding() { if (ON) play('zvonok') }, sound(on) { ON = on; if (on) { iosPlayback(); const a = ac(); a.resume(); try { const s = a.createBufferSource(); s.buffer = a.createBuffer(1, 1, 22050); s.connect(a.destination); s.start(0) } catch (e) {} loadSamples() } else { stopAll(); if (SIL) SIL.pause() } return ON }, source(sc) { if (SRC !== sc) soft(); SRC = sc }, get on() { return ON } };
 })();

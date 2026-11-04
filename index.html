@@ -931,7 +931,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-04-r78'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-05-r79'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -994,7 +994,7 @@ let ANIM=!RM,DIR='';
 const NBS=' ';
 const pl=(n,one,few,many)=>{const a=Math.abs(n)%100,b=a%10;return n+NBS+(a>10&&a<20?many:b>1&&b<5?few:b===1?one:many)};
 const u=(n,unit)=>fmt(n)+NBS+unit;
-const pic=(src,alt='')=>src?`<img src="${src}" alt="${alt}" loading="lazy" decoding="async" onerror="this.remove()">`:'';
+const pic=(src,alt='')=>src?`<img src="${/^img\/dishes\//.test(src)?src+'?v='+APPV.slice(-3):src}" alt="${alt}" loading="lazy" decoding="async" onerror="this.remove()">`:'';
 const loadLabel=v=>v>70?'людно':v>45?'умеренно':'свободно';
 const CU=(n,suf='')=>`<span data-cu="${n}" data-suf="${suf.replace(/^ /,NBS)}">${fmt(0)}${suf.replace(/^ /,NBS)}</span>`;
 function cu(el,anim){const to=+el.dataset.cu,suf=el.dataset.suf||'';if(!anim||!to){el.textContent=fmt(to)+suf;return}const t0=performance.now(),d=900;const step=t=>{const k=Math.max(0,Math.min((t-t0)/d,1)),e=1-Math.pow(1-k,4);el.textContent=fmt(to*e)+suf;if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
@@ -1678,12 +1678,12 @@ function chainList(ing,fam){const rows=chainRows(ing,fam),cheap=Math.min(...rows
   return rows.map((x,i)=>{const old=!x.avg&&chAge(x.c)>14,st=x.over?'выше бюджета':x.r===cheap&&!x.part&&rows.filter(z=>!z.avg).length>1?'дешевле':'в бюджете';
    return `<a class="li" style="text-decoration:none" href="${mapUrl(x.avg?'продукты':x.n)}" target="_blank" rel="noopener" aria-label="${x.n}: блюда около ${fmt(x.r)} рублей, чек около ${fmt(x.chk)} рублей, ${st}"><div class="ibox ${x.avg?'':'accent'}">${ic(x.avg?'wallet':'cart')}</div>
     <div style="flex:1;min-width:0"><div style="font-weight:650">${x.n}${x.d!=null?` <span class="muted" style="font-weight:500">· ${distTxt(x.d)}</span>`:''}</div>
-    <div class="small muted">${x.avg?(()=>{const nn=CLOSED_CH.map(c=>[c,nearest(c)]).filter(x=>x[1]!=null).sort((a,b)=>a[1]-b[1]).slice(0,2);return (nn.length?`рядом ${nn.map(([c,d])=>c+' '+distTxt(d)).join(', ')} — открытых цен у них пока нет. `:'')+'Средние по региону, Росстат'})():(x.have<x.tot?`есть ${x.have} из ${x.tot}, остальное — по другим ценам`:'всё есть')+` · ${PRICES.chains[x.c].src==='отметки покупателей'?'по отметкам покупателей, ':'цены на '}${PRICES.chains[x.c].d}${old?' — могли измениться':''}${(()=>{const st=PRICES.chains[x.c].store,m=st&&st.match(/(?:^|,\s*)г\.?\s+([А-ЯЁ][^,]+)/),c=cityName();return m&&c&&m[1].trim()!==c?' · по данным: '+m[1].trim():''})()}`}</div>
+    <div class="small muted">${x.avg?(()=>{const nn=CLOSED_CH.map(c=>[c,nearest(c)]).filter(x=>x[1]!=null).sort((a,b)=>a[1]-b[1]).slice(0,2);return (nn.length?`рядом ${nn.map(([c,d])=>c+' '+distTxt(d)).join(', ')} — открытых цен у них пока нет. `:'')+'Средние по региону, Росстат'})():(x.have<x.tot?`есть ${x.have} из ${x.tot}, остальное — по другим ценам`:'всё есть')+` · ${PRICES.chains[x.c].src==='отметки покупателей'?'по отметкам покупателей, ':'цены на '}${PRICES.chains[x.c].d}${old?' — могли измениться':''}${(()=>{const st=PRICES.chains[x.c].store,m=st&&st.match(/(?:^|,\s*)г\.?\s+([А-ЯЁ][^,]+)/),c=cityName();return m&&c&&m[1].trim()!==c?' · по данным: '+esc(m[1].trim()):''})()}`}</div>
     <div class="cmp ${st==='дешевле'?'best':x.over?'over':''}" aria-hidden="true"><i style="transform:scaleX(${(x.r/top).toFixed(3)});--d:${i*60}ms"></i></div>
     <div class="tiny" style="margin-top:2px;color:${x.over?'var(--warn-text)':st==='дешевле'?'var(--ok-text)':'var(--text3)'};font-weight:600">${st}</div></div>
     <div style="text-align:right;white-space:nowrap"><div class="num" style="font-size:17px">≈${NBS}${rub(x.r)}</div><div class="tiny muted">чек ≈${NBS}${rub(x.chk)}</div></div></a>`}).join('')}
 function srcNote(){if(!hasPrices())return '';const c=PRICES.chains,l=[];
-  if(c.mg&&chLive('mg'))l.push(`Магнит — сайт сети, ${c.mg.d}${c.mg.store?', магазин: '+c.mg.store.replace(/^(г |город )?(Москва|Санкт-Петербург),?\s*/i,'').replace(/^[^,]*обл,?\s*/,''):''}`);
+  if(c.mg&&chLive('mg'))l.push(`Магнит — сайт сети, ${c.mg.d}${c.mg.store?', магазин: '+esc(c.mg.store.replace(/^(г |город )?(Москва|Санкт-Петербург),?\s*/i,'').replace(/^[^,]*обл,?\s*/,'')):''}`);
   if(c.vv&&chLive('vv'))l.push(`ВкусВилл — сайт сети, ${c.vv.d} (${c.vv.note||'цены Москвы'})`);
   Object.keys(c).filter(k=>c[k].src==='отметки покупателей'&&chLive(k)).forEach(k=>l.push(`${c[k].n} — по отметкам покупателей «Цена другая?», ${c[k].d}`));
   if(c.rs)l.push(`средние по региону — Росстат, ${c.rs.d}`);
