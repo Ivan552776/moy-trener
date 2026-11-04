@@ -7,10 +7,10 @@
 <title>Анатомия · Мой тренер</title>
 <link rel="icon" href="../favicon-32.png">
 <!-- всё для первого кадра — сразу и параллельно: просмотрщик, облегчённые мышцы, студийный свет -->
-<link rel="modulepreload" href="ten.js?v=r72">
-<link rel="preload" href="m/anatomy_xs.json?v=r72" as="fetch" crossorigin="anonymous">
-<link rel="preload" href="m/muscles_xs.bin?v=r72" as="fetch" crossorigin="anonymous">
-<link rel="preload" href="env.hdr?v=r72" as="fetch" crossorigin="anonymous">
+<link rel="modulepreload" href="ten.js?v=r73">
+<link rel="preload" href="m/anatomy_xs.json?v=r73" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="m/muscles_xs.bin?v=r73" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="env.hdr?v=r73" as="fetch" crossorigin="anonymous">
 <style>
 :root{--stage-hi:#F4F4F2;--stage-lo:#D9DAD7;--glass:rgba(255,255,255,.66);--glass-b:rgba(255,255,255,.8);--line:rgba(11,13,18,.08);
   --text:#0B0D12;--text2:#5E6472;--text3:#8C93A1;--accent:#047857;--accent-hi:#10B981;--accent-text:#047857;--accent-soft:rgba(4,120,87,.10);
@@ -37,8 +37,9 @@ button{font:inherit;color:inherit}
 .hint b{color:var(--text);font-weight:600}
 #labels{position:fixed;inset:0;pointer-events:none;z-index:2}
 #labels svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.lbl{position:absolute;left:0;top:0;width:132px;will-change:transform;padding:6px 10px 6px 8px;border-radius:12px;background:var(--label);
-  font:600 13px/1.15 var(--font);color:var(--label-text);white-space:nowrap;display:flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,.14);max-width:44vw;overflow:hidden;text-overflow:ellipsis}
+.lbl{position:absolute;left:0;top:0;width:max-content;max-width:112px;will-change:transform;padding:5px 9px 5px 7px;border-radius:12px;background:var(--label);
+  font:600 12px/1.2 var(--font);color:var(--label-text);white-space:normal;display:flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,.14);overflow-wrap:anywhere}
+.lbl span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden} /* подпись в 2 строки, не обрезается по ширине */
 .lbl i{width:8px;height:8px;border-radius:4px;flex:none;background:#22D39A;box-shadow:0 0 8px #22D39A}
 .lbl.s i{opacity:.5;box-shadow:none}
 .dock{position:fixed;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom) + 18px);border-radius:26px;padding:10px;display:flex;flex-direction:column;gap:8px;z-index:5;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .25s}
@@ -133,7 +134,7 @@ body.poster .top,body.poster .dock,body.poster .cr,body.poster #labels,body.post
 const qs = new URLSearchParams(location.search);
 if (qs.get('embed')) document.body.classList.add('embed'); if (qs.has('poster')) document.body.classList.add('poster');
 if (qs.has('close')) { const b = document.createElement('button'); b.className = 'x0 glass'; b.setAttribute('aria-label', 'Закрыть'); b.textContent = '×'; b.onclick = () => parent.postMessage({ ten: 'close' }, location.origin); document.querySelector('.top').prepend(b) }
-const VER = 'r72'; // менять вместе с файлами модели и упражнений (и в ссылках предзагрузки выше)
+const VER = 'r73'; // менять вместе с файлами модели и упражнений (и в ссылках предзагрузки выше)
 const { mountAnatomy } = await import('./ten.js?v=' + VER);
 const $ = s => document.querySelector(s);
 if (qs.get('theme')) document.documentElement.dataset.theme = qs.get('theme');
@@ -185,7 +186,7 @@ async function setMode(m, id) {
   document.querySelectorAll('.seg button').forEach(b => b.classList.toggle('on', b.dataset.m === m));
   closeInfo(); $('#hint').classList.remove('on'); $('#pick').classList.remove('on');
   $('#dockBody').classList.toggle('off', m !== 'body'); $('#dockEx').classList.toggle('off', m === 'body');
-  if (m === 'body') { cur = null; await A.play(null); A.isolate('muscles', null); isoOn = false; labels = []; drawLabels(); setTimeout(frame, 380); A.reset(900); return }
+  if (m === 'body') { A.reserve(0); cur = null; await A.play(null); A.isolate('muscles', null); isoOn = false; labels = []; drawLabels(); setTimeout(frame, 380); A.reset(900); return }
   setChip('skin', false); setChip('organs', false); setChip('muscles', true); setChip('tendons', true); setChip('skeleton', true);
   A.isolate('muscles', null); isoOn = false;
   await openEx(id || 'Bodyweight_Squat');
@@ -193,7 +194,7 @@ async function setMode(m, id) {
 async function openEx(id) {
   const c = await (await fetch('ex/' + id + '.json?v=' + VER)).json(); cur = c;
   buildEx(c); await A.play(c); A.speed(slow ? .5 : 1); playBtn();
-  setTimeout(() => { frame(); views = [c.view ?? 1.05, Math.abs((c.view ?? 1) - .1) < .5 ? 1.5 : .12]; vi = 0; A.frameClip(views[0], 1100) }, 60);
+  setTimeout(() => { frame(); const nl = document.body.classList.contains('poster') ? 0 : labels.filter(g => g.show).length; A.reserve(nl ? 128 : 0, nl); views = [c.view ?? 1.05, Math.abs((c.view ?? 1) - .1) < .5 ? 1.5 : .12]; vi = 0; A.frameClip(views[0], 1100) }, 60);
   if (!sessionStorage.getItem('ten-glow')) { $('#hint').innerHTML = '<b>Зелёным светятся</b> мышцы, которые работают'; $('#hint').classList.add('on'); setTimeout(() => $('#hint').classList.remove('on'), 4200); try { sessionStorage.setItem('ten-glow', 1) } catch (e) {} }
 }
 
@@ -207,7 +208,7 @@ function buildEx(c) {
   labels = Object.values(groups).filter(g => g.role <= 2).sort((a, b) => a.role - b.role).map(g => ({ ...g, l: ids(g, '.l'), r: ids(g, '.r'), show: g.role === 1 }));
   $('#leg').innerHTML = labels.map((g, i) => `<button class="chip ${g.show ? 'on' : ''}" data-i="${i}"><span class="d" style="background:#22D39A;${g.role > 1 ? 'opacity:.45' : 'box-shadow:0 0 6px #22D39A'}"></span>${GRP[g.grp] || g.grp}</button>`).join('');
 }
-$('#leg').onclick = e => { const b = e.target.closest('.chip'); if (!b) return; const g = labels[+b.dataset.i]; g.show = !g.show; b.classList.toggle('on', g.show); tick(); drawLabels() };
+$('#leg').onclick = e => { const b = e.target.closest('.chip'); if (!b) return; const g = labels[+b.dataset.i]; g.show = !g.show; b.classList.toggle('on', g.show); tick(); const nl = labels.filter(x => x.show).length; A.reserve(nl ? 128 : 0, nl); A.frameClip(views[vi], 600); drawLabels() };
 function playBtn() { const p = A.playing; $('#play').innerHTML = (p ? IC.pause + 'Пауза' : IC.play + 'Смотреть') }
 $('#play').onclick = () => { A.pause(A.playing); playBtn(); tick() };
 $('#slow').onclick = () => { slow = !slow; A.speed(slow ? .5 : 1); $('#slow').textContent = slow ? '1×' : '0,5×'; tick() };
@@ -229,7 +230,7 @@ function ensurePool() {
   const box = $('#labels'), svg = $('#lines'), want = labels.filter(g => g.show);
   if (pool.length === want.length && pool.every((o, i) => o.g === want[i])) return;
   pool.forEach(o => { o.el.remove(); o.path.remove(); o.dot.remove() });
-  pool = want.map(g => { const el = document.createElement('div'); el.className = 'lbl' + (g.role > 1 ? ' s' : ''); el.innerHTML = `<i></i>${GRP[g.grp] || g.grp}`; box.appendChild(el);
+  pool = want.map(g => { const el = document.createElement('div'); el.className = 'lbl' + (g.role > 1 ? ' s' : ''); el.innerHTML = `<i></i><span>${GRP[g.grp] || g.grp}</span>`; box.appendChild(el);
     const NS = 'http://www.w3.org/2000/svg', path = document.createElementNS(NS, 'path'), dot = document.createElementNS(NS, 'circle');
     path.setAttribute('fill', 'none'); path.setAttribute('stroke', 'var(--leader)'); path.setAttribute('stroke-width', '1.2');
     dot.setAttribute('r', '4'); dot.setAttribute('fill', '#22D39A'); dot.setAttribute('stroke', '#fff'); dot.setAttribute('stroke-width', '1.5'); svg.append(path, dot); return { g, el, path, dot } });
@@ -238,19 +239,25 @@ function drawLabels() {
   const hide = mode !== 'ex' || !labels.length || $('#info').classList.contains('on') || $('#pick').classList.contains('on');
   $('#labels').style.display = hide ? 'none' : ''; if (hide) return;
   ensurePool(); if (!pool.length) return;
-  const W = innerWidth, H = innerHeight, top = 84, bot = H - dockH - 44, cx = W / 2, L = [], R = [];
-  pool.forEach(o => { const a = A.screen(o.g.l), b = A.screen(o.g.r); o.p = !a ? b : !b ? a : (a.dist < b.dist ? a : b); if (o.p) (o.p.x < cx ? L : R).push(o) });
-  const place = (arr, right) => { arr.sort((a, b) => a.p.y - b.p.y); let y = top; arr.forEach(o => { o.y = Math.max(y, Math.min(bot, o.p.y)); y = o.y + 38; o.right = right });
-    for (let i = arr.length - 1, lim = bot; i >= 0; i--) { if (arr[i].y > lim) arr[i].y = lim; lim = arr[i].y - 38 } };
-  place(L, false); place(R, true);
+  const W = innerWidth, H = innerHeight, top = (document.body.classList.contains('embed') ? 8 : 76) + 16, bot = H - dockH - 30, R = [];
+  pool.forEach(o => { const a = A.screen(o.g.l), b = A.screen(o.g.r); o.p = !a ? b : !b ? a : (a.dist < b.dist ? a : b); if (o.p) { o.h = o.h || o.el.offsetHeight || 26; o.w = o.w || o.el.offsetWidth || 100; R.push(o) } });
+  R.sort((a, b) => a.p.y - b.p.y);
+  if (A.labelMode === 'below') { // столбиком под фигурой, у правого края
+    let y = H - inBotPx() - A.reserveB + 4;
+    for (const o of R) { o.y = y; y += o.h + 8 }
+  } else { let y = top;
+  R.forEach(o => { o.y = Math.max(y, Math.min(bot - o.h, o.p.y - o.h / 2)); y = o.y + o.h + 8 });
+  for (let i = R.length - 1, lim = bot; i >= 0; i--) { if (R[i].y + R[i].h > lim) R[i].y = lim - R[i].h; lim = R[i].y - 8 } } // не влезли вниз — поднимаем
   for (const o of pool) {
     if (!o.p) { o.el.style.opacity = 0; o.path.setAttribute('d', ''); o.dot.setAttribute('r', 0); continue }
-    const ex = o.right ? W - 12 - 132 : 12 + 132;
-    o.el.style.opacity = 1; o.el.style.transform = `translate(${o.right ? W - 12 - 132 : 12}px, ${o.y}px) translateY(-50%)`;
-    o.path.setAttribute('d', `M${o.p.x.toFixed(1)} ${o.p.y.toFixed(1)} L${((o.p.x + ex) / 2).toFixed(1)} ${o.y.toFixed(1)} L${ex} ${o.y.toFixed(1)}`);
+    const lx = W - 12 - o.w, ly = o.y + o.h / 2;
+    o.el.style.opacity = 1; o.el.style.transform = `translate(${lx}px, ${o.y}px)`;
+    o.path.setAttribute('d', `M${o.p.x.toFixed(1)} ${o.p.y.toFixed(1)} L${(lx - 14).toFixed(1)} ${ly.toFixed(1)} L${lx} ${ly.toFixed(1)}`);
     o.dot.setAttribute('cx', o.p.x.toFixed(1)); o.dot.setAttribute('cy', o.p.y.toFixed(1)); o.dot.setAttribute('r', 4);
   }
+  window.__labels = pool.filter(o => o.p).map(o => ({ x0: W - 12 - o.w, x1: W - 12, y0: o.y, y1: o.y + o.h, t: o.el.textContent }));
 }
+const inBotPx = () => innerHeight - $('#dockEx').getBoundingClientRect().top + 8;
 new ResizeObserver(() => dockH = $('#dockEx').offsetHeight).observe($('#dockEx'));
 
 // ---------- карточка мышцы
