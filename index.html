@@ -805,6 +805,10 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .hs-i{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-text);margin-bottom:2px} .hs-i .ic{width:17px;height:17px}
 .pfix{display:inline;margin-left:4px;padding:2px 0;font-size:12px;font-weight:650;color:var(--accent-text)}
 .mealx{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border-radius:var(--r);padding:12px 16px 12px 12px;box-shadow:var(--shadow);margin:0 0 12px}
+.mx-reg{display:flex;align-items:center;gap:6px;margin:-6px 6px 14px;min-height:32px;font-size:13px;color:var(--text3);text-align:left;max-width:100%} .mx-reg span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .mx-reg svg{width:15px;height:15px;flex:none} .mx-reg svg:last-child{width:13px;height:13px;opacity:.6}
+.geo-h{background:var(--warn-soft);border-radius:14px;padding:12px 14px;margin:10px 0 0;font-size:14px;line-height:1.35} .geo-h .small{color:var(--text2)}
+.geomv{position:absolute;left:12px;right:12px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line,rgba(0,0,0,.08));border-radius:18px;padding:12px 10px 12px 12px;box-shadow:0 12px 34px rgba(0,0,0,.22);transform:translateY(16px);opacity:0;transition:transform .3s,opacity .3s} .geomv.on{transform:none;opacity:1} .geomv b{display:block}
+@media (prefers-reduced-motion:reduce){.geomv{transition:opacity .2s;transform:none}}
 .mx-p{position:relative;width:84px;height:84px;border-radius:12px;overflow:hidden;flex:none;background:var(--accent-soft);color:var(--accent-text);display:grid;place-items:center} .mx-p .ic{width:30px;height:30px} .mx-p img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;outline:0}
 .mx-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px} .mx-eb{font-size:13px;font-weight:600;color:var(--accent-text);overflow-wrap:anywhere} .mx-t b{font-size:16px;line-height:1.25;font-weight:600;text-wrap:pretty;hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere} .mx-s{font-size:13px;color:var(--text2)}
 .mx-v{display:flex;flex-direction:column;align-items:flex-end;flex:none} .mx-v b{font:700 20px var(--num);font-variant-numeric:tabular-nums} .mx-v span{font-size:12px;color:var(--text2)} .mx-v .mx-pr{margin-top:4px;font-weight:600;color:var(--text)}
@@ -914,7 +918,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-04-r69'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-04-r70'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1314,6 +1318,7 @@ function vToday(){
     <button class="now-ask" onclick="openChat()">Спросить тренера ${ic('chev')}</button>
   </section>
   ${nextMeal&&mealTime?`<button class="mealx tap" onclick="openDish('${nextMeal.id}')"><div class="mx-p">${ic(dishCat(nextMeal)[1])}${pic(nextMeal.img,nextMeal.n)}</div><div class="mx-t"><span class="mx-eb">Что приготовить · ${(nextMeal.lab||SLOT[nextMeal.m]||'').split(' · ')[0]}${mealTime==='сейчас'?'':' · '+mealTime}</span><b>${nextMeal.n}</b><span class="mx-s">белок ${u(nextMeal.nut.p,'г')}${(()=>{const r=hasPrices()&&chainRows(nextMeal.ing).find(x=>!x.avg&&x.d!=null);return r?' · '+r.n+' '+distTxt(r.d):' · под остаток и бюджет'})()}</span></div><div class="mx-v"><b>${fmt(nextMeal.nut.k)}</b><span>ккал</span>${nextMeal.c?`<span class="mx-pr">${costTxt(nextMeal.c)}</span>`:''}</div></button>`:''}
+  ${nextMeal&&mealTime?`<button class="mx-reg" onclick="openRegion()">${ic('pin')}<span>Цены для: ${S.region?placeTxt():regName(region())+' — уточнить город'}</span>${ic('chev')}</button>`:''}
   <button class="workx tap${done?' done':''}" onclick="openProgram()"><img src="${S.profile.place==='home'?gymPic('home'):gymPic(pg.ex[0]&&pg.ex[0][3])}" alt="" onerror="this.remove()">
     <span class="wx-st">${done?ic('check')+'Готово':wfull?'Неделя закрыта':rest?'Отдых':!planToday?'Следующая':lateW?'Завтра':'Тренировка дня'}</span>
     <div class="wx-c"><div class="wx-t">${pg.days[ti]}</div><div class="wx-s">${pl(pg.ex.length,'упражнение','упражнения','упражнений')} · 45 мин · «${pg.name}»</div>
@@ -1694,8 +1699,19 @@ function dishRow(d,c,eb,swap){return `<div class="card tap dish" role="button" o
 function swapDish(sl){dayPlan();S.cook.skip[sl]=(S.cook.skip[sl]||0)+1;delete S.cook.pick[sl];save();haptic(6);rerender()}
 function openFoodPlan(){sheet('Питание и бюджет',vFood().replace(/^<div class="top">[\s\S]*?<\/h1>/,''));SHEET_FN=openFoodPlan;kitchenLoad()}
 // рецепты, цены региона и магазины рядом (если человек сам дал геопозицию) — один раз на регион; потом перерисовываем открытую шторку
-async function geoAuto(){if(S.region||geoAuto.done||!navigator.permissions||!navigator.geolocation)return;geoAuto.done=1;
-  try{const st=await navigator.permissions.query({name:'geolocation'});if(st.state==='granted')navigator.geolocation.getCurrentPosition(async p=>{GEO=[p.coords.latitude,p.coords.longitude];if(!S.region&&KIT){await loadCities();const n=nearCity(GEO[0],GEO[1]);if(n&&n.d<60){S.city=[n.c[0],n.c[1]];S.region=n.c[1]}else{let b=KIT.regions[0],m=1e9;KIT.regions.forEach(r=>{const d=km(GEO,[r.lat,r.lon]);if(d<m){m=d;b=r}});S.region=b.code}save();PRICES=null;SHOPS=null;kitchenLoad.done=null;kitchenLoad()}},()=>{},{enableHighAccuracy:false,timeout:10000,maximumAge:600000})}catch(e){}}
+async function geoAuto(){if(geoAuto.done||!navigator.permissions||!navigator.geolocation)return;geoAuto.done=1;
+  try{const st=await navigator.permissions.query({name:'geolocation'});if(st.state!=='granted')return;
+    navigator.geolocation.getCurrentPosition(async p=>{GEO=[p.coords.latitude,p.coords.longitude];const pl=await placeOf(GEO);
+      if(!S.region){applyPlace(pl);kitchenLoad();return}
+      const cur=S.city&&(CITIES||[]).find(c=>c[0]===S.city[0]&&c[1]===S.city[1]),r=KIT&&KIT.regions.find(x=>x.code===S.region),at=cur?[cur[2],cur[3]]:r?[r.lat,r.lon]:null,nm=pl.city||regName(pl.reg);
+      if(at&&km(GEO,at)>30&&(pl.city||pl.reg)!==(cityName()||'')&&pl.reg+(pl.city||'')!==S.region+(cityName()||'')&&S.geoNo!==nm)geoMove(pl)
+      else if(SHEET_FN&&$('#sheet').classList.contains('on'))SHEET_FN()},()=>{},{enableHighAccuracy:false,timeout:10000,maximumAge:3600000})}catch(e){}}
+function geoMove(pl){const nm=pl.city||regName(pl.reg);if($('#geomv'))return;const el=document.createElement('div');el.id='geomv';el.className='geomv';el.setAttribute('role','dialog');el.setAttribute('aria-label','Смена города');
+  el.innerHTML=`<div class="ibox accent">${ic('pin')}</div><div style="flex:1;min-width:0"><b>${pl.city?`Вы в городе ${nm}?`:`Вы в регионе «${nm}»?`}</b><div class="small muted">Показать цены и магазины здесь</div></div><button class="btn sm" onclick="geoMoveYes()">Да</button><button class="x" onclick="geoMoveNo()" aria-label="Нет, оставить ${placeTxt()}">✕</button>`;
+  geoMove.pl=pl;$('#phone').appendChild(el);requestAnimationFrame(()=>el.classList.add('on'))}
+function geoMoveYes(){const pl=geoMove.pl;applyPlace(pl);geoMoveClose();toast('Цены для: '+(pl.city||regName(pl.reg)));kitchenLoad();rerender()}
+function geoMoveNo(){const pl=geoMove.pl;S.geoNo=pl.city||regName(pl.reg);save();geoMoveClose()}
+function geoMoveClose(){const e=$('#geomv');if(e){e.classList.remove('on');setTimeout(()=>e.remove(),300)}}
 async function kitchenLoad(){geoAuto();const k=region()+(GEO?'+':'');if(kitchenLoad.busy||(kitchenLoad.done===k&&KIT&&PRICES&&!PRICES.failed))return;
   if(PRICES&&PRICES.failed&&kitchenLoad.done===k&&Date.now()-PRICES._t<30000)return;kitchenLoad.busy=1;
   try{await loadKit();await loadPrices(PRICES&&PRICES.failed);if(GEO)await loadShops()}finally{kitchenLoad.busy=0;kitchenLoad.done=k}
@@ -1953,9 +1969,44 @@ function openRegion(q=''){const R=KIT?KIT.regions:[],k=norm_(q),C=CITIES||[];
    <div class="tiny muted" style="margin:6px 4px 12px">Справочник городов: HFLabs, CC BY-SA 4.0</div>`);SHEET_FN=null;if(!KIT)loadKit().then(()=>KIT&&openRegion(q));if(!CITIES)loadCities().then(()=>openRegion(q))}
 function setCity(n,r){S.city=[n,r];setRegion(r,n)}
 function setRegion(c,city){S.region=c;if(!city)S.city=null;save();PRICES=null;SHOPS=null;kitchenLoad.done=null;haptic(8);toast('Цены для: '+(city||regName(c)));closeSheet();openFoodPlan()}
-function regionByGeo(){if(!navigator.geolocation){toast('Телефон не даёт геопозицию — найдите город поиском',true);return}
-  toast('Определяем…');navigator.geolocation.getCurrentPosition(async p=>{GEO=[p.coords.latitude,p.coords.longitude];await loadCities();const n=nearCity(GEO[0],GEO[1]);
-    if(n&&n.d<60)setCity(n.c[0],n.c[1]);else{const R=KIT.regions;let b=R[0],m=1e9;R.forEach(r=>{const d=km(GEO,[r.lat,r.lon]);if(d<m){m=d;b=r}});setRegion(b.code)}},()=>toast('Без геопозиции — найдите город поиском',true),{enableHighAccuracy:false,timeout:10000,maximumAge:600000})}
+const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+// где человек: ближайший город справочника (до 60 км) или ближайший регион; координаты — только в памяти
+async function placeOf(g){await loadCities();if(!KIT)await loadKit();const n=nearCity(g[0],g[1]);if(n&&n.d<60)return {city:n.c[0],reg:n.c[1],pos:[n.c[2],n.c[3]]};
+  let b=KIT.regions[0],m=1e9;KIT.regions.forEach(r=>{const d=km(g,[r.lat,r.lon]);if(d<m){m=d;b=r}});return {city:null,reg:b.code,pos:[b.lat,b.lon]}}
+// cb('ok',place) | cb('denied') | cb('timeout') | cb('na'); системный запрос — только из нажатия (иначе iOS не спросит)
+function geoFind(cb){if(!navigator.geolocation||!window.isSecureContext){cb('na');return}
+  const ok=p=>{GEO=[p.coords.latitude,p.coords.longitude];placeOf(GEO).then(pl=>cb('ok',pl)).catch(()=>cb('timeout'))};
+  navigator.geolocation.getCurrentPosition(ok,e=>{if(e&&e.code===1){cb('denied');return}
+    navigator.geolocation.getCurrentPosition(ok,e2=>cb(e2&&e2.code===1?'denied':'timeout'),{enableHighAccuracy:false,timeout:3000,maximumAge:Infinity})}, // тайм-аут — последнее место, что знает телефон (по сети)
+    {enableHighAccuracy:false,timeout:10000,maximumAge:3600000})}
+function applyPlace(pl){S.region=pl.reg;S.city=pl.city?[pl.city,pl.reg]:null;S.geoSeen=pl.city||pl.reg;save();PRICES=null;SHOPS=null;kitchenLoad.done=null}
+// подсказка, если геопозиция не пришла: что нажать на этом телефоне
+function geoHint(st,pick){const how=IOS?`<b>iPhone:</b> Настройки → Конфиденциальность и безопасность → Службы геолокации → включите; там же «Сайты Safari» → «При использовании». Если приложение на экране «Домой» — то же для Safari.`
+   :`<b>Android, Chrome:</b> нажмите на значок замка или настроек слева от адреса сайта → Разрешения → Местоположение → «Разрешить». Проверьте, что геолокация включена в шторке телефона.`;
+  const why=st==='denied'?'Доступ к геопозиции закрыт.':st==='na'?'Этот браузер не даёт геопозицию.':'Телефон долго не может определить место — возможно, выключена геолокация.';
+  return `<div class="geo-h" role="alert"><div style="font-weight:650;margin-bottom:4px">${why}</div>${st==='na'?'':`<div class="small">${how}</div>`}
+   <div class="row" style="gap:8px;margin-top:10px">${st==='na'?'':`<button class="btn sec sm" style="flex:1" onclick="${pick[0]}">Ещё раз</button>`}<button class="btn sm" style="flex:1" onclick="${pick[1]}">Выбрать город</button></div></div>`}
+function regionByGeo(){const b=$('#sbody .addopt .small');if(b)b.textContent='Определяем… до 10 секунд';
+  geoFind((st,pl)=>{if(st==='ok'){applyPlace(pl);setRegion(pl.reg,pl.city);return}
+    if($('#sheet').classList.contains('on')&&$('#stitle').textContent==='Ваш город'){const h=$('#sbody .geo-h');if(h)h.remove();$('#sbody .addopt').insertAdjacentHTML('afterend',geoHint(st,['regionByGeo()',"$('#sbody input').focus()"]));if(b)b.textContent='координаты остаются на телефоне'}
+    else{openRegion();setTimeout(()=>regionByGeo.fail(st),50)}})}
+regionByGeo.fail=st=>{const a=$('#sbody .addopt');if(a&&!$('#sbody .geo-h'))a.insertAdjacentHTML('afterend',geoHint(st,['regionByGeo()',"$('#sbody input').focus()"]))};
+// анкета: шаг «Ваш город»
+let OBG={st:'',pl:null,q:''};
+function obGeo(){OBG.st='wait';renderOnb();geoFind((st,pl)=>{OBG.st=st;if(st==='ok'){OBG.pl=pl;applyPlace(pl);haptic(8)}renderOnb()})}
+function obCity(n,r){const c=(CITIES||[]).find(x=>x[0]===n&&x[1]===r);applyPlace({city:n,reg:r,pos:c?[c[2],c[3]]:null});OBG={st:'ok',pl:{city:n,reg:r},q:''};haptic(8);renderOnb()}
+function obReg(r){applyPlace({city:null,reg:r});OBG={st:'ok',pl:{city:null,reg:r},q:''};haptic(8);renderOnb()}
+function obPick(){OBG.st='pick';renderOnb();loadCities().then(()=>{const e=$('#obq');if(e)e.focus()})}
+function obQ(v){OBG.q=v;const k=norm_(v),box=$('#obcl');if(!box)return;const C=(CITIES||[]).filter(c=>k.length>=2&&norm_(c[0]).startsWith(k)).sort((a,b)=>b[4]-a[4]).slice(0,8),R=KIT?KIT.regions.filter(r=>k.length>=2&&norm_(r.n).includes(k)).slice(0,4):[];
+  box.innerHTML=C.length||R.length?`<div class="card list" style="margin:8px 0 0">${C.map(c=>`<button class="li" style="width:100%;text-align:left" onclick="obCity('${c[0].replace(/'/g,'')}','${c[1]}')"><div style="flex:1;min-width:0">${c[0]}<div class="tiny muted">${regName(c[1])}</div></div></button>`).join('')}${R.map(r=>`<button class="li" style="width:100%;text-align:left" onclick="obReg('${r.code}')"><div style="flex:1">${r.n}</div></button>`).join('')}</div>`:k.length>=2?'<div class="small muted" style="margin:8px 4px">Не нашли — попробуйте регион</div>':''}
+function obGeoStep(){const st=OBG.st,pl=OBG.pl||(S.region?{city:cityName(),reg:S.region}:null),done=st==='ok'||(!st&&S.region);
+  return `<div class="q">Ваш город</div><div class="qs">Чтобы показать цены и магазины вашего города. Местоположение остаётся на телефоне</div>
+   <div class="fadeb" style="overflow-y:auto;flex:1;min-height:0;margin:0 -4px;padding:0 4px">
+   ${done&&pl?`<div class="card row" style="gap:12px"><div class="ibox ok">${ic('check')}</div><div style="flex:1;min-width:0"><div class="small muted">Цены для</div><div style="font-weight:700;font-size:18px">${pl.city?pl.city+(pl.city!==regName(pl.reg)?' · '+regName(pl.reg):''):regName(pl.reg)}</div></div><button class="tiny" style="color:var(--accent-text);font-weight:650" onclick="obPick()">сменить</button></div>`:''}
+   ${!done||st==='pick'?`<button class="btn" onclick="obGeo()" ${st==='wait'?'disabled aria-busy="true"':''}>${ic('pin')}${st==='wait'?'Определяем… до 10 секунд':'Определить по геопозиции'}</button>
+   ${st==='denied'||st==='timeout'||st==='na'?geoHint(st,['obGeo()','obPick()']):''}
+   ${st==='pick'?`<input class="search" id="obq" type="search" placeholder="Город или регион" value="${OBG.q.replace(/"/g,'&quot;')}" oninput="obQ(this.value)" style="margin:12px 0 0"><div id="obcl"></div>`:st==='denied'||st==='timeout'?'':`<button class="btn sec" style="margin-top:8px" onclick="obPick()">Выбрать вручную</button>`}`:''}
+   </div><button class="btn" style="margin-top:12px" onclick="obNext()">${done?'Дальше':'Пропустить'}</button>`}
 
 /* ---------- База продуктов и блюд: поиск и расчёт кодом ---------- */
 let DB=null,DBI=null; // DB.products (массив), DB.dishes (массив), DBI — индекс по названию
@@ -3166,7 +3217,7 @@ function resetAll(){if(AC)acLogout(true);if(S.remind&&(S.remind.on||S.remind.uns
 
 /* ---------- Анкета ---------- */
 let OB=0,D={...DEF},obDir='',obPct=0;
-const STEPS=8;
+const STEPS=9;
 /* ---------- юридическое окно перед анкетой: соглашение и политика, отдельное согласие на обработку ПДн (152-ФЗ с 01.09.2025), 14+ ----------
    Редакция документов — LEGAL_V: сменили её — спросим снова. Документы открываются внутри приложения (legal/*.html). */
 const LEGAL_V='2026-11-01.3',LEGAL={terms:'Пользовательское соглашение',privacy:'Политика обработки персональных данных',consent:'Согласие на обработку персональных данных',recurrent:'Согласие на автоматические списания',requisites:'Реквизиты'};
@@ -3234,6 +3285,7 @@ function renderOnb(){
       </div>
       <div class="card row" style="margin:8px 0 0"><div class="ibox ok">${ic('wallet')}</div><div style="flex:1;min-width:0"><div class="small muted">Бюджет на еду</div><div class="num" style="font-size:26px" id="budv">${fmt(bud)} ₽ в день</div><div class="small muted" id="stv">подберём блюда и магазины под эту сумму</div></div></div>
       <button class="btn" style="margin-top:12px" onclick="obNext()">Дальше</button>`,
+   obGeoStep,
    ()=>`<div class="q">Где тренируетесь?</div><div class="qs">Программа подстроится под инвентарь</div>
       ${[['gym','В зале','тренажёры, штанга, гантели','gym'],['home','Дома','без инвентаря или с гантелями','home'],['both','И там, и там','программа на оба случая','run']].map(([k,t,d,i])=>`<button class="opt ${D.place===k?'on':''}" onclick="D.place='${k}';renderOnb()"><div class="ibox">${ic(i)}</div><div style="flex:1"><div style="font-weight:700">${t}</div><div class="small muted">${d}</div></div></button>`).join('')}
       <div style="flex:1"></div><button class="btn" onclick="obNext()">Дальше</button>`,
