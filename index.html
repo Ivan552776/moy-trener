@@ -674,6 +674,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .wx-c{position:absolute;left:18px;right:18px;bottom:16px}
 .wx-t{font:700 26px/1.1 var(--display);letter-spacing:-.022em} .wx-s{font-size:14px;color:rgba(255,255,255,.8);margin-top:4px}
 .wx-go{display:inline-flex;align-items:center;gap:2px;margin-top:12px;height:42px;padding:0 14px 0 20px;border-radius:999px;background:#fff;color:#0B0D12;font-weight:600;font-size:16px} .wx-go .ic{width:18px;height:18px}
+.wherec{margin:-2px 4px 14px} .wherec .chip{flex:1;justify-content:center}
 .dish .thumb{width:60px;height:60px;border-radius:14px} .dish .title{hyphens:auto;-webkit-hyphens:auto;overflow-wrap:anywhere} .dish-ic{position:absolute;inset:0;display:grid;place-items:center;color:#fff;background:radial-gradient(120% 90% at 20% 15%,rgba(255,255,255,.28),transparent 55%),var(--grad);box-shadow:inset 0 1px 0 rgba(255,255,255,.25)} .dish-ic .ic{width:26px;height:26px;stroke-width:1.6}
 .stepn{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-text);font:700 13px var(--num);margin-top:1px}
 .dsec{margin-bottom:8px} .dhead{position:sticky;top:-1px;z-index:3;display:flex;align-items:center;gap:6px;padding:10px 4px 8px;font:700 17px var(--display);background:var(--sheet);color:var(--text)} .dhead .ic{width:17px;height:17px;color:var(--accent-text)}
@@ -931,7 +932,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-05-r81'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-05-r82'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1130,14 +1131,15 @@ function budgetOf(pr){return Math.max(0,Math.round(pr.income*pr.share/pr.people/
 function norm(pr){ // всё считает код, нейросеть цифры не придумывает
   const bmr=10*pr.w+6.25*pr.h-5*pr.age+(pr.sex==='m'?5:-161);
   // группа активности — по работе (МР 2.3.1.0253-21); тренировки — отдельно: ~45 мин при ~5 METs = 4 METs сверх покоя × 0,75 ч ≈ 3 ккал на кг за занятие (Компендиум, ACSM)
-  const grp=WORK[pr.work][2],kfa=KFA[grp],base=bmr*kfa,train=Math.round(effTrains(pr)*pr.w*3/7);
+  const grp=WORK[pr.work][2],kfa=KFA[grp],base=bmr*kfa,train=Math.round(effTrains(pr,1)*pr.w*3/7);
   const tdee=base+train,g=GOALS[pr.goal],hm=pr.h/100,bmi=pr.w/(hm*hm),minor=pr.age<18,under=!minor&&bmi<18.5;
   const pk=pr.goal==='lose'||pr.goal==='muscle'?pr.pace:'mid'; // темп выбирают только у «Похудеть» и «Набрать мышцы»
   let adj=g.adj[minor&&pr.goal==='muscle'&&pk==='fast'?'mid':pk]||0;const preg=pr===S.profile&&S.alg&&(S.alg.h||[]).includes('preg'),capped=(minor||under||preg)&&adj<0;if(capped)adj=0;
   let kcal=Math.round(tdee*(1+adj)/10)*10;
   const floor0=pr.sex==='m'?1500:1200,floor=Math.min(floor0,Math.floor(tdee/10)*10),floored=kcal<floor;if(floored)kcal=floor; // безопасный минимум, но не выше расхода
-  const refW=bmi>=30?Math.round(25*hm*hm):pr.w,p=Math.round(refW*g.prot),f=Math.round(kcal*.27/9),c=Math.max(0,Math.round((kcal-p*4-f*9)/4));
-  return {bmr:Math.round(bmr),grp,kfa,base:Math.round(base),train,tdee:Math.round(tdee),adj,kcal,p,f,c,floored,floor,floor0,bmi:Math.round(bmi*10)/10,minor,under,capped,preg,refW};
+  const refW=bmi>=30?Math.round(25*hm*hm):pr.w;let p=Math.round(refW*g.prot),f=Math.round(kcal*.27/9),c=Math.max(0,Math.round((kcal-p*4-f*9)/4));
+  const kcal0=kcal,tb=pr===S.profile?trainBoost(kcal,train):null;if(tb&&tb.extra){kcal+=tb.extra;p+=tb.dp;c+=tb.dc} // день тренировки: мягкий добор сверх среднего дня
+  return {bmr:Math.round(bmr),grp,kfa,base:Math.round(base),train,tdee:Math.round(tdee),adj,kcal,kcal0,tb,p,f,c,floored,floor,floor0,bmi:Math.round(bmi*10)/10,minor,under,capped,preg,refW};
 }
 const paceTxt=(pr,n)=>pr.goal==='lose'||pr.goal==='muscle'?(n.capped?'держим вес':PACE[n.minor&&pr.goal==='muscle'&&pr.pace==='fast'?'mid':pr.pace].toLowerCase()):n.adj===0?'держим вес':'';
 const progName=pr=>pr.goal==='lose'&&norm(pr).capped?GOALS.keep.prog:GOALS[pr.goal].prog; // подросткам и при недовесе «Жиросжигание» не предлагаем
@@ -1164,9 +1166,9 @@ const SPLITS={
             ['Сила',[['Гоблет-приседания','3 × 12','Гантель у груди, спина прямая.','squat','Goblet_Squat'],['Выпады с гантелями','3 × 10 на ногу','Колено над стопой.','lunge','Dumbbell_Lunges'],['Тяга нижнего блока','3 × 12','Грудь вперёд, тяните к поясу.','seatedrow','Seated_Cable_Rows'],['Боковая планка','3 × 30 сек на сторону','Тело прямое.',null,'Side_Bridge']]]],
  home:[['Дома А',HOME_EX],['Дома Б',[['Отжимания (можно с колен)','3 × 10','Корпус прямой, локти под 45°.',null,'Pushups'],['Ягодичный мост','3 × 15','Сожмите ягодицы вверху.',null,'Butt_Lift_Bridge'],['Выпады назад','3 × 10 на ногу','Шаг назад, колено над стопой; можно без гантелей.',null,'Dumbbell_Rear_Lunge',1],['Скалолаз','3 × 30 сек','Таз не поднимается, темп ровный.',null,'Mountain_Climbers'],['Боковая планка','3 × 20 сек на сторону','Тело прямое.',null,'Side_Bridge']]]]
 };
-const program=()=>{const g=S.profile.goal,sp=SPLITS[S.profile.place==='home'?'home':g],n=effTrains(),d=curDay(),r=S.rot||0;return{name:progName(S.profile),days:Array.from({length:n},(_,i)=>sp[(i+r)%sp.length][0]),ex:sp[(d+r)%sp.length][1]}};
+const program=()=>{const g=S.profile.goal,n=effTrains(),d=curDay(),r=S.rot||0,both=(S.profile.place||'both')==='both',sp=i=>splitFor(g,placeOn(i,d)),ix=i=>(both?i>>1:i)+r;return{name:progName(S.profile),days:Array.from({length:n},(_,i)=>{const s=sp(i);return s[ix(i)%s.length][0]}),ex:(s=>s[ix(d)%s.length][1])(sp(d)),place:placeOn(d,d)}}; // место: дома / в зале; при «и там, и там» — через день или как человек выбрал сегодня
 const exPic=x=>x[3]&&x[3]!=='home'?gymPic(x[3]):x[4]&&TEN.has(x[4])?tenPoster(x[4]):gymPic(x[3]); // фото зала, если есть; иначе — кадр 3D-модели упражнения
-function effTrains(pr){pr=pr||S.profile;return pr.level==='new'?Math.min(pr.trains,4):pr.trains} // новичкам — не больше 4 в неделю и не два дня подряд
+function effTrains(pr,raw){pr=pr||S.profile;const t=Math.max(0,Math.min(Math.round(+pr.trains||0),7)),e=pr.level==='new'?Math.min(t,4):t;return raw?e:Math.max(1,e)} // новичкам — не больше 4 в неделю и не два дня подряд; raw — для нормы (0 тренировок — 0 ккал), программе нужен хотя бы 1 день
 const curDay=()=>{const n=effTrains(),t=S.doneOn&&S.doneOn[today0()];if(t!=null&&t<n)return t;for(let i=0;i<n;i++)if(!S.done.includes(i))return i;return n-1}; // какой день программы сегодня
 const doneToday=()=>!!(S.doneOn&&S.doneOn[today0()]!=null),weekFull=()=>!doneToday()&&S.done.length>=weekPlanCount();
 const weekPlanCount=()=>Math.min((S.plan||planWeek()).length,effTrains()); // сколько тренировок в плане этой недели
@@ -1186,6 +1188,69 @@ function setP(k,v){const pr=S.profile;if(pr[k]===v)return;const o=program().ex.m
   save();rerender()}
 const setsOf=x=>Math.min(parseInt(x[1])||3,6);
 const gymPic=k=>'img/gym/'+(k||'club')+'.jpg';
+/* ---------- дом / зал, расход по MET, еда в день тренировки (docs/TRENIROVKI-I-EDA.md) ---------- */
+// домашние программы под цель: свой вес, гантели, коврик. Для «держать вес» и «рекомпозиции» — общая SPLITS.home
+SPLITS.home_muscle=[['Дома: гантели А',[['Гоблет-приседания','4 × 10','Гантель у груди, садитесь между коленей.',null,'Goblet_Squat'],['Отжимания','4 × 10','Корпус прямой; тяжело — с колен.',null,'Pushups'],['Тяга гантелей в наклоне','4 × 10','Спина прямая, тяните к поясу.',null,'Bent_Over_Two-Dumbbell_Row'],['Жим гантелей стоя','3 × 10','Пресс напряжён, поясница не прогибается.',null,'Standing_Dumbbell_Press'],['Подъём гантелей на бицепс','3 × 12','Локти прижаты к корпусу.',null,'Dumbbell_Bicep_Curl',1]]],
+  ['Дома: гантели Б',[['Обратные выпады с гантелями','3 × 10 на ногу','Колено не уходит вперёд.',null,'Dumbbell_Rear_Lunge',1],['Румынская тяга с гантелями','3 × 10','Спина прямая, таз назад, гантели вдоль бёдер.','home','Stiff-Legged_Dumbbell_Deadlift'],['Отжимания от стула','3 × 12','Локти назад, плечи опущены.',null,'Bench_Dips'],['Ягодичный мост','3 × 15','Сожмите ягодицы вверху.',null,'Butt_Lift_Bridge'],['Планка','3 × 45 сек','Тело — одна прямая линия.',null,'Plank',1]]]];
+SPLITS.home_lose=[['Дома: круговая А',[['Приседания','3 × 15','Спина прямая, вес на пятках.',null,'Bodyweight_Squat'],['Скалолаз','4 × 30 сек','Таз не поднимается, темп ровный.',null,'Mountain_Climbers'],['Отжимания (можно с колен)','3 × 10','Корпус прямой, локти под 45°.',null,'Pushups'],['Выпады в шаге','3 × 12 на ногу','Колено над стопой, шаг широкий.',null,'Bodyweight_Walking_Lunge'],['Планка','3 × 40 сек','Тело — одна прямая линия.',null,'Plank',1]]],
+  ['Дома: круговая Б',[['Ягодичный мост','3 × 15','Пятки ближе к тазу, сожмите ягодицы вверху.',null,'Butt_Lift_Bridge'],['Скалолаз','4 × 30 сек','Таз не поднимается, темп ровный.',null,'Mountain_Climbers'],['Отжимания от стула','3 × 10','Корпус прямой, локти назад.',null,'Bench_Dips'],['Скручивания','3 × 15','Поясница прижата, шею не тяните.',null,'Crunches'],['Боковая планка','3 × 20 сек на сторону','Тело прямое.',null,'Side_Bridge']]]];
+SPLITS.home_endurance=[['Дома: интервалы',[['Скалолаз: интервалы','8 × 30 сек быстро / 30 сек отдых','Быстро — 7 из 10 по ощущениям.',null,'Mountain_Climbers'],['Приседания','3 × 20','Ровный темп, дышите.',null,'Bodyweight_Squat'],['Выпады в шаге','3 × 12 на ногу','Колено над стопой.',null,'Bodyweight_Walking_Lunge'],['Планка','3 × 45 сек','Тело прямое.',null,'Plank',1]]],
+  ['Длинное кардио',[['Бег или быстрая ходьба на улице','1 × 30 мин','Темп «могу говорить», ровно.','home','Trail_Running_Walking'],['Планка','3 × 45 сек','Тело прямое.',null,'Plank',1]]],
+  ['Дома: сила',HOME_EX]];
+const splitFor=(g,p)=>p==='home'?SPLITS['home_'+g]||SPLITS.home:SPLITS[g];
+// где тренировка дня i: «дома» / «в зале»; при «и там, и там» — через день, сегодняшний день человек переключает сам
+const placeOn=(i,d)=>{const p=S.profile.place||'both';if(p!=='both')return p;if(i===d&&S.where&&S.where.d===today0())return S.where.v;return i%2?'home':'gym'};
+const placeName=p=>p==='home'?'дома':'в зале';
+function setWhere(v){if(doneToday())return;const o=program().ex.map(x=>x[0])+'';S.where={d:today0(),v};if(program().ex.map(x=>x[0])+''!==o)for(const q in S.sets)if(!q.startsWith('x'))delete S.sets[q];save();haptic(8);rerender()}
+const whereChips=()=>S.profile.place==='both'&&!doneToday()?`<div class="chips wherec" role="group" aria-label="Где сегодня тренировка">${[['gym','Сегодня в зале'],['home','Сегодня дома']].map(([k,l])=>`<button class="chip ${program().place===k?'on':''}" aria-pressed="${program().place===k}" onclick="event.stopPropagation();setWhere('${k}')">${l}</button>`).join('')}</div>`:'';
+
+// MET упражнений — data/met.json (Компендиум физической активности); пока файл не пришёл — грубая оценка по типу
+let MET={rest:1.3,easy:3.5,fast:1.25,repSec:3,restSec:60,ex:{}};
+function loadMET(){return loadMET.p=loadMET.p||fetch('data/met.json').then(r=>{if(!r.ok)throw new Error(r.status);return r.json()}).then(j=>{MET=j;return j}).catch(()=>{loadMET.p=null;return MET})}
+loadMET();
+const metOf=id=>MET.ex[id]||(/Treadmill|Bike|Bicycl|Rowing|Elliptical|Stair|Rope_Jump|Climber/.test(id||'')?[7,'c']:[4.5,'s']);
+// время одного подхода из записи «3 × 12 на ногу», «3 × 40 сек», «1 × 15 мин», «6 × 1 мин быстро / 1 мин шагом»: [сек работы, сек лёгкой части, интервал?, лёгкая часть — отдых?]
+function setWork(x){const t=String(x[1]||'').replace(/,/g,'.'),two=/на ногу|на сторону/.test(t)?2:1,af=t.includes('×')?t.split('×')[1]:t,pt=af.split('/');
+  const dur=s=>{const m=s.match(/(\d+(?:\.\d+)?)\s*(мин|сек)/);return m?+m[1]*(m[2]==='мин'?60:1):0};
+  if(pt.length>1)return [dur(pt[0]),dur(pt[1]),true,/отдых/.test(pt[1])];
+  const d=dur(af);if(d)return [d*two,0,false,false];
+  const r=af.match(/(\d+)(?:\s*[–-]\s*(\d+))?/),n=r?(r[2]?(+r[1]+ +r[2])/2:+r[1]):10;return [n*MET.repSec*two,0,false,false]}
+// расход сессии: ккал = MET × вес × часы — по отмеченным подходам. MET силовых в Компендиуме измерен вместе с обычным отдыхом между подходами (~1 мин),
+// поэтому подход = работа + минута отдыха при MET упражнения; у коротких кардио-подходов отдых — при MET покоя. Длинное кардио — без отдыха.
+// Поправка на отдых: если тренировка шла дольше — лишнее время считаем покоем (MET 1,3), не больше 30 мин; отметили подходы быстрее, чем можно сделать, — считаем по реальному времени
+function burnCalc(items,w,elapsedMin){let kc=0,sec=0,cs=0,ss=0;
+  for(const [id,x,k] of items){if(!k)continue;const [m,t]=metOf(id),[a,b,iv,rs]=setWork(x),hi=iv?m*MET.fast:m,lo=rs?MET.rest:MET.easy,r=a+b<180?MET.restSec:0,e=k*(a*hi+b*lo+r*(t==='s'?m:MET.rest))/3600;
+    kc+=e;sec+=k*(a+b+r);if(t==='c')cs+=e;else ss+=e}
+  const el=(elapsedMin||0)*60,f=el&&el<sec?el/sec:1,ex=el>sec?Math.min(el-sec,1800):0,h=(sec*f+ex)/3600,gross=(kc*f+ex*MET.rest/3600)*w;
+  return {k:Math.round(gross),net:Math.max(0,Math.round(gross-h*w)),min:Math.max(1,Math.round(h*60)),kind:cs>ss?'c':'s'}}
+const exItems=pg=>[...pg.ex.map((x,i)=>[x[4],x,Array.from({length:setsOf(x)}).filter((_,j)=>S.sets[i+'-'+j]).length]),
+  ...S.extra.map(id=>{const t=metOf(id)[1];return [id,['',t==='c'?'3 × 1 мин':t==='f'?'3 × 30 сек':'3 × 10'],[0,1,2].filter(j=>S.sets['x'+id+'-'+j]).length]})];
+const HOME20=[['Приседания','3 × 15','Bodyweight_Squat'],['Отжимания от стула','3 × 10','Bench_Dips'],['Ягодичный мост','3 × 15','Butt_Lift_Bridge'],['Планка','3 × 30 сек','Plank'],['Скалолаз','3 × 30 сек','Mountain_Climbers']];
+function saveBurn(b,pl){const td=today0();S.burnOn=S.burnOn||{};for(const d in S.burnOn)if((Date.parse(td)-Date.parse(d))/864e5>14)delete S.burnOn[d];S.burnOn[td]={...b,pl,at:Date.now()}}
+// добор нормы в день тренировки: только превышение расхода сессии (сверх покоя) над тем, что уже заложено в средний день, и не больше 15 % нормы.
+// зал и силовые — добор больше в белок, кардио — в углеводы
+function trainBoost(kcal,train){const b=S.burnOn&&S.burnOn[today0()];if(!b)return null;
+  const cap=Math.floor(kcal*.15/10)*10,extra=Math.min(cap,Math.max(0,Math.round((b.net-train)/10)*10)),ps=b.kind==='c'?.1:b.pl==='gym'?.3:.25,dp=Math.round(extra*ps/4),dc=Math.max(0,Math.round((extra-dp*4)/4));
+  return {extra,dp,dc,cap,net:b.net,gross:b.k,kind:b.kind,pl:b.pl}}
+// совет «после тренировки» (белок + углеводы в течение 2 ч) из наших блюд: под бюджет, «Не ем и аллергии», остаток нормы
+function postDishes(){if(!KIT)return [];const b=S.burnOn&&S.burnOn[today0()],kind=b?b.kind:'s',n=norm(S.profile),e=eaten(),remK=Math.max(n.kcal-e.k,0),bud=Math.max(budgetOf(S.profile)-e.cost,0),hr=new Date().getHours(),ml=hr<11?'b':hr<16?'l':'d';
+  const R=KIT.recipes.filter(d=>!dishBan(d)&&d.nut.p>=15&&d.nut.c>=20&&d.nut.k>=200&&d.nut.k<=Math.max(400,Math.min(750,remK+100))),cst=d=>{const c=dishCost(d);return c?c.r:0};
+  const sc=d=>{const pk=d.nut.p*4/d.nut.k,ck=d.nut.c*4/d.nut.k;return (kind==='c'?2*ck+pk:2*pk+ck)+(d.m.includes(ml)?.15:0)+(S.likes&&S.likes[d.id]?.3:0)-(S.dislikes&&S.dislikes[d.id]?.8:0)-healthPenalty(d)-(hasPrices()?cst(d)/Math.max(bud,60)*.3+(cst(d)>bud?3:0):0)};
+  return R.filter(d=>!hasPrices()||dishCost(d)&&!dishCost(d).part&&cst(d)>0&&cst(d)<=bud).map(d=>[sc(d),d]).sort((a,b)=>b[0]-a[0]).slice(0,3).map(a=>a[1])} // только то, что помещается в остаток бюджета
+function postCard(){const l=postDishes(),b=S.burnOn&&S.burnOn[today0()],d=l[0];if(!d)return '';const c=dishCost(d);
+  return `<button class="mealx tap postx" onclick="openDish('${d.id}')"><div class="mx-p">${ic(dishCat(d)[1])}${pic(d.img,d.n)}</div><div class="mx-t"><span class="mx-eb">После тренировки · в течение 2 ч</span><b>${d.n}</b><span class="mx-s">белок ${u(d.nut.p,'г')} · углеводы ${u(d.nut.c,'г')} · ${b&&b.kind==='c'?'после кардио — больше углеводов':'после силовой — упор на белок'}</span></div><div class="mx-v"><b>${fmt(d.nut.k)}</b><span>ккал</span>${c?`<span class="mx-pr">${costTxt(c)}</span>`:''}</div></button>`}
+async function fillPost(){const el=$('#postd');if(!el)return;await loadKit();const h=postCard();if(el.isConnected)el.innerHTML=h||`<div class="card small muted postno" style="line-height:1.45">${dietOn()?'Из наших блюд под ваши ограничения':'Из наших блюд'} ${budgetOf(S.profile)-eaten().cost>0?' и остаток бюджета на сегодня ('+rub(budgetOf(S.profile)-eaten().cost)+')':' и бюджет на сегодня'} после тренировки ничего не подходит. В течение 2 часов съешьте то, что есть дома и вам можно: белок плюс крупа или картофель.</div>`}
+const postNow=()=>{const b=S.burnOn&&S.burnOn[today0()];return !!(b&&Date.now()-b.at<2*3600e3)};
+// приёмы до и после тренировки: чуть больше доля остатка, белка и углеводов — в пределах нормы на день
+function trainSlots(slots){const o={},b=S.burnOn&&S.burnOn[today0()];if(!slots.length)return o;const f=slots[0],ck=d=>Math.min(d.nut.c*4/Math.max(d.nut.k,1)/.45,1.2);
+  if(b&&Date.now()-b.at<3*3600e3)o[f[0]]={w:1.3,p:b.kind==='c'?1.1:1.35,lab:'после тренировки',b:d=>(b.kind==='c'?.5:.25)*ck(d)};
+  else if(!doneToday()&&(!S.plan||S.plan.includes((new Date().getDay()+6)%7))&&!restDay()&&f[1]!=='b')o[f[0]]={w:1.15,p:1.1,lab:'до тренировки: за 1,5–2 ч',b:d=>.35*ck(d)};
+  return o}
+function burnExplain(pr,n){const t=n.tb,wk=effTrains(pr,1);
+  return `<div class="card small" style="line-height:1.45"><b style="color:var(--text)">Тренировки и расход</b><br>
+   Расход тренировки считает код: ккал&nbsp;≈ MET × вес&nbsp;(кг) × время&nbsp;(ч). MET — из Компендиума физической активности (Ainsworth, 2011; обновление 2024) для каждого упражнения: силовые лёгкие 3,5, тяжёлые 6, со своим весом 2,8–3,8, кардио 5–10 по скорости, растяжка 2,3. Время — по отмеченным подходам: повтор ≈ 3&nbsp;сек плюс обычный отдых ${MET.restSec}&nbsp;сек (он уже входит в MET силовых). Поправка на отдых: если тренировка шла дольше, лишнее время считаем покоем (MET&nbsp;${dec(MET.rest)}), не больше 30&nbsp;мин; отметили подходы быстрее — считаем по реальному времени.<br>
+   ${wk?`В норме уже заложены ${pl(wk,'тренировка','тренировки','тренировок')} в неделю — в среднем +${fmt(n.train)} ккал на каждый день. Поэтому в день тренировки добавляем только превышение: расход сверх покоя минус ${fmt(n.train)}, и не больше 15&nbsp;% нормы.`:'Тренировки в норму не заложены (в анкете — без тренировок), поэтому в день тренировки добавляем расход сверх покоя, но не больше 15&nbsp;% нормы.'} ${t?(t.extra?`Сегодня: ≈&nbsp;${fmt(t.net)} сверх покоя → добор <b>+${fmt(t.extra)}&nbsp;ккал</b> (белок +${t.dp}&nbsp;г, углеводы +${t.dc}&nbsp;г — ${t.kind==='c'?'после кардио упор на углеводы':'после силовой упор на белок'}).`:`Сегодня: ≈&nbsp;${fmt(t.net)} сверх покоя — не больше, чем уже заложено в норму, добирать не нужно.`):'Сегодня тренировки ещё не было.'}<br>
+   Цифры по таблицам MET приблизительные (±20–30&nbsp;%): поэтому «≈» и мягкий добор. Не медицинская консультация.</div>`}
 
 /* ---------- каркас ---------- */
 const TABS=[['today','Сегодня','sun'],['scan','','plus'],['tech','Атлас','ruler'],['me','Я','me']];
@@ -1333,10 +1398,10 @@ function vToday(){
   </section>
   ${nextMeal&&mealTime?`<button class="mealx tap" onclick="openDish('${nextMeal.id}')"><div class="mx-p">${ic(dishCat(nextMeal)[1])}${pic(nextMeal.img,nextMeal.n)}</div><div class="mx-t"><span class="mx-eb">Что приготовить · ${(nextMeal.lab||SLOT[nextMeal.m]||'').split(' · ')[0]}${mealTime==='сейчас'?'':' · '+mealTime}</span><b>${nextMeal.n}</b><span class="mx-s">белок ${u(nextMeal.nut.p,'г')}${(()=>{const r=hasPrices()&&chainRows(nextMeal.ing).find(x=>!x.avg&&x.d!=null);return r?' · '+r.n+' '+distTxt(r.d):' · под остаток и бюджет'})()}</span></div><div class="mx-v"><b>${fmt(nextMeal.nut.k)}</b><span>ккал</span>${nextMeal.c?`<span class="mx-pr">${costTxt(nextMeal.c)}</span>`:''}</div></button>`:''}
   ${nextMeal&&mealTime?`<button class="mx-reg" onclick="openRegion()">${ic('pin')}<span>Цены для: ${S.region?placeTxt():regName(region())+' — уточнить город'}</span>${ic('chev')}</button>`:''}
-  <button class="workx tap${done?' done':''}" onclick="openProgram()"><img src="${S.profile.place==='home'?gymPic('home'):gymPic(pg.ex[0]&&pg.ex[0][3])}" alt="" onerror="this.remove()">
+  ${postNow()&&KIT?`<div id="postd">${postCard()}</div>`:''}<button class="workx tap${done?' done':''}" onclick="openProgram()"><img src="${pg.place==='home'?gymPic('home'):gymPic(pg.ex[0]&&pg.ex[0][3])}" alt="" onerror="this.remove()">
     <span class="wx-st">${done?ic('check')+'Готово':wfull?'Неделя закрыта':rest?'Отдых':!planToday?'Следующая':lateW?'Завтра':'Тренировка дня'}</span>
-    <div class="wx-c"><div class="wx-t">${pg.days[ti]}</div><div class="wx-s">${pl(pg.ex.length,'упражнение','упражнения','упражнений')} · 45 мин · «${pg.name}»</div>
-    <span class="wx-go">${done?'Посмотреть':act[0]==='openProgram()'?'План тренировки':'Начать'}${ic('chev')}</span></div></button>
+    <div class="wx-c"><div class="wx-t">${pg.days[ti]}</div><div class="wx-s">${pl(pg.ex.length,'упражнение','упражнения','упражнений')}${/дома/i.test(pg.days[ti])?'':' · '+placeName(pg.place)} · ${done&&S.burnOn&&S.burnOn[today0()]?'≈ '+u(S.burnOn[today0()].k,'ккал'):'45 мин'} · «${pg.name}»</div>
+    <span class="wx-go">${done?'Посмотреть':act[0]==='openProgram()'?'План тренировки':'Начать'}${ic('chev')}</span></div></button>${whereChips()}
   <button class="techx tap" onclick="${lf?'openForm()':`formRun('squat.mp4','squat')`}" aria-label="Разбор техники по камере">
     <img src="${lf?lf.shot:'img/tech-demo.jpg'}" alt="">
     <div class="tx-c"><span class="tx-eb">${lf?`${fName(lf.ex)} · ${ago(lf.t)}`:'Камера проверит технику'}</span>
@@ -1397,7 +1462,7 @@ function tip(n,e){
   if(!S.log.length)return h>=21?'Поздний вечер: если ели днём — запишите, чтобы день сошёлся. На ночь калории не добираем.':h<11?'Начнём день: запишите завтрак — по фото или из базы. Остаток и белок посчитаю сам.':'Запишите, что уже ели сегодня — по фото или из базы. Остаток и белок посчитаю сам.';
   if(h>=21&&e.k<=n.kcal)return g==='muscle'?'Поздний вечер: если белка не хватает — творог перед сном, остальное завтра.':'Поздний вечер: на ночь калории не добираем. Если голодно — стакан кефира или творог, остальное — завтра по плану.';
   if(e.k>n.kcal)return e.k>n.kcal*1.3?`Сегодня ${u(e.k-n.kcal,'ккал')} сверх нормы — проверьте граммы в записях: может, ошибка в весе порции. Один день план не ломает.`:`Вышли за норму на ${u(e.k-n.kcal,'ккал')}. Бывает — завтра едим по плану, без урезания.`;
-  if(g==='muscle')return leftP>40?`Для роста мышц добираем белок: осталось ${u(leftP,'г')}. После тренировки — творог или курица.`:(S.profile.place==='home'?'Белок в норме. Сегодня добавьте 2–3 повтора в приседаниях или замедлите опускание.':'Белок в норме. Сегодня прибавьте вес в жиме ногами, если 8 повторов дались легко.');
+  if(g==='muscle')return leftP>40?`Для роста мышц добираем белок: осталось ${u(leftP,'г')}. После тренировки — творог или курица.`:(program().place==='home'?'Белок в норме. Сегодня добавьте 2–3 повтора в приседаниях или замедлите опускание.':'Белок в норме. Сегодня прибавьте вес в жиме ногами, если 8 повторов дались легко.');
   if(g==='endurance')return S.done.includes(curDay())?'После интервалов в течение 1–2 часов — углеводы с белком: каша, творог, банан. Пейте воду.':'Перед интервалами — углеводы за 1,5–2 часа: каша или банан. Пейте воду по ходу тренировки.';
   if(leftP>60)return `До нормы белка не хватает ${u(leftP,'г')} — так мышцы не уходят вместе с жиром. ${sg.why==='small'?'На такой бюджет готовые блюда не помещаются — доберите дешёвым: яйца, творог, кефир, крупы.':sg.why==='money'?'Бюджет на сегодня закончился — доберите тем, что есть дома: яйца, творог, кефир.':'Подберу '+(h<11||(h<16&&!lunch)?'обед':'ужин')+' с белком под ваш бюджет.'}`;
   if(leftP>25&&h>=16)return `Белка не хватает ${u(leftP,'г')} — доберите перекусом: творог или кефир.`;
@@ -1627,15 +1692,15 @@ function dayPlan(){
   // Рамадан: днём советов поесть нет; до рассвета — сухур, после заката — ифтар и перекус (время — по геопозиции или центру региона)
   const rm=ne.includes('ramadan')?ramadanSlots():null;if(rm){slots=rm.now==='suhur'?[['b','b',0,24,'Сухур — до '+rm.rise]]:rm.now==='iftar'?[['d','d',0,24,'Ифтар — после '+rm.set],['s','s',0,24,'Перекус']]:[];late=false}
   if(!S.cook||S.cook.d!==td){S.cook={d:td,pick:{},skip:{},have:[]};const nx=S.nextDish&&S.nextDish.d===td&&KIT.recipes.find(x=>x.id===S.nextDish.id);if(nx){S.cook.pick[nx.m.includes('d')?'d':nx.m[0]]=nx.id;S.nextDish=null}}
-  const R=KIT?KIT.recipes.filter(d=>!dishBan(d)):[],W={b:.3,l:.4,d:.3,s:.15},wsum=slots.reduce((s,x)=>s+W[x[1]],0)||1,used=new Set(),out=[],lunchbox=ne.includes('lunchbox');
+  const R=KIT?KIT.recipes.filter(d=>!dishBan(d)):[],W={b:.3,l:.4,d:.3,s:.15},TW=trainSlots(slots),wt=x=>W[x[1]]*(TW[x[0]]?TW[x[0]].w:1),wsum=slots.reduce((s,x)=>s+wt(x),0)||1,used=new Set(),out=[],lunchbox=ne.includes('lunchbox');
   let leftK=remK,leftB=budget;
-  for(const [sl,ml,,,lab] of slots){const w=W[ml]/wsum,tk=Math.max(slots.length>1&&ml==='s'?150:250,remK*w),tp=remP*w,tb=budget*w;
+  for(const [sl,ml,,,lab] of slots){const tw=TW[sl],w=W[ml]*(tw?tw.w:1)/wsum,tk=Math.max(slots.length>1&&ml==='s'?150:250,remK*w),tp=Math.min(remP,remP*w*(tw?tw.p:1)),tb=budget*w;
     // обед с собой: то, что хранится и хорошо разогревается
     const box=lunchbox&&ml==='l',fitK=d=>!used.has(d.id)&&d.nut.k<=Math.max(tk*1.6,leftK+150),ok1=R.filter(d=>d.m.includes(ml)&&fitK(d)),ok0=ok1.length?ok1:R.filter(fitK), /* блюд этого приёма нет (только чайник, узкие исключения) — берём любые подходящие */ok=box&&ok0.some(d=>d.keep>=1&&d.eq==='плита')?ok0.filter(d=>d.keep>=1&&d.eq==='плита'):ok0,cst=d=>{const c=dishCost(d);return c?c.r:0},part=d=>{const c=dishCost(d);return !!(c&&c.part)};
-    const score=d=>placeBonus(d)+(d.eq==='духовка'?-.5:0)+(S.likes&&S.likes[d.id]?.3:0)-(S.dislikes&&S.dislikes[d.id]?.8:0)-healthPenalty(d)-Math.abs(d.nut.k-tk)/tk+.6*Math.min(d.nut.p/Math.max(tp,1),1.2)-(hasPrices()?cst(d)/Math.max(tb,60)*.25:0)-(cst(d)>leftB&&hasPrices()?3:0)-(part(d)?.6:0);
+    const score=d=>(tw?tw.b(d):0)+placeBonus(d)+(d.eq==='духовка'?-.5:0)+(S.likes&&S.likes[d.id]?.3:0)-(S.dislikes&&S.dislikes[d.id]?.8:0)-healthPenalty(d)-Math.abs(d.nut.k-tk)/tk+.6*Math.min(d.nut.p/Math.max(tp,1),1.2)-(hasPrices()?cst(d)/Math.max(tb,60)*.25:0)-(cst(d)>leftB&&hasPrices()?3:0)-(part(d)?.6:0);
     const ranked=ok.map(d=>[score(d),d]).sort((a,b)=>b[0]-a[0]).map(a=>a[1]);if(!ranked.length)continue;
     const skip=(S.cook.skip[sl]||0)%ranked.length,pick=S.cook.pick[sl]&&ranked.find(d=>d.id===S.cook.pick[sl]),d=pick||ranked[skip];
-    used.add(d.id);leftK-=d.nut.k;leftB-=cst(d);out.push({sl,m:ml,lab:lab+(box?' · с собой, приготовить с вечера':''),d,c:dishCost(d),n:ranked.length})}
+    used.add(d.id);leftK-=d.nut.k;leftB-=cst(d);out.push({sl,m:ml,lab:lab+(tw?' · '+tw.lab:'')+(box?' · с собой, приготовить с вечера':''),d,c:dishCost(d),n:ranked.length})}
   const why=out.length?'':rm&&rm.now==='day'?'ramadan':e.k>n.kcal?'over':late?'late':remK<=250?'full':'money';
   const fit=fitPlan(out,R,remK,remP,budget,used);
   return {slots:out,remK,remP,budget,late,why,rm,ing:planIng(out),...fit}}
@@ -1771,7 +1836,7 @@ function openDish(id,n){const d=dishOf(id);if(!d){loadKit().then(()=>KIT&&KIT.re
   if(n)DISHN=n;else if(openDish.last!==id)DISHN=people();openDish.last=id;const N=DISHN,f=d.f||1,fam=(S.noeat||[]).includes('family')&&N>1&&!near1(f),K=portK(d,N); // граммы ниже — на N порций; в семье порция под план только у вас
   const c=dishCost(d),nn=norm(S.profile),P=dayPlan(),inPlan=P.slots.find(x=>x.d.id===id),ban=dishBan(d),tm=d.min0&&d.min0!==d.min?`${d.min0}–${d.min}`:d.min;
   const big=N>1||!near1(f),ingTxt=(id,g,m)=>{const a=ingAmt(id,g,K);return amtTxt(a)+(!a.n&&m&&near1(K)&&near1(f)?' · '+m:'')},RV=roundSum(d.ing.map(([k,g])=>{const p=hasPrices()&&kgPrice(k);return p?p.r*g*K/1000*RESERVE:0}));
-  sheet(d.n,`${ban?`<div class="card" role="alert" style="box-shadow:inset 4px 0 0 var(--warn),var(--shadow)"><div class="small"><b style="color:var(--warn-text)">В составе: ${ban}</b> — вы отметили это в «Не ем и аллергии».</div></div>`:''}${d.img?`<div class="plate hero" style="margin-bottom:12px">${pic(d.img,d.n)}<div class="capt"><span>${d.n}</span><span class="num">${u(d.nut.k,'ккал')}</span></div></div>${d.cr?`<div class="tiny muted" style="margin:-6px 4px 12px">Фото: ${d.cr[0]} · ${d.cr[1]} · <a href="${d.cr[2]}" target="_blank" rel="noopener" style="color:inherit">Wikimedia Commons</a></div>`:''}`:''}
+  sheet(d.n,`${ban?`<div class="card" role="alert" style="box-shadow:inset 4px 0 0 var(--warn),var(--shadow)"><div class="small"><b style="color:var(--warn-text)">В составе: ${ban}</b> — вы отметили это в «Не ем и аллергии».</div></div>`:''}${d.img?`<div class="plate hero" style="margin-bottom:12px">${pic(d.img,d.n)}<div class="capt"><span>${d.n}</span><span class="num">${u(d.nut.k,'ккал')}</span></div></div>${d.ai?`<div class="tiny muted" style="margin:-6px 4px 12px">Фото-иллюстрация блюда</div>`:''}${d.cr?`<div class="tiny muted" style="margin:-6px 4px 12px">Фото: ${d.cr[0]} · ${d.cr[1]} · <a href="${d.cr[2]}" target="_blank" rel="noopener" style="color:inherit">Wikimedia Commons</a></div>`:''}`:''}
    <div class="card dish-top"><div class="num" style="font-size:34px;line-height:1">${fmt(d.nut.k)}<span class="dku"> ккал</span></div>
     <div class="small muted" style="margin-top:4px">в порции · <span class="nw">${tm}${NBS}мин</span>${d.yield&&d.yield.g?` · тарелка <span class="nw">≈${NBS}${u(Math.round(d.yield.g*f/10)*10,'г')}</span>`:''} · ${d.eq==='без готовки'?'без готовки':d.eq==='духовка'?'нужна духовка':'на плите'}${d.keep?' · в холодильнике '+pl(d.keep,'день','дня','дней'):''}</div>${!near1(f)&&Math.round(f*10)!==10?`<div class="tiny" style="margin-top:2px;color:var(--accent-text);font-weight:600">порция ×${f1(Math.round(f*10)/10)} — под ваш план</div>`:''}
     ${c?`<div class="dcost small"><b class="num nw dc1">${costTxt(c)}</b>${c.part?'':` <span class="nw">за порцию</span>${c.ok?'':' · часть цен примерно'} · купить целыми упаковками <b class="num nw">≈${NBS}${rub(costOf(d.ing.map(([i,g])=>[i,g*K])).chk)}</b>${N>1?' на '+pl(N,'порцию','порции','порций'):''}`}</div>`:''}
@@ -2368,7 +2433,7 @@ function vGym(){
    <div style="display:grid;grid-template-columns:repeat(${Math.min(pg.days.length,3)},minmax(0,1fr));gap:8px;margin-top:14px">${pg.days.map((d,i)=>`<div style="min-width:0;text-align:center;padding:10px 4px;border-radius:12px;display:flex;flex-direction:column;justify-content:flex-start;background:${S.done.includes(i)?'var(--volt-soft)':i===ti?'var(--accent-soft)':'var(--card2)'}">
     <div class="tiny muted">День ${i+1}</div><div style="font-weight:700;font-size:14px;margin-top:2px">${d}</div><div class="tiny" style="color:${S.done.includes(i)?'var(--volt-ink)':i===ti?'var(--accent-text)':'var(--text2)'};margin-top:auto;padding-top:4px;font-weight:600">${S.done.includes(i)?'готово':i===ti?'сегодня':i>=weekPlanCount()?'со след. недели':'впереди'}</div></div>`).join('')}</div></div>
   ${stagesCard()}
-  <h2>Сегодня · ${pg.days[ti]}</h2>
+  <h2>Сегодня · ${pg.days[ti]}${/дома/i.test(pg.days[ti])?'':' · '+placeName(pg.place)}</h2>${whereChips()}
   <div class="small muted" style="margin:-4px 4px 10px">Выполнено подходов: ${doneSets} из ${allSets}</div>
   ${pg.ex.map((x,i)=>`<div class="card">
     <div class="vid" onclick="openExercise(${i})">${pic(exPic(x),x[0])}<div class="cap">как выполнять и какие мышцы — внутри</div></div>
@@ -2378,7 +2443,7 @@ function vGym(){
   ${S.extra.length?`<h2>Добавлено из атласа</h2><div class="card list">${S.extra.map(id=>{const x=EXL&&EXL.find(e=>e.id===id);return `<button class="exrow" onclick="${x?`openEx('${id}')`:`loadEX().then(()=>openEx('${id}'))`}"><div class="th">${exThumb(id)}</div><div class="t"><b>${x?x.n:id.replace(/_/g,' ')}</b><small>${x?(EXEQ[x.eq]||'Без инвентаря')+' · 3 подхода':'из атласа'}</small></div><span class="chev">${ic('chev')}</span></button><div class="row" style="gap:10px;padding:0 0 12px 72px">${[0,1,2].map(j=>`<button class="setdot ${S.sets['x'+id+'-'+j]?'on':''}" onclick="toggleX('${id}',${j})">${S.sets['x'+id+'-'+j]?ic('check','style="width:18px;height:18px"'):j+1}</button>`).join('')}</div>`}).join('')}</div>`:''}
   ${restDay()&&!weekFull()?`<div class="lock" style="background:var(--warn-soft);margin-top:6px"><span style="color:var(--warn-text)">${ic('heart')}</span><div><b>Сегодня лучше отдохнуть.</b> Вчера была тренировка, а новичкам нужен день между занятиями. Подойдёт прогулка.</div></div>`:''}${doneToday()||weekFull()?`<div class="btn sec" style="margin-top:6px;pointer-events:none">${ic('check')} ${doneToday()?'Сделано сегодня':'Неделя выполнена'}</div>`:`<button class="btn ${restDay()?'sec':doneSets&&doneSets===allSets?'ready':''}" onclick="finishWorkout()" style="margin-top:6px">${restDay()?'Всё равно записать тренировку':'Завершить тренировку'}</button>`}
   <div class="card tap row" style="margin-top:14px" onclick="openForm()"><div class="ibox tech">${ic('ruler')}</div><div style="flex:1"><div class="title" style="font-size:16px">Проверить технику по видео</div><div class="small muted">Снимите себя сбоку — телефон найдёт ошибки и покажет, как надо</div></div><span class="chev">${ic('chev')}</span></div>
-  <div class="card tap row" style="margin-top:0" onclick="openHome()"><div class="ibox ok">${ic('home')}</div><div style="flex:1"><div class="title" style="font-size:16px">${S.profile.place==='home'?'Мало времени?':'Не получается в зал?'}</div><div class="small muted">${S.profile.place==='home'?'Короткая тренировка на 20 минут без инвентаря':'Домашняя тренировка на 20 минут без инвентаря'}</div></div><span class="chev">${ic('chev')}</span></div>`;
+  <div class="card tap row" style="margin-top:0" onclick="openHome()"><div class="ibox ok">${ic('home')}</div><div style="flex:1"><div class="title" style="font-size:16px">${pg.place==='home'?'Мало времени?':'Не получается в зал?'}</div><div class="small muted">${pg.place==='home'?'Короткая тренировка на 20 минут без инвентаря':'Домашняя тренировка на 20 минут без инвентаря'}</div></div><span class="chev">${ic('chev')}</span></div>`;
 }
 function toggleX(id,j){const k='x'+id+'-'+j;S.sets[k]=!S.sets[k];if(S.sets[k]&&!S.startedAt)S.startedAt=Date.now();save();haptic(S.sets[k]?12:5);rerender();if(S.sets[k]&&!(j===2&&id===S.extra[S.extra.length-1]))startRest()}
 function toggleSet(i,j){const k=i+'-'+j;S.sets[k]=!S.sets[k];if(S.sets[k]&&!S.startedAt)S.startedAt=Date.now();save();haptic(S.sets[k]?12:5);rerender();const pg=program(),ns=setsOf(pg.ex[i]);if(S.sets[k]&&!(j===ns-1&&(ns===1||i===pg.ex.length-1&&!S.extra.length)))startRest()} // после последнего подхода отдых не нужен
@@ -2407,12 +2472,17 @@ function finishWorkout(force,homeMin){
   if(!force&&restDay()){sheet('Сегодня день отдыха',`<div class="muted" style="margin:4px 0 14px;line-height:1.45">Вчера уже была тренировка. Новичкам нужен день между занятиями: мышцы и связки восстанавливаются, и следующая тренировка пройдёт лучше. Сегодня подойдёт прогулка.</div><button class="btn" onclick="closeSheet()">Отдохну сегодня</button><button class="btn ghost" onclick="finishWorkout(true,${homeMin||0})">Всё равно записать</button>`);return}
   S.done.push(ti);S.doneOn=S.doneOn||{};S.doneOn[today0()]=ti;if(S.plan&&!S.plan.includes((new Date().getDay()+6)%7))S.plan=planWeek(); // тренировка вне плана — остаток недели пересобирается
   const doneSets=setsDone(pg),allSets=pg.ex.reduce((s,x)=>s+setsOf(x),0)+S.extra.length*3,full=doneSets>=allSets;
-  const timed=!!(homeMin||S.startedAt),mins=homeMin||(S.startedAt?Math.max(1,Math.round((Date.now()-S.startedAt)/60000)):0),kcal=Math.round(4*S.profile.w*mins/60); // 4 МЕТ сверх покоя × вес × часы — как в норме; без отмеченных подходов время не выдумываем
+  const timed=!!(homeMin||S.startedAt),mins=homeMin||(S.startedAt?Math.max(1,Math.round((Date.now()-S.startedAt)/60000)):0);
+  // расход по MET упражнений и отмеченным подходам; без подходов и без домашней 20-минутки расход не выдумываем
+  const bpl=homeMin?'home':pg.place,bu=homeMin?burnCalc(HOME20.map(([n,r,id])=>[id,[n,r],3]),S.profile.w,homeMin):doneSets?burnCalc(exItems(pg),S.profile.w,S.startedAt?mins:0):null;if(bu)saveBurn(bu,bpl);const kcal=bu?bu.k:0,nb=norm(S.profile).tb;
   S.workouts=(S.workouts||0)+1;S.startedAt=null;save();SHEET_FN=null;rerender.dirty=1;haptic([10,50,10,50,20]);
-  sheet('Тренировка завершена',`<div style="text-align:center;padding:6px 0 10px">${OK}<div class="num" style="font-size:42px;margin-top:12px">${timed?CU(mins,' мин'):'Готово'}</div><div class="muted">${timed?'≈ '+u(kcal,'ккал')+' сверх покоя · ':''}${homeMin?'дома, без инвентаря':`подходов ${doneSets} из ${allSets}`}${timed?'':' · время и расход не считаем'}</div></div>
+  sheet('Тренировка завершена',`<div style="text-align:center;padding:6px 0 10px">${OK}<div class="num" style="font-size:42px;margin-top:12px">${timed?CU(mins,' мин'):'Готово'}</div><div class="muted">${bu?'≈ '+u(kcal,'ккал')+' за тренировку · ':''}${homeMin?'дома, без инвентаря':`${placeName(bpl)} · подходов ${doneSets} из ${allSets}`}${bu?'':' · расход не считаем: подходы не отмечены'}</div></div>
+   ${bu?`<div class="card burnx" style="margin-top:0"><div class="row between"><span class="small muted">Расход по таблицам MET</span><b class="num">≈ ${u(kcal,'ккал')}</b></div><div class="small muted" style="margin-top:6px;line-height:1.4">${nb&&nb.extra?`К норме на сегодня добавили <b style="color:var(--text)">+${u(nb.extra,'ккал')}</b>: белок +${u(nb.dp,'г')}, углеводы +${u(nb.dc,'г')}. Обычная тренировка уже заложена в норму, поэтому добавляем только превышение, не больше 15 %.`:'Такая тренировка уже заложена в норму на день — добирать отдельно не нужно.'}</div></div>
+   <div id="postd"></div>`:''}
    <div class="grid2"><div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:26px">${Math.min(S.done.length,weekPlanCount())}/${weekPlanCount()}</div><div class="small muted">на этой неделе</div></div><div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:26px">${S.workouts}</div><div class="small muted">${pl(S.workouts,'тренировка','тренировки','тренировок').replace(/^\S+\s/,'')+' всего'}</div></div></div>
    <div class="card" style="margin-top:12px">${(()=>{const nx=pg.days.findIndex((d,i)=>i<weekPlanCount()&&!S.done.includes(i));return nx<0?'Все тренировки этой недели сделаны. Новая неделя — с понедельника.':'Следующая — «'+pg.days[nx]+'». Привычка закрепляется в среднем за 66 дней (Lally, 2010): держите ритм '+pl(pg.days.length,'тренировка','тренировки','тренировок')+' в неделю.'})()}</div>
-   <button class="btn" onclick="closeSheet();if(S.tab==='today'){rerender();toTop()}else go('today')">Отлично</button>`);
+   <button class="btn" onclick="closeSheet();if(S.tab==='today'){rerender();toTop()}else go('today')">Отлично</button>${bu?'<div class="concept">Расход — по таблицам MET, приблизительно · не&nbsp;медицинская консультация</div>':''}`);
+  if(bu)fillPost();
 }
 function openTrainer(ex){
   sheet('Техника: '+ex,`<div class="card small muted">Лучший способ проверить технику — снять 2–5 повторов сбоку: телефон покажет углы в суставах и что поправить, на ваших же кадрах.</div>
@@ -2422,7 +2492,7 @@ function openTrainer(ex){
 }
 function openHome(){
   sheet('Дома · 20 минут',`<div class="vid">${pic(gymPic('home'),'Дома')}<div class="cap">Без инвентаря · видео — по нажатию на упражнение</div></div>
-   <div class="card list" style="margin-top:12px">${[['Приседания','3 × 15','Bodyweight_Squat'],['Отжимания от стула','3 × 10','Bench_Dips'],['Ягодичный мост','3 × 15','Butt_Lift_Bridge'],['Планка','3 × 30 сек','Plank'],['Скалолаз','3 × 30 сек','Mountain_Climbers']].map(([n,r,id])=>`<button class="li" style="width:100%;text-align:left" onclick="loadEX().then(()=>openEx('${id}'))"><div style="flex:1;font-weight:600">${n}</div><div class="muted">${r}</div><span class="chev">${ic('chev')}</span></button>`).join('')}</div>
+   <div class="card list" style="margin-top:12px">${HOME20.map(([n,r,id])=>`<button class="li" style="width:100%;text-align:left" onclick="loadEX().then(()=>openEx('${id}'))"><div style="flex:1;font-weight:600">${n}</div><div class="muted">${r}</div><span class="chev">${ic('chev')}</span></button>`).join('')}</div>
    <button class="btn" onclick="finishWorkout(false,20)">Сделал — записать тренировку</button><button class="btn ghost" onclick="closeSheet()">Позже</button>`);
 }
 
@@ -3394,17 +3464,18 @@ function calcCard(pr){
   const n=norm(pr),g=GOALS[pr.goal];
   return `<div class="card"><div class="calcrow"><span class="muted">Основной обмен (формула Миффлина — Сан Жеора)</span><span class="num">${fmt(n.bmr)}</span></div>
    <div class="calcrow"><span class="muted">× активность на работе и в быту: группа ${ROMAN[n.grp]}, коэффициент ${dec(n.kfa)}</span><span class="num">${fmt(n.base)}</span></div>
-   <div class="calcrow"><span class="muted">+ тренировки: ${pl(effTrains(pr),'раз','раза','раз')} в неделю по ~45 мин, в среднем за день</span><span class="num">+${fmt(n.train)}</span></div>
+   <div class="calcrow"><span class="muted">+ тренировки: ${pl(effTrains(pr,1),'раз','раза','раз')} в неделю по ~45 мин, в среднем за день</span><span class="num">+${fmt(n.train)}</span></div>
    <div class="calcrow"><span class="muted">= расход за день</span><span class="num">${fmt(n.tdee)}</span></div>
-   <div class="calcrow ${n.floored?'':'fin'}"><span class="muted">${n.capped?(n.minor?'До 18 лет калории не урезаем — держим вес':n.preg?'Беременность и кормление — калории не урезаем, держим вес':'ИМТ '+dec(n.bmi)+' — ниже нормы ВОЗ: калории не урезаем'):n.adj?(n.adj<0?'−':'+')+Math.abs(Math.round(n.adj*100))+'% под цель «'+g.n.toLowerCase()+'»'+(n.minor&&pr.goal==='muscle'&&pr.pace==='fast'?' (до 18 лет — не быстрее)':''):'без поправки — держим вес'}</span><span class="num">${fmt(n.floored?Math.round(n.tdee*(1+n.adj)):n.kcal)}</span></div>
+   <div class="calcrow ${n.floored?'':'fin'}"><span class="muted">${n.capped?(n.minor?'До 18 лет калории не урезаем — держим вес':n.preg?'Беременность и кормление — калории не урезаем, держим вес':'ИМТ '+dec(n.bmi)+' — ниже нормы ВОЗ: калории не урезаем'):n.adj?(n.adj<0?'−':'+')+Math.abs(Math.round(n.adj*100))+'% под цель «'+g.n.toLowerCase()+'»'+(n.minor&&pr.goal==='muscle'&&pr.pace==='fast'?' (до 18 лет — не быстрее)':''):'без поправки — держим вес'}</span><span class="num">${fmt(n.floored?Math.round(n.tdee*(1+n.adj)):n.kcal0)}</span></div>
    ${n.floored?`<div class="calcrow fin"><span class="muted">${n.floor<n.floor0?'Ниже расхода урезать некуда — держим вес':'Не опускаемся ниже безопасных '+n.floor+' ккал'}</span><span class="num">${n.floor}</span></div>`:''}
+   ${n.tb&&n.tb.extra?`<div class="calcrow fin"><span class="muted">+ сегодня тренировка: добор сверх среднего дня (≈ ${fmt(n.tb.net)} − ${fmt(n.train)}, не больше 15 %)</span><span class="num">${fmt(n.kcal)}</span></div>`:''}
    <div class="calcrow"><span class="muted">Белок: ${dec(g.prot)} г на кг ${n.refW!==pr.w?'нормального веса ('+n.refW+' кг, ИМТ 25)':'веса'}</span><span class="num">${n.p} г</span></div>
    <div class="calcrow"><span class="muted">Жиры: 27% калорий</span><span class="num">${n.f} г</span></div>
-   <div class="calcrow"><span class="muted">Углеводы: остальное</span><span class="num">${n.c} г</span></div></div>`;
+   <div class="calcrow"><span class="muted">Углеводы: остальное</span><span class="num">${n.c} г</span></div></div>${pr===S.profile?burnExplain(pr,n):''}`;
 }
 const SOURCES=`<div class="card src"><div class="row" style="gap:8px;margin-bottom:6px;color:var(--text)">${ic('doc','style="width:18px;height:18px"')}<b>На чём основан расчёт</b></div>
  • МР 2.3.1.0253-21 Роспотребнадзора «Нормы физиологических потребностей в энергии и пищевых веществах» — группы физической активности по работе.<br>
- • Компендиум физической активности (Ainsworth и др., 2011) и рекомендации ACSM — расход на тренировках в METs.<br>
+ • Компендиум физической активности (Ainsworth и др., 2011; обновление 2024) и рекомендации ACSM — расход на тренировках в METs, у каждого упражнения своё значение.<br>
  • Формула Миффлина — Сан Жеора (1990) — основной обмен.<br>
  • Позиция Международного общества спортивного питания (ISSN) о белке, 2017 — 1,4–2,0 г/кг, при снижении веса выше.<br>
  • Совместная позиция ACSM, Академии питания и диетологии США и Dietitians of Canada, 2016 — жиры 20–35% калорий, углеводы по нагрузке.<br>
@@ -3494,7 +3565,7 @@ function renderOnb(){
       <button class="btn" style="margin-top:12px" onclick="obNext()">Дальше</button>`,
    obGeoStep,
    ()=>`<div class="q">Где тренируетесь?</div><div class="qs">Программа подстроится под инвентарь</div>
-      ${[['gym','В зале','тренажёры, штанга, гантели','gym'],['home','Дома','без инвентаря или с гантелями','home'],['both','И там, и там','программа на оба случая','run']].map(([k,t,d,i])=>`<button class="opt ${D.place===k?'on':''}" onclick="D.place='${k}';renderOnb()"><div class="ibox">${ic(i)}</div><div style="flex:1"><div style="font-weight:700">${t}</div><div class="small muted">${d}</div></div></button>`).join('')}
+      ${[['gym','В зале','тренажёры, штанга, гантели','gym'],['home','Дома','без инвентаря или с гантелями','home'],['both','И там, и там','через день; сегодня дома или в зале — выберете сами','run']].map(([k,t,d,i])=>`<button class="opt ${D.place===k?'on':''}" onclick="D.place='${k}';renderOnb()"><div class="ibox">${ic(i)}</div><div style="flex:1"><div style="font-weight:700">${t}</div><div class="small muted">${d}</div></div></button>`).join('')}
       <div style="flex:1"></div><button class="btn" onclick="obNext()">Дальше</button>`,
    ()=>`<div class="q">Есть продукты, которые вы не едите?</div><div class="qs">Аллергии, пост, вегетарианство, «не люблю» — уберём такие блюда из советов. Можно пропустить и указать позже в «Я»</div>
       <div style="flex:1"></div>
