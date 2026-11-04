@@ -933,7 +933,10 @@ function loop(name, f, q, vol, hp) { if (loops[name]) return; const a = ac(), s 
   g.gain.linearRampToValueAtTime(vol, a.currentTime + .25); s.connect(bp); bp.connect(g); g.connect(a.destination); s.start(); loops[name] = { s, g } }
 function unloop(name) { const l = loops[name]; if (!l) return; l.g.gain.linearRampToValueAtTime(0, ac().currentTime + .25); l.s.stop(ac().currentTime + .3); delete loops[name] }
 /* настоящие записи CC0 (BigSoundBank, docs/zvuki-istochniki.md): короткие mp3 в snd/, грузятся при включении звука; пока не загрузились — синтез */
-const SAMP = {}, SND = ['nozh-1', 'nozh-2', 'nozh-3', 'nozh-4', 'hrust-1', 'hrust-2', 'hrust-3'];
+const SAMP = {}, SND = ['nozh-1', 'nozh-2', 'nozh-3', 'nozh-4', 'hrust-1', 'hrust-2', 'hrust-3', 'voda', 'shkvor', 'bulk', 'kip', 'kryshka', 'lozhka-1', 'lozhka-2', 'lozhka-3', 'gul', 'zvonok'], SLOOP = {};
+// длинные записи (вода, шкворчание, кипение, гул духовки) — по кругу, мягко входят и уходят; пока запись не загрузилась — синтез
+function sloop(n, vol) { if (SLOOP[n]) return true; const b = SAMP[n]; if (!b || b === 'loading') return false; const a = ac(), s = a.createBufferSource(), g = a.createGain(); s.buffer = b; s.loop = true; g.gain.value = 0; g.gain.linearRampToValueAtTime(vol, a.currentTime + .3); s.connect(g); g.connect(a.destination); s.start(0, Math.random() * b.duration * .5); SLOOP[n] = { s, g }; return true }
+function sunloop(n) { const l = SLOOP[n]; if (!l) return; const a = ac(); l.g.gain.linearRampToValueAtTime(0, a.currentTime + .3); l.s.stop(a.currentTime + .35); delete SLOOP[n] }
 function loadSamples() { SND.forEach(n => { if (SAMP[n]) return; SAMP[n] = 'loading'; fetch(BASE + 'snd/' + n + '.mp3').then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(b => ac().decodeAudioData(b)).then(buf => SAMP[n] = buf).catch(() => delete SAMP[n]) }) }
 function play(n, vol = .8, delay = 0, rate = 1) { const b = SAMP[n]; if (!b || b === 'loading') return false; const a = ac(), s = a.createBufferSource(), g = a.createGain(); s.buffer = b; s.playbackRate.value = rate; g.gain.value = vol; s.connect(g); g.connect(a.destination); s.start(a.currentTime + delay); return true }
 const pick = (p, n) => p + (1 + Math.floor(Math.random() * n));
@@ -942,11 +945,12 @@ function sfx(ev, arg) { if (!ON) return;
   if (ev === 'chop') { if (play(pick('nozh-', 4), .75, 0, .96 + Math.random() * .08)) { if (arg === 'morkov') play(pick('hrust-', 3), .5, .004); else if (arg === 'luk') play(pick('hrust-', 3), .28, .004, 1.18) } else { noise(.05, 2200, .8, .28); tone(170, 90, .07, .22) } }
   else if (ev === 'rattle') { for (let i = 0; i < 5; i++)noise(.018, 5200, 2, .06, i * .02) }
   else if (ev === 'pourSalt') noise(.2, 6500, 1.4, .025); else if (ev === 'grain') noise(.012, 7000, 3, .02);
-  else if (ev === 'bubble') { if (Math.random() < .7) tone(R(Math.random() * 99, 240, 380), R(Math.random() * 99, 520, 900), .07, .05) }
-  else if (ev === 'pour') loop('pour', 900, .7, .09); else if (ev === 'pour-stop') unloop('pour');
-  else if (ev === 'sizzle') { loop('sizzle', 3400, .4, .045, true); if (Math.random() < .2) noise(.02, 6000, 3, .05) }
-  else if (ev === 'scrape') { loop('sizzle', 3400, .4, .025, true); if (Math.random() < .04) noise(.16, 1200, 1.2, .05) } }
-function stopAll() { Object.keys(loops).forEach(unloop) }
+  else if (ev === 'simmer') sloop('bulk', .42); else if (ev === 'lid') play('kryshka', .5); else if (ev === 'oven') sloop('gul', .16); else if (ev === 'plate') play(pick('lozhka-', 3), .55);
+  else if (ev === 'bubble') { if (sloop('kip', .38)) return; if (Math.random() < .7) tone(R(Math.random() * 99, 240, 380), R(Math.random() * 99, 520, 900), .07, .05) }
+  else if (ev === 'pour') { if (!sloop('voda', .45)) loop('pour', 900, .7, .09) } else if (ev === 'pour-stop') { unloop('pour'); sunloop('voda') }
+  else if (ev === 'sizzle') { if (sloop('shkvor', .42)) return; loop('sizzle', 3400, .4, .045, true); if (Math.random() < .2) noise(.02, 6000, 3, .05) }
+  else if (ev === 'scrape') { if (sloop('shkvor', .24)) { if (Math.random() < .015) play(pick('lozhka-', 3), .3); return } loop('sizzle', 3400, .4, .025, true); if (Math.random() < .04) noise(.16, 1200, 1.2, .05) } }
+function stopAll() { Object.keys(loops).forEach(unloop); Object.keys(SLOOP).forEach(sunloop) }
 
 /* ---------- запуск: общий цикл кадров, вне экрана сцены стоят; «уменьшить движение» — один кадр ---------- */
 const scenes = new Set(); let raf = 0, SRC = null;
@@ -956,5 +960,5 @@ function mount(el, sc, opts = {}) { el.innerHTML = ''; el.appendChild(sc.svg); s
 function unmount(el) { const sc = el._sc; if (!sc) return; scenes.delete(sc); io && io.unobserve(el); if (SRC === sc) { SRC = null; stopAll() } el._sc = null }
 function tick(now) { raf = requestAnimationFrame(tick); const br = (1 + .005 * (1 - Math.cos(now / 6000 * 2 * Math.PI))).toFixed(4); scenes.forEach(sc => { if (!sc.vis) return; sc.svg.style.transform = `scale(${br})`; sc.frame((now - sc.t0) / 1000, SRC === sc ? sfx : null) }) }
 window.CA = { soak, dry, crack, add, drain, spread, show, CAT, prodsIn, verbs, iconFor, names, VERB, cut, pour, salt, fry, boil, stir, grate, rinse, peel, pound, pepper, oil, bringBoil, simmer, bake, whisk, form, roll, batter, plateUp, rest, forStep, mount, unmount, F, icon,
-  sound(on) { ON = on; if (on) { ac().resume(); loadSamples() } else stopAll(); return ON }, source(sc) { if (SRC !== sc) stopAll(); SRC = sc }, get on() { return ON } };
+  ding() { if (ON) play('zvonok', .45) }, sound(on) { ON = on; if (on) { ac().resume(); loadSamples() } else stopAll(); return ON }, source(sc) { if (SRC !== sc) stopAll(); SRC = sc }, get on() { return ON } };
 })();

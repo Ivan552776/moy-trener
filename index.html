@@ -914,7 +914,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-04-r68'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-04-r69'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1628,17 +1628,18 @@ function fitPlan(out,R,remK,remP,budget,used){if(!out.length||remK<250)return {}
   out.forEach(x=>{const f=x.top?r.b:r.a,ing=scaleIng(x.d.ing,f),d={...x.d,ing,nut:ingNut(ing,KIT.it),f};x.d=d;x.c=dishCost(d)});
   const t=sum(out),cost=out.reduce((s,x)=>s+(x.c?x.c.r:0),0),okK=Math.abs(t.k-remK)<=remK*.05,okP=t.p>=remP*.9;
   return {fitK:t.k,fitP:t.p,okK,okP,overB:hasPrices()&&cost>budget,cost}}
+function planFam(P){const k=people(),m={};P.slots.forEach(({d})=>{const K=portK(d,k);d.ing.forEach(([id,g])=>m[id]=(m[id]||0)+ingAmt(id,g,K).g)});return Object.entries(m).filter(([id])=>!(S.cook&&S.cook.have.includes(id)))}
 function planIng(sl){const m={};sl.forEach(({d})=>d.ing.forEach(([id,g])=>m[id]=(m[id]||0)+g));return Object.entries(m).filter(([id])=>!(S.cook&&S.cook.have.includes(id)))}
 // для «Сегодня» и чата: следующее блюдо плана
 function suggest(){const p=dayPlan();return{list:p.slots.map(x=>({id:x.d.id,n:x.d.n,nut:x.d.nut,img:x.d.img,c:x.c,sl:x.sl,m:x.m,lab:x.lab,ing:x.d.ing})),remK:p.remK,remP:p.remP,budget:p.budget,why:p.why,late:p.late}}
-function chainRows(ing){ // сети по стоимости списка: сначала то, что влезает в бюджет и где есть почти всё
+function chainRows(ing,fam){ // сети по стоимости списка: сначала то, что влезает в бюджет и где есть почти всё
   const b=dayPlan().budget,rows=[];if(!hasPrices()||!ing.length)return rows;
-  const fam=ing.map(([id,g])=>[id,g*people()]);chOpen().filter(chLive).forEach(c=>{const x=costOf(ing,c);if(x.have>=x.tot/2)rows.push({c,n:CH_N[c]||PRICES.chains[c].n,...x,chk:costOf(fam,c).chk,d:nearest(CH_N[c])})}); // сеть, где нет и половины продуктов, не сравниваем
+  fam=fam||ing.map(([id,g])=>[id,g*people()]);chOpen().filter(chLive).forEach(c=>{const x=costOf(ing,c);if(x.have>=x.tot/2)rows.push({c,n:CH_N[c]||PRICES.chains[c].n,...x,chk:costOf(fam,c).chk,d:nearest(CH_N[c])})}); // сеть, где нет и половины продуктов, не сравниваем
   if(PRICES.chains.rs){const x=costOf(ing,'rs');rows.push({c:'rs',n:CH_N.rs,...x,chk:costOf(fam,'rs').chk,ok:false,avg:true})}
   rows.forEach(x=>x.over=x.r>b);
   rows.sort((a,z)=>(!!a.avg-!!z.avg)||(!!a.over-!!z.over)||(z.have/z.tot-a.have/a.tot>.15?1:a.have/a.tot-z.have/z.tot>.15?-1:0)||a.r-z.r);
   return rows}
-function chainList(ing){const rows=chainRows(ing),cheap=Math.min(...rows.filter(x=>!x.avg).map(x=>x.r)),top=Math.max(...rows.map(x=>x.r),1);
+function chainList(ing,fam){const rows=chainRows(ing,fam),cheap=Math.min(...rows.filter(x=>!x.avg).map(x=>x.r)),top=Math.max(...rows.map(x=>x.r),1);
   return rows.map((x,i)=>{const old=!x.avg&&chAge(x.c)>14,st=x.over?'выше бюджета':x.r===cheap&&!x.part&&rows.filter(z=>!z.avg).length>1?'дешевле':'в бюджете';
    return `<a class="li" style="text-decoration:none" href="${mapUrl(x.avg?'продукты':x.n)}" target="_blank" rel="noopener" aria-label="${x.n}: блюда около ${fmt(x.r)} рублей, чек около ${fmt(x.chk)} рублей, ${st}"><div class="ibox ${x.avg?'':'accent'}">${ic(x.avg?'wallet':'cart')}</div>
     <div style="flex:1;min-width:0"><div style="font-weight:650">${x.n}${x.d!=null?` <span class="muted" style="font-weight:500">· ${distTxt(x.d)}</span>`:''}</div>
@@ -1676,7 +1677,7 @@ function vFood(){
   :`<div class="card muted">${{over:`Сегодня больше нормы на ${u(e.k-n.kcal,'ккал')}. Завтра — завтрак около ${u(Math.round(n.kcal*.3/10)*10,'ккал')}, без урезания.`,late:`${new Date().getHours()<5?'Ночь':'Поздний вечер'} — на ночь не добираем. Если голодно: кефир или творог. Завтра — завтрак около ${u(Math.round(n.kcal*.3/10)*10,'ккал')}.`,full:`Норма на сегодня почти закрыта. Завтра — завтрак около ${u(Math.round(n.kcal*.3/10)*10,'ккал')}.`,money:`До нормы ${u(P.remK,'ккал')} — дешевле всего крупы, яйца, творог, кефир.`,ramadan:`Идёт пост: советы появятся к ифтару после ${P.rm&&P.rm.set}. Сухур — до ${P.rm&&P.rm.rise}.`}[P.why]}</div><button class="btn ghost" onclick="openDishes()">Все блюда и рецепты</button>`}
   ${loaded&&P.slots.length?`<h2>Ваш список на сегодня</h2>
   ${!priced?`<div class="card small muted">${PRICES&&PRICES.failed?'Цены не загрузились — проверьте интернет. Блюда и рецепты работают и без них.':'Загружаем цены вашего региона…'}</div>`:`
-  <div class="card list">${chainList(P.ing)}</div>
+  <div class="card list">${chainList(P.ing,planFam(P))}</div>
   <div class="card list"><button class="li" style="width:100%;text-align:left" onclick="openShopList()"><div class="ibox c">${ic('cart')}</div><div style="flex:1;min-width:0"><div style="font-weight:650">Список покупок</div><div class="small muted">что купить, чек за упаковки, галочки</div></div><span class="chev">${ic('chev')}</span></button>${GEO||!PRICES.shops?'':`<button class="li" style="width:100%;text-align:left" onclick="findNear()"><div class="ibox ok">${ic('pin')}</div><div style="flex:1;min-width:0"><div style="font-weight:650">Сколько идти до магазинов</div><div class="small muted">по геопозиции — она остаётся на телефоне</div></div><span class="chev">${ic('chev')}</span></button>`}</div>
   ${srcNote()}`}`:''}
   <h2>Дневник</h2><div class="card list">${S.log.map((en,i)=>`<div class="li" role="button" onclick="openEntry(${i})">${en.img?`<div class="thumb" style="width:44px;height:44px;border-radius:12px">${pic(en.img,'')}</div>`:`<div class="ibox c" style="width:44px;height:44px;border-radius:12px">${ic(en.src==='этикетка'?'barcode':'food')}</div>`}<div style="flex:1;min-width:0"><div style="font-weight:600">${en.n}</div><div class="tiny muted">${en.t}</div></div><div class="num" style="white-space:nowrap">${fmt(en.k)}<small style="font:500 12px var(--font);color:var(--text2)"> ккал</small></div></div>`).join('')||`<button class="li" style="width:100%;justify-content:center;gap:8px;color:var(--accent-text);font-weight:600" onclick="openScan()">${ic('cam','style="width:18px;height:18px"')} Сфотографировать первое блюдо</button>`}</div>`;
@@ -1707,14 +1708,23 @@ function openDishes(f){f=f||'all';const P=dayPlan(),R0=KIT?KIT.recipes:[],R=R0.f
 let DISHN=null; // сколько порций готовим (по умолчанию — едоков в профиле)
 // числа воды и граммов в тексте шага — под число порций
 // числа в тексте шага — под число порций и план: те же правила округления; соль — с ложкой, специи — щепоть
-const scaleTxt=(t,k)=>near1(k)?t:t.replace(/\s?\((?:≈\s?)?[\d¼½¾⅓⅔,.\s–-]*(?:ч\. л\.|ст\. л\.|стакан[а-я]*|щепот[ья]|шт)[^)]*\)/g,'')
-  .replace(/([а-яё]+\s)?(\d+(?:[.,]\d+)?)(\s?)(мл|г)(?![а-яё])(\s+[а-яё]+)?/g,(m,pre,v,sp,u,w)=>{const x=parseFloat(v.replace(',','.'))*k;w=w||'';pre=pre||'';const ctx=pre+w;
+const portK=(d,N)=>{const f=d.f||1;return (S.noeat||[]).includes('family')&&N>1&&!near1(f)?(f+N-1)/f:N}; // × граммов блюда в плане; текст шага (исходный рецепт) — × portK·f
+const ingAmt=(id,g,K)=>{const x=KIT.it[id],G=near1(K)?g:g*K;if(x.pc){const n=Math.max(1,Math.round(G/x.pc));return {n,g:n*x.pc}}return {g:near1(K)?Math.round(G):rG(G)}};
+const amtTxt=a=>a.n?`${pl(a.n,'шт','шт','шт')} · ${a.g} г`:`${a.g} г`;
+// цены строк, округлённые так, чтобы их сумма точно равнялась итогу (метод наибольших остатков)
+function roundSum(vals){const t=Math.round(vals.reduce((s,v)=>s+v,0)),fl=vals.map(Math.floor);let left=t-fl.reduce((s,v)=>s+v,0);vals.map((v,i)=>[v-fl[i],i]).sort((a,b)=>b[0]-a[0]).forEach(([,i])=>{if(left>0){fl[i]++;left--}});return fl}
+// текст шага: число, равное граммам продукта в исходном рецепте, — ровно как в «Составе»; остальные — пересчёт
+function stepTxt(d,t,N){const K=portK(d,N),f=d.f||1,d0=(KIT.recipes.find(x=>x.id===d.id)||d);
+  const hit=(v,u,ctx)=>{if(u!=='г')return null;const i=d0.ing.findIndex(([id,g])=>Math.abs(g-v)<.01&&!KIT.it[id].pc&&ctx.includes(KIT.it[id].n.toLowerCase().split(/[ (]/)[0].slice(0,4)));if(i<0)return null;const [id,g]=d.ing[i];return ingAmt(id,g,K).g};
+  return scaleTxt(t,K*f,hit)}
+const scaleTxt=(t,k,hit)=>near1(k)?t:t.replace(/\s?\((?:≈\s?)?[\d¼½¾⅓⅔,.\s–-]*(?:ч\. л\.|ст\. л\.|стакан[а-я]*|щепот[ья]|шт)[^)]*\)/g,'')
+  .replace(/([а-яё]+\s)?(\d+(?:[.,]\d+)?)(\s?)(мл|г)(?![а-яё])(\s+[а-яё]+)?/g,(m,pre,v,sp,u,w)=>{const x=parseFloat(v.replace(',','.'))*k;w=w||'';pre=pre||'';const ctx=pre+w,h=hit&&hit(parseFloat(v.replace(',','.')),u,(pre+w).toLowerCase());if(h!=null)return pre+h+sp+u+w;
     if(u==='мл')return pre+rMl(x)+sp+u+w;if(/сол/.test(ctx))return pre+numTxt(rSalt(x))+' г'+w+` (${saltM(rSalt(x))})`;if(isSpice(ctx)&&x<3)return pre+'щепоть'+w;return pre+(x<5?numTxt(Math.max(.5,Math.round(x*2)/2)):rG(x))+sp+u+w});
 function dishOf(id){const d0=KIT&&KIT.recipes.find(x=>x.id===id),inP=d0&&dayPlan().slots.find(x=>x.d.id===id);return inP?inP.d:d0}
 function openDish(id,n){const d=dishOf(id);if(!d){loadKit().then(()=>KIT&&KIT.recipes.length&&openDish(id,n));return}
-  if(n)DISHN=n;else if(openDish.last!==id)DISHN=people();openDish.last=id;const N=DISHN,f=d.f||1,fam=(S.noeat||[]).includes('family')&&N>1&&!near1(f),K=fam?(f+N-1)/f:N; // граммы ниже — на N порций; в семье порция под план только у вас
+  if(n)DISHN=n;else if(openDish.last!==id)DISHN=people();openDish.last=id;const N=DISHN,f=d.f||1,fam=(S.noeat||[]).includes('family')&&N>1&&!near1(f),K=portK(d,N); // граммы ниже — на N порций; в семье порция под план только у вас
   const c=dishCost(d),nn=norm(S.profile),P=dayPlan(),inPlan=P.slots.find(x=>x.d.id===id),ban=dishBan(d),tm=d.min0&&d.min0!==d.min?`${d.min0}–${d.min}`:d.min;
-  const big=N>1||!near1(f),ingTxt=(id,g,m)=>{const x=KIT.it[id],G=near1(K)?g:g*K;return x.pc?`${pl(Math.round(G/x.pc),'шт','шт','шт')} · ${Math.round(G/x.pc)*x.pc} г`:`${near1(K)?Math.round(G):rG(G)} г${m&&near1(K)&&near1(f)?' · '+m:''}`};
+  const big=N>1||!near1(f),ingTxt=(id,g,m)=>{const a=ingAmt(id,g,K);return amtTxt(a)+(!a.n&&m&&near1(K)&&near1(f)?' · '+m:'')},RV=roundSum(d.ing.map(([k,g])=>{const p=hasPrices()&&kgPrice(k);return p?p.r*g*K/1000*RESERVE:0}));
   sheet(d.n,`${ban?`<div class="card" role="alert" style="box-shadow:inset 4px 0 0 var(--warn),var(--shadow)"><div class="small"><b style="color:var(--warn-text)">В составе: ${ban}</b> — вы отметили это в «Не ем и аллергии».</div></div>`:''}${d.img?`<div class="plate hero" style="margin-bottom:12px">${pic(d.img,d.n)}<div class="capt"><span>${d.n}</span><span class="num">${u(d.nut.k,'ккал')}</span></div></div>${d.cr?`<div class="tiny muted" style="margin:-6px 4px 12px">Фото: ${d.cr[0]} · ${d.cr[1]} · <a href="${d.cr[2]}" target="_blank" rel="noopener" style="color:inherit">Wikimedia Commons</a></div>`:''}`:''}
    <div class="card dish-top"><div class="num" style="font-size:34px;line-height:1">${fmt(d.nut.k)}<span class="dku"> ккал</span></div>
     <div class="small muted" style="margin-top:4px">в порции · <span class="nw">${tm}${NBS}мин</span>${d.yield&&d.yield.g?` · тарелка <span class="nw">≈${NBS}${u(Math.round(d.yield.g*f/10)*10,'г')}</span>`:''} · ${d.eq==='без готовки'?'без готовки':d.eq==='духовка'?'нужна духовка':'на плите'}${d.keep?' · в холодильнике '+pl(d.keep,'день','дня','дней'):''}</div>${!near1(f)&&Math.round(f*10)!==10?`<div class="tiny" style="margin-top:2px;color:var(--accent-text);font-weight:600">порция ×${f1(Math.round(f*10)/10)} — под ваш план</div>`:''}
@@ -1722,15 +1732,15 @@ function openDish(id,n){const d=dishOf(id);if(!d){loadKit().then(()=>KIT&&KIT.re
     <div class="tiny muted mr-h">от вашей нормы на день</div><div class="mrings">${macroRings(d.nut,nn)}</div></div>
    <div class="card row between" style="gap:10px;flex-wrap:wrap"><div style="min-width:0;flex:1 1 140px"><div style="font-weight:650">Готовлю на</div><div class="tiny muted">${fam?`вам — порция ×${f1(Math.round(f*10)/10)}${d.yield&&d.yield.g?` (≈${Math.round(d.yield.g*f/10)*10} г)`:''}, остальным — обычная${d.yield&&d.yield.g?` (≈${Math.round(d.yield.g/10)*10} г)`:''}`:N>1?'все граммы, вода и соль пересчитаны':'граммы на одну порцию'}</div></div>
     <div class="ctl" role="group" aria-label="Порций"><button class="rb" onclick="openDish('${id}',Math.max(1,DISHN-1))" aria-label="Меньше порций">−</button><span class="num" style="font-size:20px;min-width:64px;text-align:center">${pl(N,'порция','порции','порций')}</span><button class="rb" onclick="openDish('${id}',Math.min(10,DISHN+1))" aria-label="Больше порций">+</button></div></div>
-   <h2 style="margin-top:14px">Состав и цены</h2><div class="card list">${d.ing.map(([k,g,m])=>{const p=hasPrices()&&kgPrice(k),x=KIT.it[k];
+   <h2 style="margin-top:14px">Состав и цены</h2><div class="card list">${d.ing.map(([k,g,m],ii)=>{const p=hasPrices()&&kgPrice(k),x=KIT.it[k];
      return `<div class="li"><div style="flex:1;min-width:0"><div style="font-weight:600">${x.n} · ${ingTxt(k,g,m)}</div><div class="tiny muted">${p&&p.pk?`${packTxt(p.pk)} — ${rub(p.pk[2])}, ${chName(p.src)}${p.pk[3]?` (сейчас по акции ${rub(p.pk[3])}${p.pk[6]?' до '+p.pk[6].slice(8,10)+'.'+p.pk[6].slice(5,7):''})`:''}`:p?`${p.src==='rs'?'средняя цена по региону, Росстат':'оценка'}: ${rub(p.r)} за кг`:''} ${p?`<button class="pfix" onclick="openPriceFix('${k}')">Цена другая?</button>`:''}</div></div>
-       ${p?`<div class="num" style="white-space:nowrap">${ingRub(p.r*g*K/1000*RESERVE)}</div>`:'<div class="tiny muted" style="text-align:right;max-width:84px">цена уточняется</div>'}</div>`}).join('')}
+       ${p?`<div class="num" style="white-space:nowrap" data-r="${RV[ii]}">${RV[ii]<1?'до'+NBS+'1'+NBS+'₽':'≈'+NBS+rub(RV[ii])}</div>`:'<div class="tiny muted" style="text-align:right;max-width:84px">цена уточняется</div>'}</div>`}).join('')}
      ${(d.extra||[]).map(([nm,g,m])=>{const txt=exTxt(nm,g,m,fam?f+N-1:K*f);return `<div class="li"><div style="flex:1;min-width:0"><div style="font-weight:600">${nm[0].toUpperCase()+nm.slice(1)} · ${txt}</div></div><div class="tiny muted">из дома</div></div>`}).join('')}
      ${c?`<div class="li"><div style="flex:1;font-weight:650">${N>1?`Всего на ${pl(N,'порцию','порции','порций')}`:'Порция'}</div><div class="num" style="font-weight:700">≈${NBS}${rub(c.r*K)}${c.part?'+':''}</div></div>${c.part?`<div class="tiny muted" style="padding:0 0 10px">+ ${c.none.map(i=>KIT.it[i].n.toLowerCase()).join(', ')} — цена уточняется, в сумму не вошло</div>`:''}`:''}</div>
    <div class="tiny muted" style="margin:-4px 4px 12px">Граммы — сырых продуктов. Калории и цену считает код; соль, специи и вода в цену не входят.</div>
-   ${hasPrices()?`<h2>Где купить</h2><div class="card list">${chainList(d.ing)}</div>${srcNote()}`:''}
+   ${hasPrices()?`<h2>Где купить</h2><div class="card list">${chainList(d.ing,d.ing.map(([i,g])=>[i,g*K]))}</div>${srcNote()}`:''}
    <h2>Как готовить</h2>${d.tools?`<div class="small muted" style="margin:-4px 4px 10px"><b style="color:var(--text)">Посуда:</b> ${d.tools}${N>1?` — на ${pl(N,'порцию','порции','порций')} возьмите посуду побольше`:''}</div>`:''}
-   <div class="card list steps">${d.steps.map(([m,t,a],i)=>{const par=/^(Параллельно|Пока )/.test(t);return `<div class="li" style="align-items:flex-start"><div class="stepn">${i+1}</div><div style="flex:1;min-width:0"><div class="tiny" style="color:var(--accent-text);font-weight:650;margin-bottom:2px">Шаг ${i+1} · <span class="nw">${a&&a!==m?a+'–'+m:m}&nbsp;мин</span>${par?' · одновременно':''}</div><div>${scaleTxt(t,fam?f+N-1:K*f)}</div></div></div>`}).join('')}
+   <div class="card list steps">${d.steps.map(([m,t,a],i)=>{const par=/^(Параллельно|Пока )/.test(t);return `<div class="li" style="align-items:flex-start"><div class="stepn">${i+1}</div><div style="flex:1;min-width:0"><div class="tiny" style="color:var(--accent-text);font-weight:650;margin-bottom:2px">Шаг ${i+1} · <span class="nw">${a&&a!==m?a+'–'+m:m}&nbsp;мин</span>${par?' · одновременно':''}</div><div>${stepTxt(d,t,N)}</div></div></div>`}).join('')}
      <div class="li"><div style="flex:1" class="small muted">Всего</div><div class="num">${tm} мин</div></div></div>
    ${d.safe?`<div class="card row" style="gap:12px;align-items:flex-start"><div class="ibox ok">${ic('lock')}</div><div class="small"><b>Безопасно и вкусно.</b> ${d.safe}</div></div>`:''}
    <button class="btn" style="margin-bottom:10px" onclick="openCook('${id}')">${ic('play')} Готовить по шагам</button>
@@ -1762,8 +1772,8 @@ const exTxt=(nm,g,m,k)=>{const v=g*k,liq=/вод|бульон|сок|уксус|
   if((salt||isSpice(nm))&&v<1.2)return m&&!/\d/.test(m)?m:'щепоть';
   if(near1(k))return `${numTxt(g)} ${liq?'мл':'г'}${m?' · '+m:''}`;
   return salt?`${numTxt(rSalt(v))} г · ${saltM(rSalt(v))}`:isSpice(nm)&&v<3?'щепоть':liq?`${rMl(v)} мл`:`${v<5?numTxt(Math.max(.5,Math.round(v*2)/2)):rG(v)} г`};
-function cbLines(d,N){const K=N,f=d.f||1,out=[];
-  d.ing.forEach(([id,g,m])=>{const x=KIT.it[id],G=near1(K)?g:g*K;out.push(['i'+id,x.n,x.pc?`${pl(Math.round(G/x.pc),'шт','шт','шт')} · ${Math.round(G/x.pc)*x.pc} г`:`${near1(K)?Math.round(G):rG(G)} г${m&&near1(K)&&near1(f)?' · '+m:''}`])});
+function cbLines(d,N){const K=portK(d,N),f=d.f||1,out=[];
+  d.ing.forEach(([id,g,m])=>{const x=KIT.it[id],a=ingAmt(id,g,K);out.push(['i'+id,x.n,amtTxt(a)+(!a.n&&m&&near1(K)&&near1(f)?' · '+m:'')])});
   (d.extra||[]).forEach(([nm,g,m])=>out.push(['e'+nm,nm[0].toUpperCase()+nm.slice(1),exTxt(nm,g,m,K*f)]));
   return out}
 // чипсы шага: огонь, время, посуда — из текста шага; в тексте полужирным огонь, минуты и признак готовности
@@ -1819,12 +1829,12 @@ function knGot(t){const st=cbSt(),k=t.dataset.k,i=st.got.indexOf(k),on=i<0;on?st
   clearTimeout(knGot.t);knGot.t=setTimeout(()=>{const box=$('#knTiles');if(!box)return;const it=[...box.children],r0=new Map(it.map(x=>[x,x.getBoundingClientRect()])),want=[...it.filter(x=>!st.got.includes(x.dataset.k)),...it.filter(x=>st.got.includes(x.dataset.k))];
     if(want.every((x,j)=>x===it[j]))return;want.forEach(x=>box.appendChild(x));if(RM)return;want.forEach(x=>{const a=r0.get(x),b=x.getBoundingClientRect(),dx=a.left-b.left,dy=a.top-b.top;if(dx||dy)x.animate([{translate:`${dx}px ${dy}px`},{translate:'0 0'}],{duration:420,easing:EASE})})},RM?0:620)}
 const knNeed=(t,d)=>{const s=t.toLowerCase();return d.ing.filter(([id])=>{const n=KIT.it[id].n.toLowerCase().split(/[ (]/)[0].slice(0,4);return n.length>2&&s.includes(n)})};
-function knStep(st,d){const i=st.i,n=d.steps.length,[m,t,a]=d.steps[i],K=st.N*(d.f||1),txt=scaleTxt(t,K),par=/^(Параллельно|Пока )/.test(t),need=knNeed(t,d),tm=st.tm[i];
+function knStep(st,d){const i=st.i,n=d.steps.length,[m,t,a]=d.steps[i],KN=portK(d,st.N),K=KN*(d.f||1),txt=stepTxt(d,t,st.N),par=/^(Параллельно|Пока )/.test(t),need=knNeed(t,d),tm=st.tm[i];
   return `<div class="kn-step"><div class="kn-liq" id="knLiq"></div><div class="kn-segs" aria-hidden="true">${d.steps.map((_,k)=>`<i style="--k:${k<i?1:k===i?.5:0}"></i>`).join('')}</div>
    <div class="kn-sn">Шаг ${i+1} из ${n}${par?' · одновременно с прошлым':''}</div>
    <div class="kn-main"><div class="kn-ill" id="knIll" aria-hidden="true"></div><p class="kn-tx">${cbBold(txt)}</p>
     <div class="kn-chips">${cbChips(t,m,a,d.tools).map(([g,x])=>`<span class="kn-chip">${ic(g)}${x}</span>`).join('')}</div>
-    ${need.length?`<div class="kn-need">${need.map(([id,g])=>{const x=KIT.it[id],G=g*K;return `<span class="kn-nc"><span class="a">${knIcon('i'+id,x.n)}</span><span><b>${x.pc?pl(Math.round(G/x.pc),'шт','шт','шт'):rG(G)+NBS+'г'}</b><small>${x.n}</small></span></span>`}).join('')}</div>`:''}
+    ${need.length?`<div class="kn-need">${need.map(([id,g])=>{const x=KIT.it[id],a=ingAmt(id,g,KN);return `<span class="kn-nc"><span class="a">${knIcon('i'+id,x.n)}</span><span><b>${a.n?pl(a.n,'шт','шт','шт'):a.g+NBS+'г'}</b><small>${x.n}</small></span></span>`}).join('')}</div>`:''}
     <div class="kn-tap kn-tapR" onclick="knNext()" aria-hidden="true"></div><div class="kn-tap kn-tapL" onclick="knPrev()" aria-hidden="true"></div></div>
    <div class="kn-act">${m>=2?`<button class="kn-tm ${tm?'run':''}" id="cbt${i}" onclick="cbTimer(${i},${m})" aria-label="${tm?'Остановить таймер':'Таймер на '+m+' минут'}"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" class="tr"/><circle cx="32" cy="32" r="28" class="tp" style="stroke-dashoffset:${tm?0:176}"/></svg><b>${m}:00</b></button>`:''}
     <button class="kn-say" id="knSay" onclick="knSay()" aria-label="Прочитать вслух">${VOICE}</button><button class="kn-btn ${i===n-1?'em':''}" onclick="knNext()">${i===n-1?'Готово!':'Дальше'}</button></div></div>`}
@@ -1832,10 +1842,10 @@ function knMountStep(st,d){if(!window.CA)return;const [,t]=d.steps[st.i],r=CA.fo
 function knNext(){const st=cbSt(),d=dishOf(st.id);if(st.i<d.steps.length-1){st.i++;save();haptic(8);knShow()}else{st.ph='fin';save();haptic([10,40,10]);knShow()}}
 function knPrev(){const st=cbSt();if(st.i>0){st.i--;save();haptic(6);knShow()}}
 function knSay(){const st=cbSt(),d=dishOf(st.id),b=$('#knSay');if(!('speechSynthesis' in window)){toast('Чтение вслух на этом телефоне недоступно',true);return}speechSynthesis.cancel();if(b.classList.contains('on')){b.classList.remove('on');return}
-  const u=new SpeechSynthesisUtterance(`Шаг ${st.i+1}. `+scaleTxt(d.steps[st.i][1],st.N*(d.f||1)).replace(/<[^>]+>/g,''));u.lang='ru-RU';const v=speechSynthesis.getVoices().find(v=>/^ru/i.test(v.lang));if(v)u.voice=v;u.rate=.98;b.classList.add('on');u.onend=()=>b.classList.remove('on');speechSynthesis.speak(u)}
+  const u=new SpeechSynthesisUtterance(`Шаг ${st.i+1}. `+stepTxt(d,d.steps[st.i][1],st.N).replace(/<[^>]+>/g,''));u.lang='ru-RU';const v=speechSynthesis.getVoices().find(v=>/^ru/i.test(v.lang));if(v)u.voice=v;u.rate=.98;b.classList.add('on');u.onend=()=>b.classList.remove('on');speechSynthesis.speak(u)}
 // все шаги: путь со светящейся линией до текущего шага; касание — перейти
 function knAll(){const st=cbSt(),d=dishOf(st.id),el=$('#cook');let box=el.querySelector('.kn-all');if(box){box.remove();el.classList.remove('kn-allon');return}el.classList.add('kn-allon');
-  box=document.createElement('div');box.className='kn-all kn-in';box.innerHTML=`<h2>Все шаги</h2><div class="kn-path"><span class="fl" id="knFl"></span>${d.steps.map(([m,t],k)=>`<button class="kn-ps ${k<st.i?'done':k===st.i?'cur':''}" onclick="this.closest('.kn-all').remove();$('#cook').classList.remove('kn-allon');knGo(${k})"><span class="d">${k<st.i?ic('check'):k+1}</span>${scaleTxt(t,st.N*(d.f||1)).replace(/<[^>]+>/g,'')} <span class="tiny muted">· ${m}${NBS}мин</span></button>`).join('')}</div>`;
+  box=document.createElement('div');box.className='kn-all kn-in';box.innerHTML=`<h2>Все шаги</h2><div class="kn-path"><span class="fl" id="knFl"></span>${d.steps.map(([m,t],k)=>`<button class="kn-ps ${k<st.i?'done':k===st.i?'cur':''}" onclick="this.closest('.kn-all').remove();$('#cook').classList.remove('kn-allon');knGo(${k})"><span class="d">${k<st.i?ic('check'):k+1}</span>${stepTxt(d,t,st.N).replace(/<[^>]+>/g,'')} <span class="tiny muted">· ${m}${NBS}мин</span></button>`).join('')}</div>`;
   el.insertBefore(box,el.querySelector('.kn-bar'));const cur=box.querySelector('.kn-ps.cur');if(cur)requestAnimationFrame(()=>{$('#knFl').style.height=(cur.offsetTop+22)+'px';cur.scrollIntoView({block:'center'})})}
 // завтра попробуйте: блюдо, которого ещё не готовили, подходящее по «Не ем» и не похожее на сегодняшнее
 function knTomorrow(d){const cooked=new Set((S.cooked||[]).map(x=>x.id)),day=new Date().getDate(),l=KIT.recipes.filter(x=>x.id!==d.id&&!dishBan(x)&&!cooked.has(x.id)&&!(S.dislikes&&S.dislikes[x.id]));
@@ -1849,7 +1859,7 @@ function knFin(st,d){const nn=norm(S.profile),nb=cbNewBadges(st.id),lk=!!(S.like
    <button class="kn-btn em" id="knRec" onclick="knRecord(this,'${st.id}')">Записать в дневник · +${fmt(d.nut.k)}${NBS}ккал</button>
    <button class="kn-like" onclick="cbLike('${st.id}')" aria-pressed="${lk}">${lk?'♥ Нравится':'♡ Нравится — советовать чаще'}</button>
    ${tw?`<div class="kn-next"><span class="p">${tw.img?pic(tw.img,tw.n):ic(dishCat(tw)[1])}</span><span style="min-width:0"><small>Завтра попробуйте</small><b>${tw.n}</b><small>${tw.min}${NBS}мин · ${fmt(tw.nut.k)}${NBS}ккал</small></span><button class="add" onclick="knPlanTomorrow('${tw.id}')">В план</button></div>`:''}</div>`}
-function knFinFx(st,d){const pl0=$('#knPlate');if(!RM&&pl0)pl0.animate([{transform:'scale(.55)',opacity:0,filter:'blur(10px)'},{transform:'scale(1.04)',opacity:1,filter:'blur(0)',offset:.7},{transform:'scale(1)'}],{duration:1100,easing:EASE});
+function knFinFx(st,d){if(window.CA&&CA.ding)CA.ding();const pl0=$('#knPlate');if(!RM&&pl0)pl0.animate([{transform:'scale(.55)',opacity:0,filter:'blur(10px)'},{transform:'scale(1.04)',opacity:1,filter:'blur(0)',offset:.7},{transform:'scale(1)'}],{duration:1100,easing:EASE});
   setTimeout(()=>{$('#cook').querySelectorAll('.kn-mr .tp').forEach(c=>c.style.strokeDashoffset=138.2*(1-c.dataset.pc/100));const b=$('#knBdg');if(b)b.classList.add('on')},RM?0:500);if(!st.fin){st.fin=1;save();setTimeout(cbConfetti,RM?0:350)}}
 // «Записать»: «+N ккал» улетает дугой вверх, к дневнику; блюдо записывается
 function knRecord(b,id){if(b.dataset.done)return;b.dataset.done=1;haptic([8,30,8]);const ph=$('#phone').getBoundingClientRect(),r=b.getBoundingClientRect(),el=document.createElement('div');el.className='kn-fly';el.textContent=b.textContent.split('·')[1].trim();$('#cook').appendChild(el);
@@ -1913,10 +1923,10 @@ function cookedDish(id,book){const d=dishOf(id),c=dishCost(d);if(S.day!==today0(
   S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:d.n,img:d.img||'',k:d.nut.k,p:d.nut.p,f:d.nut.f,c:d.nut.c,cost:c?Math.round(c.r):0,acc:'высокая',src:'рецепт'});
   S.entries=(S.entries||0)+1;save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(d.nut.k,'ккал')+(c?' · '+rub(c.r):''))}
 const STAPLES=['maslo_rast','sahar','muka','tomat']; // обычно есть дома — по умолчанию не входят в сумму, можно вернуть
-function openShopList(){const P=dayPlan(),all={},k=people();P.slots.forEach(({d})=>d.ing.forEach(([id,g])=>all[id]=(all[id]||0)+g));
+function openShopList(){const P=dayPlan(),all={},k=people();P.slots.forEach(({d})=>{const K=portK(d,k);d.ing.forEach(([id,g])=>all[id]=(all[id]||0)+ingAmt(id,g,K).g)});
   const C=S.cook;C.got=C.got||[];if(!C.st){C.st=1;STAPLES.forEach(x=>{if(!C.have.includes(x))C.have.push(x)})}
-  const need=Object.entries(all).filter(([id])=>!C.have.includes(id)).map(([id,g])=>[id,g*k]),c=hasPrices()?costOf(need):null;
-  const row=([id,g1])=>{const g=g1*k,x=KIT.it[id],p=hasPrices()&&kgPrice(id),h=C.have.includes(id),got=C.got.includes(id);
+  const need=Object.entries(all).filter(([id])=>!C.have.includes(id)).map(([id,g])=>[id,g]),c=hasPrices()?costOf(need):null;
+  const row=([id,g1])=>{const g=g1,x=KIT.it[id],p=hasPrices()&&kgPrice(id),h=C.have.includes(id),got=C.got.includes(id);
     let buy='';if(p&&p.pk){if(p.pk[5])buy=`на развес — ${rub(p.pk[2])} за кг, ${chName(p.src)}`;else{const n=Math.max(1,Math.ceil(g/p.pk[1])),rest=n*p.pk[1]-g,more=Math.floor(rest/g);buy=`купить: ${n>1?n+' × ':''}${packTxt(p.pk).replace('упаковка ','')} — ${rub(p.pk[2]*n)}, ${chName(p.src)}${more>0&&!h?` · хватит ещё на ${pl(more,'раз','раза','раз')}`:''}`}}else if(p)buy=`${p.src==='rs'?'средняя по региону':'оценка'}: ${rub(p.r)} за кг`;
     return `<div class="li" style="${h?'opacity:.55':''}"><button style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;text-align:left" onclick="toggleGot('${id}')" aria-pressed="${got}" aria-label="${x.n}${got?', в корзине':''}"><div class="ibox ${got?'ok':''}">${ic(got?'check':'cart')}</div>
       <div style="flex:1;min-width:0"><div style="font-weight:600;${got?'text-decoration:line-through':''}">${x.n} · ${gramsTxt(id,Math.round(g))}</div><div class="tiny muted">${h?'есть дома — не считаем':buy}</div></div></button>
@@ -1924,7 +1934,7 @@ function openShopList(){const P=dayPlan(),all={},k=people();P.slots.forEach(({d}
   sheet('Список покупок',`<div class="small muted" style="margin:0 4px 10px">На ${P.slots.map(x=>x.d.n.toLowerCase()).join(', ')}${k>1?` — на ${pl(k,'человека','человек','человек')}`:''}. Отмечайте купленное; «есть дома» убирает продукт из суммы.</div>
    ${c?`<div class="grid2"><div class="card" style="margin:0"><div class="small muted">Блюда сегодня${k>1?" · на "+k:""}</div><div class="num" style="font-size:24px">≈${NBS}${rub(c.r)}</div><div class="tiny muted">сколько уйдёт продуктов</div></div><div class="card" style="margin:0"><div class="small muted">Чек в магазине${k>1?" · на "+k:""}</div><div class="num" style="font-size:24px">≈${NBS}${rub(c.chk)}</div><div class="tiny muted">за целые упаковки</div></div></div>`:''}
    <div class="card list">${Object.entries(all).map(row).join('')}</div>
-   ${hasPrices()?`<h2>Где выгоднее</h2><div class="card list">${chainList(P.ing)}</div>${srcNote()}`:''}`);SHEET_FN=openShopList;try{localStorage.setItem('mt-shoplist',$('#sbody').innerHTML)}catch(_){}}
+   ${hasPrices()?`<h2>Где выгоднее</h2><div class="card list">${chainList(P.ing,planFam(P))}</div>${srcNote()}`:''}`);SHEET_FN=openShopList;try{localStorage.setItem('mt-shoplist',$('#sbody').innerHTML)}catch(_){}}
 function toggleHave(id){const h=S.cook.have,i=h.indexOf(id);i<0?h.push(id):h.splice(i,1);save();haptic(6);keepScroll(openShopList)}
 function toggleGot(id){const g=S.cook.got=S.cook.got||[],i=g.indexOf(id);i<0?g.push(id):g.splice(i,1);save();haptic(6);keepScroll(openShopList)}
 /* город: справочник 1 117 городов России (HFLabs, CC BY-SA 4.0) — ближайший город по геопозиции считает телефон; на сервер уходит только регион */
