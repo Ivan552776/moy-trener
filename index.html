@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ru" data-theme="light" data-scheme="light">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://moytrener-app.ru 'unsafe-inline' 'wasm-unsafe-eval' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' https://moytrener-app.ru data: blob: https://images.openfoodfacts.org https://static.openfoodfacts.org; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://moytrener-app.ru https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net https://world.openfoodfacts.org https://images.openfoodfacts.org data: blob:; worker-src 'self' https://moytrener-app.ru blob:; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <script>/* старый адрес на GitHub → свой домен (быстрее из России, без VPN) */if(/github\.io$/.test(location.hostname))location.replace('https://moytrener-app.ru/'+location.search+location.hash)</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
@@ -930,7 +931,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-04-r77'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-04-r78'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1269,7 +1270,7 @@ function arc(val,max){
 function ring(pct,size,sw){const r=60-sw/2-1,off=100-Math.max(0,Math.min(100,pct));return `<svg class="ring" viewBox="0 0 120 120" width="${size}" height="${size}" aria-hidden="true"><circle class="ring-t" cx="60" cy="60" r="${r}" stroke-width="${sw}"/><circle class="ring-v" cx="60" cy="60" r="${r}" stroke-width="${sw}" pathLength="100" stroke-dasharray="100" stroke-dashoffset="${ANIM?100:off}" data-arc="${off}" ${pct<=0?'opacity="0"':''}/></svg>`}
 function cleanName(s){return String(s||'').replace(/[<>&"`]/g,'').trim()||'Вы'} // имя и названия попадают в разметку — без угловых скобок и кавычек
 const clean=s=>String(s||'').replace(/[<>&"`]/g,'').trim();
-const ava=()=>S.profile.name==='Вы'?ic('me','style="width:20px;height:20px"'):S.profile.name[0]; // без имени — значок, а не буква «В»
+const ava=()=>S.profile.name==='Вы'?ic('me','style="width:20px;height:20px"'):esc(S.profile.name[0]); // без имени — значок, а не буква «В»
 function hello(){const h=new Date().getHours();return h<5?'Доброй ночи':h<11?'Доброе утро':h<17?'Добрый день':h<23?'Добрый вечер':'Доброй ночи'}
 /* ---------- тренер с характером: выбирается после анкеты, «ведёт» на экране «Сегодня». Цифры и советы считает код (tip), тренер только добавляет свою манеру ---------- */
 const COACHES={
@@ -1318,7 +1319,7 @@ function vToday(){
     :[`openAdd()`,'plus','Записать еду'];
   const st=streakDays(),lw=S.weights[S.weights.length-1],wAge=lw?(Date.parse(today0())-Date.parse(lw.d))/864e5:99;
   const row=(fn,icn,t,sub,val)=>`<button class="rowbtn" onclick="${fn}"><div class="ibox">${ic(icn)}</div><div class="t">${t}<small>${sub}</small></div>${val?`<span class="n-s">${val}</span>`:`<span class="chev">${ic('chev')}</span>`}</button>`;
-  return `<div class="top"><div><div class="eyebrow">${dateStr[0].toUpperCase()+dateStr.slice(1)}</div><div class="date">${hello()}${pr.name&&pr.name!=='Вы'?',<br>'+pr.name:''}</div></div><div class="top-r"><button class="streak tap" onclick="openStreak()" aria-label="${pl(st,'день','дня','дней')} подряд">${ic('flame')}<b>${st}</b></button><button class="avatar tap" onclick="go('me')" aria-label="Личный кабинет">${ava()}</button></div></div>
+  return `<div class="top"><div><div class="eyebrow">${dateStr[0].toUpperCase()+dateStr.slice(1)}</div><div class="date">${hello()}${pr.name&&pr.name!=='Вы'?',<br>'+esc(pr.name):''}</div></div><div class="top-r"><button class="streak tap" onclick="openStreak()" aria-label="${pl(st,'день','дня','дней')} подряд">${ic('flame')}<b>${st}</b></button><button class="avatar tap" onclick="go('me')" aria-label="Личный кабинет">${ava()}</button></div></div>
   ${ws}
   <button class="hero2 tap ${left<0?'over':''}" onclick="openFoodPlan()"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34D399"/><stop offset=".5" stop-color="#10B981"/><stop offset="1" stop-color="#064E3B"/></linearGradient></defs></svg>
     <div class="h2-row"><div class="h2-ring">${ring(pct,140,15)}${pct<=0?'<i class="h2-dot"></i>':''}<div class="h2-in"><div class="n-hero">${CU(Math.abs(left))}</div><div class="h2-l">${left>=0?'осталось ккал':'ккал сверх нормы'}</div></div></div>
@@ -1987,8 +1988,9 @@ let CITIES=null;
 async function loadCities(){if(CITIES)return CITIES;try{CITIES=(await fetch('data/goroda.json').then(r=>{if(!r.ok)throw 0;return r.json()})).items}catch(e){CITIES=[]}return CITIES}
 // Москва вытянута: её отдалённые районы ближе к центрам соседних городов, чем к центру Москвы — опорные точки районов (с населением района) тоже считаются Москвой
 const MSK_PTS=[[55.8456,37.3617,150000],[55.8964,37.3893,70000],[55.9825,37.1814,250000],[55.4847,37.3070,150000],[55.5600,37.4800,300000],[55.6050,37.2550,100000]]; // Митино–Куркино, Зеленоград, Троицк, Коммунарка, Внуково
-function nearCity(lat,lon){let b=null,m=1e9,bd=1e9;const C=CITIES||[],msk=C.find(c=>c[1]==='msk');
-  const cand=msk?C.concat(MSK_PTS.map(p=>[msk[0],msk[1],p[0],p[1],p[2],msk])):C;
+const SPB_PTS=[[59.7230,30.4080,110000],[59.6880,30.4280,17000],[59.7510,30.5880,150000],[59.8800,29.9000,85000],[59.9100,29.7700,43000],[59.7390,30.0860,60000],[60.0960,29.9630,40000],[60.1960,29.7010,15000],[59.9930,29.7690,44000]]; // Пушкин, Павловск, Колпино, Петергоф, Ломоносов, Красное Село, Сестрорецк, Зеленогорск, Кронштадт — районы Петербурга
+function nearCity(lat,lon){let b=null,m=1e9,bd=1e9;const C=CITIES||[],sub=(code,pts)=>{const m=C.find(c=>c[1]===code);return m?pts.map(p=>[m[0],m[1],p[0],p[1],p[2],m]):[]};
+  const cand=C.concat(sub('msk',MSK_PTS),sub('spb',SPB_PTS));
   cand.forEach(c=>{const d=km([lat,lon],[c[2],c[3]]),sc=d<1&&!c[5]?-99+d:d-.17*Math.sqrt((c[4]||0)/1000); /* в центре малого города (до 1 км) — он сам, даже если вокруг Москва (Реутов) */if(sc<m){m=sc;bd=d;b=c[5]||c}});return b?{c:b,d:bd}:null} // ближайший с учётом размера города: север Москвы — Москва, а не Долгопрудный (score = расстояние − 0,17·√(население/1000) км)
 const cityName=()=>S.city&&S.city[1]===region()?S.city[0]:null;
 function placeTxt(){const c=cityName();return c?c+(c!==regName(region())?' · '+regName(region()):''):regName(region())}
@@ -2078,7 +2080,7 @@ let PP=null;
 function productPortion(id,g){
   const x=DB.products.find(p=>p.id===id);if(!x)return;g=g||(x.portion&&x.portion.g)||100;PP={id,g};
   const k=g/100,kc=(x.kcal||kcalOf(x))*k;
-  sheet(x.n,`${x.img?`<div class="exhero" style="aspect-ratio:16/9;margin-bottom:10px"><img src="${x.img}" alt=""></div>`:''}<div class="card" style="text-align:center"><div class="num" style="font-size:52px">${fmt(kc)}</div><div class="muted">ккал · ${g} г${x.portion&&x.portion.name&&g===x.portion.g?' · '+x.portion.name:''}</div>
+  sheet(x.n,`${x.img?`<div class="exhero" style="aspect-ratio:16/9;margin-bottom:10px"><img src="${esc(x.img)}" alt=""></div>`:''}<div class="card" style="text-align:center"><div class="num" style="font-size:52px">${fmt(kc)}</div><div class="muted">ккал · ${g} г${x.portion&&x.portion.name&&g===x.portion.g?' · '+x.portion.name:''}</div>
    <div class="row" style="gap:10px;margin-top:14px">${[['Белки',x.p*k,'var(--p-text)','var(--p-soft)'],['Жиры',x.f*k,'var(--f-text)','var(--f-soft)'],['Углеводы',x.c*k,'var(--c-text)','var(--c-soft)']].map(([l,v,col,soft])=>`<div style="flex:1;min-width:0;background:${soft};border-radius:12px;padding:10px"><div class="small muted">${l}</div><div class="num" style="font-size:20px;color:${col}">${fmt(v)} г</div></div>`).join('')}</div></div>
    <div class="card"><div class="row between"><span class="muted small">Сколько съели</span><span class="num" style="font-size:22px">${g} г</span></div><input type="range" min="10" max="${Math.max(400,g*2)}" step="5" value="${g}" oninput="const c=this.closest('.card').querySelector('.num');if(c)c.textContent=this.value+' г'" onchange="productPortion('${id}',+this.value)">
     <div class="chips">${[50,100,150,200,300].map(v=>`<button class="chip ${g===v?'on':''}" onclick="productPortion('${id}',${v})">${v} г</button>`).join('')}</div></div>
@@ -2126,7 +2128,7 @@ const NONET='<div class="card small muted" style="margin-top:10px">Нет инт
 async function offSearchRender(q){
   const box=$('#qoff');if(!box)return;if(!navigator.onLine){box.innerHTML=NONET;return}box.innerHTML=`<div class="card small muted" style="margin-top:10px">Ищем в мировой базе…</div>`;
   try{offSearchRender.ac&&offSearchRender.ac.abort();const ac=offSearchRender.ac=new AbortController();const list=(await offSearch(q,ac.signal)).filter(x=>!x.odd);if(!$('#qoff')||($('#q')&&$('#q').value!==q))return; // ответ на старый запрос не рисуем
-    box.innerHTML=list.length?`<div class="small muted" style="margin:14px 4px 6px">Мировая база · Open Food Facts · на 100 г</div>`+list.map(x=>{const id=x.id;if(!DB.products.find(p=>p.id===id))DB.products.push(x);return `<button class="opt" onclick="productPortion('${id}',100)"><div class="thumb" style="width:44px;height:44px;border-radius:12px">${x.img?`<img src="${x.img}" alt="" style="object-fit:contain;background:#fff" onerror="this.remove()">`:''}</div><div style="flex:1;min-width:0"><div style="font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x.n}</div><div class="small muted">${Math.round(x.kcal)} ккал · Б ${f1(x.p)} · Ж ${f1(x.f)} · У ${f1(x.c)}${x.qty?' · '+x.qty:''}</div></div><span class="chev">${ic('chev')}</span></button>`}).join('')
+    box.innerHTML=list.length?`<div class="small muted" style="margin:14px 4px 6px">Мировая база · Open Food Facts · на 100 г</div>`+list.map(x=>{const id=x.id;if(!DB.products.find(p=>p.id===id))DB.products.push(x);return `<button class="opt" onclick="productPortion('${id}',100)"><div class="thumb" style="width:44px;height:44px;border-radius:12px">${x.img?`<img src="${esc(x.img)}" alt="" style="object-fit:contain;background:#fff" onerror="this.remove()">`:''}</div><div style="flex:1;min-width:0"><div style="font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x.n}</div><div class="small muted">${Math.round(x.kcal)} ккал · Б ${f1(x.p)} · Ж ${f1(x.f)} · У ${f1(x.c)}${x.qty?' · '+x.qty:''}</div></div><span class="chev">${ic('chev')}</span></button>`}).join('')
       :`<div class="card small muted" style="margin-top:10px">В мировой базе ничего не нашлось. Попробуйте штрихкод с упаковки.</div>`;
   }catch(e){if(!$('#qoff')||(e&&e.name==='AbortError')||($('#q')&&$('#q').value!==q))return;box.innerHTML=!navigator.onLine?NONET:`<div class="card small muted" style="margin-top:10px">Мировая база сейчас не отвечает (так бывает: сервер Open Food Facts перегружен). Штрихкод с упаковки обычно работает — кнопка «+» → «Штрихкод».</div>`}
 }
@@ -2428,7 +2430,7 @@ function openHome(){
 let EXL=null,EXQ='',EXG='all',EXN=99;
 // «Тренер-тень»: 3D-анатомия и 30 упражнений с живыми мышцами (prototype/ten; BodyParts3D © DBCLS, Z-Anatomy, CC BY-SA 4.0).
 // Фото упражнений free-exercise-db убраны; названия, мышцы и шаги — тексты той же базы (Unlicense), перевод наш.
-const TENV='r77',TEN_IDS=["Bodyweight_Squat","Goblet_Squat","Dumbbell_Squat","Barbell_Squat","Barbell_Full_Squat","Dumbbell_Lunges","Bodyweight_Walking_Lunge","Dumbbell_Rear_Lunge","Barbell_Lunge","Pushups","Plank","Side_Bridge","Butt_Lift_Bridge","Romanian_Deadlift","Barbell_Bench_Press_-_Medium_Grip","Incline_Dumbbell_Press","Dumbbell_Shoulder_Press","Standing_Dumbbell_Press","Wide-Grip_Lat_Pulldown","Seated_Cable_Rows","Bent_Over_Two-Dumbbell_Row","Face_Pull","Dumbbell_Bicep_Curl","Bench_Dips","Crunches","Mountain_Climbers","Leg_Press","Recumbent_Bike","Jogging_Treadmill","Rowing_Stationary"],TEN=new Set(TEN_IDS);
+const TENV='r78',TEN_IDS=["Bodyweight_Squat","Goblet_Squat","Dumbbell_Squat","Barbell_Squat","Barbell_Full_Squat","Dumbbell_Lunges","Bodyweight_Walking_Lunge","Dumbbell_Rear_Lunge","Barbell_Lunge","Pushups","Plank","Side_Bridge","Butt_Lift_Bridge","Romanian_Deadlift","Barbell_Bench_Press_-_Medium_Grip","Incline_Dumbbell_Press","Dumbbell_Shoulder_Press","Standing_Dumbbell_Press","Wide-Grip_Lat_Pulldown","Seated_Cable_Rows","Bent_Over_Two-Dumbbell_Row","Face_Pull","Dumbbell_Bicep_Curl","Bench_Dips","Crunches","Mountain_Climbers","Leg_Press","Recumbent_Bike","Jogging_Treadmill","Rowing_Stationary"],TEN=new Set(TEN_IDS);
 const isDark=()=>document.documentElement.dataset.scheme==='dark';
 const tenPoster=id=>TEN.has(id)?`ten/poster/${id}${isDark()?'-d':''}.jpg?v=${TENV}`:null;
 const exThumb=id=>{const p=tenPoster(id);return p?`<img src="${p}" alt="" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover">`:`<span class="exic">${ic('ruler')}</span>`};
@@ -3149,7 +3151,7 @@ function monday0(){const m=new Date();m.setDate(m.getDate()-(m.getDay()+6)%7);re
 function openEdit(){
   const pr=S.profile,set=(k,v)=>{pr[k]=v;save();rerender()};
   sheet('Профиль',`<div class="card">
-    <div class="field"><label>Имя</label><input type="text" value="${pr.name==='Вы'?'':pr.name.replace(/"/g,'&quot;')}" placeholder="Имя" maxlength="24" onchange="S.profile.name=cleanName(this.value);save();rerender()"></div>
+    <div class="field"><label>Имя</label><input type="text" value="${pr.name==='Вы'?'':esc(pr.name)}" placeholder="Имя" maxlength="24" onchange="S.profile.name=cleanName(this.value);save();rerender()"></div>
     <div class="field"><label>Пол</label><div class="chips">${[['m','Мужчина'],['f','Женщина']].map(([k,l])=>`<button class="chip ${pr.sex===k?'on':''}" onclick="S.profile.sex='${k}';save();rerender()">${l}</button>`).join('')}</div></div>
     ${[['age','Возраст','лет',1,14,80],['h','Рост','см',1,140,210]].map(([k,l,u2,st,mn,mx])=>`<div class="field"><label>${l}</label><div class="ctl"><button class="rb" onclick="adjP('${k}',-${st},${mn},${mx})">−</button><span class="num" style="font-size:22px;min-width:84px;white-space:nowrap;text-align:center">${pr[k]} <span class="muted" style="font-size:12px;font-weight:500">${u2}</span></span><button class="rb" onclick="adjP('${k}',${st},${mn},${mx})">+</button></div></div>`).join('')}
     <div class="field"><label>Вес</label><div class="row" style="gap:10px"><span class="num" style="font-size:22px">${(''+pr.w).replace('.',',')} <span class="muted" style="font-size:12px;font-weight:500">кг</span></span><button class="btn sm sec" onclick="openWeight()">Записать</button></div></div>
@@ -3374,7 +3376,7 @@ function openStreak(){sheet('Серия',`<div class="card"><div class="num" sty
 
 /* ---------- Чат ---------- */
 function openChat(){
-  sheet(COACH_ON?coach().n+' · ваш тренер':'Мой тренер',`<div id="chat"><div class="msg bot">${COACH_ON?coach().hi[0]+' ':''}Привет${S.profile.name==='Вы'?'':', '+S.profile.name}! Ваша цель — ${GOALS[S.profile.goal].n.toLowerCase()}. Помогу с&nbsp;тренировками и питанием. О&nbsp;чём спросить?</div></div>
+  sheet(COACH_ON?coach().n+' · ваш тренер':'Мой тренер',`<div id="chat"><div class="msg bot">${COACH_ON?coach().hi[0]+' ':''}Привет${S.profile.name==='Вы'?'':', '+esc(S.profile.name)}! Ваша цель — ${GOALS[S.profile.goal].n.toLowerCase()}. Помогу с&nbsp;тренировками и питанием. О&nbsp;чём спросить?</div></div>
    <div class="chips ask" style="margin-top:12px">${['Что съесть вечером?',S.profile.place==='home'?'Не успеваю сегодня потренироваться':'Не успеваю сегодня в зал','Болит спина после тренировки'].map(q=>`<button class="chip" onclick="ask(this.textContent)">${q}</button>`).join('')}</div>
    <div class="concept">Ответы — готовые подсказки по вашим цифрам · не&nbsp;медицинская консультация</div>`);
 }
