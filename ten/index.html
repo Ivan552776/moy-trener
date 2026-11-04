@@ -7,10 +7,10 @@
 <title>Анатомия · Мой тренер</title>
 <link rel="icon" href="../favicon-32.png">
 <!-- всё для первого кадра — сразу и параллельно: просмотрщик, облегчённые мышцы, студийный свет -->
-<link rel="modulepreload" href="ten.js?v=r81">
-<link rel="preload" href="m/anatomy_xs.json?v=r81" as="fetch" crossorigin="anonymous">
-<link rel="preload" href="m/muscles_xs.bin?v=r81" as="fetch" crossorigin="anonymous">
-<link rel="preload" href="env.hdr?v=r81" as="fetch" crossorigin="anonymous">
+<link rel="modulepreload" href="ten.js?v=r83">
+<link rel="preload" href="m/anatomy_xs.json?v=r83" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="m/muscles_xs.bin?v=r83" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="env.hdr?v=r83" as="fetch" crossorigin="anonymous">
 <style>
 :root{--stage-hi:#F4F4F2;--stage-lo:#D9DAD7;--glass:rgba(255,255,255,.66);--glass-b:rgba(255,255,255,.8);--line:rgba(11,13,18,.08);
   --text:#0B0D12;--text2:#5E6472;--text3:#8C93A1;--accent:#047857;--accent-hi:#10B981;--accent-text:#047857;--accent-soft:rgba(4,120,87,.10);
@@ -132,7 +132,7 @@ body.poster .top,body.poster .dock,body.poster .cr,body.poster #labels,body.post
 <div class="top">
   <div class="seg glass" role="tablist"><button class="on" data-m="body" role="tab">Тело</button><button data-m="ex" role="tab">Упражнения</button></div>
   <button class="ibtn glass" id="allb" aria-label="Все мышцы — список и поиск"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></button>
-  <button class="ibtn glass" id="reset" aria-label="Вернуть вид"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
+  <button class="ibtn glass" id="reset" aria-label="Сбросить вид" title="Сбросить вид"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
 </div>
 <div class="hint glass" id="hint"><b>Коснитесь мышцы</b> — расскажем, что она делает</div>
 <div class="fps" id="fps"></div>
@@ -162,7 +162,7 @@ body.poster .top,body.poster .dock,body.poster .cr,body.poster #labels,body.post
 const qs = new URLSearchParams(location.search);
 if (qs.get('embed')) document.body.classList.add('embed'); if (qs.has('poster')) document.body.classList.add('poster');
 if (qs.has('close')) { const b = document.createElement('button'); b.className = 'x0 glass'; b.setAttribute('aria-label', 'Закрыть'); b.textContent = '×'; b.onclick = () => parent.postMessage({ ten: 'close' }, location.origin); document.querySelector('.top').prepend(b) }
-const VER = 'r81'; // менять вместе с файлами модели и упражнений (и в ссылках предзагрузки выше)
+const VER = 'r83'; // менять вместе с файлами модели и упражнений (и в ссылках предзагрузки выше)
 const { mountAnatomy } = await (async () => { for (let i = 0; ; i++) { try { return await import('./ten.js?v=' + VER + (i ? '&r=' + i : '')) } catch (e) { if (i >= 2) throw e; await new Promise(r => setTimeout(r, 900 * (i + 1))) } } })(); // сеть мигнула при выкладке — повторяем (новый адрес: браузер помнит неудачный импорт)
 const $ = s => document.querySelector(s);
 if (qs.get('theme')) document.documentElement.dataset.theme = qs.get('theme');
@@ -176,7 +176,7 @@ const GRP = { quads: 'Квадрицепс', glutes: 'Ягодичные', gmed:
   abs: 'Пресс', obliques: 'Косые мышцы живота', chest: 'Грудные', frontdelt: 'Передняя дельта', sidedelt: 'Средняя дельта', reardelt: 'Задняя дельта', triceps: 'Трицепс', biceps: 'Бицепс',
   lats: 'Широчайшие', traps: 'Трапеция', midtraps: 'Середина трапеции', rhomboids: 'Ромбовидные', serratus: 'Зубчатая', cuff: 'Вращатели плеча', hipflex: 'Сгибатели бедра', tibialis: 'Передняя голени', forearm: 'Предплечье' };
 // каталог: names-ru.json — русское и латинское имя, что это, группа (сразу); opisanie-ru.json — тексты карточек (в фоне, при первой карточке)
-const GN = { head: 'Голова и шея', shoulder: 'Плечо', forearm: 'Предплечье и кисть', chest: 'Грудь', back: 'Спина', abs: 'Живот', hip: 'Таз и бедро', leg: 'Голень и стопа' };
+const GN = { chest: 'Грудь', back: 'Спина', shoulder: 'Плечо', abs: 'Живот', hip: 'Таз и бедро', leg: 'Голень и стопа', forearm: 'Предплечье и кисть', head: 'Голова и шея' }; // порядок — по важности для фитнеса
 let RU = {}, OP = null, opP = null;
 const ruP = fetch('names-ru.json?v=' + VER).then(r => r.ok ? r.json() : {}).then(j => RU = j).catch(() => {});
 const loadOp = () => opP || (opP = fetch('opisanie-ru.json?v=' + VER).then(r => { if (!r.ok) throw 0; return r.json() }).then(j => OP = j).catch(() => { opP = null; return null }));
@@ -186,7 +186,7 @@ const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const base = n => n.replace(/\.(l|r)$/, '');
 
 try {
-  A = await mountAnatomy($('#stage'), { base: './', ver: VER, theme, fitK: qs.has('poster') ? .74 : 1.08, q: qs.get('q') || undefined, onPick: showInfo, onRender: drawLabels,
+  A = await mountAnatomy($('#stage'), { base: './', ver: VER, theme, fitK: qs.has('poster') ? .74 : 1.08, q: qs.get('q') || undefined, onPick: showInfo, onReset: () => resetView(), onRender: drawLabels,
     onFps: (f, q, d) => { $('#fps').textContent = Math.round(f) + ' к/с · ' + q + ' · ×' + d; window.__fps = (window.__fps || []).concat(Math.round(f)) },
     onFrame: (ph, name) => exFrame(ph, name) });
 } catch (e) { $('#load').remove(); document.body.insertAdjacentHTML('beforeend', '<div class="nogl">Этот браузер не показывает 3D. Обновите его или откройте в Safari или Chrome.</div>'); throw e }
@@ -403,7 +403,8 @@ function openGroup(g) {
   tick(); toBody().then(() => { const keys = grpKeys(g), re = reOf(keys); closeInfo(); isoMode = 'grp'; isoOn = true; A.isolate('muscles', re); A.highlight([]); flyTo(A.ids(re), true);
     const h = $('#hint'); h.innerHTML = `<b>${GN[g]}</b> — коснитесь мышцы`; h.classList.add('on'); setTimeout(() => h.classList.remove('on'), 3500) });
 }
-$('#reset').onclick = () => { A.reset(800); if (mode === 'body') { unIso(); closeInfo() } tick() };
+const resetView = () => mode === 'body' ? A.reset(400) : A.frameClip(undefined, 400); // ракурс 3/4 за 0,4 с; в упражнении — всё движение в кадре
+$('#reset').onclick = () => { resetView(); if (mode === 'body') { unIso(); closeInfo() } tick() };
 if (qs.get('ex')) setMode('ex', qs.get('ex'));
 </script>
 </body>
