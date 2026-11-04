@@ -930,7 +930,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-04-r75'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-04-r76'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1985,7 +1985,11 @@ function toggleGot(id){const g=S.cook.got=S.cook.got||[],i=g.indexOf(id);i<0?g.p
 /* город: справочник 1 117 городов России (HFLabs, CC BY-SA 4.0) — ближайший город по геопозиции считает телефон; на сервер уходит только регион */
 let CITIES=null;
 async function loadCities(){if(CITIES)return CITIES;try{CITIES=(await fetch('data/goroda.json').then(r=>{if(!r.ok)throw 0;return r.json()})).items}catch(e){CITIES=[]}return CITIES}
-function nearCity(lat,lon){let b=null,m=1e9;(CITIES||[]).forEach(c=>{const d=km([lat,lon],[c[2],c[3]]);if(d<m){m=d;b=c}});return b?{c:b,d:m}:null}
+// Москва вытянута: её отдалённые районы ближе к центрам соседних городов, чем к центру Москвы — опорные точки районов (с населением района) тоже считаются Москвой
+const MSK_PTS=[[55.8456,37.3617,150000],[55.8964,37.3893,70000],[55.9825,37.1814,250000],[55.4847,37.3070,150000],[55.5600,37.4800,300000],[55.6050,37.2550,100000]]; // Митино–Куркино, Зеленоград, Троицк, Коммунарка, Внуково
+function nearCity(lat,lon){let b=null,m=1e9,bd=1e9;const C=CITIES||[],msk=C.find(c=>c[1]==='msk');
+  const cand=msk?C.concat(MSK_PTS.map(p=>[msk[0],msk[1],p[0],p[1],p[2],msk])):C;
+  cand.forEach(c=>{const d=km([lat,lon],[c[2],c[3]]),sc=d<1&&!c[5]?-99+d:d-.17*Math.sqrt((c[4]||0)/1000); /* в центре малого города (до 1 км) — он сам, даже если вокруг Москва (Реутов) */if(sc<m){m=sc;bd=d;b=c[5]||c}});return b?{c:b,d:bd}:null} // ближайший с учётом размера города: север Москвы — Москва, а не Долгопрудный (score = расстояние − 0,17·√(население/1000) км)
 const cityName=()=>S.city&&S.city[1]===region()?S.city[0]:null;
 function placeTxt(){const c=cityName();return c?c+(c!==regName(region())?' · '+regName(region()):''):regName(region())}
 function openRegion(q=''){const R=KIT?KIT.regions:[],k=norm_(q),C=CITIES||[];
@@ -2424,7 +2428,7 @@ function openHome(){
 let EXL=null,EXQ='',EXG='all',EXN=99;
 // «Тренер-тень»: 3D-анатомия и 30 упражнений с живыми мышцами (prototype/ten; BodyParts3D © DBCLS, Z-Anatomy, CC BY-SA 4.0).
 // Фото упражнений free-exercise-db убраны; названия, мышцы и шаги — тексты той же базы (Unlicense), перевод наш.
-const TENV='r75',TEN_IDS=["Bodyweight_Squat","Goblet_Squat","Dumbbell_Squat","Barbell_Squat","Barbell_Full_Squat","Dumbbell_Lunges","Bodyweight_Walking_Lunge","Dumbbell_Rear_Lunge","Barbell_Lunge","Pushups","Plank","Side_Bridge","Butt_Lift_Bridge","Romanian_Deadlift","Barbell_Bench_Press_-_Medium_Grip","Incline_Dumbbell_Press","Dumbbell_Shoulder_Press","Standing_Dumbbell_Press","Wide-Grip_Lat_Pulldown","Seated_Cable_Rows","Bent_Over_Two-Dumbbell_Row","Face_Pull","Dumbbell_Bicep_Curl","Bench_Dips","Crunches","Mountain_Climbers","Leg_Press","Recumbent_Bike","Jogging_Treadmill","Rowing_Stationary"],TEN=new Set(TEN_IDS);
+const TENV='r76',TEN_IDS=["Bodyweight_Squat","Goblet_Squat","Dumbbell_Squat","Barbell_Squat","Barbell_Full_Squat","Dumbbell_Lunges","Bodyweight_Walking_Lunge","Dumbbell_Rear_Lunge","Barbell_Lunge","Pushups","Plank","Side_Bridge","Butt_Lift_Bridge","Romanian_Deadlift","Barbell_Bench_Press_-_Medium_Grip","Incline_Dumbbell_Press","Dumbbell_Shoulder_Press","Standing_Dumbbell_Press","Wide-Grip_Lat_Pulldown","Seated_Cable_Rows","Bent_Over_Two-Dumbbell_Row","Face_Pull","Dumbbell_Bicep_Curl","Bench_Dips","Crunches","Mountain_Climbers","Leg_Press","Recumbent_Bike","Jogging_Treadmill","Rowing_Stationary"],TEN=new Set(TEN_IDS);
 const isDark=()=>document.documentElement.dataset.scheme==='dark';
 const tenPoster=id=>TEN.has(id)?`ten/poster/${id}${isDark()?'-d':''}.jpg?v=${TENV}`:null;
 const exThumb=id=>{const p=tenPoster(id);return p?`<img src="${p}" alt="" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover">`:`<span class="exic">${ic('ruler')}</span>`};
@@ -2441,7 +2445,7 @@ const EXEQ={barbell:'Штанга',dumbbell:'Гантели',other:'Другое
 const EXCAT={strength:'Сила',stretching:'Растяжка',plyometrics:'Плиометрика',powerlifting:'Пауэрлифтинг',"olympic weightlifting":'Тяжёлая атлетика',strongman:'Стронгмен',cardio:'Кардио'};
 const EXLVL={beginner:'новичок',intermediate:'средний',expert:'продвинутый'};
 const EXGROUPS=[['all','Все',null],['legs','Ноги',['quadriceps','hamstrings','calves','adductors','abductors']],['glutes','Ягодицы',['glutes']],['back','Спина',['lats','middle back','lower back','traps']],['chest','Грудь',['chest']],['shoulders','Плечи',['shoulders']],['arms','Руки',['biceps','triceps','forearms']],['core','Пресс',['abdominals']],['stretch','Растяжка',null],['cardio','Кардио',null]];
-const TECHMAP={Bodyweight_Squat:'squat',Barbell_Squat:'squat',Barbell_Full_Squat:'squat',Dumbbell_Squat:'squat',Dumbbell_Lunges:'lunge',Barbell_Lunge:'lunge',Bodyweight_Walking_Lunge:'lunge',Dumbbell_Rear_Lunge:'lunge',Pushups:'pushup',Plank:'plank',Romanian_Deadlift:'deadlift',Standing_Dumbbell_Press:'press',Dumbbell_Shoulder_Press:'press'};
+const TECHMAP={Bodyweight_Squat:'squat',Barbell_Squat:'squat',Barbell_Full_Squat:'squat',Dumbbell_Squat:'squat',Dumbbell_Lunges:'lunge',Barbell_Lunge:'lunge',Bodyweight_Walking_Lunge:'lunge',Dumbbell_Rear_Lunge:'lunge',Pushups:'pushup',Plank:'plank',Romanian_Deadlift:'deadlift',Standing_Dumbbell_Press:'press',Dumbbell_Shoulder_Press:'press',Goblet_Squat:'squat',Side_Bridge:'plank','Barbell_Bench_Press_-_Medium_Grip':'bench',Incline_Dumbbell_Press:'bench','Bent_Over_Two-Dumbbell_Row':'row',Seated_Cable_Rows:'row',Dumbbell_Bicep_Curl:'curl'};
 async function loadEX(){if(EXL)return EXL;return loadEX.p=loadEX.p||(async()=>{try{const r=await fetch('data/exercises.json');if(!r.ok)throw new Error(r.status);EXL=await r.json();return EXL}catch(e){console.warn('библиотека упражнений не загрузилась',e);loadEX.p=null;return []}})()}
 function exFilter(){
   const k=norm_(EXQ),words=k.split(' ').filter(Boolean),g=EXGROUPS.find(x=>x[0]===EXG);
@@ -2495,6 +2499,9 @@ const FORM={
  pushup:{n:'Отжимания',img:'home',muscles:['chest','triceps','shoulders','core'],steps:[["Ладони чуть шире плеч", "start"], ["Тело — одна линия от головы до пяток", "start"], ["Опускайтесь, локти под 45° к корпусу", "down"], ["Грудь почти касается пола", "bottom"], ["Выжмите себя, не прогибая поясницу", "up"]]},
  plank:{n:'Планка',img:'plank',muscles:['core','shoulders','glutes'],steps:[["Локти под плечами", "start"], ["Таз подкручен, поясница не провисает", "down"], ["Шея — продолжение спины", "bottom"], ["Дышите ровно, держите 30–60 секунд", "up"]]},
  deadlift:{n:'Румынская тяга',img:'seatedrow',muscles:['hams','glutes','back'],steps:[["Стопы на ширине таза, гриф у ног", "start"], ["Спина прямая, лопатки сведены", "start"], ["Таз назад, гриф скользит по бёдрам", "down"], ["Опускаете до середины голени", "bottom"], ["Встаёте, выпрямляя таз, не круглите спину", "up"]]},
+ bench:{n:'Жим лёжа',img:'bench',muscles:['chest','triceps','shoulders'],steps:[["Лопатки сведены, стопы в пол", "start"], ["Опускайте вес к низу груди под контролем", "down"], ["Локти под 45° к корпусу, не в стороны", "bottom"], ["Выжимайте вверх, руки прямые над грудью", "up"]]},
+ row:{n:'Тяга в наклоне',img:'seatedrow',muscles:['back','biceps','shoulders'],steps:[["Наклон с ровной спиной, колени чуть согнуты", "start"], ["Тяните локтями к поясу", "down"], ["Лопатки сведены, корпус неподвижен", "bottom"], ["Опускайте под контролем, спина ровная", "up"]]},
+ curl:{n:'Подъём на бицепс',img:'curl',muscles:['biceps'],steps:[["Локти прижаты к бокам", "start"], ["Поднимайте, двигается только предплечье", "down"], ["Вверху — пауза, локти на месте", "bottom"], ["Опускайте медленно до прямых рук", "up"]]},
  press:{n:'Жим гантелей стоя',img:'shoulder',muscles:['shoulders','triceps','core'],steps:[["Гантели на уровне ушей, локти под кистями", "start"], ["Пресс напряжён, поясница без прогиба", "start"], ["Выжимайте вверх, гантели сходятся над головой", "bottom"], ["Опускайте под контролем до ушей", "up"]]}
 };
 const MUSCLES={quads:'Квадрицепсы',glutes:'Ягодичные',hams:'Задняя поверхность бедра',core:'Пресс и кор',chest:'Грудные',triceps:'Трицепсы',shoulders:'Плечи',back:'Спина',biceps:'Бицепсы',calves:'Икры',traps:'Трапеции',adductors:'Приводящие'};
@@ -2567,51 +2574,97 @@ async function formRun(src,ex){
   }catch(e){if(!alive())return;console.error(e);sheet('Не получилось',`<div class="card">${e.message}</div><button class="btn" onclick="openForm()">Попробовать ещё</button>`)}
 }
 function drawSkel(ctx,lm,W,H,col='#FF4F45'){ctx.strokeStyle=col;ctx.lineWidth=Math.max(3,W/160);ctx.lineCap='round';EDGES.forEach(([a,b])=>{if(lm[a].v<.4||lm[b].v<.4)return;ctx.beginPath();ctx.moveTo(lm[a].x*W,lm[a].y*H);ctx.lineTo(lm[b].x*W,lm[b].y*H);ctx.stroke()});ctx.fillStyle='#fff';lm.slice(11,29).forEach(p=>{if(p.v<.4)return;ctx.beginPath();ctx.arc(p.x*W,p.y*H,Math.max(3,W/120),0,7);ctx.fill()})}
+/* ---------- Разбор техники. Углы — по мировым 3D-точкам MediaPipe (метры), поэтому не зависят от ракурса съёмки; без них — по кадру.
+   Пороги — по биомеханике и проверены на синтетических роликах из 3D-тени с известными ошибками (tools/expose/form_err_score.py) ---------- */
+const sub3=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],dot3=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],nrm3=a=>{const n=Math.hypot(a[0],a[1],a[2])||1;return [a[0]/n,a[1]/n,a[2]/n]},mid3=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2];
+const a3=(w,i,j,k)=>ang3(sub3(w[i],w[j]),sub3(w[k],w[j]));
+const off3=(v,T)=>{const d=dot3(v,T);return [v[0]-T[0]*d,v[1]-T[1]*d,v[2]-T[2]*d]}; // составляющая v поперёк оси T
+const FT={ // пороги (градусы, доли)
+  sqDepth:95,luDepth:105,valg:.7,asym:25,back:-3,backAbs:8,sag:21,pushDepth:100,flare:65,benchFlare:80,benchDepth:95,pressTop:165,curlFwd:35,swing:22,hinge:135};
+function valg3(w){ // колени внутрь: расстояние между коленями / между щиколотками вдоль оси таза (норма ≥ 0,9)
+  const h=nrm3(sub3(w[24],w[23])),ks=Math.abs(dot3(sub3(w[26],w[25]),h)),as=Math.abs(dot3(sub3(w[28],w[27]),h));return as<.12?NaN:ks/as}
+function back3(w){ // круглая спина: насколько голова и верх спины ушли вперёд-вниз от продолжения линии таз → плечи (MediaPipe не видит позвонки — судим по плечам и ушам)
+  const T=nrm3(sub3(mid3(w[11],w[12]),mid3(w[23],w[24]))),ear=mid3(w[7],w[8]),F=nrm3(off3(sub3(w[0],ear),T)),u=sub3(ear,mid3(w[11],w[12]));
+  return Math.atan2(dot3(u,F),dot3(u,T))*180/Math.PI}
+function abd3(w,s){ // локоть в сторону: угол плеча от корпуса во фронтальной плоскости (0° — рука вдоль тела, 90° — локоть на уровне плеч в сторону)
+  const [S,O,E]=s==='l'?[w[11],w[12],w[13]]:[w[12],w[11],w[14]],T=nrm3(sub3(mid3(w[23],w[24]),mid3(w[11],w[12]))),L=nrm3(off3(sub3(S,O),T)),u=sub3(E,S);
+  return Math.atan2(Math.abs(dot3(u,L)),dot3(u,T))*180/Math.PI} // в нижней точке жима и отжимания плечо почти в плоскости корпуса — «45° к корпусу» меряется так
+function fwd3(w,s){ // локоть вперёд: угол плеча от линии корпуса (рука вдоль тела — 0°)
+  const [S,E]=s==='l'?[w[11],w[13]]:[w[12],w[14]],T=nrm3(sub3(mid3(w[23],w[24]),mid3(w[11],w[12])));return ang3(sub3(E,S),T)}
 function analyze(ex,S2){
-  const kneeL=S2.map(s=>angle(s.lm[23],s.lm[25],s.lm[27])),kneeR=S2.map(s=>angle(s.lm[24],s.lm[26],s.lm[28]));
-  const knee=kneeL.map((a,i)=>Math.min(a,kneeR[i])),hip=S2.map(s=>Math.min(angle(s.lm[11],s.lm[23],s.lm[25]),angle(s.lm[12],s.lm[24],s.lm[26])));
-  const elbow=S2.map(s=>Math.min(angle(s.lm[11],s.lm[13],s.lm[15]),angle(s.lm[12],s.lm[14],s.lm[16])));
+  const W3=S2.length&&S2.every(s=>s.w)?S2.map(s=>s.w):null;
+  const sm5=a=>a.map((_,i)=>npMedian(a.slice(Math.max(0,i-2),i+3))); // медиана по 5 кадрам: одиночные «прыжки» точек MediaPipe не дают ложных углов
+  const J=(a,b,c)=>sm5(W3?W3.map(w=>a3(w,a,b,c)):S2.map(s=>angle(s.lm[a],s.lm[b],s.lm[c])));
+  const kneeL=J(23,25,27),kneeR=J(24,26,28),knee=kneeL.map((a,i)=>Math.min(a,kneeR[i])),hipL=J(11,23,25),hipR=J(12,24,26),hip=hipL.map((a,i)=>Math.min(a,hipR[i]));
+  const elbL=J(11,13,15),elbR=J(12,14,16),elbow=elbL.map((a,i)=>Math.min(a,elbR[i]));
   const torso=S2.map(s=>{const sh={x:(s.lm[11].x+s.lm[12].x)/2,y:(s.lm[11].y+s.lm[12].y)/2},hp={x:(s.lm[23].x+s.lm[24].x)/2,y:(s.lm[23].y+s.lm[24].y)/2};return Math.abs(Math.atan2(sh.x-hp.x,hp.y-sh.y)*180/Math.PI)});
-  const sig=ex==='pushup'?elbow:ex==='press'?elbow.map(a=>180-a):knee; // что считаем «движением»
+  const ARM=['pushup','bench','row','curl'],sig=ARM.includes(ex)?elbow:ex==='press'?elbow.map(a=>180-a):ex==='deadlift'?hip:knee; // что считаем «движением»
   // повторы: минимумы сигнала ниже порога
   const reps=[];let inRep=false,start=0,minI=0;const hi=Math.max(...sig),lo=Math.min(...sig),thr=lo+(hi-lo)*.4;
   if(hi-lo>=25)sig.forEach((a,i)=>{if(!inRep&&a<thr){inRep=true;start=i;minI=i}else if(inRep){if(a<sig[minI])minI=i;if(a>=thr+(hi-lo)*.2){if(S2[i].t-S2[start].t>=0.4)reps.push({start,bottom:minI,end:i});inRep=false}}}); // амплитуда меньше 25° или короче 0,4 с — не движение
-  const findings=[],good=[];let score=100;
-  const bottoms=reps.map(r=>r.bottom);
+  const findings=[],good=[],m3={};let score=100;
+  const bottoms=reps.map(r=>r.bottom),bi=bottoms.length?bottoms:[sig.indexOf(Math.min(...sig))];
+  const atB=(arr,f)=>f(...bi.map(i=>arr[i])),med=f=>{if(!W3)return NaN;const v=bi.map(i=>f(W3[i])).filter(Number.isFinite);return v.length?npMedian(v):NaN};
   const ratios=S2.map(s=>Math.abs(s.lm[11].x-s.lm[12].x)/(Math.abs((s.lm[11].y+s.lm[12].y)/2-(s.lm[23].y+s.lm[24].y)/2)||.01)).sort((a,b)=>a-b),frontal=ratios[Math.floor(ratios.length/2)]>.85; // вид спереди: плечи шире длины корпуса
   const side=!frontal;
+  const topI=sig.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).slice(0,Math.max(3,Math.round(sig.length*.2))).map(x=>x[1]); // кадры в исходной позе (стоя)
+  const roundBack=(rel=true)=>{if(!W3)return; // в правильном приседе и тяге голова при опускании остаётся поднятой — угол «уши — продолжение корпуса» уменьшается на 10–15°; при круглой спине голова и верх спины заваливаются вместе с корпусом
+    const bb=med(back3),b0=npMedian(topI.map(i=>back3(W3[i]))),b=rel?bb-b0:bb;m3.back=b;
+    if(b>(rel?FT.back:FT.backAbs)){findings.push({k:'Круглая спина',d:rel?'В нижней точке голова и верх спины заваливаются вперёд вместе с корпусом — спина округляется. Грудь вперёд, лопатки назад, взгляд перед собой: спина ровная от таза до затылка.':`Голова и верх спины опущены на ${Math.round(b)}° ниже линии таз — плечи. Грудь вперёд, лопатки назад: спина ровная от таза до затылка.`,at:bi[0]});score-=25}else good.push('Спина ровная')};
+  const line=()=>{const s=sm5(W3?W3.map(w=>180-Math.min(a3(w,11,23,27),a3(w,12,24,28))):S2.map(s=>Math.abs(angle(s.lm[11],s.lm[23],s.lm[25])-180)));const v=npPct(s,75);m3.sag=v;return [v,s.indexOf(Math.max(...s))]};
+  const flare=(thr=FT.flare)=>{const f=med(w=>(abd3(w,'l')+abd3(w,'r'))/2);m3.flare=f;if(f>thr){findings.push({j:['локоть'],k:'Локти разведены в стороны',d:`В нижней точке плечо отведено от корпуса на ${Math.round(f)}°. Держите локти под 30–60° к корпусу — так меньше нагрузка на плечевой сустав.`,at:bi[0]});score-=20}else if(W3)good.push('Локти под безопасным углом')};
   if(ex==='squat'||ex==='lunge'){
-    const depth=bottoms.length?Math.min(...bottoms.map(i=>knee[i])):Math.min(...knee);
-    if(depth>110){findings.push({j:['колено'],k:'Недостаточная глубина',d:`В нижней точке угол в колене ${Math.round(depth)}°: бедро не доходит до параллели. Садитесь ниже, если позволяют колени.`,at:bottoms[0]});score-=25}else good.push('Глубина приседа достаточная');
-    const lean=bottoms.length?Math.max(...bottoms.map(i=>torso[i])):Math.max(...torso);
-    if(side){if(lean>60){findings.push({j:['таз'],k:'Сильный наклон корпуса',d:`Корпус наклонён на ${Math.round(lean)}° в нижней точке — нагрузка уходит на поясницу. Держите грудь выше, вес на пятках.`,at:bottoms.find(i=>torso[i]>60)});score-=20}else good.push('Корпус держите ровно')}
-    const valgus=frontal?bottoms.filter(i=>{const l=S2[i].lm;const w=Math.abs(l[27].x-l[28].x)||.01;return Math.abs(l[25].x-l[26].x)<w*.75}):[];
-    if(valgus.length){findings.push({j:['колено'],k:'Колени уходят внутрь',d:'В нижней точке колени ближе друг к другу, чем стопы. Разводите колени в стороны носков — так безопаснее для связок.',at:valgus[0]});score-=25}else if(frontal)good.push('Колени идут за носками');
-    if(frontal)good.push('Снято спереди: глубину и наклон корпуса точнее видно сбоку');
-    const asym=bottoms.length?Math.max(...bottoms.map(i=>Math.abs(kneeL[i]-kneeR[i]))):0;
-    if(asym>15){findings.push({k:'Перекос на одну ногу',d:`Разница углов в коленях ${Math.round(asym)}°. Распределяйте вес на обе ноги поровну.`,at:bottoms[0]});score-=10}
+    const depth=atB(knee,Math.min),lim=ex==='squat'?FT.sqDepth:FT.luDepth;m3.depth=depth;
+    if(depth>lim){findings.push({j:['колено'],k:'Недостаточная глубина',d:`В нижней точке угол в колене ${Math.round(depth)}°: бедро не доходит до параллели (цель — около 90°). Садитесь ниже, если позволяют колени.`,at:bottoms[0]});score-=25}else good.push('Глубина приседа достаточная');
+    const lean=atB(torso,Math.max);
+    if(side){if(lean>60){findings.push({j:['таз'],k:'Сильный наклон корпуса',d:`Корпус наклонён на ${Math.round(lean)}° в нижней точке — нагрузка уходит на поясницу. Держите грудь выше, вес на пятках.`,at:bi.find(i=>torso[i]>60)});score-=20}else good.push('Корпус держите ровно')}
+    if(ex==='squat'){
+      const vr=med(valg3);m3.valg=vr;
+      const vin=W3?(vr<FT.valg?bi:[]):frontal?bottoms.filter(i=>{const l=S2[i].lm;const w=Math.abs(l[27].x-l[28].x)||.01;return Math.abs(l[25].x-l[26].x)<w*.75}):[];
+      if(vin.length){findings.push({j:['колено'],k:'Колени уходят внутрь',d:`В нижней точке колени ${W3?`на ${Math.round((1-vr)*100)} % `:''}ближе друг к другу, чем стопы. Разводите колени в стороны носков — так безопаснее для связок.`,at:vin[0]});score-=25}else if(W3||frontal)good.push('Колени идут за носками');
+      const both=bi.filter(i=>[25,26,27,28].every(k=>S2[i].lm[k].v>.7)),asym=W3&&both.length?npMedian(both.map(i=>Math.abs(kneeL[i]-kneeR[i]))):0;m3.asym=asym; // дальнее колено сбоку не видно — его угол MediaPipe угадывает
+      if(asym>FT.asym){findings.push({k:'Перекос на одну ногу',d:`Разница углов в коленях ${Math.round(asym)}°. Распределяйте вес на обе ноги поровну.`,at:bi[0]});score-=10}
+      roundBack();
+    }
   }
   if(ex==='pushup'){
-    const depth=bottoms.length?Math.min(...bottoms.map(i=>elbow[i])):Math.min(...elbow);
-    if(depth>100){findings.push({j:['локоть'],k:'Неполная амплитуда',d:`Локоть сгибается только до ${Math.round(depth)}°. Опускайтесь, пока грудь почти не коснётся пола.`,at:bottoms[0]});score-=25}else good.push('Амплитуда полная');
-    const sag=Math.max(...S2.map(s=>Math.abs(angle(s.lm[11],s.lm[23],s.lm[25])-180)));
-    if(sag>25){findings.push({j:['таз'],k:'Провисает поясница',d:'Таз ниже линии плечи — пятки. Напрягите пресс и ягодицы, тело должно быть одной линией.',at:0});score-=20}else good.push('Тело держите одной линией');
+    const depth=atB(elbow,Math.min);m3.depth=depth;
+    if(depth>FT.pushDepth){findings.push({j:['локоть'],k:'Неполная амплитуда',d:`Локоть сгибается только до ${Math.round(depth)}°. Опускайтесь, пока грудь почти не коснётся пола.`,at:bottoms[0]});score-=25}else good.push('Амплитуда полная');
+    const [sag]=line();
+    if(sag>FT.sag){findings.push({j:['таз'],k:'Провисает поясница',d:`Таз уходит с линии плечи — пятки на ${Math.round(sag)}°. Напрягите пресс и ягодицы, тело должно быть одной линией.`,at:0});score-=20}else good.push('Тело держите одной линией');
+    flare();
+  }
+  if(ex==='bench'){
+    const depth=atB(elbow,Math.min);m3.depth=depth;
+    if(depth>FT.benchDepth){findings.push({j:['локоть'],k:'Не опускаете вес до груди',d:`Локоть сгибается только до ${Math.round(depth)}°. Опускайте гриф (гантели) до низа груди — локоть около 90°.`,at:bottoms[0]});score-=25}else good.push('Амплитуда полная');
+    flare(FT.benchFlare);
   }
   if(ex==='plank'){
-    const sag=S2.map(s=>Math.abs(angle(s.lm[11],s.lm[23],s.lm[25])-180)),worst=sag.indexOf(Math.max(...sag));
-    if(sag[worst]>20){findings.push({j:['таз'],k:'Таз провисает или задран',d:`Отклонение от прямой линии ${Math.round(sag[worst])}°. Подкрутите таз, напрягите пресс.`,at:worst});score-=30}else good.push('Линия тела прямая');
+    const [sag,worst]=line();
+    if(sag>FT.sag){findings.push({j:['таз'],k:'Таз провисает или задран',d:`Отклонение от прямой линии ${Math.round(sag)}°. Подкрутите таз, напрягите пресс.`,at:worst});score-=30}else good.push('Линия тела прямая');
   }
   if(ex==='deadlift'){
-    const lean=Math.max(...torso);if(lean<40){findings.push({j:['таз'],k:'Мало наклона',d:'Таз почти не уходит назад — работают колени, а не задняя поверхность бедра. Наклоняйтесь глубже, отводя таз.',at:torso.indexOf(lean)});score-=20}else good.push('Таз уходит назад, наклон есть');
-    const kneeMin=Math.min(...knee);if(kneeMin<100){findings.push({j:['колено'],k:'Сильно сгибаете колени',d:`Колено сгибается до ${Math.round(kneeMin)}° — это присед, а не тяга. Колени чуть согнуты, движение в тазу.`,at:knee.indexOf(kneeMin)});score-=20}
+    const hmin=npPct(hip,5);m3.hinge=hmin; // наклон — по углу в тазобедренном (3D), а не по кадру: так не зависит от того, сбоку или спереди снято
+    if(W3?hmin>FT.hinge:Math.max(...torso)<40){findings.push({j:['таз'],k:'Мало наклона',d:`Таз почти не уходит назад${W3?` (угол в тазобедренном ${Math.round(hmin)}°, цель 80–120°)`:''} — работают колени, а не задняя поверхность бедра. Наклоняйтесь глубже, отводя таз.`,at:hip.indexOf(hmin)});score-=20}else good.push('Таз уходит назад, наклон есть');
+    const kneeMin=npPct(knee,5);m3.knee=kneeMin;if(kneeMin<100){findings.push({j:['колено'],k:'Сильно сгибаете колени',d:`Колено сгибается до ${Math.round(kneeMin)}° — это присед, а не тяга. Колени чуть согнуты, движение в тазу.`,at:knee.indexOf(kneeMin)});score-=20}
+    roundBack();
+  }
+  if(ex==='row'){
+    roundBack(false);const sw=npPct(torso,90)-npPct(torso,10);m3.swing=sw;
+    if(sw>FT.swing){findings.push({j:['таз'],k:'Раскачиваете корпус',d:`Корпус ходит на ${Math.round(sw)}° за повтор — тянете инерцией. Зафиксируйте корпус, тяните локтями к поясу.`,at:torso.indexOf(Math.max(...torso))});score-=15}else good.push('Корпус неподвижен');
+  }
+  if(ex==='curl'){
+    const fw=med(w=>(fwd3(w,'l')+fwd3(w,'r'))/2);m3.fwd=fw;const sw=npPct(torso,90)-npPct(torso,10);m3.swing=sw;
+    if(fw>FT.curlFwd){findings.push({j:['локоть'],k:'Локти уходят вперёд',d:`Вверху плечо уходит вперёд на ${Math.round(fw)}° — подключаются передние дельты. Прижмите локти к бокам, двигается только предплечье.`,at:bi[0]});score-=20}else if(W3)good.push('Локти прижаты');
+    if(sw>15){findings.push({j:['таз'],k:'Раскачиваете корпус',d:`Корпус качается на ${Math.round(sw)}° — гантели идут рывком. Возьмите вес полегче, корпус неподвижен.`,at:torso.indexOf(Math.max(...torso))});score-=15}
   }
   if(ex==='press'){
-    const lean=Math.max(...torso);if(lean>12){findings.push({j:['таз'],k:'Прогиб в пояснице',d:`Корпус отклоняется на ${Math.round(lean)}°. Напрягите пресс, не подталкивайте гантели корпусом.`,at:torso.indexOf(lean)});score-=20}else good.push('Корпус стабилен');
-    const top=Math.max(...elbow);if(top<160){findings.push({j:['локоть'],k:'Не дожимаете вверх',d:`Локоть распрямляется только до ${Math.round(top)}°. Выжимайте до полного выпрямления.`,at:elbow.indexOf(top)});score-=15}
+    const lean=Math.max(...torso);if(side&&lean>12){findings.push({j:['таз'],k:'Прогиб в пояснице',d:`Корпус отклоняется на ${Math.round(lean)}°. Напрягите пресс, не подталкивайте гантели корпусом.`,at:torso.indexOf(lean)});score-=20}else if(side)good.push('Корпус стабилен');
+    const top=npPct(elbow.map((a,i)=>Math.max(a,elbR[i],elbL[i])),95);m3.top=top;if(top<FT.pressTop){findings.push({j:['локоть'],k:'Не дожимаете вверх',d:`Локоть распрямляется только до ${Math.round(top)}°. Выжимайте до полного выпрямления.`,at:elbow.indexOf(Math.max(...elbow))});score-=15}
   }
   if(!reps.length&&ex!=='plank'){findings.push({k:'Повторы не распознаны',d:'Не нашли ни одного полного движения: снимите сбоку, чтобы были видны колени и таз, 2–5 повторов.',at:0});score-=30}
   const tempo=reps.length?reps.map(r=>(S2[r.end].t-S2[r.start].t).toFixed(1)):[];
-  return {reps:reps.length,repList:reps,findings,good,score:Math.max(0,score),tempo,frontal,bottomIdx:bottoms[0]??Math.floor(S2.length/2),knee,hip,elbow,torso};
+  return {reps:reps.length,repList:reps,findings,good,score:Math.max(0,score),tempo,frontal,bottomIdx:bottoms[0]??Math.floor(S2.length/2),knee,hip,elbow,torso,m3};
 }
 // Слои атласа мышц: img/anat/base.png (весь атлас, в приложении серый) + слой на каждую группу (вырезан из того же SVG, Wikimedia Commons CC BY-SA 4.0)
 const MUSMAP={quads:[['quads'],['adductors']],glutes:[['glutes'],[]],hams:[['hams'],['calves']],core:[['abs','obliques'],['lowerback']],chest:[['chest'],[]],triceps:[['triceps'],[]],shoulders:[['shoulders'],['traps']],back:[['back','lowerback'],['traps']],calves:[['calves'],[]],biceps:[['biceps'],[]]};
@@ -2624,7 +2677,7 @@ function muscleMap(on){
    <div class="mlist">${gs.map(g=>`<div><i style="background:${lv[g]===1?'#FF3B30':'#FF9F0A'}"></i>${MUSNAME[g]}<small>${lv[g]===1?'основная':'помогает'}</small></div>`).join('')}</div>`;
 }
 // Углы в суставах на кадре пользователя: дуга + подпись у ключевых суставов упражнения
-const JOINTS={squat:[['колено',23,25,27,24,26,28],['таз',11,23,25,12,24,26]],lunge:[['колено',23,25,27,24,26,28]],pushup:[['локоть',11,13,15,12,14,16],['таз',11,23,25,12,24,26]],plank:[['таз',11,23,25,12,24,26]],deadlift:[['таз',11,23,25,12,24,26],['колено',23,25,27,24,26,28]],press:[['локоть',11,13,15,12,14,16]]};
+const JOINTS={squat:[['колено',23,25,27,24,26,28],['таз',11,23,25,12,24,26]],lunge:[['колено',23,25,27,24,26,28]],pushup:[['локоть',11,13,15,12,14,16],['таз',11,23,25,12,24,26]],plank:[['таз',11,23,25,12,24,26]],bench:[['локоть',11,13,15,12,14,16]],row:[['локоть',11,13,15,12,14,16],['таз',11,23,25,12,24,26]],curl:[['локоть',11,13,15,12,14,16]],deadlift:[['таз',11,23,25,12,24,26],['колено',23,25,27,24,26,28]],press:[['локоть',11,13,15,12,14,16]]};
 function drawAngles(ctx,lm,W,H,ex,bad){
   const list=JOINTS[ex]||[];const f=Math.max(11,Math.round(W/26));ctx.font=`700 ${f}px -apple-system,Inter,system-ui,sans-serif`;ctx.textBaseline='middle';
   list.forEach(([name,a,b,c,a2,b2,c2])=>{
@@ -2659,8 +2712,10 @@ function shadowFixes(ex,findings,lm){
     else if(/Мало наклона/i.test(k))out.push({kind:'torso',sd,target:55,lbl:'таз назад, наклон глубже'});
     else if(/Провисает|Таз провисает/i.test(k))out.push({kind:'hip',sd,lbl:'таз на одну линию'});
     else if(/внутрь/i.test(k))out.push({kind:'knees',lbl:'колени над стопами'});
+    else if(/Круглая спина/i.test(k))out.push({kind:'back',lbl:'спина ровная до затылка'});
     else if(/Сильно сгибаете колени/i.test(k))out.push({kind:'depth',sd,target:150,lbl:'колени почти прямые'});
     else if(/дожимаете/i.test(k))out.push({kind:'elbow',sd,target:172,lbl:'выжмите до конца'});
+    else if(/Не опускаете вес/i.test(k))out.push({kind:'elbow',sd,target:90,lbl:'ниже, локоть 90°'});
     else if(/Неполная амплитуда/i.test(k)&&ex==='pushup')out.push({kind:'elbow',sd,target:88,lbl:'ниже, локоть 90°',body:true});
     else if(f.k3!=null&&f.dd)out.push({kind:'ampl',sd,tri:f.k3,dd:f.dd,lbl:'полная амплитуда'});
   }
@@ -2683,6 +2738,8 @@ function shadowApply(P,fx){
     const s0={...sm},dir=Math.sign(sm.x-hm.x)||1,a=-(cur-fx.target)*Math.PI/180*dir;rot(SH_HEAD_ARMS,hm,a);joint=I(23,24);from=s0;to={x:(Q[11].x+Q[12].x)/2,y:(Q[11].y+Q[12].y)/2};deg=Math.round(fx.target-cur);res.a0=Math.round(cur);res.a1=fx.target}
   else if(fx.kind==='hip'){const sh=I(11,12),kn=I(25,26),h=I(23,24),A=Q[sh],B=Q[kn],t=((Q[h].x-A.x)*(B.x-A.x)+(Q[h].y-A.y)*(B.y-A.y))/(((B.x-A.x)**2+(B.y-A.y)**2)||1),n={x:A.x+(B.x-A.x)*t,y:A.y+(B.y-A.y)*t};
     from={...Q[h]};const d={x:n.x-Q[h].x,y:n.y-Q[h].y};[23,24].forEach(i=>{Q[i].x+=d.x;Q[i].y+=d.y});to={...Q[h]};joint=h;deg=Math.round(180-ang2(P[sh],P[h],P[kn]))}
+  else if(fx.kind==='back'){const hm={x:(Q[23].x+Q[24].x)/2,y:(Q[23].y+Q[24].y)/2},sm={x:(Q[11].x+Q[12].x)/2,y:(Q[11].y+Q[12].y)/2},em={x:(Q[7].x+Q[8].x)/2,y:(Q[7].y+Q[8].y)/2};
+    const t=Math.atan2(sm.y-hm.y,sm.x-hm.x),e=Math.atan2(em.y-sm.y,em.x-sm.x);let d=t-e;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;from={...em};rot([0,1,2,3,4,5,6,7,8,9,10],sm,d*.85);to={x:(Q[7].x+Q[8].x)/2,y:(Q[7].y+Q[8].y)/2};joint=11;deg=Math.round(-d*180/Math.PI)}
   else if(fx.kind==='knees'){from={...Q[25]};[[25,27],[26,28]].forEach(([k,a])=>{Q[k].x=Q[a].x});to={...Q[25]};joint=25;deg=0}
   else if(fx.kind==='elbow'){const sh=I(11,12),el=I(13,14),wr=I(15,16);
     if(fx.body){const s0={...Q[sh]};deg=toAngle([sh],el,sh,wr,fx.target);const d={x:Q[sh].x-s0.x,y:Q[sh].y-s0.y};Q[sh]={...s0};for(let i=0;i<33;i++)if(![13,14,15,16,17,18,19,20,21,22].includes(i)){Q[i].x+=d.x;Q[i].y+=d.y}joint=el;from=s0;to={...Q[sh]}}
@@ -2707,7 +2764,7 @@ function drawShadow(ctx,P,res,W,label){
     let x=J.x+r*1.6,y=J.y-r*2.2;if(x+bw>W-6)x=J.x-r*1.6-bw;if(x<6)x=6;if(y-bh/2<6)y=J.y+r*2.4;
     ctx.fillStyle='rgba(20,20,22,.82)';ctx.beginPath();ctx.roundRect(x,y-bh/2,bw,bh,bh/2);ctx.fill();ctx.fillStyle='#FF6B61';ctx.fillText(label,x+pad,y+1)}
 }
-const shLabel=(fx,r)=>{const n=fx.kind==='depth'?'колено':fx.kind==='torso'?'наклон':fx.kind==='hip'?'таз':fx.kind==='knees'?'колени':fx.kind==='elbow'?'локоть':'сустав';
+const shLabel=(fx,r)=>{const n=fx.kind==='depth'?'колено':fx.kind==='torso'?'наклон':fx.kind==='hip'?'таз':fx.kind==='knees'?'колени':fx.kind==='elbow'?'локоть':fx.kind==='back'?'спина':'сустав';
   return r.a0!=null&&r.a1!=null?`${n} ${r.a0}° → ${r.a1}° · ${fx.lbl}`:r.deg?`${n} ${r.deg>0?'+':'−'}${Math.abs(r.deg)}° · ${fx.lbl}`:`${n} · ${fx.lbl}`};
 // кадр «вы и тень»: вырез по телу как у frameShot, до 3 исправлений
 function shadowShot(v,lm,fixes,w=720){const cr=bodyCrop(lm,v.videoWidth,v.videoHeight),c=document.createElement('canvas'),k=w/cr.w;c.width=w;c.height=Math.round(cr.h*k);const ctx=c.getContext('2d');ctx.drawImage(v,cr.x,cr.y,cr.w,cr.h,0,0,c.width,c.height);
@@ -2775,7 +2832,9 @@ function phaseMetric(ex,a,i){const d=x=>Math.round(x)+'°';
   if(ex==='pushup')return{v:d(a.elbow[i]),t:'цель ≤ 90°',ok:a.elbow[i]<=90,n:'локоть'};
   if(ex==='plank'){const s=Math.abs(a.hip[i]-180);return{v:d(s),t:'цель ≤ 10°',ok:s<=10,n:'прогиб'}}
   if(ex==='deadlift')return{v:d(a.torso[i]),t:'цель 45–70°',ok:a.torso[i]>=45&&a.torso[i]<=70,n:'наклон'};
-  if(ex==='press')return{v:d(a.elbow[i]),t:'цель ≥ 165°',ok:a.elbow[i]>=165,n:'локоть'};return null}
+  if(ex==='press')return{v:d(a.elbow[i]),t:'цель ≥ 165°',ok:a.elbow[i]>=165,n:'локоть'};
+  if(ex==='bench')return{v:d(a.elbow[i]),t:'цель ≤ 95°',ok:a.elbow[i]<=95,n:'локоть'};
+  if(ex==='row'||ex==='curl')return{v:d(a.elbow[i]),t:ex==='curl'?'цель ≤ 60°':'цель ≤ 100°',ok:a.elbow[i]<=(ex==='curl'?60:100),n:'локоть'};return null}
 const PHASE_NAME={start:'Исходное',down:'Движение вниз',bottom:'Нижняя точка',up:'Подъём'};
 async function formResult(src,ex,S2,v,live){
   const f=FORM[ex],a=analyze(ex,S2);window.LAST={ex,S2,a};const worst=a.findings.find(x=>x.at!=null)?.at??a.bottomIdx;
@@ -2797,7 +2856,7 @@ async function formResult(src,ex,S2,v,live){
    ${a.good.map(g=>`<div class="card row" style="padding:12px 16px"><span style="color:var(--ok-text)">${ic('check')}</span><div style="flex:1">${g}</div></div>`).join('')}
    <h2 style="margin-top:14px">Шаг за шагом на ваших кадрах</h2>${stepsHtml.join('')}
    <h2>Какие мышцы работают</h2><div class="card">${muscleMap(f.muscles)}<div class="tiny muted" style="margin-top:10px">Подсветка — по упражнению, не измерение активности</div>${ATLAS_CR}</div>
-   ${(()=>{const id=({squat:'Bodyweight_Squat',lunge:'Bodyweight_Walking_Lunge',pushup:'Pushups',plank:'Plank',deadlift:'Romanian_Deadlift',press:'Standing_Dumbbell_Press'})[ex];return `<div class="vid" style="margin-top:12px" onclick="openTen('${id}')">${pic(tenPoster(id)||gymPic(f.img),f.n)}<div class="cap">эталон в 3D: как правильно и какие мышцы работают</div></div>`})()}
+   ${(()=>{const id=({squat:'Bodyweight_Squat',lunge:'Bodyweight_Walking_Lunge',pushup:'Pushups',plank:'Plank',deadlift:'Romanian_Deadlift',press:'Standing_Dumbbell_Press',bench:'Barbell_Bench_Press_-_Medium_Grip',row:'Bent_Over_Two-Dumbbell_Row',curl:'Dumbbell_Bicep_Curl'})[ex];return `<div class="vid" style="margin-top:12px" onclick="openTen('${id}')">${pic(tenPoster(id)||gymPic(f.img),f.n)}<div class="cap">эталон в 3D: как правильно и какие мышцы работают</div></div>`})()}
    <div class="concept">Углы считаются по точкам суставов, точность зависит от ракурса и света · не медицинская консультация</div>
    <button class="btn" style="margin-top:12px" onclick="openForm()">Разобрать другое видео</button>`);if(S.tab==='today'||S.tab==='tech')setTimeout(rerender,50);
 }
@@ -2865,7 +2924,7 @@ function exSeqFeat(fr,ar){ // признаки всего ролика для к
   let pos=fr.map((_,i)=>[hp[i][1],sh[i][1],wr[i][1],an[i][1]].map(v=>v/tl));const pm=[0,1,2,3].map(k=>npMedian(col(pos,k)));pos=pos.map(r=>r.map((v,k)=>v-pm[k]));
   const rel=fr.map((_,i)=>[wr[i][1]-sh[i][1],wr[i][1]-hp[i][1],an[i][1]-hp[i][1],hp[i][1]-sh[i][1]].map(v=>v/tl)),Q=[0,1,2,3];
   return out.concat(Q.map(k=>npStd(col(pos,k))),Q.map(k=>npPct(col(pos,k),90)-npPct(col(pos,k),10)),Q.map(k=>npPct(col(rel,k),10)),Q.map(k=>npPct(col(rel,k),50)),Q.map(k=>npPct(col(rel,k),90)))}
-function exClassify(x){const C=EXR.d.cls;let h=x.map((v,i)=>(v-C.mu[i])/C.sd[i]);
+function exClassify(x,C=EXR.d.cls){let h=x.map((v,i)=>(v-C.mu[i])/C.sd[i]);
   C.layers.forEach((L,li)=>{h=L.W.map((w,o)=>w.reduce((s,wi,i)=>s+wi*h[i],L.b[o]));if(li<C.layers.length-1)h=h.map(v=>Math.max(0,v))});
   const m=Math.max(...h),e=h.map(v=>Math.exp(v-m)),z=e.reduce((s,v)=>s+v,0);return e.map(v=>v/z)}
 async function loadExRecog(){
@@ -2885,10 +2944,17 @@ async function exRecognize(fr,ar,frameEmb){
     img=cid.map((_,k)=>Math.max(...fe.map(f=>Math.max(dotf(f,C.I0[k]),dotf(f,C.I1[k])))));const md=npMedian(img);img=img.map((v,k)=>D.clip.has[k]?v:md);
     txt=cid.map((_,k)=>fe.reduce((s,f)=>s+dotf(f,C.T[k]),0)/fe.length)}}catch(err){console.warn('кадры для MobileCLIP не получились',err)}
   const W=D.fuse,zp=zs(psc),zi=img?zs(img):null,zt=txt?zs(txt):null;
-  const p=exClassify(exSeqFeat(win,ar));
+  const xf=exSeqFeat(win,ar),p=exClassify(xf);
   const sc=cid.map((id,k)=>{let s=zp[k]-(zi?W.wi*zi[k]:0)-(zt?W.wt*zt[k]:0);if(e.amp>=30&&D.stretchSet.has(id))s+=W.ws;const c=D.cmap[id];s-=W.wc*Math.log(c!=null?p[c]+1e-6:W.tau);return s});
-  const order=sc.map((_,k)=>k).sort((a,b)=>sc[a]-sc[b]).slice(0,8);
-  return {top:order.map(k=>({id:cid[k],s:sc[k]})),e,win,cls:D.cls.classes.map((c,i)=>[c,p[i]]).sort((a,b)=>b[1]-a[1]).slice(0,3),ref:id=>byId[id]}}
+  let order=sc.map((_,k)=>k).sort((a,b)=>sc[a]-sc[b]);
+  // 30 упражнений с 3D-тенью: отдельная модель (обучена на наших 3D-роликах с разных ракурсов + «другое» из эталонов библиотеки).
+  // Уверена в семействе движения (присед, выпад, жим лёжа…) — оно встаёт первым; какой именно вариант (гантели, штанга) — решает поза + MobileCLIP выше
+  let ten=null;if(D.ten){const pt=exClassify(xf,D.ten),fp={};D.ten.classes.forEach((c,i)=>{const f=D.ten.fam[c]||'other';fp[f]=(fp[f]||0)+pt[i]});
+    const fam=Object.keys(fp).sort((a,b)=>fp[b]-fp[a])[0];ten={fam,p:fp[fam]};
+    if(fam!=='other'&&fp[fam]>=D.ten.thr){const mem=new Set(D.ten.classes.filter(c=>D.ten.fam[c]===fam)),ki=Object.fromEntries(cid.map((id,k)=>[id,k]));
+      const inF=[...mem].filter(id=>id in ki).sort((a,b)=>sc[ki[a]]-sc[ki[b]]).map(id=>ki[id]);order=inF.concat(order.filter(k=>!mem.has(cid[k])))}}
+  order=order.slice(0,8);
+  return {top:order.map(k=>({id:cid[k],s:sc[k]})),ten,e,win,cls:D.cls.classes.map((c,i)=>[c,p[i]]).sort((a,b)=>b[1]-a[1]).slice(0,3),ref:id=>byId[id]}}
 
 /* ---------- Разбор любого упражнения: камера сама определяет, что вы делаете, и сравнивает с эталоном ---------- */
 const fName=ex=>FORM[ex]?FORM[ex].n:(S.exNames&&S.exNames[ex])||'Упражнение';
@@ -2931,7 +2997,7 @@ async function exAfter(src,ex,S2,v,live){
   sheet('Что вы делали?',`<div class="small muted" style="margin:0 4px 10px">Камера сравнила движение с ${EXR.d.ids.length} упражнениями библиотеки. Выберите своё — разбор будет по нему, а выбор запомнится.</div>
    ${top.map((x,i)=>{const e=names[x.id];return e?`<button class="opt" onclick="exPick('${x.id}')"><div class="thumb" style="width:64px;height:64px;border-radius:12px;overflow:hidden;flex:none;background:var(--card2)">${exThumb(x.id)}</div><div style="flex:1;min-width:0"><div style="font-weight:700">${e.n}</div><div class="small muted">${i===0?'скорее всего':i<3?'похоже':'возможно'} · ${EXEQ[e.eq]||'без инвентаря'}</div></div><span class="chev">${ic('chev')}</span></button>`:''}).join('')}
    <button class="btn sec" onclick="exLibPick()">${ic('search')} Другое — найти в библиотеке</button>
-   <div class="concept">Определение: поза по 3D-точкам суставов + обученная модель 22 частых упражнений + MobileCLIP по кадрам (видит снаряд). На проверке 28 роликов верное упражнение в первой пятёрке в 23 случаях — поэтому выбор за вами.</div>`);
+   <div class="concept">Определение: поза по 3D-точкам суставов + модель 30 упражнений с 3D-тенью + модель 22 частых упражнений + MobileCLIP по кадрам (видит снаряд). Проверка на 50 настоящих роликах 30 упражнений с 3D-тенью (каждый угадывает модель, его не видевшая): движение верно на первом месте примерно в 6 случаях из 10 — поэтому выбор за вами.</div>`);
 }
 const cosSim=(a,b)=>{let s=0,x=0,y=0;const C=EXR.d.cls;for(let i=0;i<a.length;i++){const u=(a[i]-C.mu[i])/C.sd[i],v=(b[i]-C.mu[i])/C.sd[i];s+=u*v;x+=u*u;y+=v*v}return s/Math.sqrt(x*y||1)};
 function exLibPick(){sheet('Какое упражнение?',`<input class="search" type="search" placeholder="Например «жим лёжа»" oninput="exLibRender(this.value)" style="margin-bottom:10px"><div id="exlibres"></div>`);exLibRender('');if(!EXL)loadEX().then(()=>{const q=$('#exlibres')&&$('#sbody .search');if(q)exLibRender(q.value)})}
