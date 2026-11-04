@@ -914,7 +914,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-04-r67'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-04-r68'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1783,9 +1783,8 @@ function cbNewBadges(id){const c0=S.cooked;S.cooked=[...(c0||[]),{id,d:today0()}
 /* анимации шагов — cook-anim.js (вид сверху, тематично под продукт и блюдо), грузится при первом открытии книги */
 let KN_LOAD=null;
 function knLib(){if(window.CA)return Promise.resolve();if(!KN_LOAD)KN_LOAD=new Promise(r=>{const s=document.createElement('script');s.src='cook-anim.js?v='+APPV;s.onload=r;s.onerror=r;document.head.appendChild(s)});return KN_LOAD}
-const KN_IC={grechka:'grechka',kur_grudka:'kur',kur_bedro:'kur',indeyka:'kur',farsh_kur:'kur',luk:'luk',morkov:'morkov',maslo_rast:'maslo',maslo_ol:'maslo',maslo_sliv:'maslo'};
 // рисунок продукта для плитки: свой рисунок, если есть; иначе — первая буква в мягком круге (без эмодзи)
-function knIcon(k,nm){if(window.CA){const id=k.slice(1);if(k[0]==='i'&&KN_IC[id])return CA.icon(KN_IC[id]);if(/^вод/i.test(nm))return CA.icon('voda');if(/^соль/i.test(nm))return CA.icon('sol')}return `<span class="kn-gen">${nm[0]}</span>`}
+function knIcon(k,nm){if(window.CA){const a=CA.iconFor(k[0]==='i'?k.slice(1):null,nm);if(a)return a}return `<span class="kn-gen">${nm[0]}</span>`}
 const SPK='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
   MUTE='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>',
   LIST='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg>',
@@ -1829,7 +1828,7 @@ function knStep(st,d){const i=st.i,n=d.steps.length,[m,t,a]=d.steps[i],K=st.N*(d
     <div class="kn-tap kn-tapR" onclick="knNext()" aria-hidden="true"></div><div class="kn-tap kn-tapL" onclick="knPrev()" aria-hidden="true"></div></div>
    <div class="kn-act">${m>=2?`<button class="kn-tm ${tm?'run':''}" id="cbt${i}" onclick="cbTimer(${i},${m})" aria-label="${tm?'Остановить таймер':'Таймер на '+m+' минут'}"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" class="tr"/><circle cx="32" cy="32" r="28" class="tp" style="stroke-dashoffset:${tm?0:176}"/></svg><b>${m}:00</b></button>`:''}
     <button class="kn-say" id="knSay" onclick="knSay()" aria-label="Прочитать вслух">${VOICE}</button><button class="kn-btn ${i===n-1?'em':''}" onclick="knNext()">${i===n-1?'Готово!':'Дальше'}</button></div></div>`}
-function knMountStep(st,d){if(!window.CA)return;const [,t]=d.steps[st.i],r=CA.forStep(t,d.ing.map(([id])=>[id,KIT.it[id].n])),sc=r.make?r.make():CA.plateUp();KNSC=$('#knIll');CA.mount(KNSC,sc);CA.source(sc);cbTick(1)}
+function knMountStep(st,d){if(!window.CA)return;const [,t]=d.steps[st.i],r=CA.forStep(t,d.ing.map(([id])=>[id,KIT.it[id].n]),d.steps.slice(0,st.i).map(s=>s[1])),sc=r.make?r.make():CA.plateUp();KNSC=$('#knIll');CA.mount(KNSC,sc);CA.source(sc);cbTick(1)}
 function knNext(){const st=cbSt(),d=dishOf(st.id);if(st.i<d.steps.length-1){st.i++;save();haptic(8);knShow()}else{st.ph='fin';save();haptic([10,40,10]);knShow()}}
 function knPrev(){const st=cbSt();if(st.i>0){st.i--;save();haptic(6);knShow()}}
 function knSay(){const st=cbSt(),d=dishOf(st.id),b=$('#knSay');if(!('speechSynthesis' in window)){toast('Чтение вслух на этом телефоне недоступно',true);return}speechSynthesis.cancel();if(b.classList.contains('on')){b.classList.remove('on');return}

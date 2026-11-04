@@ -59,7 +59,8 @@ const metalDefs = id => `<radialGradient id="rim${id}" cx=".3" cy=".25" r=".9"><
 
 /* кусочки сверху (центр 0,0) */
 function top(p, f, kind, s = 1, seed = 0, id = UID) {
-  const P = F[f], g = E('g', {}, p);
+  const P = F[f] || { c: '#D9D2C0', l: '#F2EEE4', d: '#A89E86' }, g = E('g', {}, p);
+  if (GEN[kind] && !KEEP_OLD(f, kind)) { H(g, GEN[kind](P, s, seed)); return g }
   switch (kind) {
     case 'coin': H(g, `<circle r="${7.6 * s}" fill="url(#coin${id})"/><circle r="${7.6 * s}" fill="none" stroke="${P.d}" stroke-width=".9" opacity=".7"/><circle r="${3.4 * s}" fill="#FFD08F" opacity=".9"/>
       ${[0, 1, 2, 3, 4, 5].map(i => { const a = i * Math.PI / 3 + seed; return `<path d="M${(Math.cos(a) * 3.6 * s).toFixed(1)} ${(Math.sin(a) * 3.6 * s).toFixed(1)}L${(Math.cos(a) * 6.6 * s).toFixed(1)} ${(Math.sin(a) * 6.6 * s).toFixed(1)}" stroke="#E07A1C" stroke-width=".5" opacity=".5"/>` }).join('')}<path d="M${-5 * s} ${-3 * s}A${6 * s} ${6 * s} 0 0 1 ${2 * s} ${-6 * s}" stroke="#fff" stroke-width="1.2" fill="none" opacity=".55" stroke-linecap="round"/>`); break;
@@ -78,6 +79,107 @@ function top(p, f, kind, s = 1, seed = 0, id = UID) {
   return g
 }
 const KIND = { morkov: 'coin', luk: 'cube', kur: 'chunk', svekla: 'stick', kapusta: 'strip', kartofel: 'cube', grechka: 'grain', ukrop: 'speck' };
+/* ---------- все 105 продуктов корзины + добавки (вода, соль, перец, лавр…): название, форма рисунка, вид кусочков, цвета (кусочек c/l/d, кожура s) ---------- */
+// [название, форма рисунка, вид кусочков, c, l, d, s(кожура/упаковка), доп.]
+const CAT = {
+  grechka: ['гречка', 'bowl', 'grain', '#93602F', '#C58E56', '#5E3A18'], ris: ['рис', 'bowl', 'rice', '#F7F4EC', '#FFFFFF', '#A99C7E'], ovsyanka: ['овсяные хлопья', 'bowl', 'flake', '#E6D2A2', '#F7ECCF', '#B99A5C'],
+  makarony: ['макароны', 'bowl', 'tube', '#F0C964', '#FBE3A0', '#C2922A'], perlovka: ['перловка', 'bowl', 'rice', '#E4D5B2', '#F4ECD8', '#B3A079'], psheno: ['пшено', 'bowl', 'seed', '#F1C33C', '#FBE08A', '#C4901A'],
+  chechevitsa: ['чечевица', 'bowl', 'lentil', '#E8803A', '#F6A866', '#B5581C'], fasol: ['фасоль', 'can', 'bean', '#9E3B2A', '#C9614A', '#6B2216', '#C24A32'], kartofel: ['картофель', 'round', 'cube', '#F0D58F', '#FFF1C8', '#C79C4A', '#C99556', 'potato'],
+  kapusta: ['капуста', 'cabbage', 'strip', '#DDEDC0', '#F4FAE8', '#A2C477', '#B9DA8E'], morkov: ['морковь', 'carrot', 'coin', '#F2871F', '#FFB45C', '#B8560F'], luk: ['лук', 'onion', 'cube', '#F7EED6', '#FFFBF0', '#D9C391'],
+  svekla: ['свёкла', 'round', 'stick', '#8E1B3A', '#C2456A', '#56091F', '#7A1A33', 'beet'], chesnok: ['чеснок', 'garlic', 'crumb', '#F6EFD9', '#FFFDF5', '#D8CBA6'], ogurets: ['огурец', 'long', 'coin', '#CFE6A8', '#EEF7DC', '#5E9A3A', '#3F8A2E', 'bumps'],
+  pomidor: ['помидор', 'round', 'cube', '#E5402E', '#FF7B5E', '#A92314', '#E5402E', 'tomato'], perets: ['сладкий перец', 'bell', 'strip', '#E23B2B', '#FF7A5C', '#A01F12'], kabachok: ['кабачок', 'long', 'coin', '#EEF1C8', '#FBFCEA', '#7FA650', '#6B9A3E'],
+  ovoshchi: ['овощная смесь', 'bowl', 'mix', '#F2871F', '#7BC05A', '#F2C640'], brokkoli: ['брокколи', 'floret', 'floret', '#4E8F3A', '#79B35A', '#2F6522'], ukrop: ['укроп', 'herb', 'speck', '#5FA641', '#8BCB6A', '#3D7A28'],
+  yabloko: ['яблоко', 'round', 'slice', '#F6E7B8', '#FFF8DE', '#D5B96F', '#D63B30', 'apple'], banan: ['банан', 'banana', 'coin', '#F7EBC0', '#FFF8E0', '#D9C278', '#F5CD3A'], yagody: ['ягоды', 'bowl', 'berry', '#7E2C4E', '#B7547A', '#4A1229'],
+  kur_grudka: ['куриное филе', 'meat', 'chunk', '#F1D7B6', '#FFF0DE', '#C79A6A', '', 'kur'], kur_bedro: ['куриное бедро', 'meat', 'chunk', '#EDC9A6', '#FBE6CF', '#C08B5B', '', 'kur'], farsh_kur: ['куриный фарш', 'mince', 'ball', '#F0CDB0', '#FBE6D3', '#C9936A'],
+  farsh: ['фарш', 'mince', 'ball', '#C9645A', '#E58B80', '#8E3A32'], govyadina: ['говядина', 'meat', 'chunk', '#A8322E', '#D0564C', '#6E1A17', '', 'marble'], indeyka: ['индейка', 'meat', 'chunk', '#F2D6BE', '#FFF0E2', '#C99E7A', '', 'kur'],
+  pechen: ['печень', 'meat', 'chunk', '#6E1F22', '#9A3A3A', '#3E0C0F', '', 'gloss'], mintay: ['минтай', 'fillet', 'chunk', '#F6EEE6', '#FFFFFF', '#D9C9BA'], tunets: ['тунец', 'can', 'flake', '#C9A07A', '#E2C4A4', '#93704E', '#2F7FB8'],
+  egg: ['яйца', 'egg', 'egg', '#FFFFFF', '#FFFFFF', '#E8E2D6', '#F1DCC0'], tvorog: ['творог', 'tub', 'crumb', '#FBF8F0', '#FFFFFF', '#E3DBC8', '#3E8ED0'], kefir: ['кефир', 'carton', 'drop', '#FBFAF6', '#FFFFFF', '#E2DED4', '#2F9E6A'],
+  moloko: ['молоко', 'carton', 'drop', '#FDFDFB', '#FFFFFF', '#E3E6EA', '#3E8ED0'], smetana: ['сметана', 'tub', 'drop', '#FBF6EA', '#FFFFFF', '#E6DCC4', '#E9A23B'], syr: ['сыр', 'cheese', 'crumb', '#F6D266', '#FDE7A0', '#D2A52E'],
+  maslo_rast: ['подсолнечное масло', 'oil', 'drop', '#F4B92E', '#FFE08A', '#C98A0E'], maslo_sliv: ['сливочное масло', 'butter', 'cube', '#FBE7A6', '#FFF6D6', '#E2C470'], muka: ['мука', 'bag', 'powder', '#FBF8F2', '#FFFFFF', '#E5DFD2', '#D9C29A'],
+  myod: ['мёд', 'jar', 'drop', '#E8A21E', '#FFC95A', '#B06F0A'], hleb: ['ржаной хлеб', 'bread', 'cube', '#6E4428', '#8E5E3A', '#3E2414', '#5A3418', 'rye'], lavash: ['лаваш', 'lavash', 'strip', '#F2E2BE', '#FBF2DC', '#D2B582'],
+  tomat: ['томатная паста', 'jar', 'drop', '#C8321F', '#E8604A', '#8A1D10'], orehi: ['грецкий орех', 'nut', 'nut', '#B98A55', '#D9B07C', '#7E5630'], svinina: ['свинина', 'meat', 'chunk', '#E7A59A', '#F6C8BE', '#B9746A', '', 'fat'],
+  gorbusha: ['горбуша', 'fillet', 'chunk', '#F2936C', '#FFB896', '#C2633F'], seld: ['сельдь', 'fish', 'chunk', '#D9B6AE', '#EFD6D0', '#9E7A72', '#8FA3B4'], nut: ['нут', 'bowl', 'bean', '#E3BE7E', '#F4D9A6', '#B48E4E'],
+  goroh: ['горох', 'bowl', 'lentil', '#F0C850', '#FBE08A', '#C59A22'], manka: ['манка', 'bowl', 'powder', '#F8EFD6', '#FFFBEF', '#E2D2A8'], kukuruz_krupa: ['кукурузная крупа', 'bowl', 'powder', '#F6CB4A', '#FDE38E', '#D2A120'],
+  tykva: ['тыква', 'pumpkin', 'cube', '#F28A2B', '#FFB15E', '#C25E10'], baklazhan: ['баклажан', 'long', 'cube', '#F1E8C8', '#FBF6E4', '#C9B98A', '#4B2350', 'aub'], cv_kapusta: ['цветная капуста', 'floret', 'floret', '#F4EEDC', '#FFFDF4', '#D6C9A4'],
+  shampinony: ['шампиньоны', 'mushroom', 'mush', '#EFE6D8', '#FFFFFF', '#C9B8A0'], goroshek: ['зелёный горошек', 'can', 'pea', '#7DBA48', '#A6D676', '#4F8A24', '#3F8A2E'], kukuruza: ['кукуруза', 'can', 'pea', '#F6CB3A', '#FDE38E', '#C99A10', '#2F7FB8'],
+  ogurtsy_sol: ['солёные огурцы', 'long', 'coin', '#B9C778', '#D9E3A6', '#6E7E2E', '#5E6E22', 'bumps'], kv_kapusta: ['квашеная капуста', 'bowl', 'strip', '#EDEBC4', '#FAF9E4', '#C3C080'], luk_zel: ['зелёный лук', 'herb', 'ring', '#5FAE3E', '#9AD676', '#3B7A22', '', 'stalk'],
+  petrushka: ['петрушка', 'herb', 'speck', '#3F9A3A', '#6DC060', '#26701F', '', 'flat'], limon: ['лимон', 'round', 'coin', '#F8E06A', '#FFF3B0', '#D8B21E', '#F2D22E', 'lemon'], apelsin: ['апельсин', 'round', 'coin', '#F7962E', '#FFC07A', '#C9680E', '#F38B1F', 'pores'],
+  grusha: ['груша', 'pear', 'slice', '#F4EBC4', '#FFFAE4', '#D2C07E', '#C9C24A'], izyum: ['изюм', 'bowl', 'berry', '#5A2E1E', '#8A5236', '#2E140A'], yogurt: ['йогурт', 'tub', 'drop', '#FBF9F3', '#FFFFFF', '#E4DFD2', '#7E5AA8'],
+  ryazhenka: ['ряженка', 'carton', 'drop', '#F2DEC4', '#FBEFDF', '#D6B994', '#C9662E'], brynza: ['брынза', 'cheese', 'cube', '#FBFAF4', '#FFFFFF', '#E3E0D2', '', 'white'], mayonez: ['майонез', 'tub', 'drop', '#FBF2D2', '#FFFBEA', '#E3D3A0', '#2F7FB8'],
+  sahar: ['сахар', 'bowl', 'seed', '#FFFFFF', '#FFFFFF', '#DCE2E8'], indeyka_farsh: ['фарш индейки', 'mince', 'ball', '#F0C9AE', '#FBE3D2', '#C68F6A'], kur_okor: ['куриные окорочка', 'drum', 'chunk', '#EFCDA8', '#FBE6CF', '#C08B5B', '', 'kur'],
+  treska: ['треска', 'fillet', 'chunk', '#F8F1EA', '#FFFFFF', '#DCCBBC'], skumbriya: ['скумбрия', 'fish', 'chunk', '#D9B9A8', '#EFD9CC', '#9E7A66', '#3E6E7E', 'stripes'], kalmar: ['кальмар', 'squid', 'ring', '#F6EEEA', '#FFFFFF', '#D9C6BE'],
+  krevetki: ['креветки', 'shrimp', 'shrimp', '#F49A7A', '#FFC3AA', '#C9654A'], krab_pal: ['крабовые палочки', 'crab', 'stick', '#FFFFFF', '#FFFFFF', '#E0DCD6', '#E2452E'], baranina: ['баранина', 'meat', 'chunk', '#B4483E', '#D46A5E', '#7A2620', '', 'fat'],
+  kur_goleni: ['куриные голени', 'drum', 'chunk', '#EFCDA8', '#FBE6CF', '#C08B5B', '', 'kur'], bulgur: ['булгур', 'bowl', 'seed', '#D9AE62', '#ECCB8A', '#A97E34'], kuskus: ['кускус', 'bowl', 'seed', '#F1D58A', '#FBEAB8', '#C9A752'],
+  shpinat: ['шпинат', 'leaf', 'leaf', '#3E8A36', '#66B05A', '#25601E'], fasol_str: ['стручковая фасоль', 'pods', 'stick', '#5FA641', '#8BCB6A', '#3D7A28'], redis: ['редис', 'round', 'coin', '#FBF6F4', '#FFFFFF', '#E3B8C0', '#D2304E', 'radish'],
+  salat_list: ['листья салата', 'leaf', 'leaf', '#8CC85A', '#B9E08E', '#5E9A36', '', 'light'], kivi: ['киви', 'round', 'coin', '#8DBE3A', '#C3E07A', '#5E8A1E', '#8A6236', 'kiwi'], mandarin: ['мандарин', 'round', 'coin', '#F8A23A', '#FFC882', '#D2741A', '#F7962E', 'pores'],
+  chernosliv: ['чернослив', 'bowl', 'berry', '#2E1A22', '#5A3646', '#140A0E'], kuraga: ['курага', 'bowl', 'berry', '#F29A3A', '#FFC07A', '#C4681A'], semechki: ['семечки', 'bowl', 'seed', '#B9B4A6', '#D9D4C6', '#7E7A6E'],
+  arahis: ['арахис', 'bowl', 'bean', '#D9A866', '#F0CB92', '#A97A3A'], maslo_ol: ['оливковое масло', 'oil', 'drop', '#B9B33A', '#DCD67A', '#7E7A1A', '#6E8A2E'], hleb_zern: ['цельнозерновой хлеб', 'bread', 'cube', '#9A6A3E', '#C08E5E', '#5E3E1E', '#8A5A2E', 'seeds'],
+  baton: ['батон', 'bread', 'cube', '#F3DFB6', '#FFF3D8', '#D4B67E', '#D99A4E', 'baton'], hlebcy: ['хлебцы', 'crisp', 'crumb', '#C8955A', '#E0B884', '#8E6230'], masliny: ['маслины', 'jar', 'ring', '#2E2A30', '#5A5460', '#121014', '', 'olives'],
+  soy_sous: ['соевый соус', 'bottle', 'drop', '#3A1E12', '#6E3E22', '#1A0C06', '#C8321F'], ketchup: ['кетчуп', 'bottle', 'drop', '#C8321F', '#E8604A', '#8A1D10', '#C8321F'], gorchica: ['горчица', 'jar', 'drop', '#D9A81E', '#F2CB5A', '#9E760A'],
+  cheese_ady: ['адыгейский сыр', 'cheese', 'cube', '#FBF8EC', '#FFFFFF', '#E6DFC8', '', 'white'], smetana20: ['сметана', 'tub', 'drop', '#FBF4E2', '#FFFFFF', '#E6D8B6', '#E9A23B'], tvorog9: ['творог', 'tub', 'crumb', '#FBF6EA', '#FFFFFF', '#E3D8C0', '#3E8ED0'],
+  // добавки из рецептов (не из корзины)
+  voda: ['вода', 'water', 'drop', '#9FDAF7', '#D6F0FD', '#3E93CC'], sol: ['соль', 'salt', 'seed', '#FFFFFF', '#FFFFFF', '#C9D0D6'], perec_ch: ['чёрный перец', 'peppercorn', 'seed', '#3A2A1E', '#6E5644', '#1A120A'],
+  paprika: ['паприка', 'bowl', 'powder', '#C8321F', '#E8604A', '#8A1D10'], travy: ['сушёные травы', 'bowl', 'speck', '#6E8A3A', '#9AB25E', '#4A6222'],
+  lavr: ['лавровый лист', 'bay', 'leaf', '#6E8A3A', '#9AB25E', '#4A6222'], zira: ['зира', 'bowl', 'seed', '#9E7A4A', '#C29E6E', '#6E5230'], uksus: ['уксус', 'bottle', 'drop', '#EEF4F2', '#FFFFFF', '#C9D6D2', '#E8EEEC'],
+  soda: ['сода', 'box', 'powder', '#FFFFFF', '#FFFFFF', '#DCE2E8', '#E2452E'], lim_sok: ['лимонный сок', 'round', 'drop', '#F8E06A', '#FFF3B0', '#D8B21E', '#F2D22E', 'lemon'],
+};
+// продукт → его цвета для сцен (F) и вид кусочков (KIND); у старых сцен свои ключи (kur — общий вид курицы)
+for (const k in CAT) { const [n, , pc, c, l, d, s] = CAT[k]; if (!F[k]) F[k] = { c, l, d, n, s: s || c, cut: pc }; else Object.assign(F[k], { n, s: s || F[k].c }); if (!KIND[k]) KIND[k] = pc }
+['kur_grudka', 'kur_bedro', 'indeyka', 'kur_okor', 'kur_goleni'].forEach(k => KIND[k] = 'chunk');
+const IS_KUR = k => /^(kur|kur_grudka|kur_bedro|indeyka|kur_okor|kur_goleni)$/.test(k);
+
+/* ---------- узнать продукт в тексте шага: основы слов; сначала точные (зелёный лук, томатная паста), потом общие ---------- */
+const B = '(?<![а-яё])';
+const STEM = [
+  ['luk_zel', `зелён[а-я]* лук|лук[а-я]* зелён|перь[а-я]* лук`], ['kv_kapusta', `квашен[а-я]* капуст`], ['cv_kapusta', `цветн[а-я]* капуст`], ['ogurtsy_sol', `солён[а-я]* огур|маринован[а-я]* огур|огур[а-я]* солён`],
+  ['tomat', `томатн[а-я]* паст|томат-паст|${B}паст[уаыо]?${B.replace('<', '')}`], ['kukuruz_krupa', `кукурузн[а-я]* круп|полент`], ['fasol_str', `стручк`], ['indeyka_farsh', `фарш[а-я]* индейк|индюшин[а-я]* фарш`], ['farsh_kur', `курин[а-я]* фарш|фарш[а-я]* курин`],
+  ['maslo_sliv', `сливочн[а-я]* масл`], ['maslo_ol', `оливков[а-я]* масл`], ['maslo_rast', `подсолнечн[а-я]* масл|растительн[а-я]* масл`], ['soy_sous', `соев`], ['lim_sok', `лимонн[а-я]* сок|сок[а-я]* лимон`], ['salat_list', `лист[а-я]* салат|салатн[а-я]* лист|листов[а-я]* салат`],
+  ['hleb_zern', `цельнозерн`], ['cheese_ady', `адыгейск`], ['krab_pal', `крабов`], ['ovoshchi', `овощн[а-я]* смес|замороженн[а-я]* овощ`], ['perec_ch', `чёрн[а-я]* перц|перц[а-я]* чёрн|перец чёрн|чёрный перец|молот[а-я]* перц|перец молот|горошк[а-я]* перц|перц[а-я]* горошк`],
+  ['grechka', `греч`], ['ris', `${B}рис(?:а|у|ом|е|ов[а-я]*)?(?![а-яё])`], ['ovsyanka', `овсян|хлопь`], ['makarony', `макарон|спагетти|рожк|${B}перь(?:я|ев)(?! лук)`], ['perlovka', `перлов`], ['psheno', `пшен`], ['chechevitsa', `чечевиц`],
+  ['fasol', `фасол`], ['kartofel', `картоф|картош|клубн`], ['kapusta', `капуст`], ['morkov', `морков|морк(?:ви|овь)`], ['luk', `${B}лук(?![а-яё]*овиц[а-я]* чеснок)|луковиц`], ['svekla', `свёкл|свекл`], ['chesnok', `чеснок|чесноч|зубч`],
+  ['ogurets', `огур`], ['pomidor', `помидор|томат(?!н)|черри`], ['perets', `сладк[а-я]* пер[ец]|болгарск|${B}пер(?:ец|ца|цы|цу|цем)(?![а-яё])`], ['kabachok', `кабач|цукин`], ['brokkoli', `брокколи`], ['ukrop', `укроп`], ['petrushka', `петрушк`],
+  ['yabloko', `яблок`], ['banan', `банан`], ['yagody', `ягод`], ['limon', `лимон`], ['apelsin', `апельсин`], ['grusha', `груш`], ['kivi', `киви`], ['mandarin', `мандарин`], ['izyum', `изюм`], ['chernosliv', `черносл`], ['kuraga', `кураг`],
+  ['farsh', `фарш|голубц|пельмен|тефтел|котлет|фрикадел|биточ|зраз`], ['kur_okor', `окороч`], ['kur_goleni', `голен`], ['kur_bedro', `бедр`], ['kur_grudka', `грудк|филе`], ['indeyka', `индейк|индюш`], ['kur', `куриц|курин|курочк|${B}кур(?:а|у)?${B.replace('<', '')}`],
+  ['myaso', `${B}мяс(?:о|а|у|ом|е)(?![а-яё])|отбивн|стейк`], ['govyadina', `говядин|говяж`], ['svinina', `свинин|свин(?!о-)`], ['baranina', `баранин`], ['pechen', `печен[ьиюе](?![а-яё])|печенк`], ['mintay', `минта`], ['treska', `треск`], ['gorbusha', `горбуш`], ['seld', `сельд|селёд`], ['skumbriya', `скумбри`],
+  ['tunets', `тунц|тунец`], ['fish', `рыб`], ['kalmar', `кальмар`], ['krevetki', `кревет`], ['egg', `яйц|яиц|яйк|желтк|белк(?:и|ов|ами)`], ['tvorog', `творог|творож|сырник`], ['kefir', `кефир`], ['moloko', `молок|молочн`], ['smetana', `сметан`],
+  ['brynza', `брынз`], ['syr', `${B}сыр(?!ник)`], ['yogurt', `йогурт`], ['ryazhenka', `ряженк`], ['mayonez', `майонез`], ['maslo', `${B}масл`], ['muka', `${B}мук`], ['myod', `мёд|${B}мед(?:а|ом|у)(?![а-яё])`], ['sahar', `сахар`], ['baton', `батон`], ['hlebcy', `хлебц`],
+  ['hleb', `хлеб|гренк|сухар`], ['lavash', `лаваш`], ['orehi', `орех`], ['arahis', `арахис`], ['semechki', `семечк|семен`], ['shampinony', `шампиньон|гриб`], ['tykva', `тыкв`], ['baklazhan', `баклажан`], ['goroshek', `горош(?:ек|ка|ком|ку)`], ['kukuruza', `кукуруз`],
+  ['nut', `${B}нут`], ['goroh', `горох`], ['manka', `манк|манн`], ['bulgur', `булгур`], ['kuskus', `кускус`], ['shpinat', `шпинат`], ['redis', `редис`], ['masliny', `маслин|оливк`], ['ketchup', `кетчуп`], ['gorchica', `горчиц`],
+  ['paprika', `паприк`], ['travy', `трав|орегано|базилик|прованс`], ['lavr', `лавров`], ['zira', `зир|кумин`], ['uksus', `уксус`], ['soda', `${B}сод`], ['sol', `${B}сол(?:ь|и|ью)(?![а-яё])`], ['voda', `${B}вод(?:а|ы|у|ой|е)(?![а-яё])|кипят`],
+].map(([k, s]) => [k, new RegExp(s, 'g')]);
+// общие слова → конкретный продукт из состава блюда
+const GROUP = { myaso: ['govyadina', 'svinina', 'baranina', 'kur_grudka', 'kur_bedro', 'indeyka', 'kur_okor', 'kur_goleni', 'pechen', 'farsh', 'farsh_kur', 'indeyka_farsh'], kur: ['kur_grudka', 'kur_bedro', 'kur_okor', 'kur_goleni', 'indeyka', 'farsh_kur'], farsh: ['farsh', 'farsh_kur', 'indeyka_farsh'], fish: ['mintay', 'treska', 'gorbusha', 'seld', 'skumbriya', 'tunets'],
+  maslo: ['maslo_rast', 'maslo_ol', 'maslo_sliv'], tvorog: ['tvorog', 'tvorog9'], smetana: ['smetana', 'smetana20'], syr: ['syr', 'brynza', 'cheese_ady'], hleb: ['hleb', 'hleb_zern', 'baton', 'hlebcy'], kur_grudka: ['kur_grudka', 'indeyka', 'kur_bedro'],
+  pomidor: ['pomidor', 'tomat'], egg: ['egg'], kapusta: ['kapusta', 'kv_kapusta', 'cv_kapusta'], limon: ['limon', 'lim_sok'] };
+const FREE = new Set(['voda', 'sol', 'perec_ch', 'lavr', 'zira', 'uksus', 'soda', 'lim_sok', 'paprika', 'travy']); // добавки: не нужны в составе
+// продукты в тексте: [{k, at}] по порядку; найденный кусок закрывается, чтобы «зелёный лук» не дал ещё и «лук»
+function prodsIn(text, ing) { const have = new Set(ing.map(x => x[0])); let t = text.toLowerCase().replace(/ё/g, 'ё'); const out = [];
+  for (const [k, re] of STEM) { re.lastIndex = 0; let m; while ((m = re.exec(t))) { let id = null;
+      if (GROUP[k]) id = GROUP[k].find(x => have.has(x)) || (have.has(k) ? k : null); else if (have.has(k) || FREE.has(k)) id = k;
+      if (k === 'farsh' && !id && /голубц|пельмен|тефтел|котлет|фрикадел|биточ|зраз/.test(m[0])) id = GROUP.kur.find(x => have.has(x)) || GROUP.fish.find(x => have.has(x)) || (have.has('tvorog') ? 'tvorog' : null);
+      if (k === 'perets' && /^пер/.test(m[0]) && !have.has('perets')) id = 'perec_ch';
+      if (id) out.push({ k: id, at: m.index, end: m.index + m[0].length });
+      t = t.slice(0, m.index) + ' '.repeat(m[0].length) + t.slice(m.index + m[0].length); re.lastIndex = m.index + m[0].length } }
+  return out.sort((a, b) => a.at - b.at) }
+
+/* ---------- глагол шага → действие (берётся первый глагол шага; существительные вроде «котлеты» действие не задают) ---------- */
+const VERB = [
+  ['cut', 'нарежьте|нарезайте|разрежьте|порубите|нашинкуйте|вырежьте|срежьте|отрежьте|разрубите|измельчите|покрошите|порежьте|разделайте|нареж[а-я]*'], ['tear', 'порвите|разорвите|разберите'],
+  ['grate', 'натрите|натирайте|трите|прокрутите|выдавите|раздавите'], ['peel', 'очистите|почистите|чистите|снимите кожу|снимите кожуру|удалите|освободите|выпотрошите'],
+  ['rinse', 'промойте|вымойте|переберите|ополосните|промыть'], ['soak', 'замочите|замачивайте'], ['dry', 'обсушите|подсушите|сушите|промокните'], ['crack', 'вбейте|разбейте|разбивайте|пробейте'],
+  ['whisk', 'взбейте|взбивайте'], ['pound', 'отбейте|отбить'], ['knead', 'вымесите|замесите|вымешивайте|вымешайте'], ['roll', 'раскатайте|разровняйте|раскатывайте'],
+  ['form', 'сформуйте|сформируйте|слепите|скатайте|сверните|заверните|защипните|подверните|воткните|наполните'], ['coat', 'обваляйте|обмакивайте|панируйте'], ['spread', 'намажьте|смажьте'],
+  ['oil', 'разогрейте|растопите|налейте масло'], ['bringBoil', 'доведите|вскипятите'], ['boil', 'варите|сварите|отварите|уварите|проварите'], ['fry', 'обжарьте|обжаривайте|жарьте|поджарьте|подрумяньте|прогрейте|прогревайте|подогрейте|переверните|переворачивайте'],
+  ['simmer', 'тушите|потушите|томите|накройте|убавьте'], ['bake', 'запекайте|запеките|выпекайте|испеките|поставьте в духовку|включите'], ['batter', 'налейте тесто|выливайте тесто'],
+  ['pour', 'залейте|влейте|налейте|подлейте|долейте|отлейте|вылейте|разведите|полейте|сбрызните'], ['salt', 'посолите|подсолите'], ['pepper', 'поперчите'],
+  ['add', 'добавьте|положите|всыпьте|опустите|сложите|верните|высыпьте|насыпьте|прибавьте|переложите|выкладывайте|уложите|соберите|застелите'],
+  ['stir', 'разрыхлите|взрыхлите|перемешайте|смешайте|помешайте|размешайте|помешивайте|заправьте|соедините|разомните|перемешивайте|встряхните'], ['drain', 'слейте|откиньте|стряхните|отожмите|выжмите|процедите'],
+  ['plateUp', 'выложите|подайте|подавайте|разложите|посыпьте|украсьте|присыпьте|ешьте|съешьте'], ['lift', 'выньте|достаньте|извлеките|уберите|выбросьте'],
+  ['rest', 'дайте|остудите|оставьте|держите|подержите|отложите|разморозьте|размораживайте|снимите|выключите|храните|настаивайте'], ['show', 'проверьте|отмерьте|откройте|разделите|сделайте|проколите|готовьте|попробуйте|поставьте|отделите|выберите|повторите'],
+].map(([a, s]) => [a, new RegExp(`${B}(?:${s})(?![а-яё])`, 'g')]);
+const VESSEL_ACT = new Set(['boil', 'bringBoil', 'simmer', 'salt', 'pepper', 'rest', 'pour', 'add']);
+function verbs(t) { const out = []; for (const [a, re] of VERB) { re.lastIndex = 0; let m; while ((m = re.exec(t))) out.push({ a, at: m.index, w: m[0] }) } return out.sort((x, y) => x.at - y.at) }
+
 
 /* пар к зрителю: клубы растут и тают */
 function steamUp(p, id, n, cx, cy, spread) {
@@ -123,13 +225,13 @@ function cut(f = 'morkov') {
    ${[...Array(9)].map((_, i) => `<path d="M${48 + R(i, 0, 14)} ${36 + i * 13 + R(i + 1, -2, 2)}Q${150 + R(i + 2, -30, 30)} ${34 + i * 13 + R(i + 3, -3, 3)} ${300 - R(i + 4, 0, 16)} ${37 + i * 13}" stroke="#A9692F" stroke-width=".7" fill="none" opacity="${R(i + 5, .14, .28).toFixed(2)}"/>`).join('')}
    <rect x="42.5" y="28" width="257" height="123" rx="12" fill="none" stroke="#fff" stroke-width="1" opacity=".35"/><rect x="40" y="26" width="262" height="128" rx="14" fill="none" stroke="#8E5626" stroke-width="1" opacity=".55"/><circle cx="286" cy="42" r="5" fill="#A9692F" opacity=".45"/>`);
   const CX = 196, CY = 90, prod = E('g', {}, svg);
-  if (P.cut === 'coin') H(prod, shade(id, `<path d="M100 76.5C130 76 166 80 ${CX} 82L${CX} 98C166 100 130 104.5 100 104C90 103 86 97 86 90C86 83 90 77.5 100 76.5Z"/>`, 4, 6, .28) +
+  if (f === 'morkov') H(prod, shade(id, `<path d="M100 76.5C130 76 166 80 ${CX} 82L${CX} 98C166 100 130 104.5 100 104C90 103 86 97 86 90C86 83 90 77.5 100 76.5Z"/>`, 4, 6, .28) +
     `<g stroke-linecap="round" fill="none">${[['#2F6B22', 4, 'M88 88Q72 80 60 70'], ['#3F8A2E', 3.4, 'M88 86Q76 70 76 54'], ['#5FA641', 3, 'M87 92Q70 96 56 96'], ['#7BC05A', 2.4, 'M89 84Q86 68 94 56'], ['#4E9A38', 2.6, 'M88 94Q74 106 64 114']].map(([c, w, d]) => `<path d="${d}" stroke="${c}" stroke-width="${w}"/>`).join('')}
      <path d="M76 54q-6-4-4-10M94 56q-3-6 3-10M60 70q-8-2-10-8M56 96q-8 0-12-6M64 114q-6 3-12 0" stroke="#7BC05A" stroke-width="2"/></g>
      <path d="M100 76.5C130 76 166 80 ${CX} 82L${CX} 98C166 100 130 104.5 100 104C90 103 86 97 86 90C86 83 90 77.5 100 76.5Z" fill="url(#car${id})"/>
      ${[...Array(9)].map((_, i) => { const x = 104 + i * 10.2, h = lerp(26, 16, i / 9); return `<path d="M${x} ${90 - h / 2}q1.8 ${h / 2} 0 ${h}" stroke="${P.d}" stroke-width=".8" fill="none" opacity="${R(i, .22, .4).toFixed(2)}"/>` }).join('')}
      <path d="M96 80C130 79 166 82.5 ${CX - 4} 84.5" stroke="#fff" stroke-width="2.6" fill="none" opacity=".5" stroke-linecap="round"/>`);
-  else if (P.cut === 'cube') { const ox = CX - 42, oy = CY, L = ox - 42;
+  else if (f === 'luk') { const ox = CX - 42, oy = CY, L = ox - 42;
     defs(svg, `<radialGradient id="pearl${id}" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#FFFEFA"/><stop offset=".7" stop-color="#F7F0DE"/><stop offset="1" stop-color="#EADBB8"/></radialGradient>
      <linearGradient id="skin${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E8BE78"/><stop offset=".6" stop-color="#C98C3E"/><stop offset="1" stop-color="#9C6528"/></linearGradient><clipPath id="oc${id}"><rect x="0" y="0" width="${CX + 1}" height="200"/></clipPath>`);
     const og = E('g', { 'clip-path': `url(#oc${id})` }, prod);
@@ -138,6 +240,7 @@ function cut(f = 'morkov') {
      <path d="M${L + 1} ${oy - 4}q-6 -1 -9 -5M${L + 1} ${oy}h-10M${L + 1} ${oy + 4}q-6 1 -9 5" stroke="#8E6232" stroke-width="1.2" stroke-linecap="round"/><ellipse cx="${L + 3}" cy="${oy}" rx="3" ry="4.5" fill="#B9874A"/>
      <path d="M${ox - 24} ${oy - 20}Q${ox} ${oy - 30} ${ox + 22} ${oy - 22}" stroke="#fff" stroke-width="2.4" fill="none" opacity=".75" stroke-linecap="round"/>
      <path d="M${ox + 30} ${oy - 22}Q${ox + 44} ${oy - 8} ${ox + 42} ${oy + 10}" stroke="#7E4E1E" stroke-width="1" fill="none" opacity=".45"/>`) }
+  else if (f !== 'kur' && !IS_KUR(f)) H(prod, shade(id, '<ellipse cx="140" cy="128" rx="40" ry="8"/>', 2, 3, .3) + artAt(f, 82, 32, 116));
   else H(prod, shade(id, `<path d="M88 72Q130 64 ${CX} 74L${CX} 106Q130 116 88 108Q74 90 88 72Z"/>`, 4, 6, .28) + `<path d="M88 72Q130 64 ${CX} 74L${CX} 106Q130 116 88 108Q74 90 88 72Z" fill="url(#chk${id})"/>`);
   // нож сверху: клинок поперёк продукта, рукоять к зрителю (вниз)
   const ksh = E('g', { filter: `url(#sb${id})` }, svg), ksp = E('path', { d: 'M3 -74Q6 -68 7 -58L8 24L-16 24Q-17 -12 -6 -50Q-1 -66 3 -74Z', fill: '#000' }, ksh);
@@ -148,7 +251,7 @@ function cut(f = 'morkov') {
    <path d="M-17 23H9V30H-17Z" fill="#C9D0D6"/><path d="M-17 29H9" stroke="#8E979F" stroke-width="1"/><path d="M-9 30H6Q8 30 8 33V78Q8 85 -0.5 85Q-9 85 -9 78V33Q-9 30 -7 30Z" fill="url(#khd${id})"/>
    <circle cx="-.5" cy="44" r="2" fill="#D7DDE2"/><circle cx="-.5" cy="58" r="2" fill="#D7DDE2"/><circle cx="-.5" cy="72" r="2" fill="#D7DDE2"/><path d="M-6 35V80" stroke="#fff" stroke-width=".9" opacity=".25"/>`);
   const pile = E('g', {}, svg), N = 6, T = 4.2, STEP = .55, T0 = .25, sl = [];
-  for (let i = 0; i < N; i++) { const w = E('g', { opacity: 0 }, pile); const k = P.cut === 'coin' ? 'coin' : P.cut === 'cube' ? 'cube' : 'chunk';
+  for (let i = 0; i < N; i++) { const w = E('g', { opacity: 0 }, pile); const k = KIND[f] || 'chunk';
     H(w, shade(id, k === 'coin' ? '<circle r="7.6"/>' : k === 'cube' ? '<rect x="-4.4" y="-4.4" width="8.8" height="8.8" rx="2"/>' : '<circle r="8"/>', 1.6, 2.2, .3).replace(`filter="url(#sb${id})"`, `filter="url(#sbs${id})"`));
     top(w, f, k, 1, i, id); sl.push({ w, sx: 216 + (i % 3) * 11 + R(i, -2.5, 2.5), sy: 78 + Math.floor(i / 3) * 12 + R(i + 4, -3, 3) + (P.cut === 'coin' ? 0 : 6) }) }
   let last = -1;
@@ -173,11 +276,12 @@ function cut(f = 'morkov') {
 }
 
 /* ---------- 2. Налить воду (сверху): струя бьёт в точку, круги расходятся, гладь растёт к стенкам ---------- */
-function pour() {
+function pour(liq = 'voda', items = []) {
+  const LQ = liq === 'voda' || !F[liq] ? ['#9FDAF7', '#5DB4E6', '#3E93CC'] : [F[liq].l, F[liq].c, F[liq].d];
   const { id, svg } = scene(['towel']);
-  defs(svg, metalDefs(id) + `<radialGradient id="wat${id}" cx=".42" cy=".38" r=".7"><stop offset="0" stop-color="#9FDAF7"/><stop offset=".7" stop-color="#5DB4E6"/><stop offset="1" stop-color="#3E93CC"/></radialGradient>
+  defs(svg, metalDefs(id) + `<radialGradient id="wat${id}" cx=".42" cy=".38" r=".7"><stop offset="0" stop-color="${LQ[0]}"/><stop offset=".7" stop-color="${LQ[1]}"/><stop offset="1" stop-color="${LQ[2]}"/></radialGradient>
    <radialGradient id="jug${id}" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".6" stop-color="#E6F3FA" stop-opacity=".35"/><stop offset="1" stop-color="#BFDCEB" stop-opacity=".55"/></radialGradient>`);
-  const pot = potTop(svg, id, 196, 92, 74);
+  const pot = potTop(svg, id, 196, 92, 74); fillPieces(pot.inner, id, { cx: pot.cx, cy: pot.cy, r: pot.r * .85 }, items);
   const wat = E('circle', { cx: pot.cx, cy: pot.cy, r: pot.r, fill: `url(#wat${id})`, opacity: 0 }, pot.inner), cres = E('path', { d: `M${pot.cx - pot.r * .78} ${pot.cy - pot.r * .1}A${pot.r * .8} ${pot.r * .8} 0 0 1 ${pot.cx + pot.r * .1} ${pot.cy - pot.r * .78}A${pot.r * .95} ${pot.r * .95} 0 0 0 ${pot.cx - pot.r * .78} ${pot.cy - pot.r * .1}Z`, fill: '#fff', opacity: 0 }, pot.inner), glint = E('ellipse', { rx: 18, ry: 5, fill: '#fff', opacity: .28, transform: `rotate(-30 ${pot.cx - 18} ${pot.cy - 20})` }, pot.inner);
   const rg = rings(pot.inner, 7), splash = E('circle', { r: 5, fill: '#E6F6FF', opacity: 0 }, pot.inner), drops = [...Array(8)].map(() => E('circle', { r: 1.6, fill: '#E6F6FF', opacity: 0 }, pot.inner));
   // кувшин сверху: горловина-капля с носиком, ручка-петля; вода внутри смещается к носику при наклоне; тень отходит
@@ -187,7 +291,7 @@ function pour() {
   const jug = E('g', {}, svg);
   H(jug, `<path d="M-28 -12Q-52 -14 -52 2Q-52 18 -28 14" stroke="rgba(255,255,255,.92)" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M-28 -12Q-52 -14 -52 2Q-52 18 -28 14" stroke="#BFDCEB" stroke-width="1.2" fill="none" opacity=".8"/>
    <path d="${JD}" fill="url(#jug${id})"/>`);
-  const jw = E('g', { 'clip-path': `url(#jc${id})` }, jug), jwat = E('ellipse', { rx: 30, ry: 26, fill: '#6BC0EE', opacity: .8 }, jw); E('ellipse', { rx: 10, ry: 5, cx: -6, cy: -8, fill: '#fff', opacity: .35 }, jw);
+  const jw = E('g', { 'clip-path': `url(#jc${id})` }, jug), jwat = E('ellipse', { rx: 30, ry: 26, fill: LQ[1], opacity: .8 }, jw); E('ellipse', { rx: 10, ry: 5, cx: -6, cy: -8, fill: '#fff', opacity: .35 }, jw);
   H(jug, `<path d="${JD}" fill="none" stroke="rgba(255,255,255,.95)" stroke-width="2.2"/><path d="M-22 -16A27 27 0 0 1 6 -27" stroke="#fff" stroke-width="2.6" fill="none" opacity=".85" stroke-linecap="round"/>`);
   // струя сверху: короткий яркий «столб» у носика (вода уходит от камеры вниз) и пятно удара с брызгами
   const stream = E('path', { fill: '#BFE6FB', opacity: 0 }, svg), core = E('ellipse', { rx: 3, ry: 2, fill: '#fff', opacity: 0 }, svg);
@@ -219,11 +323,15 @@ function pour() {
 
 /* содержимое кастрюли сверху */
 const BROTH = { grechka: { c0: '#CDAE84', c1: '#A9824F', items: [['grechka', 150, .95]] }, borsch: { c0: '#C9465F', c1: '#8E1B36', items: [['svekla', 10, .9], ['kapusta', 10, 1], ['kartofel', 8, 1], ['morkov', 6, .8], ['ukrop', 14, 1.3]] }, voda: { c0: '#9FDAF7', c1: '#3E93CC', items: [] } };
+function brothOf(items) { const it = items.filter(k => F[k]), so = it.filter(solid); let c0 = '#A9DCF5', c1 = '#4E9ED6';
+  if (it.includes('svekla')) [c0, c1] = ['#C9465F', '#8E1B36']; else if (it.some(k => /^(tomat|ketchup|pomidor)$/.test(k))) [c0, c1] = ['#E0674A', '#A8321F'];
+  else if (it.some(k => /^(moloko|kefir|ryazhenka|smetana|smetana20|yogurt)$/.test(k))) [c0, c1] = ['#FDFBF4', '#E9E1CE']; else { const g = it.find(k => GRAINY.has(KIND[k])); if (g) [c0, c1] = [mixc(F[g].c, '#ffffff', .25), mixc(F[g].c, '#5a3a1a', .2)] }
+  return { c0, c1, items: so.map(k => [k, Math.max(3, Math.round(countOf(k) / Math.max(1, so.length * .6))), scaleOf(k)]) } }
 function brothTop(pot, id, kind) {
-  const B = BROTH[kind]; defs(pot.inner.ownerSVGElement, `<radialGradient id="br${id}" cx=".4" cy=".36" r=".72"><stop offset="0" stop-color="${B.c0}"/><stop offset="1" stop-color="${B.c1}"/></radialGradient>`);
+  const B = Array.isArray(kind) ? brothOf(kind) : BROTH[kind] || BROTH.voda; defs(pot.inner.ownerSVGElement, `<radialGradient id="br${id}" cx=".4" cy=".36" r=".72"><stop offset="0" stop-color="${B.c0}"/><stop offset="1" stop-color="${B.c1}"/></radialGradient>`);
   E('circle', { cx: pot.cx, cy: pot.cy, r: pot.r, fill: `url(#br${id})` }, pot.inner);
   const g = E('g', {}, pot.inner), list = []; let s = 0;
-  B.items.forEach(([f, n, sc]) => { for (let i = 0; i < n; i++, s++) { const a = R(s, 0, 6.283), r = Math.sqrt(R(s + 40, .01, .96)) * pot.r * .94, w = E('g', {}, g); top(w, f, f === 'morkov' ? 'stick' : KIND[f], sc, s, id); list.push({ w, x: pot.cx + Math.cos(a) * r, y: pot.cy + Math.sin(a) * r, s }) } });
+  B.items.forEach(([f, n, sc]) => { for (let i = 0; i < n; i++, s++) { const a = R(s, 0, 6.283), r = Math.sqrt(R(s + 40, .01, .96)) * pot.r * .94, w = E('g', {}, g); top(w, f, f === 'morkov' ? 'stick' : f === 'egg' ? 'eggW' : KIND[f], sc, s, id); list.push({ w, x: pot.cx + Math.cos(a) * r, y: pot.cy + Math.sin(a) * r, s }) } });
   E('ellipse', { cx: pot.cx - pot.r * .35, cy: pot.cy - pot.r * .42, rx: pot.r * .45, ry: pot.r * .14, fill: '#fff', opacity: .2, transform: `rotate(-30 ${pot.cx - pot.r * .35} ${pot.cy - pot.r * .42})` }, pot.inner);
   return t => list.forEach(q => q.w.setAttribute('transform', `translate(${(q.x + wob(t * .5, q.s) * 1.4).toFixed(1)} ${(q.y + wob(t * .6, q.s + 3) * 1.4).toFixed(1)})`))
 }
@@ -261,10 +369,10 @@ function salt(kind = 'grechka') {
 
 /* ---------- 4. Жарить (сверху): кусочки подпрыгивают — крупнее, тень отходит; масло бликует; брызги во все стороны; пар к зрителю ---------- */
 function piecesIn(svg, id, c, items, n) {
-  const list = [];
+  const list = []; items = items.filter(solid); if (!items.length) return list; if (items.every(k => GRAINY.has(KIND[k]))) n = 90;
   for (let i = 0; i < n; i++) { const f = items[i % items.length], a = R(i + 3, 0, 6.283), r = Math.sqrt(R(i + 17, .02, .9)) * c.r, w = E('g', {}, svg), shd = E('g', { filter: `url(#sbs${id})`, opacity: .45 }, w), body = E('g', {}, w);
-    const k = KIND[f]; H(shd, k === 'coin' ? '<circle r="7.6" fill="#000"/>' : k === 'cube' ? '<rect x="-4.4" y="-4.4" width="8.8" height="8.8" rx="2" fill="#000"/>' : '<circle r="8" fill="#000"/>');
-    top(body, f, k, f === 'kur' ? 1.25 : 1.05, i, id); list.push({ w, shd, body, x: c.cx + Math.cos(a) * r, y: c.cy + Math.sin(a) * r, a, r, s: i }) }
+    const k = KIND[f], sm = GRAINY.has(k); H(shd, sm ? '' : k === 'coin' ? '<circle r="7.6" fill="#000"/>' : k === 'cube' ? '<rect x="-4.4" y="-4.4" width="8.8" height="8.8" rx="2" fill="#000"/>' : '<circle r="8" fill="#000"/>');
+    top(body, f, k, sm ? .95 : f === 'kur' || IS_KUR(f) ? 1.25 : 1.05, i, id); list.push({ w, shd, body, x: c.cx + Math.cos(a) * r, y: c.cy + Math.sin(a) * r, a, r, s: i }) }
   return list
 }
 function fry(items = ['kur', 'morkov', 'luk']) {
@@ -280,7 +388,7 @@ function fry(items = ['kur', 'morkov', 'luk']) {
       q.body.setAttribute('transform', `translate(${(q.x + j - hop * 1.5).toFixed(1)} ${(q.y - hop * 2).toFixed(1)}) scale(${(1 + hop * .16).toFixed(3)}) rotate(${(hop * 20 + j * 3).toFixed(1)})`);
       q.shd.setAttribute('transform', `translate(${(q.x + 1.6 + hop * 3).toFixed(1)} ${(q.y + 2.2 + hop * 4).toFixed(1)})`); q.shd.setAttribute('opacity', (.45 - hop * .2).toFixed(2)) });
     sp.forEach((e, i) => { const life = .5, s0 = R(i, 0, T), k = ((t - s0 + T) % T) / life; if (k > 1) { e.setAttribute('opacity', 0); return }
-      const q = P[i % P.length], a = R(i + 4, 0, 6.283), d = 4 + k * R(i + 5, 18, 34); e.setAttribute('cx', (q.x + Math.cos(a) * d).toFixed(1)); e.setAttribute('cy', (q.y + Math.sin(a) * d).toFixed(1)); e.setAttribute('r', (R(i, 1, 1.9) * (1 + Math.sin(k * Math.PI) * .5)).toFixed(2)); e.setAttribute('opacity', ((1 - k) * .9).toFixed(2)) });
+      const q = P.length ? P[i % P.length] : { x: pan.cx + R(i, -30, 30), y: pan.cy + R(i + 2, -30, 30) }, a = R(i + 4, 0, 6.283), d = 4 + k * R(i + 5, 18, 34); e.setAttribute('cx', (q.x + Math.cos(a) * d).toFixed(1)); e.setAttribute('cy', (q.y + Math.sin(a) * d).toFixed(1)); e.setAttribute('r', (R(i, 1, 1.9) * (1 + Math.sin(k * Math.PI) * .5)).toFixed(2)); e.setAttribute('opacity', ((1 - k) * .9).toFixed(2)) });
     st(t); emit && emit('sizzle')
   }
   return { svg, frame, T, title: 'Жарить', sub: 'курица с морковью и луком', sound: 'sizzle' }
@@ -305,10 +413,10 @@ function boil(kind = 'grechka') {
 }
 
 /* ---------- 6. Перемешать (сверху): лопатка ходит по кругу, рукоять наружу; кусочки уходят по кругу и расступаются ---------- */
-function stir(items = ['luk', 'morkov']) {
+function stir(items = ['luk', 'morkov'], vessel = 'pan') {
   const { id, svg } = scene(['salt']);
   defs(svg, metalDefs(id));
-  const pan = panTop(svg, id, 150, 88, 76), P = piecesIn(svg, id, pan, items, 18), st = steamUp(svg, id, 4, pan.cx, pan.cy - 6, 36);
+  const pan = vessel === 'bowl' ? Object.assign(bowlTop(svg, id, 160, 88, 76), { shine() {} }) : panTop(svg, id, 150, 88, 76), P = piecesIn(svg, id, pan, items, 18), st = steamUp(svg, id, 4, pan.cx, pan.cy - 6, 36);
   const ssh = E('g', { filter: `url(#sb${id})`, opacity: .28 }, svg); H(ssh, `<rect x="-11" y="-8" width="22" height="16" rx="7" fill="#000"/><rect x="9" y="-3" width="86" height="6" rx="3" fill="#000"/>`);
   const spat = E('g', {}, svg);
   H(spat, `<rect x="9" y="-3.2" width="88" height="6.4" rx="3.2" fill="url(#spat${id})"/><rect x="-12" y="-9" width="24" height="18" rx="8" fill="url(#spat${id})"/><path d="M-8 -5H8" stroke="#fff" stroke-width="1.2" opacity=".5" stroke-linecap="round"/><path d="M14 -1H92" stroke="#fff" stroke-width=".9" opacity=".45"/>`);
@@ -358,7 +466,7 @@ function grate(f = 'morkov') {
   H(svg, shade(id, '<rect x="150" y="30" width="56" height="96" rx="8"/>', 5, 7, .3) + `<rect x="150" y="30" width="56" height="96" rx="8" fill="url(#rim${id})"/><rect x="156" y="36" width="44" height="84" rx="5" fill="#B9C1C8"/>
    ${[...Array(9)].map((_, r) => [...Array(5)].map((_, c) => `<path d="M${161 + c * 8 + (r % 2) * 4} ${42 + r * 8.6}q3 -2 6 0" stroke="#5E666E" stroke-width="1.6" fill="none"/>`).join('')).join('')}<path d="M152 36V120" stroke="#fff" stroke-width="1.6" opacity=".6"/><rect x="160" y="18" width="36" height="12" rx="6" fill="url(#khd${id})"/>`);
   const pr = E('g', {}, svg);
-  H(pr, shade(id, '<rect x="-10" y="-22" width="20" height="44" rx="9"/>', 5, 7, .3) + `<rect x="-10" y="-22" width="20" height="44" rx="9" fill="url(#coin${id})"/><path d="M-5 -16V14" stroke="#fff" stroke-width="2" opacity=".45" stroke-linecap="round"/>${[0, 1, 2].map(i => `<path d="M-9 ${-10 + i * 10}q9 2 18 0" stroke="${P.d}" stroke-width=".7" fill="none" opacity=".4"/>`).join('')}<path d="M-9 22q9 3 18 0" stroke="${P.core}" stroke-width="3" opacity=".9"/>`);
+  H(pr, shade(id, '<rect x="-10" y="-22" width="20" height="44" rx="9"/>', 5, 7, .3) + `<rect x="-10" y="-22" width="20" height="44" rx="9" fill="url(#coin${id})"/><path d="M-5 -16V14" stroke="#fff" stroke-width="2" opacity=".45" stroke-linecap="round"/>${[0, 1, 2].map(i => `<path d="M-9 ${-10 + i * 10}q9 2 18 0" stroke="${P.d}" stroke-width=".7" fill="none" opacity=".4"/>`).join('')}<path d="M-9 22q9 3 18 0" stroke="${P.core || P.d}" stroke-width="3" opacity=".9"/>`);
   const fly = [...Array(10)].map(() => E('path', { d: 'M-4 0Q0 -2 4 0', stroke: P.c, 'stroke-width': 2, fill: 'none', 'stroke-linecap': 'round', opacity: 0 }, svg));
   const T = 3.2;
   function frame(t, emit) { t %= T; const k = (t % .62) / .62, y = 74 + Math.sin(k * 2 * Math.PI) * 22, tilt = Math.cos(k * 2 * Math.PI) * 8;
@@ -369,36 +477,38 @@ function grate(f = 'morkov') {
   return sc0(id, svg, frame, T, 'Натереть', `${P.n} — на тёрке`, 'grate') }
 
 /* промыть: в миске вода кружит крупу, сверху льётся вода, круги */
-function rinse(kind = 'grechka') {
-  const { id, svg } = scene(); defs(svg, metalDefs(id)); decor(svg, id, ['towel']);
+function rinse(f) {
+  const { id, svg } = scene(); defs(svg, metalDefs(id)); decor(svg, id, ['towel']); const kd = f ? KIND[f] : null, many = f && GRAINY.has(kd);
   const b = bowlTop(svg, id, 186, 92, 72); E('circle', { cx: b.cx, cy: b.cy, r: b.r, fill: '#9FD6F2', opacity: .55 }, b.inner);
-  const g = E('g', {}, b.inner), list = [...Array(110)].map((_, i) => { const w = E('g', {}, g); top(w, kind, KIND[kind] || 'grain', .9, i, id); return { w, a: R(i, 0, 6.283), r: Math.sqrt(R(i + 4, .02, .95)) * b.r * .9 } });
+  const g = E('g', {}, b.inner), N = !f ? 0 : many ? 110 : Math.min(14, countOf(f)), list = [...Array(N)].map((_, i) => { const w = E('g', {}, g); top(w, f, kd, many ? .9 : scaleOf(f), i, id); return { w, a: R(i, 0, 6.283), r: Math.sqrt(R(i + 4, .02, .95)) * b.r * (many ? .9 : .7) } });
+  const murk = E('circle', { cx: b.cx, cy: b.cy, r: b.r, fill: many ? '#E8DCC2' : '#CFE3D4', opacity: .5 }, b.inner);
   const rg = rings(b.inner, 6), col = E('circle', { r: 4, fill: '#E6F6FF', opacity: .9 }, b.inner);
   const T = 4;
   function frame(t, emit) { t %= T; list.forEach(q => { const a = q.a + t * (2 * Math.PI / T) * (1.2 - q.r / b.r); q.w.setAttribute('transform', `translate(${(b.cx + Math.cos(a) * q.r).toFixed(1)} ${(b.cy + Math.sin(a) * q.r).toFixed(1)})`) });
+    murk.setAttribute('opacity', (.5 * (1 - eIO(clamp(t / (T * .85))))).toFixed(2));
     const ix = b.cx - 18 + wob(t, 2), iy = b.cy - 16; col.setAttribute('cx', ix); col.setAttribute('cy', iy); col.setAttribute('r', (4 + wob(t * 3, 1)).toFixed(1));
     if (Math.floor(t / .3) !== frame._r) { frame._r = Math.floor(t / .3); rg.at(ix, iy, t, 1.2) } rg.frame(t); emit && emit('pour', .5) }
-  return sc0(id, svg, frame, T, 'Промыть', kind === 'grechka' ? 'гречку — до прозрачной воды' : 'под водой', 'pour') }
+  return sc0(id, svg, frame, T, 'Промыть', f ? `${nameOf(f)} — до прозрачной воды` : 'под водой', 'pour') }
 
 /* очистить: овальная картофелина с коричневой кожурой и глазками; овощечистка идёт вдоль, под ней — светлая влажная полоса;
    длинная лента кожуры закручивается спиралью и падает к очисткам */
 function peel(f = 'kartofel') {
-  const { id, svg } = scene(), P = F[f]; defs(svg, metalDefs(id) + `<radialGradient id="skn${id}" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#D9AE72"/><stop offset=".6" stop-color="#B98546"/><stop offset="1" stop-color="#8A5C2C"/></radialGradient>
-   <linearGradient id="flesh${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6D8"/><stop offset=".5" stop-color="#F6E3A8"/><stop offset="1" stop-color="#E9CB82"/></linearGradient><clipPath id="pk${id}"><ellipse cx="0" cy="0" rx="46" ry="30"/></clipPath>`);
+  const { id, svg } = scene(), P = F[f], SK = P.s || P.c, LONG = ['long', 'carrot', 'banana', 'pods'].includes((CAT[f] || [])[1]), SX = LONG ? 1.3 : 1, SY = LONG ? .62 : 1; defs(svg, metalDefs(id) + `<radialGradient id="skn${id}" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="${mixc(SK, '#ffffff', .3)}"/><stop offset=".6" stop-color="${SK}"/><stop offset="1" stop-color="${shade2(SK)}"/></radialGradient>
+   <linearGradient id="flesh${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${mixc(P.l, '#ffffff', .3)}"/><stop offset=".5" stop-color="${P.l}"/><stop offset="1" stop-color="${P.c}"/></linearGradient><clipPath id="pk${id}"><ellipse cx="0" cy="0" rx="46" ry="30"/></clipPath>`);
   boardTop(svg, id); decor(svg, id, ['salt']);
-  const CX = 140, CY = 88, pot = E('g', { transform: `translate(${CX} ${CY}) rotate(-8)` }, svg);
-  H(pot, shade(id, '<ellipse rx="46" ry="30"/>', 5, 7, .32) + `<ellipse rx="46" ry="30" fill="url(#skn${id})"/>${[[-22, -8], [6, -16], [24, 6], [-8, 14], [30, -12]].map(([x, y]) => `<path d="M${x - 2.4} ${y}q2.4 -2 4.8 0" stroke="#5E3A18" stroke-width="1.2" fill="none"/><circle cx="${x}" cy="${y + .8}" r=".9" fill="#5E3A18"/>`).join('')}
+  const CX = 140, CY = 88, pot = E('g', { transform: `translate(${CX} ${CY}) rotate(-8) scale(${SX} ${SY})` }, svg);
+  H(pot, shade(id, '<ellipse rx="46" ry="30"/>', 5, 7, .32) + `<ellipse rx="46" ry="30" fill="url(#skn${id})"/>${f === 'kartofel' ? [[-22, -8], [6, -16], [24, 6], [-8, 14], [30, -12]].map(([x, y]) => `<path d="M${x - 2.4} ${y}q2.4 -2 4.8 0" stroke="#5E3A18" stroke-width="1.2" fill="none"/><circle cx="${x}" cy="${y + .8}" r=".9" fill="#5E3A18"/>`).join('') : ''}
    <ellipse cx="-14" cy="-14" rx="14" ry="5" fill="#fff" opacity=".22"/>`);
   const bandsG = E('g', { 'clip-path': `url(#pk${id})` }, pot), NB = 4, bands = [...Array(NB)].map((_, i) => { const y = -22 + i * 14.5, g = E('g', {}, bandsG); E('rect', { x: -48, y: y - 7, width: 96, height: 14, rx: 6, fill: `url(#flesh${id})` }, g); E('path', { d: `M-40 ${y - 3}H40`, stroke: '#fff', 'stroke-width': 1.4, opacity: .6, 'stroke-linecap': 'round' }, g); return { g, y } });
   const peeler = E('g', {}, svg); H(peeler, shade(id, '<rect x="-6" y="-6" width="12" height="52" rx="5"/>', 4, 6, .3) + `<rect x="-11" y="-10" width="22" height="12" rx="4" fill="url(#rim${id})"/><path d="M-8 -4H8" stroke="#5E666E" stroke-width="1.3"/><rect x="-6" y="2" width="12" height="46" rx="5" fill="url(#emh${id})"/><path d="M-3 8V42" stroke="#fff" stroke-width="1" opacity=".4"/>`);
   // лента кожуры: спираль коричневая снаружи, светлая изнутри
   const spir = (n) => { let d = ''; for (let a = 0; a <= n; a += .25) { const r = 2 + a * 2.2; d += (a ? 'L' : 'M') + (Math.cos(a) * r).toFixed(1) + ' ' + (Math.sin(a) * r * .7).toFixed(1) } return d };
-  const curl = E('g', {}, svg); E('path', { d: spir(9), stroke: '#8A5C2C', 'stroke-width': 4.6, fill: 'none', 'stroke-linecap': 'round' }, curl); E('path', { d: spir(9), stroke: '#EBD39A', 'stroke-width': 1.6, fill: 'none', 'stroke-linecap': 'round', opacity: .9 }, curl);
-  const pileP = [...Array(NB)].map((_, i) => { const w = E('g', { opacity: 0 }, svg); H(w, `<path d="${spir(7)}" stroke="#8A5C2C" stroke-width="4" fill="none" stroke-linecap="round"/><path d="${spir(7)}" stroke="#EBD39A" stroke-width="1.3" fill="none" opacity=".8"/>`); return { w, x: 236 + (i % 2) * 22 + R(i, -4, 4), y: 70 + Math.floor(i / 2) * 28 + R(i + 2, -4, 4), r: R(i, 0, 360) } });
+  const curl = E('g', {}, svg); E('path', { d: spir(9), stroke: shade2(SK), 'stroke-width': 4.6, fill: 'none', 'stroke-linecap': 'round' }, curl); E('path', { d: spir(9), stroke: P.l, 'stroke-width': 1.6, fill: 'none', 'stroke-linecap': 'round', opacity: .9 }, curl);
+  const pileP = [...Array(NB)].map((_, i) => { const w = E('g', { opacity: 0 }, svg); H(w, `<path d="${spir(7)}" stroke="${shade2(SK)}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="${spir(7)}" stroke="${P.l}" stroke-width="1.3" fill="none" opacity=".8"/>`); return { w, x: 236 + (i % 2) * 22 + R(i, -4, 4), y: 70 + Math.floor(i / 2) * 28 + R(i + 2, -4, 4), r: R(i, 0, 360) } });
   const T = 4.8, PASS = T * .85 / NB;
   function frame(t, emit) { t %= T; const pi = Math.min(NB - 1, Math.floor(t / PASS)), pk = clamp((t - pi * PASS) / (PASS * .8)), fade = t > T * .93 ? 1 - (t - T * .93) / (T * .07) : 1;
     bands.forEach((b, i) => { const s = i < pi ? 1 : i === pi ? eIO(pk) : 0; b.g.setAttribute('transform', `translate(-48 0) scale(${s.toFixed(3)} 1) translate(48 0)`); b.g.setAttribute('opacity', fade.toFixed(2)) });
-    const by = bands[pi].y, a = -8 * Math.PI / 180, lx = -44 + pk * 88, px = CX + Math.cos(a) * lx - Math.sin(a) * by, py = CY + Math.sin(a) * lx + Math.cos(a) * by;
+    const by = bands[pi].y, a = -8 * Math.PI / 180, lx = -44 + pk * 88, px = CX + Math.cos(a) * lx * SX - Math.sin(a) * by * SY, py = CY + Math.sin(a) * lx * SX + Math.cos(a) * by * SY;
     peeler.setAttribute('transform', `translate(${px.toFixed(1)} ${(py - 4).toFixed(1)}) rotate(-80)`);
     if (pk > .05 && pk < .1 && frame._p !== pi) { frame._p = pi; emit && emit('peel') }
     const drop = clamp((t - pi * PASS - PASS * .8) / (PASS * .2)); curl.setAttribute('transform', `translate(${(px + 10 + drop * 30).toFixed(1)} ${(py - 6 + drop * 10).toFixed(1)}) scale(${(.3 + pk * .7).toFixed(2)}) rotate(${(pk * 180).toFixed(0)})`); curl.setAttribute('opacity', pk > .05 && t < T * .9 ? (1 - drop).toFixed(2) : 0);
@@ -406,9 +516,10 @@ function peel(f = 'kartofel') {
   return sc0(id, svg, frame, T, 'Очистить', `${P.n} — овощечисткой`, 'peel') }
 
 /* отбить: молоток вверх-вниз (тень), кусок мяса с каждым ударом шире */
+const MEAT = (f, id) => (!f || f === 'kur' || IS_KUR(f)) ? `url(#chk${id})` : F[f] ? F[f].c : '#E7A59A';
 function pound(f = 'kur') {
   const { id, svg } = scene(); defs(svg, metalDefs(id)); boardTop(svg, id); decor(svg, id, ['pepper']);
-  const meat = E('g', {}, svg); H(meat, shade(id, '<path d="M-46 0Q-44 -26 0 -28Q46 -26 46 0Q44 26 0 28Q-44 26 -46 0Z"/>', 4, 6, .3) + `<path d="M-46 0Q-44 -26 0 -28Q46 -26 46 0Q44 26 0 28Q-44 26 -46 0Z" fill="url(#chk${id})"/><path d="M-30 -12Q0 -24 30 -12" stroke="#fff" stroke-width="2.4" fill="none" opacity=".5" stroke-linecap="round"/>`);
+  const meat = E('g', {}, svg); H(meat, shade(id, '<path d="M-46 0Q-44 -26 0 -28Q46 -26 46 0Q44 26 0 28Q-44 26 -46 0Z"/>', 4, 6, .3) + `<path d="M-46 0Q-44 -26 0 -28Q46 -26 46 0Q44 26 0 28Q-44 26 -46 0Z" fill="${MEAT(f, id)}"/><path d="M-30 -12Q0 -24 30 -12" stroke="#fff" stroke-width="2.4" fill="none" opacity=".5" stroke-linecap="round"/>`);
   const msh = E('g', { filter: `url(#sb${id})` }, svg); E('rect', { x: -16, y: -16, width: 32, height: 32, rx: 4, fill: '#000' }, msh);
   const mal = E('g', {}, svg); H(mal, `<rect x="-4" y="14" width="8" height="70" rx="4" fill="url(#spat${id})"/><rect x="-16" y="-16" width="32" height="32" rx="5" fill="url(#rim${id})"/>${[...Array(4)].map((_, r) => [...Array(4)].map((_, c) => `<path d="M${-11 + c * 7} ${-11 + r * 7}l2.6 2.6l2.6 -2.6" stroke="#6E767E" stroke-width=".8" fill="none"/>`).join('')).join('')}`);
   const T = 3.3, N = 5;
@@ -483,9 +594,9 @@ function bake(items = ['kartofel', 'kur']) {
   return sc0(id, svg, frame, T, 'Запекать', 'в духовке до румяной корочки', 'oven') }
 
 /* взбить: венчик ходит по кругу в миске, яйца пенятся */
-function whisk() {
+function whisk(items = []) { const W0 = items.find(k => F[k] && k !== 'sol') || 'egg', WC = W0 === 'egg' ? '#F7C948' : F[W0].c;
   const { id, svg } = scene(); defs(svg, metalDefs(id)); decor(svg, id, ['salt']);
-  const b = bowlTop(svg, id, 176, 92, 72); E('circle', { cx: b.cx, cy: b.cy, r: b.r, fill: '#F7C948' }, b.inner);
+  const b = bowlTop(svg, id, 176, 92, 72); E('circle', { cx: b.cx, cy: b.cy, r: b.r, fill: WC }, b.inner);
   const foam = [...Array(40)].map((_, i) => ({ e: E('circle', { r: R(i, 1, 3), fill: '#FFF6D6', opacity: 0 }, b.inner), a: R(i, 0, 6.283), r: Math.sqrt(R(i + 4, .05, .9)) * b.r }));
   const wsh = E('g', { filter: `url(#sb${id})`, opacity: .25 }, svg); E('ellipse', { rx: 22, ry: 14, fill: '#000' }, wsh);
   const wh = E('g', {}, svg); H(wh, `${[0, 1, 2, 3].map(i => `<ellipse rx="${22 - i * 2}" ry="${14 - i * 3}" fill="none" stroke="#C3CAD1" stroke-width="1.4" transform="rotate(${i * 45})"/>`).join('')}<rect x="-4" y="12" width="8" height="64" rx="4" fill="url(#emh${id})"/><circle r="3" fill="#8E979F"/>`);
@@ -496,14 +607,14 @@ function whisk() {
   return sc0(id, svg, frame, T, 'Взбить', 'яйца венчиком до пены', 'whisk') }
 
 /* сформовать котлеты: шарик фарша приплющивается в котлету, ряд растёт */
-function form(f = 'kur') {
+function form(f = 'kur', balls = false) { if (!f) f = 'kur';
   const { id, svg } = scene(); defs(svg, metalDefs(id)); boardTop(svg, id); decor(svg, id, ['dill']);
-  const pat = [...Array(5)].map((_, i) => { const w = E('g', { opacity: 0 }, svg); H(w, shade(id, '<ellipse rx="17" ry="14"/>', 3, 4, .3) + `<ellipse rx="17" ry="14" fill="url(#chk${id})"/>${[...Array(8)].map((_, j) => `<circle cx="${R(i * 9 + j, -12, 12).toFixed(1)}" cy="${R(i * 9 + j + 3, -9, 9).toFixed(1)}" r="1" fill="#C98A45" opacity=".6"/>`).join('')}<ellipse cx="-5" cy="-5" rx="6" ry="3" fill="#fff" opacity=".35"/>`); return { w, x: 92 + i * 40, y: 90 + (i % 2) * 6 } });
+  const pat = [...Array(5)].map((_, i) => { const w = E('g', { opacity: 0 }, svg); const rx = balls ? 11 : 17, ry = balls ? 11 : 14; H(w, shade(id, `<ellipse rx="${rx}" ry="${ry}"/>`, 3, 4, .3) + `<ellipse rx="${rx}" ry="${ry}" fill="${MEAT(f, id)}"/>${[...Array(8)].map((_, j) => `<circle cx="${R(i * 9 + j, -12, 12).toFixed(1)}" cy="${R(i * 9 + j + 3, -9, 9).toFixed(1)}" r="1" fill="#C98A45" opacity=".6"/>`).join('')}<ellipse cx="-5" cy="-5" rx="6" ry="3" fill="#fff" opacity=".35"/>`); return { w, x: 92 + i * 40, y: 90 + (i % 2) * 6 } });
   const T = 5, per = T / 5;
   function frame(t, emit) { t %= T; pat.forEach((p, i) => { const k = (t - i * per) / per; if (k < 0) { p.w.setAttribute('opacity', 0); return } const q = clamp(k * 1.6), sq = k < 1 ? eOut(q) : 1;
     p.w.setAttribute('transform', `translate(${p.x} ${p.y}) scale(${lerp(.6, 1, sq).toFixed(3)} ${lerp(.75, 1, sq).toFixed(3)})`); p.w.setAttribute('opacity', (t > T - .3 ? (T - t) / .3 : 1).toFixed(2));
     if (k > .2 && k < .3 && p._e !== Math.floor(t / T)) { p._e = Math.floor(t / T); emit && emit('pat') } }) }
-  return sc0(id, svg, frame, T, 'Сформовать', 'котлеты мокрыми руками', 'pat') }
+  return sc0(id, svg, frame, T, 'Сформовать', balls ? 'шарики мокрыми руками' : 'котлеты мокрыми руками', 'pat') }
 
 /* раскатать: скалка ходит вверх-вниз, пласт теста растёт, мука пылит */
 function roll() {
@@ -531,10 +642,11 @@ function batter() {
 
 /* выложить на тарелку: порция ложится и оседает, сверху — веточка зелени */
 function plateUp(items = ['grechka', 'kur']) {
+  items = items.filter(solid); if (!items.length) return show([]);
   const { id, svg } = scene(); defs(svg, metalDefs(id)); decor(svg, id, ['towel', 'dill']);
   H(svg, shade(id, '<circle cx="176" cy="90" r="74"/>', 6, 8, .3) + `<circle cx="176" cy="90" r="74" fill="url(#emw${id})"/><circle cx="176" cy="90" r="54" fill="#FFFFFF"/><circle cx="176" cy="90" r="54" fill="none" stroke="#E5EAE7" stroke-width="1.2"/><circle cx="176" cy="90" r="70" fill="none" stroke="#10B981" stroke-width="1.6" opacity=".7"/>`);
-  const por = E('g', {}, svg); const c = { cx: 176, cy: 90, r: 36 }; [...Array(70)].forEach((_, i) => { const a = R(i, 0, 6.283), r = Math.sqrt(R(i + 3, 0, 1)) * 30, w = E('g', {}, por); top(w, items[0], KIND[items[0]], .9, i, id); w.setAttribute('transform', `translate(${(164 + Math.cos(a) * r).toFixed(1)} ${(92 + Math.sin(a) * r * .8).toFixed(1)})`) });
-  const side = E('g', {}, svg); [0, 1, 2, 3].forEach(i => { const w = E('g', {}, side); top(w, items[1] || 'kur', KIND[items[1] || 'kur'], 1.2, i, id); w.setAttribute('transform', `translate(${198 + (i % 2) * 14} ${76 + i * 10})`) });
+  const por = E('g', {}, svg); const c = { cx: 176, cy: 90, r: 36 }; [...Array(Math.min(70, countOf(items[0]) * 2))].forEach((_, i) => { const a = R(i, 0, 6.283), r = Math.sqrt(R(i + 3, 0, 1)) * 30, w = E('g', {}, por); top(w, items[0], KIND[items[0]], GRAINY.has(KIND[items[0]]) ? .9 : 1.1, i, id); w.setAttribute('transform', `translate(${(164 + Math.cos(a) * r).toFixed(1)} ${(92 + Math.sin(a) * r * .8).toFixed(1)})`) });
+  const side = E('g', {}, svg); (items[1] ? [0, 1, 2, 3] : []).forEach(i => { const w = E('g', {}, side); top(w, items[1], KIND[items[1]], 1.2, i, id); w.setAttribute('transform', `translate(${198 + (i % 2) * 14} ${76 + i * 10})`) });
   const T = 4;
   function frame(t, emit) { t %= T; const a = clamp((t - .2) / .6), b = clamp((t - 1) / .6), f = t > 3.6 ? 1 - (t - 3.6) / .4 : 1;
     por.setAttribute('transform', `translate(0 ${((1 - eOut(a)) * -10).toFixed(1)}) scale(1)`); por.setAttribute('opacity', (a * f).toFixed(2)); side.setAttribute('transform', `translate(${((1 - eOut(b)) * 14).toFixed(1)} ${((1 - eOut(b)) * -8).toFixed(1)})`); side.setAttribute('opacity', (b * f).toFixed(2));
@@ -552,27 +664,246 @@ function rest(kind = 'grechka') {
   return sc0(id, svg, frame, T, 'Настоять', 'под крышкой и полотенцем', null) }
 
 
-/* ---------- привязка шага к анимации: слова шага → действие, продукт — первый из состава, названный в шаге ---------- */
-const PROD = { morkov: 'morkov', luk: 'luk', kur_grudka: 'kur', kur_bedro: 'kur', indeyka: 'kur', farsh_kur: 'kur', svekla: 'svekla', kapusta: 'kapusta', kartofel: 'kartofel', grechka: 'grechka' };
-const RULES = [['grate', /натр[иеё]|тёрк|терк/], ['peel', /очист|почист|снимите кожур/], ['pound', /отбе[йт]|отбить/], ['whisk', /взбе|взбит|венчик/], ['roll', /раскат/],
-  ['batter', /тесто.*(половник|налейте|вылейте)|(половник|налейте|вылейте).*тесто|блин|оладь/], ['form', /сформ|слеп|скатайте|котлет|тефтел|шарик/], ['rinse', /промой|перебер.*промой|промыть/],
-  ['oil', /(налейте|разогрейте|смажьте).{0,20}масл/], ['pepper', /поперч|перцем/], ['bringBoil', /доведите до кипения|до кипения/], ['simmer', /туши|под крышкой/], ['bake', /запек|духовк/],
-  ['cut', /нарежьте|нареж|порежьте|покрошите|нашинкуйте|разрежьте|измельчите/], ['salt', /посолите|посол|соли/], ['fry', /обжар|жарьте|поджар|жарь/], ['stir', /перемеш|помешив|смешайте/],
-  ['pour', /залейте|налейте|долейте|влейте/], ['boil', /варите|отвар|кипят|кипени|бульон|сварите/], ['plateUp', /выложите|подайте|подавайте|разложите|посыпьте|полейте|украсьте|сбрызните/], ['rest', /настаи|постоят|оставьте|остуд|снимите с огня|накройте/],
-  ['oil', /растоп/], ['fry', /подрумян|румян|сковород[аеу]?,? [^.]*огон/], ['whisk', /блендер/], ['form', /сверните|заверните/], ['rest', /разморо|холодильник/], ['stir', /добавьте|разомните|вмешайте|соедините|заправьте|разберите/]];
-function forStep(text, ing) { const t = text.toLowerCase(), names = ing.map(([id, n]) => [id, n.toLowerCase().split(/[ (]/)[0].slice(0, 4)]),
-  inStep = names.filter(([, st]) => st.length > 2 && t.includes(st)).map(([id]) => id), prodIn = inStep.map(id => PROD[id]).filter(Boolean), all = ing.map(([id]) => PROD[id]).filter(Boolean);
-  const kind = all.includes('svekla') ? 'borsch' : /греч/.test(t) || ing.some(([id]) => id === 'grechka') ? 'grechka' : 'voda';
-  const r = RULES.find(([, re]) => re.test(t)); if (!r) return { act: null };
-  const a = r[0], p = prodIn[0] || all[0], fryItems = [...new Set((prodIn.length ? prodIn : all).filter(x => ['kur', 'morkov', 'luk', 'kartofel'].includes(x)))].slice(0, 3);
-  const make = { cut: () => cut(['morkov', 'luk', 'kur'].includes(p) ? p : 'morkov'), grate: () => grate(p === 'luk' ? 'luk' : 'morkov'), peel: () => peel(p === 'morkov' ? 'morkov' : 'kartofel'), pound: () => pound('kur'),
-    whisk: () => whisk(), roll: () => roll(), batter: () => batter(), form: () => form('kur'), rinse: () => rinse(kind === 'grechka' ? 'grechka' : 'grechka'), oil: () => oil(), pepper: () => pepper(kind), bringBoil: () => bringBoil(kind),
-    simmer: () => simmer(kind), bake: () => bake(fryItems.length ? fryItems : ['kartofel', 'kur']), salt: () => salt(kind === 'borsch' ? 'borsch' : 'grechka'), fry: () => fry(fryItems.length ? fryItems : ['kur', 'morkov', 'luk']),
-    stir: () => stir(fryItems.length ? fryItems : ['luk', 'morkov']), pour: () => pour(), boil: () => boil(kind === 'voda' ? 'grechka' : kind), plateUp: () => plateUp([all.includes('grechka') ? 'grechka' : 'grechka', all.includes('kur') ? 'kur' : 'morkov']), rest: () => rest(kind === 'voda' ? 'grechka' : kind) };
-  return { act: a, prod: p, make: make[a] } }
+/* ---------- кусочки любых продуктов сверху (центр 0,0): цвета берутся из каталога ---------- */
+const MIXC = ['#F2871F', '#7BC05A', '#F2C640', '#E23B2B', '#4E8F3A'];
+const GEN = {
+  eggW: (P, s, r) => `<g transform="rotate(${R(r, 0, 360).toFixed(0)})"><ellipse rx="${7 * s}" ry="${5.4 * s}" fill="#EFD9BC" stroke="#D2B894" stroke-width=".7"/><ellipse cx="${-2 * s}" cy="${-1.6 * s}" rx="${2.6 * s}" ry="${1.4 * s}" fill="#fff" opacity=".6"/></g>`,
+  coin: (P, s, r) => `<circle r="${7.4 * s}" fill="${P.c}"/><circle r="${7.4 * s}" fill="none" stroke="${P.s || P.d}" stroke-width="${1.3 * s}"/><circle r="${4.2 * s}" fill="${P.l}" opacity=".75"/>${[0, 1, 2, 3, 4, 5].map(i => { const a = i * 1.047 + r; return `<circle cx="${(Math.cos(a) * 3.2 * s).toFixed(1)}" cy="${(Math.sin(a) * 3.2 * s).toFixed(1)}" r="${.55 * s}" fill="${P.d}" opacity=".55"/>` }).join('')}<path d="M${-4.6 * s} ${-3 * s}A${5.6 * s} ${5.6 * s} 0 0 1 ${1.6 * s} ${-5.6 * s}" stroke="#fff" stroke-width="1.1" fill="none" opacity=".55" stroke-linecap="round"/>`,
+  chunk: (P, s, r) => { const q = i => (R(r * 7 + i, .78, 1.1) * 8.2 * s).toFixed(1); return `<g transform="rotate(${R(r, 0, 180).toFixed(0)})"><path d="M${-q(1)} 0Q${-q(2)} ${-q(3) * .8} 0 ${-q(4) * .85}Q${q(5)} ${-q(6) * .8} ${q(7)} 0Q${q(8)} ${q(1) * .8} 0 ${q(2) * .85}Q${-q(3)} ${q(4) * .75} ${-q(1)} 0Z" fill="${P.c}" stroke="${P.d}" stroke-width=".9"/>
+    <path d="M${-q(2) * .5} ${-q(3) * .3}Q0 ${-q(4) * .6} ${q(5) * .5} ${-q(6) * .3}" stroke="${P.l}" stroke-width="1.6" fill="none" opacity=".8" stroke-linecap="round"/><path d="M${-q(1) * .4} ${q(2) * .2}Q0 ${q(3) * .35} ${q(4) * .4} ${q(5) * .1}" stroke="${P.d}" stroke-width=".7" fill="none" opacity=".45"/></g>` },
+  grain: (P, s, r) => `<g transform="rotate(${R(r, 0, 360).toFixed(0)})"><path d="M0 ${-3 * s}C${2.4 * s} ${-2.2 * s} ${2.5 * s} ${1.5 * s} 0 ${2.8 * s}C${-2.5 * s} ${1.5 * s} ${-2.4 * s} ${-2.2 * s} 0 ${-3 * s}Z" fill="${[P.c, P.d, P.l][r % 3]}"/></g>`,
+  rice: (P, s, r) => `<g transform="rotate(${R(r, 0, 360).toFixed(0)})"><ellipse rx="${1.35 * s}" ry="${3.3 * s}" fill="${P.c}" stroke="${P.d}" stroke-width=".35"/><ellipse cx="${-.4 * s}" cy="${-1 * s}" rx="${.45 * s}" ry="${1.4 * s}" fill="#fff" opacity=".8"/></g>`,
+  seed: (P, s, r) => `<circle r="${1.7 * s}" fill="${[P.c, P.l, P.d][r % 3]}"/><circle cx="${-.5 * s}" cy="${-.5 * s}" r="${.5 * s}" fill="#fff" opacity=".6"/>`,
+  lentil: (P, s, r) => `<ellipse rx="${2.6 * s}" ry="${2.2 * s}" fill="${P.c}" stroke="${P.d}" stroke-width=".4" transform="rotate(${R(r, 0, 180).toFixed(0)})"/><circle cx="${-.7 * s}" cy="${-.7 * s}" r="${.7 * s}" fill="${P.l}"/>`,
+  bean: (P, s, r) => `<g transform="rotate(${R(r, 0, 360).toFixed(0)})"><path d="M${-4.2 * s} 0C${-4.2 * s} ${-3 * s} ${4.2 * s} ${-3.2 * s} ${4.2 * s} 0C${4.2 * s} ${2.4 * s} ${1 * s} ${2.6 * s} 0 ${1.4 * s}C${-1 * s} ${2.6 * s} ${-4.2 * s} ${2.4 * s} ${-4.2 * s} 0Z" fill="${P.c}" stroke="${P.d}" stroke-width=".5"/><path d="M${-2.6 * s} ${-1 * s}Q0 ${-2.2 * s} ${2.6 * s} ${-1 * s}" stroke="${P.l}" stroke-width=".9" fill="none"/></g>`,
+  pea: (P, s, r) => `<circle r="${3 * s}" fill="${P.d}"/><circle cx="${-.3 * s}" cy="${-.3 * s}" r="${2.6 * s}" fill="${P.c}"/><circle cx="${-1 * s}" cy="${-1 * s}" r="${.9 * s}" fill="${P.l}"/>`,
+  berry: (P, s, r) => `<circle r="${3.8 * s}" fill="${P.d}"/><circle cx="${-.4 * s}" cy="${-.4 * s}" r="${3.3 * s}" fill="${P.c}"/><circle cx="${-1.4 * s}" cy="${-1.4 * s}" r="${1 * s}" fill="${P.l}" opacity=".9"/>`,
+  floret: (P, s, r) => `<g transform="rotate(${R(r, 0, 360).toFixed(0)})"><rect x="${-1.4 * s}" y="${2 * s}" width="${2.8 * s}" height="${5 * s}" rx="${1.2 * s}" fill="${P.l}"/>${[[-3, -1], [3, -1], [0, -4], [-1.6, 2], [1.8, 1.8], [0, 0]].map(([x, y], i) => `<circle cx="${x * s}" cy="${y * s}" r="${3 * s}" fill="${i % 2 ? P.c : P.d}"/><circle cx="${(x - .8) * s}" cy="${(y - .8) * s}" r="${1 * s}" fill="${P.l}" opacity=".7"/>`).join('')}</g>`,
+  ring: (P, s, r) => `<circle r="${5.6 * s}" fill="none" stroke="${P.d}" stroke-width="${3.2 * s}"/><circle r="${5.6 * s}" fill="none" stroke="${P.c}" stroke-width="${2.4 * s}"/><path d="M${-4 * s} ${-3 * s}A${5 * s} ${5 * s} 0 0 1 ${1 * s} ${-5.4 * s}" stroke="${P.l}" stroke-width=".9" fill="none"/>`,
+  slice: (P, s, r) => `<g transform="rotate(${R(r, 0, 360).toFixed(0)})"><path d="M${-8 * s} 0A${8 * s} ${8 * s} 0 0 1 ${8 * s} 0Z" fill="${P.c}" stroke="${P.s || P.d}" stroke-width="${1.6 * s}" stroke-linejoin="round"/><path d="M${-5 * s} ${-1 * s}A${5 * s} ${4 * s} 0 0 1 ${5 * s} ${-1 * s}" stroke="${P.l}" stroke-width="1" fill="none"/></g>`,
+  mix: (P, s, r) => `<rect x="${-3.4 * s}" y="${-3.4 * s}" width="${6.8 * s}" height="${6.8 * s}" rx="${1.4 * s}" fill="${MIXC[r % 5]}" transform="rotate(${R(r, -40, 40).toFixed(0)})"/><rect x="${-2.4 * s}" y="${-2.6 * s}" width="${3 * s}" height="${1.2 * s}" rx=".6" fill="#fff" opacity=".45"/>`,
+  leaf: (P, s, r) => `<g transform="rotate(${R(r, 0, 360).toFixed(0)})"><path d="M${-9 * s} 0Q0 ${-7 * s} ${9 * s} 0Q0 ${7 * s} ${-9 * s} 0Z" fill="${P.c}" stroke="${P.d}" stroke-width=".6"/><path d="M${-8 * s} 0H${8 * s}" stroke="${P.l}" stroke-width=".9"/></g>`,
+  egg: (P, s, r) => `<g transform="rotate(${R(r, 0, 360).toFixed(0)})"><ellipse rx="${8 * s}" ry="${6 * s}" fill="#FFFFFF" stroke="#E2DCCF" stroke-width=".8"/><circle cx="${.6 * s}" r="${3.3 * s}" fill="#F6B92E"/><circle cx="${-.4 * s}" cy="${-1 * s}" r="${1 * s}" fill="#FFE08A"/></g>`,
+  crumb: (P, s, r) => `<path d="M${-2.4 * s} ${-1 * s}Q${-1 * s} ${-2.8 * s} ${1.6 * s} ${-1.8 * s}Q${3 * s} 0 ${1.2 * s} ${2 * s}Q${-1.4 * s} ${2.6 * s} ${-2.4 * s} ${-1 * s}Z" fill="${P.c}" stroke="${P.d}" stroke-width=".4" transform="rotate(${R(r, 0, 360).toFixed(0)})"/>`,
+  drop: (P, s, r) => `<path d="M${-7 * s} 0Q${-6 * s} ${-6 * s} 0 ${-6 * s}Q${7 * s} ${-5 * s} ${6.6 * s} ${.8 * s}Q${5 * s} ${6.4 * s} ${-1 * s} ${6 * s}Q${-7.4 * s} ${5 * s} ${-7 * s} 0Z" fill="${P.c}" stroke="${P.d}" stroke-width=".6" opacity=".95"/><ellipse cx="${-2.4 * s}" cy="${-2.4 * s}" rx="${2.4 * s}" ry="${1.2 * s}" fill="#fff" opacity=".55"/>`,
+  powder: (P, s, r) => `<circle r="${5 * s}" fill="${P.c}" opacity=".9"/><circle cx="${-1 * s}" cy="${-1 * s}" r="${2.8 * s}" fill="${P.l}" opacity=".9"/>`,
+  tube: (P, s, r) => `<g transform="rotate(${R(r, 0, 180).toFixed(0)})"><rect x="${-5.4 * s}" y="${-2.3 * s}" width="${10.8 * s}" height="${4.6 * s}" rx="${1.6 * s}" fill="${P.c}" stroke="${P.d}" stroke-width=".5"/>${[-3, -1, 1, 3].map(x => `<path d="M${x * s} ${-2 * s}V${2 * s}" stroke="${P.d}" stroke-width=".4" opacity=".6"/>`).join('')}<path d="M${-4.4 * s} ${-1.2 * s}H${4.4 * s}" stroke="${P.l}" stroke-width=".9"/></g>`,
+  flake: (P, s, r) => `<path d="M${-4.6 * s} ${-1 * s}Q${-3 * s} ${-3.6 * s} ${1 * s} ${-3.2 * s}Q${4.8 * s} ${-2 * s} ${4.2 * s} ${1.4 * s}Q${2 * s} ${3.6 * s} ${-2 * s} ${3 * s}Q${-5 * s} ${2 * s} ${-4.6 * s} ${-1 * s}Z" fill="${P.c}" stroke="${P.d}" stroke-width=".4" transform="rotate(${R(r, 0, 360).toFixed(0)})"/>`,
+  ball: (P, s, r) => `<circle r="${7.4 * s}" fill="${P.d}"/><circle cx="${-.6 * s}" cy="${-.6 * s}" r="${6.6 * s}" fill="${P.c}"/>${[...Array(7)].map((_, i) => `<circle cx="${R(r * 9 + i, -4.5, 4.5).toFixed(1) * s}" cy="${R(r * 9 + i + 3, -4.5, 4.5).toFixed(1) * s}" r="${.7 * s}" fill="${i % 2 ? P.d : P.l}" opacity=".7"/>`).join('')}<ellipse cx="${-2.6 * s}" cy="${-2.8 * s}" rx="${2.4 * s}" ry="${1.3 * s}" fill="#fff" opacity=".4"/>`,
+  shrimp: (P, s, r) => `<g transform="rotate(${R(r, 0, 360).toFixed(0)})"><path d="M${5 * s} ${-3 * s}A${5.4 * s} ${5.4 * s} 0 1 0 ${4 * s} ${4 * s}" stroke="${P.d}" stroke-width="${4.6 * s}" fill="none" stroke-linecap="round"/><path d="M${5 * s} ${-3 * s}A${5.4 * s} ${5.4 * s} 0 1 0 ${4 * s} ${4 * s}" stroke="${P.c}" stroke-width="${3.6 * s}" fill="none" stroke-linecap="round"/><path d="M${-3 * s} ${-4 * s}A${5 * s} ${5 * s} 0 0 0 ${-5 * s} ${1 * s}" stroke="${P.l}" stroke-width="1" fill="none"/></g>`,
+  nut: (P, s, r) => `<g transform="rotate(${R(r, 0, 360).toFixed(0)})"><path d="M${-5.6 * s} 0Q${-5 * s} ${-4.6 * s} 0 ${-4.4 * s}Q${5.4 * s} ${-4.4 * s} ${5.6 * s} 0Q${5 * s} ${4.4 * s} 0 ${4.4 * s}Q${-5.4 * s} ${4.4 * s} ${-5.6 * s} 0Z" fill="${P.c}" stroke="${P.d}" stroke-width=".6"/><path d="M0 ${-4 * s}V${4 * s}M${-3.6 * s} ${-1.6 * s}q${1.6 * s} ${1.4 * s} 0 ${3 * s}M${3.6 * s} ${-1.6 * s}q${-1.6 * s} ${1.4 * s} 0 ${3 * s}" stroke="${P.d}" stroke-width=".8" fill="none"/></g>`,
+  mush: (P, s, r) => `<g transform="rotate(${R(r, -40, 40).toFixed(0)})"><path d="M${-7 * s} ${-1 * s}Q${-7 * s} ${-7 * s} 0 ${-7 * s}Q${7 * s} ${-7 * s} ${7 * s} ${-1 * s}Q${3 * s} ${-1.6 * s} ${2.4 * s} ${0}V${5 * s}Q0 ${6.4 * s} ${-2.4 * s} ${5 * s}V0Q${-3 * s} ${-1.6 * s} ${-7 * s} ${-1 * s}Z" fill="${P.c}" stroke="${P.d}" stroke-width=".7"/><path d="M${-4.6 * s} ${-3 * s}Q0 ${-5.6 * s} ${4.6 * s} ${-3 * s}" stroke="${P.l}" stroke-width="1" fill="none"/></g>`,
+};
+const KEEP_OLD = (f, kind) => (kind === 'coin' && f === 'morkov') || (kind === 'chunk' && (f === 'kur' || IS_KUR(f))) || (kind === 'grain' && f === 'grechka') || ['cube', 'stick', 'strip', 'speck'].includes(kind);
 
-/* ---------- рисунки продуктов для плиток «Всё на столе» (64×64): тот же свет слева сверху, мягкая тень, без эмодзи ---------- */
-function icon(k) { const id = ++UID, sh = `<ellipse cx="32" cy="56" rx="20" ry="4" fill="#000" opacity=".12"/>`, w = b => `<svg viewBox="0 0 64 64" aria-hidden="true">${b}</svg>`;
+/* ---------- рисунки 64×64 для всех продуктов: формы по семействам, цвета продукта, свет слева сверху, мягкая тень ---------- */
+function iconGen(k) { const C = CAT[k]; if (!C) return ''; const [, shape, pc, c, l, d, s0, x] = C, s = s0 || c, id = ++UID, P = { c, l, d, s };
+  const rg = (n, a, b, cc) => `<radialGradient id="${n}${id}" cx=".36" cy=".3" r=".78"><stop offset="0" stop-color="${a}"/><stop offset=".6" stop-color="${b}"/><stop offset="1" stop-color="${cc}"/></radialGradient>`;
+  const lg = (n, a, b, cc, v = 1) => `<linearGradient id="${n}${id}" x1="0" y1="0" x2="${v ? 0 : 1}" y2="${v ? 1 : 0}"><stop offset="0" stop-color="${a}"/><stop offset=".5" stop-color="${b}"/><stop offset="1" stop-color="${cc}"/></linearGradient>`;
+  const sh = (rx = 20) => `<ellipse cx="32" cy="56" rx="${rx}" ry="4" fill="#000" opacity=".12"/>`, hi = (d0, w = 2) => `<path d="${d0}" stroke="#fff" stroke-width="${w}" fill="none" opacity=".6" stroke-linecap="round"/>`;
+  const sk = shade2(s), pieces = (n, cx, cy, rx, ry, sc) => [...Array(n)].map((_, i) => `<g transform="translate(${(cx + R(i + k.length, -rx, rx)).toFixed(1)} ${(cy + R(i + 9, -ry, ry)).toFixed(1)})">${GEN[pc] ? GEN[pc](P, sc, i) : GEN.crumb(P, sc, i)}</g>`).join('');
+  switch (shape) {
+    case 'bowl': return `<defs>${lg('a', '#F7F3EC', '#E3DACB', '#C9BCA6')}</defs>${sh(22)}<path d="M8 32H56Q54 52 32 53Q10 52 8 32Z" fill="url(#a${id})"/><ellipse cx="32" cy="32" rx="24" ry="7" fill="#EFE8DC"/><ellipse cx="32" cy="31" rx="21" ry="5.6" fill="${pc === 'mix' ? '#E9E2D2' : d}"/><ellipse cx="32" cy="30" rx="19" ry="4.6" fill="${c}"/>
+      ${pieces(pc === 'powder' ? 0 : 14, 32, 29.5, 15, 3, ['seed', 'rice', 'grain', 'lentil'].includes(pc) ? .8 : .5)}${hi('M12 36Q16 46 26 50', 1.6)}`;
+    case 'can': return `<defs>${lg('a', '#E9EDF0', '#BAC3CB', '#8E979F', 0)}</defs>${sh(18)}<rect x="15" y="16" width="34" height="38" rx="4" fill="url(#a${id})"/><rect x="15" y="24" width="34" height="22" fill="${s}"/><ellipse cx="32" cy="16" rx="17" ry="5" fill="#D5DBE0"/><ellipse cx="32" cy="16" rx="13" ry="3.4" fill="none" stroke="#AEB7BF" stroke-width="1"/>
+      <circle cx="32" cy="35" r="7" fill="#fff" opacity=".92"/><g transform="translate(32 35)">${GEN[pc] ? GEN[pc](P, .55, 1) : ''}</g>${hi('M19 20V50', 2)}`;
+    case 'carton': return `<defs>${lg('a', '#FFFFFF', '#F1F3F4', '#D9DEE2', 0)}</defs>${sh(16)}<path d="M18 20L24 10H40L46 20V54H18Z" fill="url(#a${id})"/><path d="M24 10H40L46 20H18Z" fill="#E9EDF0"/><rect x="18" y="30" width="28" height="14" fill="${s}"/><path d="M18 30Q32 24 46 30" stroke="${s}" stroke-width="3" fill="none"/><rect x="28" y="6" width="8" height="5" rx="1.4" fill="${s}"/>${hi('M21 22V52', 1.6)}`;
+    case 'tub': return `<defs>${lg('a', '#FFFFFF', '#F1F3F4', '#D2D8DD', 0)}</defs>${sh(19)}<path d="M13 26H51L47 52Q47 55 44 55H20Q17 55 17 52Z" fill="url(#a${id})"/><rect x="11" y="20" width="42" height="8" rx="3" fill="${s}"/><path d="M15 38H49L48 46H16Z" fill="${s}" opacity=".85"/><ellipse cx="32" cy="20" rx="21" ry="3" fill="#fff" opacity=".6"/>${hi('M18 30L20 50', 1.6)}`;
+    case 'jar': return `<defs>${lg('a', l, c, d, 0)}</defs>${sh(17)}<rect x="17" y="18" width="30" height="36" rx="7" fill="url(#a${id})"/><rect x="17" y="18" width="30" height="36" rx="7" fill="none" stroke="#fff" stroke-width="1.2" opacity=".6"/><rect x="19" y="11" width="26" height="8" rx="2.4" fill="${x === 'olives' ? '#3F8A2E' : '#C9D0D6'}"/>
+      ${x === 'olives' ? [...Array(7)].map((_, i) => `<ellipse cx="${23 + (i % 3) * 9}" cy="${28 + Math.floor(i / 3) * 9}" rx="3.6" ry="2.8" fill="#121014"/><circle cx="${22 + (i % 3) * 9}" cy="${27 + Math.floor(i / 3) * 9}" r=".9" fill="#7E7488"/>`).join('') : `<rect x="20" y="30" width="24" height="14" rx="2" fill="#fff" opacity=".85"/><circle cx="32" cy="37" r="4" fill="${c}"/>`}${hi('M21 22V50', 2)}`;
+    case 'bottle': case 'oil': return `<defs>${lg('a', l, c, d, 0)}</defs>${sh(14)}<path d="M27 6H37V15Q45 20 45 30V51Q45 56 40 56H24Q19 56 19 51V30Q19 20 27 15Z" fill="url(#a${id})" opacity="${shape === 'oil' ? .95 : 1}"/><rect x="26" y="3" width="12" height="6" rx="2" fill="${shape === 'oil' ? '#1F6B45' : s}"/>
+      <rect x="21" y="32" width="22" height="13" rx="2.4" fill="#fff" opacity=".9"/><circle cx="32" cy="38.5" r="3.6" fill="${shape === 'oil' ? '#F4B92E' : s}"/>${hi('M23 22Q23 18 27 16V52', 2)}`;
+    case 'round': { const ox = x === 'lemon' ? 22 : x === 'potato' ? 22 : 19, oy = x === 'potato' ? 15 : x === 'lemon' ? 16 : 19;
+      return `<defs>${rg('a', mixc(s, '#fff', .45), s, mixc(s, '#000', .18))}</defs>${sh(oy + 2)}<ellipse cx="32" cy="35" rx="${ox}" ry="${oy}" fill="url(#a${id})" transform="rotate(${x === 'potato' ? -12 : 0} 32 35)"/>
+      ${x === 'lemon' ? `<path d="M9 35q-3 0-3 0M55 35q3 0 3 0" stroke="${sk}" stroke-width="3" stroke-linecap="round"/>` : ''}${x === 'potato' ? [[-8, -3], [6, -7], [10, 5], [-4, 6]].map(([a, b]) => `<path d="M${30 + a} ${35 + b}q2 -1.6 4 0" stroke="#6E4A22" stroke-width="1.1" fill="none"/>`).join('') : ''}
+      ${x === 'tomato' ? `<path d="M32 18l3 -4M32 18l-5 -2M32 18l6 -1M32 18l-3 4M32 18l4 4" stroke="#3F8A2E" stroke-width="2.4" stroke-linecap="round"/>` : ''}${x === 'apple' ? `<path d="M32 18q1 -6 3 -8" stroke="#6E4A22" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M34 13q8 -5 12 -1q-6 5 -12 1Z" fill="#5FA641"/>` : ''}
+      ${x === 'beet' || x === 'radish' ? `<path d="M32 17q-2 -8 -6 -12M32 17q1 -9 4 -13M32 17q4 -7 9 -10" stroke="${x === 'beet' ? '#7A1A33' : '#5FA641'}" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M32 53q1 5 3 7" stroke="${sk}" stroke-width="1.6" fill="none"/>` : ''}
+      ${x === 'pores' ? [...Array(14)].map((_, i) => `<circle cx="${(32 + R(i, -14, 14)).toFixed(1)}" cy="${(35 + R(i + 4, -13, 13)).toFixed(1)}" r=".7" fill="${sk}" opacity=".5"/>`).join('') + `<circle cx="32" cy="17.4" r="1.6" fill="#5E8A2E"/>` : ''}${x === 'kiwi' ? `<ellipse cx="44" cy="41" rx="11" ry="9.4" fill="${c}" stroke="${sk}" stroke-width="2"/><ellipse cx="44" cy="41" rx="3.4" ry="2.6" fill="#F4F7DC"/>${[...Array(10)].map((_, i) => `<circle cx="${(44 + Math.cos(i * .63) * 6).toFixed(1)}" cy="${(41 + Math.sin(i * .63) * 5).toFixed(1)}" r=".7" fill="#1A1A10"/>`).join('')}` : ''}
+      ${hi(`M${32 - ox * .6} ${35 - oy * .3}Q${32 - ox * .4} ${35 - oy * .75} ${32 - ox * .05} ${35 - oy * .85}`, 2.4)}` }
+    case 'carrot': return '';
+    case 'onion': return '';
+    case 'cabbage': return `<defs>${rg('a', l, s, d)}</defs>${sh(22)}<circle cx="32" cy="34" r="22" fill="url(#a${id})"/>${[-1, 0, 1].map(i => `<path d="M32 14Q${32 + i * 18} 30 ${32 + i * 12} 55" stroke="${l}" stroke-width="1.6" fill="none" opacity=".9"/>`).join('')}<path d="M12 30Q22 18 32 22Q22 30 12 30Z" fill="${d}" opacity=".45"/><path d="M52 30Q42 18 32 22Q42 30 52 30Z" fill="${d}" opacity=".35"/>${hi('M18 26Q22 18 30 15', 2.4)}`;
+    case 'garlic': return `<defs>${rg('a', '#FFFFFF', c, d)}</defs>${sh(18)}<path d="M32 10Q34 18 42 22Q52 30 50 42Q48 54 32 55Q16 54 14 42Q12 30 22 22Q30 18 32 10Z" fill="url(#a${id})"/>${[-8, 0, 8].map(i => `<path d="M32 16Q${32 + i * 1.8} 34 ${32 + i} 54" stroke="#CDBE9A" stroke-width="1" fill="none"/>`).join('')}<path d="M28 55q4 4 8 0" stroke="#B9A57C" stroke-width="1.4" fill="none"/>${hi('M22 30Q25 23 31 20')}`;
+    case 'long': { const curve = x === 'aub' ? 'M10 40Q8 26 22 24Q40 22 52 16Q58 14 58 20Q56 34 44 42Q30 52 18 50Q10 48 10 40Z' : 'M8 38Q8 30 18 28L50 24Q58 24 58 31Q58 38 50 39L18 44Q8 46 8 38Z';
+      return `<defs>${lg('a', mixc(s, '#fff', .35), s, sk)}</defs>${sh(24)}<path d="${curve}" fill="url(#a${id})"/>${x === 'bumps' ? [...Array(12)].map((_, i) => `<circle cx="${14 + i * 3.6}" cy="${33 + Math.sin(i * 2) * 3.4}" r=".9" fill="${l}" opacity=".85"/>`).join('') : ''}
+        ${x === 'aub' ? `<path d="M50 18Q56 10 60 12Q58 16 54 20Z" fill="#3F8A2E"/><path d="M48 16l6 -8" stroke="#2F6522" stroke-width="2.4" stroke-linecap="round"/>` : `<path d="M54 26q4 -2 6 0" stroke="${d}" stroke-width="2.4" stroke-linecap="round"/>`}${hi(x === 'aub' ? 'M16 34Q26 28 44 24' : 'M14 34L48 29', 2.2)}` }
+    case 'bell': return `<defs>${rg('a', l, c, d)}</defs>${sh(19)}<path d="M32 18Q20 14 14 24Q8 36 16 48Q24 58 32 52Q40 58 48 48Q56 36 50 24Q44 14 32 18Z" fill="url(#a${id})"/><path d="M32 20V50M22 22Q18 36 24 50M42 22Q46 36 40 50" stroke="${d}" stroke-width="1" fill="none" opacity=".45"/><path d="M32 18q0 -6 4 -9" stroke="#3F8A2E" stroke-width="3.4" fill="none" stroke-linecap="round"/>${hi('M19 28Q22 21 28 20', 2.4)}`;
+    case 'floret': return `${sh(20)}<path d="M28 40L26 55H38L36 40Z" fill="${x === 'w' ? '#E3E8C8' : '#8BB86A'}"/>${[[22, 30], [42, 30], [32, 22], [16, 38], [48, 38], [32, 34], [26, 40], [38, 40]].map(([a, b], i) => `<circle cx="${a}" cy="${b}" r="${i < 3 ? 11 : 9}" fill="${i % 2 ? c : d}"/><circle cx="${a - 3}" cy="${b - 3}" r="3.4" fill="${l}" opacity=".7"/>`).join('')}`;
+    case 'herb': return `${sh(16)}<g stroke-linecap="round" fill="none">${[-10, -4, 2, 8, 13].map((a, i) => `<path d="M32 56Q${32 + a * .5} 36 ${32 + a} 12" stroke="${x === 'stalk' ? [c, d, l][i % 3] : d}" stroke-width="${x === 'stalk' ? 3.6 : 1.4}"/>`).join('')}
+      ${x === 'stalk' ? '' : [...Array(16)].map((_, i) => { const a = [-10, -4, 2, 8, 13][i % 5], y = 14 + Math.floor(i / 5) * 8, xx = 32 + a * (1 - (y - 12) / 44); return x === 'flat' ? `<path d="M${xx} ${y}q${i % 2 ? 6 : -6} -2 ${i % 2 ? 7 : -7} 3q${i % 2 ? -4 : 4} 3 ${i % 2 ? -7 : 7} -3Z" fill="${[c, l][i % 2]}" stroke="none"/>` : `<path d="M${xx} ${y}q${i % 2 ? 6 : -6} -3 ${i % 2 ? 9 : -9} -8M${xx} ${y + 3}q${i % 2 ? 5 : -5} -1 ${i % 2 ? 8 : -8} -4" stroke="${[c, l, d][i % 3]}" stroke-width="1.1"/>` }).join('')}</g><path d="M26 46H38" stroke="#C98F55" stroke-width="3" stroke-linecap="round"/>`;
+    case 'leaf': return `${sh(21)}${[[-14, 6, -30], [14, 6, 30], [0, 0, 0], [-6, 12, -12], [8, 12, 14]].map(([a, b, r], i) => `<g transform="translate(${32 + a} ${30 + b}) rotate(${r})"><path d="M0 22Q-16 6 -10 -12Q0 -24 10 -12Q16 6 0 22Z" fill="${[c, d, l, c, d][i]}"/><path d="M0 20V-14" stroke="${l}" stroke-width="1.2"/>${x === 'light' ? `<path d="M-9 -6q4 2 0 6q4 2 0 6" stroke="${l}" stroke-width=".8" fill="none"/>` : ''}</g>`).join('')}`;
+    case 'banana': return `<defs>${lg('a', '#FFF0A6', s, '#C9A21E')}</defs>${sh(22)}<path d="M10 22Q14 48 40 50Q52 50 56 44Q44 44 34 38Q20 30 16 18Q12 16 10 22Z" fill="url(#a${id})"/><path d="M12 22Q18 44 44 47" stroke="#C9A21E" stroke-width="1" fill="none" opacity=".6"/><path d="M10 22l-1 -5" stroke="#5E4A22" stroke-width="3" stroke-linecap="round"/><path d="M56 44l3 1" stroke="#3E2E12" stroke-width="3" stroke-linecap="round"/>${hi('M16 26Q20 38 32 43', 2)}`;
+    case 'pear': return `<defs>${rg('a', mixc(s, '#fff', .4), s, sk)}</defs>${sh(18)}<path d="M32 14Q24 14 24 26Q24 32 18 38Q14 46 20 52Q26 57 32 56Q38 57 44 52Q50 46 46 38Q40 32 40 26Q40 14 32 14Z" fill="url(#a${id})"/><path d="M32 14q0 -6 3 -9" stroke="#6E4A22" stroke-width="2" fill="none" stroke-linecap="round"/>${hi('M22 40Q22 34 27 30', 2.2)}`;
+    case 'pumpkin': return `<defs>${rg('a', l, c, d)}</defs>${sh(22)}${[-14, -5, 5, 14].map(a => `<ellipse cx="${32 + a}" cy="37" rx="12" ry="17" fill="url(#a${id})"/>`).join('')}<ellipse cx="32" cy="37" rx="11" ry="18" fill="url(#a${id})"/><path d="M32 20q1 -7 6 -9" stroke="#5E7A22" stroke-width="3" fill="none" stroke-linecap="round"/>${hi('M20 30Q22 24 27 22', 2)}`;
+    case 'meat': return `<defs>${rg('a', l, c, d)}</defs>${sh(22)}<path d="M9 36Q7 24 20 20Q34 15 48 20Q58 25 55 37Q51 50 32 50Q13 50 9 36Z" fill="url(#a${id})"/>${x === 'fat' ? `<path d="M9 36Q7 24 20 20Q34 15 48 20" stroke="#FBF3EA" stroke-width="5" fill="none"/>` : ''}${x === 'marble' ? [0, 1, 2, 3].map(i => `<path d="M${16 + i * 9} ${28 + i * 3}q5 4 10 2" stroke="#F4D6D0" stroke-width="1.2" fill="none" opacity=".8"/>`).join('') : ''}
+      ${x === 'gloss' ? `<ellipse cx="26" cy="28" rx="10" ry="3.4" fill="#fff" opacity=".35" transform="rotate(-14 26 28)"/>` : ''}${[0, 1, 2].map(i => `<path d="M${18 + i * 9} ${33 + i}q6 3 12 1" stroke="${d}" stroke-width=".9" fill="none" opacity=".5"/>`).join('')}${hi('M16 28Q30 20 46 24', 2.2)}`;
+    case 'drum': return `<defs>${rg('a', mixc(c, '#fff', .2), c, d)}</defs>${sh(20)}<g transform="rotate(-35 32 32)"><path d="M18 22Q18 8 32 8Q46 8 46 22Q46 36 36 40L35 50H29L28 40Q18 36 18 22Z" fill="url(#a${id})"/><rect x="28" y="48" width="8" height="8" rx="3" fill="#F6EFE4"/><circle cx="29" cy="57" r="3.2" fill="#F6EFE4"/><circle cx="35" cy="57" r="3.2" fill="#F6EFE4"/>${hi('M23 18Q26 12 32 11', 2.2)}</g>`;
+    case 'mince': return `<defs>${rg('a', l, c, d)}</defs>${sh(22)}<path d="M10 44Q10 28 22 24Q32 18 42 24Q54 28 54 44Q46 50 32 50Q18 50 10 44Z" fill="url(#a${id})"/>${[...Array(30)].map((_, i) => `<path d="M${(14 + R(i, 0, 36)).toFixed(1)} ${(28 + R(i + 3, 0, 18)).toFixed(1)}q2 -2 4 0" stroke="${i % 2 ? d : l}" stroke-width="1.1" fill="none" opacity=".8"/>`).join('')}`;
+    case 'fillet': return `<defs>${lg('a', l, c, d)}</defs>${sh(23)}<path d="M8 34Q12 22 30 22Q48 22 56 28Q58 36 50 42Q38 48 24 46Q10 44 8 34Z" fill="url(#a${id})"/>${[...Array(6)].map((_, i) => `<path d="M${16 + i * 6.4} 25Q${12 + i * 6.4} 34 ${18 + i * 6.4} 45" stroke="${d}" stroke-width=".9" fill="none" opacity=".5"/>`).join('')}${hi('M16 28Q30 23 46 26', 2)}`;
+    case 'fish': return `<defs>${lg('a', mixc(s, '#fff', .45), s, mixc(s, '#000', .3))}</defs>${sh(24)}<path d="M6 32Q20 18 40 22Q50 25 54 32Q50 39 40 42Q20 46 6 32Z" fill="url(#a${id})"/><path d="M54 32L62 22V42Z" fill="${s}"/><circle cx="14" cy="30" r="2" fill="#1A1A1A"/><circle cx="13.5" cy="29.5" r=".6" fill="#fff"/>
+      ${x === 'stripes' ? [...Array(6)].map((_, i) => `<path d="M${22 + i * 5} 23q-3 5 0 8" stroke="#1E3E4A" stroke-width="1.4" fill="none"/>`).join('') : ''}<path d="M20 26Q22 32 20 38" stroke="${mixc(s, '#000', .3)}" stroke-width="1" fill="none"/>${hi('M18 27Q30 22 44 25', 1.8)}`;
+    case 'egg': return `<defs>${rg('a', '#FFFAF2', s, '#D9BE9A')}</defs>${sh(22)}<ellipse cx="24" cy="36" rx="12" ry="15" fill="url(#a${id})" transform="rotate(-12 24 36)"/><ellipse cx="42" cy="38" rx="12" ry="15" fill="url(#a${id})" transform="rotate(14 42 38)"/>${hi('M18 28Q20 24 24 23', 2)}${hi('M37 30Q39 26 43 25', 2)}`;
+    case 'cheese': return x === 'white' ? `${sh(20)}<path d="M12 30L20 22H52V44L44 52H12Z" fill="${l}"/><path d="M12 30H44V52H12Z" fill="${c}" stroke="${d}" stroke-width="1"/><path d="M44 30L52 22V44L44 52Z" fill="${d}"/>${[...Array(8)].map((_, i) => `<circle cx="${(18 + R(i, 0, 22)).toFixed(1)}" cy="${(35 + R(i + 2, 0, 13)).toFixed(1)}" r=".9" fill="${d}"/>`).join('')}`
+      : `${sh(22)}<path d="M8 44L46 18L56 32V48H8Z" fill="${c}"/><path d="M8 44L46 18L56 32L18 50Z" fill="${l}"/><path d="M8 44V50H56V48" fill="${d}"/>${[[30, 38, 3.4], [44, 33, 2.4], [22, 43, 2], [38, 44, 2]].map(([a, b, r]) => `<ellipse cx="${a}" cy="${b}" rx="${r}" ry="${r * .7}" fill="${d}"/>`).join('')}`;
+    case 'butter': return `${sh(20)}<path d="M10 30L22 22H54V38L42 46H10Z" fill="#E9EDF0"/><path d="M10 30H42V46H10Z" fill="#D5DBE0"/><path d="M14 24L22 22H40V30H14Z" fill="${c}"/><path d="M22 22H40L46 18V26L40 30Z" fill="${l}"/><path d="M10 34H42" stroke="#2F7FB8" stroke-width="3"/>`;
+    case 'bag': return `<defs>${lg('a', '#F4E6CC', s, '#B59A6A', 0)}</defs>${sh(18)}<path d="M16 16H48L50 54H14Z" fill="url(#a${id})"/><path d="M16 16L20 10H44L48 16Z" fill="#E7D5B4"/><rect x="20" y="28" width="24" height="16" rx="2" fill="#fff" opacity=".9"/><path d="M26 40Q32 30 38 40" stroke="#C9A24A" stroke-width="2" fill="none"/>${hi('M19 18V50', 1.6)}`;
+    case 'box': return `${sh(16)}<path d="M16 18H48V52H16Z" fill="#fff" stroke="#D5DBE0"/><path d="M16 18L22 12H54L48 18Z" fill="#F1F3F4"/><path d="M48 18L54 12V46L48 52Z" fill="#D5DBE0"/><rect x="16" y="28" width="32" height="12" fill="${s}"/>`;
+    case 'bread': return `<defs>${rg('a', mixc(s, '#fff', .3), s, mixc(s, '#000', .16))}</defs>${sh(24)}${x === 'baton' ? `<path d="M6 36Q6 24 20 24H46Q58 24 58 36Q58 46 46 46H20Q6 46 6 36Z" fill="url(#a${id})"/>${[0, 1, 2, 3].map(i => `<path d="M${18 + i * 9} 27l6 16" stroke="${mixc(s, '#fff', .45)}" stroke-width="2.4" stroke-linecap="round"/>`).join('')}`
+      : `<path d="M8 50V30Q8 18 32 18Q56 18 56 30V50Z" fill="url(#a${id})"/><path d="M36 50V30Q36 22 46 22" stroke="${mixc(s, '#000', .3)}" stroke-width="1" fill="none"/><path d="M40 50V32Q40 26 48 26H56V50Z" fill="${c}"/>${[...Array(x === 'seeds' ? 14 : 5)].map((_, i) => `<ellipse cx="${(14 + R(i, 0, 36)).toFixed(1)}" cy="${(22 + R(i + 3, 0, 8)).toFixed(1)}" rx="1.4" ry=".8" fill="#E9D3A6"/>`).join('')}`}${hi('M14 28Q20 22 30 21', 2)}`;
+    case 'lavash': return `${sh(24)}<path d="M8 26Q20 20 34 24Q48 20 58 28L54 48Q40 44 30 48Q18 52 10 46Z" fill="${c}" stroke="${d}" stroke-width=".8"/><path d="M8 26Q24 34 58 28" stroke="${d}" stroke-width="1" fill="none"/>${[...Array(14)].map((_, i) => `<circle cx="${(14 + R(i, 0, 38)).toFixed(1)}" cy="${(30 + R(i + 3, 0, 14)).toFixed(1)}" r="${R(i + 6, 1, 2.4).toFixed(1)}" fill="#C9A06A" opacity=".55"/>`).join('')}`;
+    case 'crisp': return `${sh(20)}${[0, 1, 2].map(i => `<rect x="${12 + i * 4}" y="${18 + i * 6}" width="34" height="22" rx="2" fill="${[d, c, l][i]}" stroke="${d}" stroke-width=".6"/>`).join('')}${[...Array(10)].map((_, i) => `<circle cx="${22 + (i % 5) * 6}" cy="${36 + Math.floor(i / 5) * 6}" r=".9" fill="${d}"/>`).join('')}`;
+    case 'nut': return `<defs>${rg('a', l, c, d)}</defs>${sh(18)}<circle cx="32" cy="34" r="19" fill="url(#a${id})"/><path d="M32 15V53" stroke="${d}" stroke-width="1.6"/>${[...Array(8)].map((_, i) => `<path d="M${i < 4 ? 30 : 34} ${20 + (i % 4) * 9}q${i < 4 ? -8 : 8} 2 ${i < 4 ? -12 : 12} -2" stroke="${d}" stroke-width="1.1" fill="none" opacity=".7"/>`).join('')}${hi('M20 26Q22 20 28 18')}`;
+    case 'mushroom': return `<defs>${rg('a', '#FFFFFF', c, d)}</defs>${sh(20)}<path d="M26 34H38L40 54H24Z" fill="#F6EFE4" stroke="${d}" stroke-width=".8"/><path d="M8 36Q8 14 32 14Q56 14 56 36Q44 32 32 33Q20 32 8 36Z" fill="url(#a${id})"/>${hi('M16 28Q20 20 30 18', 2.4)}`;
+    case 'shrimp': return `${sh(18)}<g transform="translate(32 34) scale(3.2)">${GEN.shrimp(P, 1, 3)}</g>`;
+    case 'squid': return `<defs>${lg('a', l, c, d, 0)}</defs>${sh(22)}<path d="M10 30L18 24H46Q54 24 56 32Q54 40 46 40H18L10 34Z" fill="url(#a${id})"/><path d="M10 30L4 26V38L10 34Z" fill="${d}"/><circle cx="46" cy="50" r="6" fill="none" stroke="${c}" stroke-width="3"/><circle cx="32" cy="52" r="5" fill="none" stroke="${d}" stroke-width="2.6"/>${hi('M20 28H44', 1.6)}`;
+    case 'crab': return `${sh(22)}${[0, 1, 2].map(i => `<g transform="translate(${12 + i * 3} ${20 + i * 9}) rotate(-6)"><rect width="40" height="9" rx="2" fill="#fff" stroke="#E0DCD6"/><rect width="40" height="4.4" rx="2" fill="${s}"/></g>`).join('')}`;
+    case 'pods': return `${sh(22)}${[0, 1, 2, 3].map(i => `<path d="M${10 + i * 3} ${22 + i * 7}Q32 ${16 + i * 7} ${54 - i * 2} ${26 + i * 7}" stroke="${[c, d, l, c][i]}" stroke-width="5" fill="none" stroke-linecap="round"/>`).join('')}`;
+    case 'water': return '';
+    case 'salt': return '';
+    case 'peppercorn': return `${sh(16)}${[...Array(16)].map((_, i) => `<circle cx="${(32 + R(i, -12, 12)).toFixed(1)}" cy="${(42 + R(i + 3, -6, 6)).toFixed(1)}" r="2.6" fill="${c}"/><circle cx="${(31.2 + R(i, -12, 12)).toFixed(1)}" cy="${(41.2 + R(i + 3, -6, 6)).toFixed(1)}" r=".8" fill="${l}"/>`).join('')}`;
+    case 'bay': return `${sh(18)}${[[-8, -20], [8, 18]].map(([a, r]) => `<g transform="translate(${32 + a} 34) rotate(${r})"><path d="M0 -20Q11 -6 0 20Q-11 -6 0 -20Z" fill="${a < 0 ? c : d}"/><path d="M0 -18V18" stroke="${l}" stroke-width="1.2"/></g>`).join('')}`;
+  } return '' }
+function mixc(a, b, k) { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); const A = p(a), Bc = p(b); return '#' + A.map((v, i) => Math.round(v + (Bc[i] - v) * k).toString(16).padStart(2, '0')).join('') }
+function shade2(c) { return mixc(c, '#000000', .32) }
+
+/* ---------- новые сцены: замочить, обсушить, разбить яйцо, добавить/вынуть, откинуть, намазать, «столешница + продукт» ---------- */
+const nameOf = k => (F[k] && F[k].n) || (CAT[k] && CAT[k][0]) || '';
+const names = list => { const n = [...new Set(list.map(nameOf).filter(Boolean))]; return n.length > 1 ? n.slice(0, -1).join(', ') + ' и ' + n[n.length - 1] : n[0] || '' };
+const artAt = (k, x, y, s) => icon(k).replace('<svg ', `<svg x="${x}" y="${y}" width="${s}" height="${s}" `);
+const solid = k => !['drop', 'powder'].includes(KIND[k]);
+// кусочки продукта в посуде (без бульона): много мелких для круп, несколько крупных для мяса и яиц
+function countOf(k) { const kd = KIND[k]; return ['grain', 'rice', 'seed', 'lentil', 'pea', 'flake'].includes(kd) ? 120 : kd === 'tube' ? 40 : kd === 'egg' ? 3 : ['ball', 'chunk', 'nut'].includes(kd) ? 7 : kd === 'crumb' ? 40 : kd === 'berry' ? 24 : 12 }
+function scaleOf(k) { const kd = KIND[k]; return ['grain', 'rice', 'seed', 'lentil', 'pea', 'flake'].includes(kd) ? .95 : kd === 'egg' ? 1.5 : ['ball', 'chunk'].includes(kd) ? 1.25 : 1 }
+function fillPieces(p, id, c, items, total) { const list = []; let s = 0; const it = items.filter(solid);
+  it.forEach(k => { const n = total ? Math.ceil(total / it.length) : Math.ceil(countOf(k) / Math.max(1, it.length * .7)); for (let i = 0; i < n; i++, s++) { const a = R(s, 0, 6.283), r = Math.sqrt(R(s + 40, .01, .92)) * c.r, w = E('g', {}, p); top(w, k, KIND[k], scaleOf(k), s, id); list.push({ w, x: c.cx + Math.cos(a) * r, y: c.cy + Math.sin(a) * r, s, a, r }) } });
+  list.forEach(q => q.w.setAttribute('transform', `translate(${q.x.toFixed(1)} ${q.y.toFixed(1)})`)); return list }
+
+function show(items = []) { const { id, svg } = scene(['towel']); defs(svg, metalDefs(id)); boardTop(svg, id, 60, 30, 232, 120); decor(svg, id, ['dill']);
+  const it = [...new Set(items)].slice(0, 3), gs = it.map((k, i) => { const g = E('g', {}, svg), sz = it.length === 1 ? 104 : it.length === 2 ? 86 : 72; H(g, shade(id, `<ellipse cx="${sz / 2}" cy="${sz * .82}" rx="${sz * .34}" ry="${sz * .08}"/>`, 2, 3, .25) + artAt(k, 0, 0, sz)); return { g, sz, x: 176 - (it.length * (sz + 6)) / 2 + i * (sz + 6), y: 90 - sz / 2 } });
+  const sweep = E('rect', { x: -60, y: 20, width: 40, height: 150, fill: '#fff', opacity: .0, transform: 'skewX(-18)' }, svg), T = 4;
+  function frame(t) { t %= T; gs.forEach((q, i) => { const b = Math.sin((t / T) * 2 * Math.PI + i * 1.3) * 1.6; q.g.setAttribute('transform', `translate(${q.x.toFixed(1)} ${(q.y + b).toFixed(1)})`) });
+    const k = (t % T) / T; sweep.setAttribute('x', (40 + k * 300).toFixed(0)); sweep.setAttribute('opacity', (Math.sin(k * Math.PI) * .12).toFixed(2)) }
+  return sc0(id, svg, frame, T, 'Подготовить', names(it), null) }
+
+function soak(items = []) { const { id, svg } = scene(['towel']); defs(svg, metalDefs(id));
+  const b = bowlTop(svg, id, 180, 90, 74), wat = E('circle', { cx: b.cx, cy: b.cy, r: b.r, fill: '#9FD6F2', opacity: .25 }, b.inner), P = fillPieces(b.inner, id, { cx: b.cx, cy: b.cy, r: b.r * .85 }, items.length ? items : []);
+  const bub = [...Array(14)].map((_, i) => E('circle', { r: R(i, 1, 2.4), fill: '#fff', opacity: 0 }, b.inner)), ring = E('circle', { cx: 300, cy: 34, r: 14, fill: 'none', stroke: '#10B981', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-dasharray': 88, transform: 'rotate(-90 300 34)' }, svg), T = 5;
+  function frame(t) { t %= T; const k = clamp(t / (T * .8)); wat.setAttribute('opacity', (.25 + k * .4).toFixed(2)); P.forEach(q => q.w.setAttribute('transform', `translate(${(q.x + wob(t * .4, q.s)).toFixed(1)} ${(q.y + wob(t * .5, q.s + 2)).toFixed(1)}) scale(${(1 + k * .1).toFixed(3)})`));
+    bub.forEach((e, i) => { const q = ((t * .5 + i / bub.length) % 1); e.setAttribute('cx', (b.cx + Math.cos(i * 2.2) * R(i, 8, b.r * .8)).toFixed(1)); e.setAttribute('cy', (b.cy + Math.sin(i * 2.2) * R(i, 8, b.r * .8) - q * 6).toFixed(1)); e.setAttribute('opacity', (Math.sin(q * Math.PI) * .6).toFixed(2)) });
+    ring.setAttribute('stroke-dashoffset', (88 * (1 - t / T)).toFixed(1)) }
+  return sc0(id, svg, frame, T, 'Замочить', names(items) + ' в воде', null) }
+
+function dry(f) { const { id, svg } = scene(); defs(svg, metalDefs(id)); boardTop(svg, id); decor(svg, id, ['salt']);
+  const it = f ? [f] : [], prod = E('g', {}, svg); if (f) { if (solid(f) && ['chunk', 'leaf', 'speck', 'floret', 'berry', 'shrimp', 'ring'].includes(KIND[f])) fillPieces(prod, id, { cx: 170, cy: 90, r: 44 }, it, 9); else H(prod, artAt(f, 118, 38, 104)) }
+  const tw = E('g', {}, svg); H(tw, shade(id, '<rect x="-46" y="-34" width="92" height="68" rx="6"/>', 4, 6, .25) + `<rect x="-46" y="-34" width="92" height="68" rx="6" fill="#FFFFFF"/>${[...Array(40)].map((_, i) => `<circle cx="${-40 + (i % 8) * 11.4}" cy="${-28 + Math.floor(i / 8) * 13}" r="1.1" fill="#E5E9EC"/>`).join('')}`);
+  const wet = [...Array(6)].map((_, i) => E('circle', { r: R(i, 5, 10), fill: '#D9E8F2', opacity: 0 }, tw)), T = 3.2;
+  function frame(t, emit) { t %= T; const up = hit(t, 1.05); tw.setAttribute('transform', `translate(170 ${(88 - up * 4).toFixed(1)}) scale(${(1 + up * .06).toFixed(3)}) rotate(-6)`); tw.setAttribute('opacity', (t > T - .35 ? (T - t) / .35 : 1).toFixed(2));
+    wet.forEach((e, i) => { e.setAttribute('cx', R(i, -30, 30).toFixed(1)); e.setAttribute('cy', R(i + 4, -20, 20).toFixed(1)); e.setAttribute('opacity', t > .4 + i * .3 ? .7 : 0) }) }
+  return sc0(id, svg, frame, T, 'Обсушить', names(it) + ' бумажным полотенцем', null) }
+
+function crack(vessel = 'bowl') { const { id, svg } = scene(['towel']); defs(svg, metalDefs(id));
+  const v = vessel === 'pan' ? panTop(svg, id, 160, 90, 74) : bowlTop(svg, id, 170, 92, 72), lay = E('g', {}, svg);
+  const white = E('path', { fill: '#FFFFFF', opacity: 0, stroke: '#EDE8DC', 'stroke-width': .8 }, lay), yolk = E('circle', { r: 0, fill: '#F6B92E' }, lay), yh = E('circle', { r: 0, fill: '#FFE08A' }, lay);
+  const egg = E('g', {}, svg), L = E('g', {}, egg), Rr = E('g', {}, egg);
+  defs(svg, `<radialGradient id="sh${id}" cx=".36" cy=".3" r=".8"><stop offset="0" stop-color="#FFFAF2"/><stop offset=".6" stop-color="#F1DCC0"/><stop offset="1" stop-color="#D9BE9A"/></radialGradient>`);
+  H(L, `<path d="M0 -15A12 15 0 0 0 0 15L-2 6L2 0L-2 -6Z" fill="url(#sh${id})"/>`); H(Rr, `<path d="M0 -15A12 15 0 0 1 0 15L-2 6L2 0L-2 -6Z" fill="url(#sh${id})"/>`);
+  const T = 3.6, cx = v.cx - 6, cy = v.cy - 4;
+  function frame(t, emit) { t %= T; const k = clamp((t - .5) / .4), sp = clamp((t - .9) / 1.2), f = t > T - .4 ? (T - t) / .4 : 1;
+    egg.setAttribute('transform', `translate(${cx} ${(cy - 30 + eOut(clamp(t / .5)) * 18).toFixed(1)}) scale(${(1.2 - clamp(t / .5) * .2).toFixed(3)})`); egg.setAttribute('opacity', t < 1.6 ? 1 : 0);
+    L.setAttribute('transform', `translate(${(-k * 14).toFixed(1)} 0) rotate(${(-k * 30).toFixed(1)})`); Rr.setAttribute('transform', `translate(${(k * 14).toFixed(1)} 0) rotate(${(k * 30).toFixed(1)})`);
+    if (k > 0 && k < .1 && frame._c !== Math.floor(t / T)) { frame._c = Math.floor(t / T); emit && emit('chop') }
+    const r = eOut(sp) * 34; white.setAttribute('d', `M${cx - r} ${cy}Q${cx - r} ${cy - r * .9} ${cx} ${cy - r * .85}Q${cx + r * 1.1} ${cy - r * .8} ${cx + r} ${cy + r * .1}Q${cx + r * .8} ${cy + r} ${cx} ${cy + r * .9}Q${cx - r * 1.05} ${cy + r * .8} ${cx - r} ${cy}Z`); white.setAttribute('opacity', (sp > 0 ? .97 * f : 0).toFixed(2));
+    yolk.setAttribute('cx', cx + 2); yolk.setAttribute('cy', cy); yolk.setAttribute('r', (sp > 0 ? 9 * f : 0).toFixed(1)); yh.setAttribute('cx', cx - 1); yh.setAttribute('cy', cy - 3); yh.setAttribute('r', (sp > 0 ? 3 * f : 0).toFixed(1)); v.shine && v.shine(t) }
+  return sc0(id, svg, frame, T, 'Разбить яйцо', vessel === 'pan' ? 'на сковороду' : 'в миску', 'chop') }
+
+function vesselOf(svg, id, vessel) { return vessel === 'pan' ? panTop(svg, id, 160, 90, 76) : vessel === 'bowl' ? bowlTop(svg, id, 172, 90, 76) : (() => { const p = potTop(svg, id, 172, 90, 76); E('circle', { cx: p.cx, cy: p.cy, r: p.r, fill: '#A9DCF5', opacity: .55 }, p.inner); return p })() }
+// добавить: кусочки падают сверху (крупнее и с дальней тенью — ближе к камере) и ложатся; reverse — вынуть: поднимаются, с них капает
+function add(items = [], vessel = 'pot', reverse = false) { const { id, svg } = scene(['towel']); defs(svg, metalDefs(id));
+  const v = vesselOf(svg, id, vessel), c = { cx: v.cx, cy: v.cy, r: v.r * .8 }, it = items.filter(solid), lay = E('g', {}, svg), drops = [];
+  const P = it.length ? fillPieces(lay, id, c, it, Math.min(26, it.reduce((a, k) => a + Math.min(countOf(k), 14), 0))) : [];
+  P.forEach(q => { q.d = R(q.s + 11, 0, .9); q.oy = -60 - R(q.s, 0, 30) });
+  if (!it.length && items.length) { const liq = items[0]; E('circle', { cx: v.cx, cy: v.cy, r: v.r * .6, fill: F[liq] ? F[liq].c : '#fff', opacity: .0, class: 'lq' }, v.inner || svg) }
+  for (let i = 0; i < 6; i++) drops.push(E('circle', { r: 1.6, fill: '#E6F6FF', opacity: 0 }, svg));
+  const T = 3.6;
+  function frame(t, emit) { t %= T; v.shine && v.shine(t);
+    P.forEach(q => { let k = clamp((t - q.d) / .7); if (reverse) k = 1 - clamp((t - .4 - q.d) / .9); const e = reverse ? eIO(k) : eOut(k), y = q.y + (1 - e) * q.oy, s = 1 + (1 - e) * .5;
+      q.w.setAttribute('transform', `translate(${q.x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(3)})`); q.w.setAttribute('opacity', (reverse ? (k > .05 ? 1 : 0) : (t > T - .35 ? (T - t) / .35 : k > 0 ? 1 : 0)).toFixed(2));
+      if (!reverse && k > .95 && q._l !== Math.floor(t / T) && q.s % 4 === 0) { q._l = Math.floor(t / T); emit && emit(vessel === 'pan' ? 'sizzle' : 'bubble') } });
+    const lq = svg.querySelector('.lq'); if (lq) lq.setAttribute('opacity', (clamp(t / 1.5) * .8 * (t > T - .35 ? (T - t) / .35 : 1)).toFixed(2));
+    drops.forEach((e, i) => { const q = ((t * 1.3 + i / 6) % 1); e.setAttribute('cx', (v.cx - 20 + i * 8).toFixed(1)); e.setAttribute('cy', (v.cy - 40 + q * 30).toFixed(1)); e.setAttribute('opacity', reverse && t > .8 ? (1 - q).toFixed(2) : 0) }) }
+  return sc0(id, svg, frame, T, reverse ? 'Вынуть' : 'Добавить', names(items), vessel === 'pan' ? 'sizzle' : 'bubble') }
+
+function drain(items = []) { const { id, svg } = scene(['towel']); defs(svg, metalDefs(id));
+  const b = bowlTop(svg, id, 176, 88, 74); H(b.inner, [...Array(60)].map((_, i) => `<circle cx="${(b.cx + Math.cos(i * 2.4) * Math.sqrt(i / 60) * b.r).toFixed(1)}" cy="${(b.cy + Math.sin(i * 2.4) * Math.sqrt(i / 60) * b.r).toFixed(1)}" r="1.3" fill="#C9D0D6"/>`).join(''));
+  const P = fillPieces(b.inner, id, { cx: b.cx, cy: b.cy, r: b.r * .82 }, items), drops = [...Array(16)].map(() => E('circle', { r: 1.8, fill: '#9FD6F2', opacity: 0 }, svg)), T = 3;
+  function frame(t, emit) { t %= T; const sh = Math.sin(t * 22) * (t % 1.5 < .5 ? 1.6 : 0); P.forEach(q => q.w.setAttribute('transform', `translate(${(q.x + sh).toFixed(1)} ${(q.y + sh * .4).toFixed(1)})`));
+    drops.forEach((e, i) => { const q = ((t * .9 + i / drops.length) % 1), a = i * .39; e.setAttribute('cx', (b.cx + Math.cos(a) * (b.r + 8 + q * 16)).toFixed(1)); e.setAttribute('cy', (b.cy + Math.sin(a) * (b.r + 8 + q * 16) + q * 8).toFixed(1)); e.setAttribute('opacity', ((1 - q) * .8).toFixed(2)) }); emit && emit('pour', .3) }
+  return sc0(id, svg, frame, T, 'Откинуть', names(items) + ' — дать стечь воде', 'pour') }
+
+function spread(items = []) { const { id, svg } = scene(); defs(svg, metalDefs(id)); boardTop(svg, id); decor(svg, id, ['dill']); const BR = /^(hleb|hleb_zern|baton|hlebcy|lavash)$/, k = items.find(x => F[x] && !BR.test(x)) || 'maslo_sliv', P = F[k] || { c: '#FBE7A6', l: '#FFF6D6', d: '#E2C470' };
+  H(svg, shade(id, '<rect x="110" y="40" width="120" height="100" rx="18"/>', 4, 6, .3) + `<rect x="110" y="40" width="120" height="100" rx="18" fill="#B9773E"/><rect x="117" y="47" width="106" height="86" rx="13" fill="#F1D7A6"/>${[...Array(30)].map((_, i) => `<circle cx="${(122 + R(i, 0, 96)).toFixed(1)}" cy="${(52 + R(i + 3, 0, 76)).toFixed(1)}" r="${R(i + 5, .6, 1.4).toFixed(1)}" fill="#D9B07C"/>`).join('')}`);
+  defs(svg, `<clipPath id="sp${id}"><rect x="117" y="47" width="106" height="86" rx="13"/></clipPath>`); const lay = E('rect', { x: 117, y: 47, width: 0, height: 86, fill: P.c, opacity: .92, 'clip-path': `url(#sp${id})` }, svg);
+  const kn = E('g', {}, svg); H(kn, shade(id, '<rect x="-34" y="-6" width="68" height="12" rx="6"/>', 4, 6, .25) + `<rect x="-34" y="-6" width="52" height="12" rx="6" fill="url(#bld${id})"/><rect x="18" y="-4" width="40" height="8" rx="4" fill="url(#khd${id})"/>`), T = 3.4;
+  function frame(t) { t %= T; const k = clamp(t / (T * .8)), f = t > T - .3 ? (T - t) / .3 : 1; lay.setAttribute('width', (106 * eOut(k)).toFixed(1)); lay.setAttribute('opacity', (.92 * f).toFixed(2)); kn.setAttribute('transform', `translate(${(130 + k * 70).toFixed(1)} ${(90 + Math.sin(t * 7) * 26).toFixed(1)}) rotate(${(Math.sin(t * 7) * 10).toFixed(1)})`) }
+  return sc0(id, svg, frame, T, 'Намазать', names([k]), null) }
+
+/* ---------- привязка шага: действие — по первому глаголу шага, продукт — только названный в этом шаге
+   (для «варите под крышкой» без слов о продукте — то, что положили в посуду на прошлых шагах этого же блюда) ---------- */
+const TITLE = { cut: 'Нарезать', tear: 'Разобрать руками', grate: 'Натереть', peel: 'Очистить', rinse: 'Промыть', soak: 'Замочить', dry: 'Обсушить', crack: 'Разбить яйцо', whisk: 'Взбить', pound: 'Отбить', knead: 'Вымесить',
+  roll: 'Раскатать', form: 'Сформовать', coat: 'Обвалять', spread: 'Намазать', oil: 'Разогреть масло', bringBoil: 'Довести до кипения', boil: 'Варить', fry: 'Обжарить', simmer: 'Тушить', bake: 'Запекать', batter: 'Налить тесто',
+  pour: 'Залить', salt: 'Посолить', pepper: 'Поперчить', add: 'Добавить', stir: 'Перемешать', drain: 'Откинуть', plateUp: 'Подать', lift: 'Вынуть', rest: 'Дать постоять', show: 'Подготовить' };
+const LIQ = new Set(['voda', 'moloko', 'kefir', 'ryazhenka', 'yogurt', 'smetana', 'smetana20', 'maslo_rast', 'maslo_ol', 'soy_sous', 'ketchup', 'tomat', 'uksus', 'lim_sok', 'mayonez', 'myod']);
+const GRAINY = new Set(['grain', 'rice', 'seed', 'lentil', 'pea', 'flake', 'tube', 'bean', 'powder']);
+function vesselIn(t, act) { return /сковород|сотейник|противн/.test(t) && !/кастрюл|ковш/.test(t) ? 'pan' : /миск|салатник|тарелк|контейнер|банк/.test(t) && !/кастрюл|ковш|сковород/.test(t) ? 'bowl' : ['fry', 'oil', 'batter'].includes(act) ? 'pan' : 'pot' }
+function stepParts(text, ing) { const t = text.toLowerCase(), vs = verbs(t), ps = prodsIn(t, ing); return { t, vs, ps } }
+function forStep(text, ing, prev = []) {
+  const { t, vs, ps } = stepParts(text, ing); let v = vs[0] || null;
+  if (v && vs[1] && ['rest', 'show', 'simmer'].includes(v.a) && !/[.;]/.test(t.slice(v.at, vs[1].at)) && !['rest', 'show', 'simmer', 'salt', 'pepper'].includes(vs[1].a) && /накройте пл|накройте плёнк|дайте ост|остудите|разделите|отложите|проверьте/.test(t.slice(v.at, v.at + 16))) { vs.shift(); v = vs[0] }
+  let act = v ? v.a : /сковород|сотейник|жар/.test(t) ? 'fry' : /духовк/.test(t) ? 'bake' : /кастрюл|ковш|вар/.test(t) ? 'boil' : 'show';
+  const after = v ? t.slice(v.at, v.at + 70) : '', end = v ? (vs[1] ? vs[1].at : t.length) : t.length, sStart = v ? Math.max(0, t.lastIndexOf('.', v.at - 2) + 1) : 0;
+  // смысл глагола по соседним словам
+  if (v && /разогрейте|включите|поставьте|прогрейте/.test(v.w) && /духовк/.test(after)) act = 'bake';
+  else if (act === 'oil' && !/масл|сковород|сотейник|вок/.test(after)) act = /кастрюл|ковш|молок|вод|суп|бульон/.test(after) ? 'boil' : 'fry';
+  else if (act === 'bringBoil' && /доведите/.test(v.w) && !/кипен|кипит|закип/.test(after)) act = 'simmer';
+  else if (act === 'simmer' && /накройте/.test(v.w) && /плёнк|пленк|полотенц|тарелк|фольг/.test(after)) act = 'rest';
+  else if (act === 'rest' && /дайте/.test(v.w) && /закип/.test(after)) act = 'bringBoil';
+  else if (act === 'rest' && /дайте/.test(v.w) && /стечь|стекл/.test(after)) act = 'drain';
+  else if (act === 'add' && /на тарелк|на блюд|в тарелк|на хлеб|на лаваш|на лист салат|порци/.test(after)) act = 'plateUp';
+  else if (act === 'plateUp' && /выложите|разложите/.test(v.w) && /сковород|кастрюл|в соус|в бульон|в миск|в форм|противен|в ковш|сотейник/.test(after)) act = /противен|в форм/.test(after) ? 'bake' : 'add';
+  else if (act === 'pour' && /полейте|сбрызните/.test(v.w) && /подав|тарелк|сверху|перед подачей/.test(t)) act = 'plateUp';
+  else if (v && act === 'show' && /готовьте/.test(v.w)) act = /сковород|жар/.test(t) ? 'fry' : /духовк/.test(t) ? 'bake' : 'boil';
+  else if (v && act === 'show' && /сделайте|разделите/.test(v.w) && /лепёшк|лепешк|котлет|шарик|колбаск|углублен/.test(after)) act = 'form';
+  else if (v && act === 'show' && /поставьте/.test(v.w) && /в кастрюл|в сковород|в сотейник|в ковш|на сковород/.test(after)) act = 'add';
+  else if (v && act === 'show' && /поставьте/.test(v.w)) act = /огонь|плит/.test(after) ? 'bringBoil' : /холодильник/.test(after) ? 'rest' : 'show';
+  // продукты шага: сначала в части предложения с этим глаголом, иначе — перед глаголом в том же предложении, иначе — во всём шаге
+  const food = ps.filter(x => !FREE.has(x.k)), cut0 = v ? Math.max(sStart, t.lastIndexOf(',', v.at), t.lastIndexOf(':', v.at), vs.filter(x => x.at < v.at).map(x => x.at + x.w.length).pop() || 0) : 0;
+  let end2 = end; if (v && vs[1] && !/[.;]/.test(t.slice(v.at, vs[1].at))) { const c = t.lastIndexOf(',', vs[1].at); if (c > v.at && food.some(x => x.at > c && x.at < vs[1].at)) end2 = c }
+  const pre = v ? food.filter(x => x.at >= cut0 && x.at < v.at) : [];
+  let own = v ? (pre.length ? pre : food.filter(x => x.at >= v.at && x.at < end2)) : food;
+  if (v && !own.length) own = food.filter(x => x.at >= sStart && x.at < v.at); if (!own.length && !VESSEL_ACT.has(act) && !['fry', 'stir', 'simmer', 'bake', 'drain', 'plateUp', 'lift'].includes(act)) own = food;
+  let items = [...new Set(own.map(x => x.k))], src = items.length ? 'step' : 'none';
+  const waterOnly = ['bringBoil', 'pour'].includes(act) && v && /(?<![а-яё])вод/.test(t.slice(v.at, end));
+  if (!items.length && !waterOnly) { for (let i = prev.length - 1; i >= 0 && !items.length; i--) { const pf = prodsIn(prev[i].toLowerCase(), ing).filter(x => !FREE.has(x.k)); items = [...new Set(pf.map(x => x.k))].slice(0, 3) } if (items.length) src = 'carry' }
+  if (items.length && !items.some(solid) && ['plateUp', 'add', 'fry', 'stir', 'bake', 'spread'].includes(act)) { for (let i = prev.length - 1; i >= 0; i--) { const pf = prodsIn(prev[i].toLowerCase(), ing).filter(x => !FREE.has(x.k) && solid(x.k)).map(x => x.k); if (pf.length) { items = [...new Set([...pf.slice(0, 2), ...items])]; src = 'step+carry'; break } } }
+  const liq = (v ? ps.filter(x => x.at >= v.at && x.at < end) : ps).map(x => x.k).find(k => LIQ.has(k)), vessel = vesselIn(t, act);
+  const solidItems = items.filter(k => !(['pour'].includes(act) && LIQ.has(k)));
+  const POT = /кастрюл|ковш|вод|бульон|суп|каш|соус/.test(t) || !items.some(solid), one = items[0], forms = /тефтел|шарик|фрикадел|скатайте|ёжик|ежик/.test(t);
+  const make = { cut: () => one && solid(one) ? cut(one) : show(items), tear: () => show(items), grate: () => one ? grate(one) : show(items), peel: () => one && !GRAINY.has(KIND[one]) && solid(one) ? peel(one) : show(items),
+    rinse: () => rinse(one), soak: () => soak(items), dry: () => dry(one), crack: () => crack(vessel === 'pan' ? 'pan' : 'bowl'), whisk: () => whisk(items), pound: () => pound(one), knead: () => one && KIND[one] === 'ball' ? form(one, forms) : roll(),
+    roll: () => roll(), form: () => form(items.find(k => KIND[k] === 'ball') || one, forms), coat: () => stir(items, 'bowl'), spread: () => spread(items), oil: () => oil(items.find(k => /^maslo/.test(k))),
+    bringBoil: () => bringBoil(items), boil: () => boil(items), simmer: () => simmer(items), salt: () => POT ? salt(items) : show(items), pepper: () => POT ? pepper(items) : show(items), rest: () => rest(items), fry: () => fry(items), stir: () => stir(items, vessel === 'pan' ? 'pan' : 'bowl'),
+    bake: () => bake(items), batter: () => batter(), pour: () => pour(liq || 'voda', solidItems), add: () => add(items, vessel), lift: () => add(items, vessel, true), drain: () => drain(items), plateUp: () => plateUp(items), show: () => show(items) }[act];
+  const wrap = () => { const sc = make(); sc.title = TITLE[act]; sc.sub = names(items) || sc.sub; sc.items = items; return sc };
+  return { act, verb: v ? v.w : null, prods: items, src, liq: liq || null, vessel, prod: one || null, make: wrap } }
+
+/* ---------- рисунок продукта для плиток: каталог, старые ручные рисунки — для моркови, лука, курицы, гречки, масла, воды, соли ---------- */
+const OLD_IC = { morkov: 'morkov', luk: 'luk', kur_grudka: 'kur', indeyka: 'kur', kur_bedro: 'kur', grechka: 'grechka', maslo_rast: 'maslo', voda: 'voda', sol: 'sol', kur: 'kur', maslo: 'maslo' };
+function icon(k) { if (OLD_IC[k]) return iconOld(OLD_IC[k]); const b = iconGen(k); return b ? `<svg viewBox="0 0 64 64" aria-hidden="true">${b}</svg>` : '' }
+// рисунок по названию (вода, соль, лавровый лист…): тот же поиск по основам слов, что и в шагах
+const ALL = Object.keys(CAT).map(k => [k]);
+function iconFor(id, name) { if (id && (CAT[id] || OLD_IC[id])) return icon(id); const p = prodsIn((name || '').toLowerCase(), ALL)[0]; return p ? icon(p.k) : '' }
+
+function iconOld(k) { const id = ++UID, sh = `<ellipse cx="32" cy="56" rx="20" ry="4" fill="#000" opacity=".12"/>`, w = b => `<svg viewBox="0 0 64 64" aria-hidden="true">${b}</svg>`;
   const lg = (n, a, b, c, v = 1) => `<linearGradient id="${n}${id}" x1="0" y1="0" x2="${v ? 0 : 1}" y2="${v ? 1 : 0}"><stop offset="0" stop-color="${a}"/><stop offset=".5" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></linearGradient>`;
   const rg = (n, a, b, c) => `<radialGradient id="${n}${id}" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="${a}"/><stop offset=".6" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></radialGradient>`;
   switch (k) {
@@ -624,6 +955,6 @@ function mount(el, sc, opts = {}) { el.innerHTML = ''; el.appendChild(sc.svg); s
   if (RM) { sc.frame(sc.T * .45); return sc } if (!raf) raf = requestAnimationFrame(tick); return sc }
 function unmount(el) { const sc = el._sc; if (!sc) return; scenes.delete(sc); io && io.unobserve(el); if (SRC === sc) { SRC = null; stopAll() } el._sc = null }
 function tick(now) { raf = requestAnimationFrame(tick); const br = (1 + .005 * (1 - Math.cos(now / 6000 * 2 * Math.PI))).toFixed(4); scenes.forEach(sc => { if (!sc.vis) return; sc.svg.style.transform = `scale(${br})`; sc.frame((now - sc.t0) / 1000, SRC === sc ? sfx : null) }) }
-window.CA = { cut, pour, salt, fry, boil, stir, grate, rinse, peel, pound, pepper, oil, bringBoil, simmer, bake, whisk, form, roll, batter, plateUp, rest, forStep, RULES, mount, unmount, F, icon,
+window.CA = { soak, dry, crack, add, drain, spread, show, CAT, prodsIn, verbs, iconFor, names, VERB, cut, pour, salt, fry, boil, stir, grate, rinse, peel, pound, pepper, oil, bringBoil, simmer, bake, whisk, form, roll, batter, plateUp, rest, forStep, mount, unmount, F, icon,
   sound(on) { ON = on; if (on) { ac().resume(); loadSamples() } else stopAll(); return ON }, source(sc) { if (SRC !== sc) stopAll(); SRC = sc }, get on() { return ON } };
 })();
