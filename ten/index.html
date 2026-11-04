@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#151617">
+<title>Анатомия · Мой тренер</title>
+<link rel="icon" href="../favicon-32.png">
+<!-- всё для первого кадра — сразу и параллельно: просмотрщик, облегчённые мышцы, студийный свет -->
+<link rel="modulepreload" href="ten.js?v=r72">
+<link rel="preload" href="m/anatomy_xs.json?v=r72" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="m/muscles_xs.bin?v=r72" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="env.hdr?v=r72" as="fetch" crossorigin="anonymous">
+<style>
+:root{--stage-hi:#F4F4F2;--stage-lo:#D9DAD7;--glass:rgba(255,255,255,.66);--glass-b:rgba(255,255,255,.8);--line:rgba(11,13,18,.08);
+  --text:#0B0D12;--text2:#5E6472;--text3:#8C93A1;--accent:#047857;--accent-hi:#10B981;--accent-text:#047857;--accent-soft:rgba(4,120,87,.10);
+  --chip:rgba(11,13,18,.06);--shadow:0 12px 32px rgba(20,24,22,.14);--label:rgba(255,255,255,.88);--label-text:#0B0D12;--leader:rgba(11,13,18,.45);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--stage-hi:#2E3032;--stage-lo:#141516;--glass:rgba(30,32,34,.64);--glass-b:rgba(255,255,255,.09);--line:rgba(255,255,255,.08);
+  --text:#F5F6FA;--text2:#A3A9B6;--text3:#6E7482;--accent-text:#34D399;--accent-soft:rgba(16,185,129,.16);--chip:rgba(255,255,255,.08);--shadow:0 12px 32px rgba(0,0,0,.5);--label:rgba(24,26,28,.84);--label-text:#F5F6FA;--leader:rgba(255,255,255,.55)}}
+:root[data-theme=dark]{--stage-hi:#2E3032;--stage-lo:#141516;--glass:rgba(30,32,34,.64);--glass-b:rgba(255,255,255,.09);--line:rgba(255,255,255,.08);
+  --text:#F5F6FA;--text2:#A3A9B6;--text3:#6E7482;--accent-text:#34D399;--accent-soft:rgba(16,185,129,.16);--chip:rgba(255,255,255,.08);--shadow:0 12px 32px rgba(0,0,0,.5);--label:rgba(24,26,28,.84);--label-text:#F5F6FA;--leader:rgba(255,255,255,.55)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--stage-lo);color:var(--text);font:17px/1.35 var(--font);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+#stage{position:fixed;inset:0;background:radial-gradient(75% 60% at 50% 45%,var(--stage-hi),var(--stage-lo))} /* нейтральный фон атласа; наши цвета — только в интерфейсе */
+.glass{background:var(--glass);-webkit-backdrop-filter:blur(24px) saturate(1.7);backdrop-filter:blur(24px) saturate(1.7);border:.5px solid var(--glass-b);box-shadow:var(--shadow)}
+.top{position:fixed;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top) + 10px) 12px 0;display:flex;gap:8px;align-items:center;pointer-events:none;z-index:5}
+.top>*{pointer-events:auto}
+.seg{flex:1;min-width:0;display:flex;padding:4px;border-radius:22px;gap:2px}
+.seg button{flex:1;min-width:0;border:0;background:none;border-radius:18px;min-height:36px;font-weight:600;font-size:15px;color:var(--text2);cursor:pointer;transition:background .25s,color .25s;white-space:nowrap}
+.seg button.on{background:var(--accent);color:#fff;box-shadow:0 4px 12px rgba(4,120,87,.3)}
+.ibtn{width:44px;height:44px;border-radius:22px;display:grid;place-items:center;border:0;cursor:pointer;flex:none}
+.ibtn svg{width:20px;height:20px}
+.hint{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 66px);transform:translate(-50%,-6px);border-radius:16px;padding:8px 14px;font-size:14px;color:var(--text2);opacity:0;transition:opacity .35s,transform .35s;white-space:nowrap;pointer-events:none;z-index:4}
+.hint.on{opacity:1;transform:translate(-50%,0)}
+.hint b{color:var(--text);font-weight:600}
+#labels{position:fixed;inset:0;pointer-events:none;z-index:2}
+#labels svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.lbl{position:absolute;left:0;top:0;width:132px;will-change:transform;padding:6px 10px 6px 8px;border-radius:12px;background:var(--label);
+  font:600 13px/1.15 var(--font);color:var(--label-text);white-space:nowrap;display:flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,.14);max-width:44vw;overflow:hidden;text-overflow:ellipsis}
+.lbl i{width:8px;height:8px;border-radius:4px;flex:none;background:#22D39A;box-shadow:0 0 8px #22D39A}
+.lbl.s i{opacity:.5;box-shadow:none}
+.dock{position:fixed;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom) + 18px);border-radius:26px;padding:10px;display:flex;flex-direction:column;gap:8px;z-index:5;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .25s}
+.dock.off{transform:translateY(24px);opacity:0;pointer-events:none}
+.row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.row::-webkit-scrollbar{display:none}
+.chip{flex:none;border:0;border-radius:16px;padding:0 12px;min-height:38px;font-weight:600;font-size:14px;color:var(--text2);background:var(--chip);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:background .2s,color .2s}
+.chip.on{background:var(--accent);color:#fff}
+.chip .d{width:9px;height:9px;border-radius:5px;flex:none}
+#layers .chip{flex:1 1 0;min-width:0;justify-content:center;padding:0 4px;font-size:14px}
+#layers .chip .d{display:none}
+.info{position:fixed;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom) + 18px);border-radius:26px;padding:16px 16px 12px;z-index:6;transform:translateY(calc(100% + 30px));transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.info.on{transform:none}
+.info .k{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--accent-text)}
+.info b{display:block;font-size:20px;letter-spacing:-.01em;line-height:1.2;margin-top:2px;padding-right:36px;overflow-wrap:anywhere}
+.info .la{color:var(--text3);font-size:13px;margin-top:2px;overflow-wrap:anywhere}
+.info p{margin:10px 0 0;font-size:15px;line-height:1.4;color:var(--text2)}
+.info .exh{margin-top:10px;font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em}
+.info .ex{margin-top:6px;display:flex;flex-wrap:wrap;gap:6px}
+.info .ex span{font-size:13px;padding:5px 10px;border-radius:10px;background:var(--accent-soft);color:var(--accent-text);font-weight:600}
+.info .acts{display:flex;gap:8px;margin-top:12px}
+.btn{flex:1;min-width:0;border:0;border-radius:16px;min-height:44px;font-weight:600;font-size:15px;background:var(--accent);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.btn.sec{background:var(--chip);color:var(--text)}
+.x{position:absolute;right:10px;top:10px;width:34px;height:34px;border-radius:17px;border:0;background:var(--chip);color:var(--text2);font-size:20px;line-height:1;cursor:pointer}
+.ex-head{display:flex;align-items:center;gap:10px;padding:2px 4px 0}
+.ex-head b{font-size:17px;letter-spacing:-.01em;flex:1;min-width:0;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ex-head .ph{font-size:12px;color:var(--text2);text-align:right;line-height:1.25;max-width:42%}
+.ex-head .ph b{font-size:13px;color:var(--text)}
+.tl{position:relative;height:30px;margin:0 4px;touch-action:none;cursor:pointer}
+.tl .seg2{position:absolute;top:12px;height:6px;border-radius:3px;background:var(--chip)}
+.tl .seg2.w{background:linear-gradient(90deg,rgba(34,211,154,.35),rgba(34,211,154,.9))}
+.tl .cur{position:absolute;top:6px;width:4px;height:18px;border-radius:2px;background:var(--text);transform:translateX(-2px);box-shadow:0 0 0 3px var(--glass)}
+.leg{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -2px;padding:0 2px}.leg::-webkit-scrollbar{display:none}
+.leg .chip{min-height:34px;font-size:13px;padding:0 10px}
+.leg .chip.on{background:var(--accent-soft);color:var(--accent-text)}
+.ctrl{display:flex;gap:6px}
+.ctrl .btn{min-height:46px}
+.ctrl .btn.sm{flex:none;padding:0 14px}
+.pick{position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top) + 66px);bottom:calc(env(safe-area-inset-bottom) + 18px);border-radius:26px;z-index:7;display:flex;flex-direction:column;transform:translateY(16px);opacity:0;pointer-events:none;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .25s}
+.pick.on{transform:none;opacity:1;pointer-events:auto}
+.pick h3{margin:0;padding:16px 18px 6px;font-size:20px;letter-spacing:-.01em}
+.pick .sub{padding:0 18px 10px;font-size:13px;color:var(--text2)}
+.pick .lst{flex:1;overflow-y:auto;padding:0 10px 10px;-webkit-overflow-scrolling:touch}
+.pick .it{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;text-align:left;padding:11px 8px;border-bottom:.5px solid var(--line);cursor:pointer;min-height:56px}
+.pick .it b{font-size:16px;font-weight:600;display:block;line-height:1.25}.pick .it small{display:block;color:var(--text2);font-size:13px;margin-top:2px}
+.pick .it .tx{flex:1;min-width:0}.pick .it .go{color:var(--text3);font-size:18px}
+.pick .it.on b{color:var(--accent-text)}
+.ex-head .chg{border:0;background:var(--accent-soft);color:var(--accent-text);font-weight:600;font-size:13px;border-radius:12px;padding:0 10px;min-height:32px;cursor:pointer;flex:none}
+.cr{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 2px);text-align:center;font-size:10px;color:var(--text3);z-index:1;padding:0 8px}
+.cr a{color:inherit}
+.load{position:fixed;left:50%;top:48%;transform:translate(-50%,-50%);color:var(--text3);font-size:14px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.load i{width:28px;height:28px;border-radius:14px;border:3px solid var(--chip);border-top-color:var(--accent-hi);animation:sp .9s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.fps{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 64px);font:600 11px ui-monospace,monospace;color:var(--text3);display:none;z-index:3}
+.x0{width:44px;height:44px;border-radius:22px;border:0;display:grid;place-items:center;font-size:24px;line-height:1;color:var(--text);cursor:pointer;flex:none}
+body.embed .top,body.embed #chg,body.embed .cr,body.embed .leg{display:none}
+body.embed .dock{left:6px;right:6px;bottom:6px;border-radius:22px}
+body.poster .top,body.poster .dock,body.poster .cr,body.poster #labels,body.poster .hint,body.poster .info,body.poster .pick{display:none!important}
+.nogl{position:fixed;inset:auto 16px 45% 16px;text-align:center;color:var(--text2)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="labels"><svg id="lines"></svg></div>
+<div class="load" id="load"><i></i>Загружаем анатомию…</div>
+<div class="top">
+  <div class="seg glass" role="tablist"><button class="on" data-m="body" role="tab">Тело</button><button data-m="ex" role="tab">Упражнения</button></div>
+  <button class="ibtn glass" id="reset" aria-label="Вернуть вид"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
+</div>
+<div class="hint glass" id="hint"><b>Коснитесь мышцы</b> — расскажем, что она делает</div>
+<div class="fps" id="fps"></div>
+<div class="dock glass" id="dockBody"><div class="row" id="layers" style="overflow:visible"></div></div>
+<div class="dock glass off" id="dockEx">
+  <div class="ex-head"><b id="exName">Приседания</b><div class="ph" id="exPh"></div><button class="chg" id="chg">Сменить</button></div>
+  <div class="tl" id="tl" aria-label="Фазы движения — перемотка пальцем"></div>
+  <div class="leg" id="leg"></div>
+  <div class="ctrl">
+    <button class="btn" id="play"></button>
+    <button class="btn sec sm" id="slow">0,5×</button>
+    <button class="btn sec sm" id="view">Ракурс</button>
+  </div>
+</div>
+<div class="pick glass" id="pick" role="dialog"><h3>Упражнения</h3><div class="sub">Выберите — покажем движение и какие мышцы работают</div><div class="lst" id="lst"></div></div>
+<div class="info glass" id="info" role="dialog" aria-live="polite">
+  <button class="x" id="ix" aria-label="Закрыть">×</button>
+  <div class="k" id="ik"></div><b id="in"></b><div class="la" id="il"></div>
+  <p id="ifn"></p><div class="exh" id="iexh">Тренируют</div><div class="ex" id="iex"></div>
+  <div class="acts"><button class="btn sec" id="iso">Показать отдельно</button><button class="btn sec" id="ifly">Приблизить</button></div>
+</div>
+<div class="cr">3D-анатомия: BodyParts3D © DBCLS, Z-Anatomy · <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.ru" target="_blank" rel="noopener">CC BY-SA 4.0</a> · свет: Poly Haven CC0</div>
+<script type="module">
+const qs = new URLSearchParams(location.search);
+if (qs.get('embed')) document.body.classList.add('embed'); if (qs.has('poster')) document.body.classList.add('poster');
+if (qs.has('close')) { const b = document.createElement('button'); b.className = 'x0 glass'; b.setAttribute('aria-label', 'Закрыть'); b.textContent = '×'; b.onclick = () => parent.postMessage({ ten: 'close' }, location.origin); document.querySelector('.top').prepend(b) }
+const VER = 'r72'; // менять вместе с файлами модели и упражнений (и в ссылках предзагрузки выше)
+const { mountAnatomy } = await import('./ten.js?v=' + VER);
+const $ = s => document.querySelector(s);
+if (qs.get('theme')) document.documentElement.dataset.theme = qs.get('theme');
+const theme = qs.get('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+const IC = {
+  play: '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7 5v14l12-7z"/></svg>',
+  pause: '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>',
+};
+const LAY = [['skin', 'Кожа', '#E0AE94'], ['muscles', 'Мышцы', '#8A3530'], ['tendons', 'Связки', '#DCD5C9'], ['skeleton', 'Скелет', '#E6DCC4'], ['organs', 'Органы', '#6E2B22']];
+const GRP = { quads: 'Квадрицепс', glutes: 'Ягодичные', gmed: 'Средняя ягодичная', adductors: 'Приводящие', hams: 'Задняя поверхность бедра', calves: 'Икры', lowerback: 'Разгибатели спины',
+  abs: 'Пресс', obliques: 'Косые мышцы живота', chest: 'Грудные', frontdelt: 'Передняя дельта', sidedelt: 'Средняя дельта', reardelt: 'Задняя дельта', triceps: 'Трицепс', biceps: 'Бицепс',
+  lats: 'Широчайшие', traps: 'Трапеция', midtraps: 'Середина трапеции', rhomboids: 'Ромбовидные', serratus: 'Зубчатая', cuff: 'Вращатели плеча', hipflex: 'Сгибатели бедра', tibialis: 'Передняя голени', forearm: 'Предплечье' };
+let RU = {}; fetch('names-ru.json?v=' + VER).then(r => r.ok ? r.json() : {}).then(j => RU = j).catch(() => {});
+let A, mode = 'body', labels = [], slow = false, side = true, picked = null, isoOn = false;
+const tick = () => navigator.vibrate && navigator.vibrate(6);
+const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const base = n => n.replace(/\.(l|r)$/, '');
+
+try {
+  A = await mountAnatomy($('#stage'), { base: './', ver: VER, theme, fitK: qs.has('poster') ? .74 : 1.08, q: qs.get('q') || undefined, onPick: showInfo, onRender: drawLabels,
+    onFps: (f, q, d) => { $('#fps').textContent = Math.round(f) + ' к/с · ' + q + ' · ×' + d; window.__fps = (window.__fps || []).concat(Math.round(f)) },
+    onFrame: (ph, name) => exFrame(ph, name) });
+} catch (e) { $('#load').remove(); document.body.insertAdjacentHTML('beforeend', '<div class="nogl">Этот браузер не показывает 3D. Обновите его или откройте в Safari или Chrome.</div>'); throw e }
+window.A = A; window.__show = showInfo;
+function frame() { // фигура — между верхней плашкой и нижней панелью
+  if (document.body.classList.contains('poster')) { A.inset(0, 0); return }
+  const top = document.querySelector('.top').getBoundingClientRect().bottom + 8;
+  const dock = mode === 'body' ? $('#dockBody') : $('#dockEx'), bot = innerHeight - dock.getBoundingClientRect().top + 8;
+  A.inset(top, bot);
+}
+addEventListener('resize', () => setTimeout(frame, 50)); setTimeout(frame, 0); $('#load').remove(); if (qs.has('fps')) $('#fps').style.display = 'block';
+setTimeout(() => { if (!picked && mode === 'body') $('#hint').classList.add('on') }, 900);
+if (!qs.has('still')) A.turntable(true);
+
+// ---------- слои
+$('#layers').innerHTML = LAY.map(([k, l, c]) => `<button class="chip ${A.layers[k] ? 'on' : ''}" data-k="${k}" aria-pressed="${!!A.layers[k]}"><span class="d" style="background:${c}"></span>${l}</button>`).join('');
+$('#layers').onclick = e => { const b = e.target.closest('.chip'); if (!b) return; const on = !b.classList.contains('on'); setChip(b.dataset.k, on); tick() };
+function setChip(k, on) { const c = document.querySelector(`.chip[data-k=${k}]`); if (c) { c.classList.toggle('on', on); c.setAttribute('aria-pressed', on) } A.setLayer(k, on) }
+
+// ---------- режимы
+let LIST = [], cur = null, views = [], vi = 0;
+fetch('ex/index.json?v=' + VER).then(r => r.json()).then(j => { LIST = j; renderList() }).catch(() => {});
+function renderList() { $('#lst').innerHTML = LIST.map(x => `<button class="it ${cur && cur.id === x.id ? 'on' : ''}" data-id="${x.id}"><div class="tx"><b>${x.name}</b><small>${x.groups.map(g => GRP[g] || g).join(' · ')}</small></div><span class="go">›</span></button>`).join('') }
+$('#lst').onclick = e => { const b = e.target.closest('.it'); if (b) { tick(); $('#pick').classList.remove('on'); openEx(b.dataset.id) } };
+$('#chg').onclick = () => { renderList(); $('#pick').classList.add('on'); tick() };
+document.querySelectorAll('.seg button').forEach(b => b.onclick = () => setMode(b.dataset.m));
+async function setMode(m, id) {
+  if (m === mode && !id) { if (m === 'ex') $('#chg').click(); return } mode = m; tick();
+  document.querySelectorAll('.seg button').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+  closeInfo(); $('#hint').classList.remove('on'); $('#pick').classList.remove('on');
+  $('#dockBody').classList.toggle('off', m !== 'body'); $('#dockEx').classList.toggle('off', m === 'body');
+  if (m === 'body') { cur = null; await A.play(null); A.isolate('muscles', null); isoOn = false; labels = []; drawLabels(); setTimeout(frame, 380); A.reset(900); return }
+  setChip('skin', false); setChip('organs', false); setChip('muscles', true); setChip('tendons', true); setChip('skeleton', true);
+  A.isolate('muscles', null); isoOn = false;
+  await openEx(id || 'Bodyweight_Squat');
+}
+async function openEx(id) {
+  const c = await (await fetch('ex/' + id + '.json?v=' + VER)).json(); cur = c;
+  buildEx(c); await A.play(c); A.speed(slow ? .5 : 1); playBtn();
+  setTimeout(() => { frame(); views = [c.view ?? 1.05, Math.abs((c.view ?? 1) - .1) < .5 ? 1.5 : .12]; vi = 0; A.frameClip(views[0], 1100) }, 60);
+  if (!sessionStorage.getItem('ten-glow')) { $('#hint').innerHTML = '<b>Зелёным светятся</b> мышцы, которые работают'; $('#hint').classList.add('on'); setTimeout(() => $('#hint').classList.remove('on'), 4200); try { sessionStorage.setItem('ten-glow', 1) } catch (e) {} }
+}
+
+// ---------- упражнение: шкала фаз, легенда, подписи на фигуре
+function buildEx(c) {
+  $('#exName').textContent = c.name || 'Приседания';
+  $('#tl').innerHTML = c.phases.map(([a, b, n, , , w]) => `<div class="seg2 ${w ? 'w' : ''}" style="left:calc(${a * 100}% + 1px);width:calc(${(b - a) * 100}% - 2px)"></div>`).join('') + '<div class="cur" id="cur"></div>';
+  const groups = {};
+  c.muscles.forEach(m => { const g = groups[m.grp] = groups[m.grp] || { grp: m.grp, role: 9, names: [] }; g.role = Math.min(g.role, m.role); g.names.push(...m.names) });
+  const ids = (g, s) => A.ids(new RegExp('^(' + g.names.filter(n => n.endsWith(s)).map(esc).join('|') + ')$'));
+  labels = Object.values(groups).filter(g => g.role <= 2).sort((a, b) => a.role - b.role).map(g => ({ ...g, l: ids(g, '.l'), r: ids(g, '.r'), show: g.role === 1 }));
+  $('#leg').innerHTML = labels.map((g, i) => `<button class="chip ${g.show ? 'on' : ''}" data-i="${i}"><span class="d" style="background:#22D39A;${g.role > 1 ? 'opacity:.45' : 'box-shadow:0 0 6px #22D39A'}"></span>${GRP[g.grp] || g.grp}</button>`).join('');
+}
+$('#leg').onclick = e => { const b = e.target.closest('.chip'); if (!b) return; const g = labels[+b.dataset.i]; g.show = !g.show; b.classList.toggle('on', g.show); tick(); drawLabels() };
+function playBtn() { const p = A.playing; $('#play').innerHTML = (p ? IC.pause + 'Пауза' : IC.play + 'Смотреть') }
+$('#play').onclick = () => { A.pause(A.playing); playBtn(); tick() };
+$('#slow').onclick = () => { slow = !slow; A.speed(slow ? .5 : 1); $('#slow').textContent = slow ? '1×' : '0,5×'; tick() };
+$('#view').onclick = () => { vi = (vi + 1) % views.length; A.frameClip(views[vi], 900); tick() };
+let scrub = false;
+const tlSeek = e => { const r = $('#tl').getBoundingClientRect(); A.seek(Math.max(0, Math.min(.999, (e.clientX - r.left) / r.width))); playBtn() };
+$('#tl').addEventListener('pointerdown', e => { scrub = true; $('#tl').setPointerCapture(e.pointerId); tlSeek(e) });
+$('#tl').addEventListener('pointermove', e => scrub && tlSeek(e));
+$('#tl').addEventListener('pointerup', () => scrub = false);
+let lastName = '';
+function exFrame(ph) {
+  const cu = $('#cur'); if (cu) cu.style.left = (ph * 100) + '%'; if (!cur) return;
+  const p = cur.phases.find(q => ph >= q[0] && ph < q[1]) || cur.phases[0], key = p[3] + p[4];
+  if (key !== lastName) { lastName = key; $('#exPh').innerHTML = `<b>${p[3]}</b><br>${p[4]}` }
+}
+// подписи: точка на мышце, линия к плашке у края экрана; элементы создаются один раз и только двигаются (дёшево на телефоне)
+let pool = [], dockH = 0;
+function ensurePool() {
+  const box = $('#labels'), svg = $('#lines'), want = labels.filter(g => g.show);
+  if (pool.length === want.length && pool.every((o, i) => o.g === want[i])) return;
+  pool.forEach(o => { o.el.remove(); o.path.remove(); o.dot.remove() });
+  pool = want.map(g => { const el = document.createElement('div'); el.className = 'lbl' + (g.role > 1 ? ' s' : ''); el.innerHTML = `<i></i>${GRP[g.grp] || g.grp}`; box.appendChild(el);
+    const NS = 'http://www.w3.org/2000/svg', path = document.createElementNS(NS, 'path'), dot = document.createElementNS(NS, 'circle');
+    path.setAttribute('fill', 'none'); path.setAttribute('stroke', 'var(--leader)'); path.setAttribute('stroke-width', '1.2');
+    dot.setAttribute('r', '4'); dot.setAttribute('fill', '#22D39A'); dot.setAttribute('stroke', '#fff'); dot.setAttribute('stroke-width', '1.5'); svg.append(path, dot); return { g, el, path, dot } });
+}
+function drawLabels() {
+  const hide = mode !== 'ex' || !labels.length || $('#info').classList.contains('on') || $('#pick').classList.contains('on');
+  $('#labels').style.display = hide ? 'none' : ''; if (hide) return;
+  ensurePool(); if (!pool.length) return;
+  const W = innerWidth, H = innerHeight, top = 84, bot = H - dockH - 44, cx = W / 2, L = [], R = [];
+  pool.forEach(o => { const a = A.screen(o.g.l), b = A.screen(o.g.r); o.p = !a ? b : !b ? a : (a.dist < b.dist ? a : b); if (o.p) (o.p.x < cx ? L : R).push(o) });
+  const place = (arr, right) => { arr.sort((a, b) => a.p.y - b.p.y); let y = top; arr.forEach(o => { o.y = Math.max(y, Math.min(bot, o.p.y)); y = o.y + 38; o.right = right });
+    for (let i = arr.length - 1, lim = bot; i >= 0; i--) { if (arr[i].y > lim) arr[i].y = lim; lim = arr[i].y - 38 } };
+  place(L, false); place(R, true);
+  for (const o of pool) {
+    if (!o.p) { o.el.style.opacity = 0; o.path.setAttribute('d', ''); o.dot.setAttribute('r', 0); continue }
+    const ex = o.right ? W - 12 - 132 : 12 + 132;
+    o.el.style.opacity = 1; o.el.style.transform = `translate(${o.right ? W - 12 - 132 : 12}px, ${o.y}px) translateY(-50%)`;
+    o.path.setAttribute('d', `M${o.p.x.toFixed(1)} ${o.p.y.toFixed(1)} L${((o.p.x + ex) / 2).toFixed(1)} ${o.y.toFixed(1)} L${ex} ${o.y.toFixed(1)}`);
+    o.dot.setAttribute('cx', o.p.x.toFixed(1)); o.dot.setAttribute('cy', o.p.y.toFixed(1)); o.dot.setAttribute('r', 4);
+  }
+}
+new ResizeObserver(() => dockH = $('#dockEx').offsetHeight).observe($('#dockEx'));
+
+// ---------- карточка мышцы
+function showInfo(p) {
+  if (!p) { closeInfo(); return }
+  picked = p; $('#hint').classList.remove('on');
+  const b = base(p.name), r = RU[b] || {}, sd = /\.l$/.test(p.name) ? 'слева' : /\.r$/.test(p.name) ? 'справа' : '';
+  const kind = ({ muscles: 'Мышца', skeleton: 'Кость', tendons: 'Сухожилие · связка', organs: 'Орган', skin: 'Кожа' })[p.layer];
+  $('#ik').textContent = kind + (sd ? ' · ' + sd : '');
+  $('#in').textContent = r.ru || b; $('#il').textContent = r.ru ? b : '';
+  $('#ifn').textContent = r.fn || ''; $('#ifn').style.display = r.fn ? '' : 'none';
+  $('#iex').innerHTML = (r.ex || []).map(x => `<span>${x}</span>`).join(''); $('#iexh').style.display = (r.ex || []).length ? '' : 'none';
+  const m = p.layer === 'muscles'; $('#iso').style.display = $('#ifly').style.display = m ? '' : 'none';
+  $('#iso').textContent = isoOn ? 'Показать всё' : 'Показать отдельно';
+  $('#info').classList.add('on'); $('#dockBody').classList.add('off'); $('#dockEx').classList.add('off'); drawLabels(); tick();
+}
+function closeInfo() { $('#info').classList.remove('on'); if (A) A.select(null); $('#dockBody').classList.toggle('off', mode !== 'body'); $('#dockEx').classList.toggle('off', mode === 'body'); drawLabels() }
+$('#ix').onclick = () => { closeInfo(); if (isoOn) { isoOn = false; A.isolate('muscles', null) } };
+$('#iso').onclick = () => {
+  isoOn = !isoOn; const b = base(picked.name);
+  A.isolate('muscles', isoOn ? new RegExp('^' + esc(b) + '(\\.(l|r))?$') : null);
+  $('#iso').textContent = isoOn ? 'Показать всё' : 'Показать отдельно'; tick();
+};
+$('#ifly').onclick = () => { const ids = A.ids(new RegExp('^' + esc(picked.name) + '$')), c = A.center(ids); if (c) A.fly(c, Math.max(.45, A.size(ids) * 2.2), A.azimuth, .12, 900); tick() };
+$('#reset').onclick = () => { A.reset(800); tick() };
+if (qs.get('ex')) setMode('ex', qs.get('ex'));
+</script>
+</body>
+</html>

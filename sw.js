@@ -4,7 +4,7 @@
    видео не трогаем (нужны частичные ответы 206), кроме короткого примера squat.mp4: страница берёт его целиком через fetch.
    Версия кэша меняется при выкладке — скачанное (библиотеки, базы, картинки) переносится в новую копию, старые страницы не переносятся.
    lib/ отдаётся из памяти без проверки: новую версию библиотеки класть по новому пути, иначе останется старая. */
-const V='mt-2026-11-04-r71';
+const V='mt-2026-11-04-r72';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(['./','index.html','manifest.webmanifest','icon.png','data/products.json','data/dishes.json','data/aliases.json','data/korzina.json','data/recepty-std.json','data/regiony.json','data/allergens.json','data/goroda.json','cook-anim.js','snd/nozh-1.mp3','snd/nozh-2.mp3','snd/nozh-3.mp3','snd/nozh-4.mp3','snd/hrust-1.mp3','snd/hrust-2.mp3','snd/hrust-3.mp3'].map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 // страница просит сохранить себя (её адрес заранее неизвестен: index.html на сервере, yobody.html в превью)
 self.addEventListener('message',e=>{const u=e.data&&e.data.cachePage;if(u)e.waitUntil(caches.open(V).then(c=>c.add(new Request(u,{cache:'reload'}))).catch(()=>{}))});
@@ -42,7 +42,7 @@ self.addEventListener('fetch',e=>{
     if(r.cache==='reload'||r.cache==='no-cache'){fresh.add(p);e.respondWith(timeout(fetch(r),8000).then(res=>res.ok?put(r,res):caches.match(r,{ignoreSearch:true}).then(m=>m||res)).catch(()=>caches.match(r,{ignoreSearch:true}).then(m=>m||Response.error())));return} // страница входа в Wi-Fi или 5xx — отдаём сохранённое
     e.respondWith(caches.match(r,{ignoreSearch:true}).then(m=>{if(m){if(!fresh.has(p)){fresh.add(p);fetch(r).then(res=>put(r,res)).catch(()=>{})}return m}return fetch(r).then(res=>{fresh.add(p);return put(r,res)})}));return}
   // без сети несохранённая картинка — пустая заглушка, а не ошибка
-  e.respondWith(caches.match(r,{ignoreSearch:true}).then(m=>m||fetch(r).then(res=>put(r,res)).catch(err=>/\.(jpe?g|png|webp|gif)$/i.test(p)&&!p.includes('/ex/')?new Response('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>',{headers:{'content-type':'image/svg+xml'}}):Promise.reject(err))));
+  e.respondWith(caches.match(r,{ignoreSearch:true}).then(m=>m||fetch(r).then(res=>put(r,res)).catch(err=>/\.(jpe?g|png|webp|gif)$/i.test(p)?new Response('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>',{headers:{'content-type':'image/svg+xml'}}):Promise.reject(err))));
 });
 // напоминания с сервера: JSON {title, body, tag, url, icon?} → уведомление; нажали — открываем приложение на нужном экране (url вида ./#gym)
 self.addEventListener('push',e=>{let d={};try{d=e.data?e.data.json():{}}catch(_){try{d={body:e.data.text()}}catch(__){}}
