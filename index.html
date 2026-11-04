@@ -719,6 +719,22 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .cb-bdg{display:flex;align-items:center;gap:12px;margin-bottom:4px;padding:10px 12px;border-radius:16px;background:var(--accent-soft);text-align:left} .cb-bdg b{display:block;font-size:15px} .cb-bdg small{font-size:13px;color:var(--text2)} .cb-bdg .bd-i{flex:none;background:var(--grad);color:#fff}
 .cb-fin.in .cb-fin-in{animation:cbin .5s var(--ease-out)} .cb-fin.in .cb-bdg{animation:cbin .5s .3s var(--ease-out) backwards} @keyframes cbin{from{opacity:0;transform:translateY(16px) scale(.97)}}
 @media (prefers-reduced-motion:reduce){.cb-timer.end,.cb-fin.in .cb-fin-in,.cb-fin.in .cb-bdg{animation:none} .cb-s,.cb-bar i,.cb-nm,.cb-s1,.cb-txt,.cb-chk{transition:none}}
+/* карточка блюда: цена за порцию и чек, КБЖУ кольцами, сравнение сетей полосками, фото с параллаксом */
+.nw{white-space:nowrap} .dku{font:600 15px var(--font);color:var(--text2)}
+.dcost{margin-top:12px;color:var(--text2);line-height:1.45;text-wrap:pretty;hyphens:manual;-webkit-hyphens:manual} .dcost b{color:var(--text);font-size:16px} .dcost .dc1{color:var(--accent-text);font-size:18px}
+.mr-h{margin:16px 0 8px}
+.mrings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mring{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;min-width:0} .mr-c{position:relative;width:48px;height:48px;margin-bottom:2px}
+.mr-c svg{width:100%;height:100%;transform:rotate(-90deg)} .mr-c b{position:absolute;inset:0;display:grid;place-items:center;font:700 11.5px var(--num);letter-spacing:-.02em}
+.mring .num{font-size:17px;white-space:nowrap} .mring .num span{font:600 12px var(--font);color:var(--text2)} .mring .tiny{white-space:nowrap}
+.mring .tr{fill:none;stroke:var(--card3);stroke-width:4.5} .mring .tp{fill:none;stroke-width:4.5;stroke-linecap:round;stroke-dasharray:113.1;animation:ringIn .9s var(--d,0ms) var(--ease-out) backwards} @keyframes ringIn{from{stroke-dashoffset:113.1}}
+.plate.hero.fly .capt{opacity:0} .plate.hero .capt{transition:opacity .3s var(--ease-out)}
+.srcd summary{list-style:none;cursor:pointer} .srcd summary::-webkit-details-marker{display:none} .srcm{color:var(--accent-text);font-weight:650;white-space:nowrap} .srcd[open] .srcm{display:none} .srcd[open] summary{margin-bottom:4px} .srcd:not([open]) .srcx{display:none}
+.cmp{height:6px;margin:7px 0 1px;border-radius:3px;background:var(--card3);overflow:hidden} .cmp i{display:block;height:100%;border-radius:inherit;background:var(--text3);opacity:.55;transform-origin:left;animation:cmpIn .7s var(--d,0ms) var(--ease-out) backwards} .cmp.best i{background:var(--grad);opacity:1} .cmp.over i{background:var(--warn);opacity:.8}
+@keyframes cmpIn{from{transform:scaleX(0)}}
+.plate.hero img{inset:-12% 0 auto;height:124%;will-change:transform} .dfly img{position:relative;top:-12%;height:124%}
+.dfly{position:absolute;z-index:40;pointer-events:none;overflow:hidden;transform-origin:0 0;will-change:transform} .dfly img{width:100%;height:100%;object-fit:cover;display:block}
+@media (prefers-reduced-motion:reduce){.mring .tp,.cmp i{animation:none}}
 .badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
 .badge{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:10px 4px;border-radius:16px;background:var(--card2)} .badge b{font-size:13px;line-height:1.2} .badge small{font-size:11px;color:var(--text2);line-height:1.25}
 .bd-i{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--card3);color:var(--text3)} .bd-i .ic{width:20px;height:20px}
@@ -838,7 +854,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-02-r65'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-04-r66'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1155,6 +1171,10 @@ $('#scroll').addEventListener('scroll',()=>$('#hdr').classList.toggle('on',$('#s
 addEventListener('resize',movePill);
 function head(eyebrow,title){return `<div class="top"><span class="eyebrow">${eyebrow}</span><button class="avatar tap" onclick="openProfile()" aria-label="Мой план">${ava()}</button></div>${title?`<h1>${title}</h1>`:''}`}
 function macroBars(e,n){return [['Белки','p','var(--p)'],['Жиры','f','var(--f)'],['Углеводы','c','var(--c)']].map(([l,k,col])=>`<div style="flex:1;min-width:0"><div class="small muted">${l}</div><div class="num" style="font-size:15px;white-space:nowrap">${fmt(e[k])}<span class="muted" style="font-weight:600;font-size:12px"> / ${n[k]} г</span></div><div class="bar" style="margin-top:6px">${bar(Math.min(e[k]/n[k]*100,100),'background:'+col)}</div></div>`).join('')}
+// КБЖУ блюда кольцами: доля от суточной нормы, кольцо дорисовывается при открытии
+function macroRings(e,n){return [['Белки','p','var(--p)'],['Жиры','f','var(--f)'],['Углеводы','c','var(--c)']].map(([l,k,col],i)=>{const sh=Math.min(e[k]/Math.max(n[k],1),1),pc=Math.round(e[k]/Math.max(n[k],1)*100);
+  return `<div class="mring" style="--d:${i*70}ms"><div class="mr-c"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18" class="tr"/><circle cx="22" cy="22" r="18" class="tp" style="stroke:${col};stroke-dashoffset:${(113.1*(1-sh)).toFixed(1)}"/></svg><b>${pc}${NBS}%</b></div>
+   <div class="num">${fmt(e[k])}<span>${NBS}г</span></div><div class="tiny muted">${l}</div></div>`}).join('')}
 
 /* ---------- Сегодня ---------- */
 function weekCard(){
@@ -1485,9 +1505,11 @@ function kgPrice(id,ch){const x=PRICES&&PRICES.items&&PRICES.items[id];if(!x)ret
 // стоимость продуктов [[id, г]]: r — что уйдёт в блюда, chk — чек за целые упаковки; в одной сети (чего нет — по другой цене) или по самым низким
 function costOf(ing,ch){let r=0,chk=0,ok=true,have=0;const none=[];ing.forEach(([id,g])=>{let p=ch?kgPrice(id,ch):null;if(p&&(ch!=='rs'||p.src==='rs'))have++;else if(ch)ok=false;if(!p)p=kgPrice(id);if(!p){none.push(id);ok=false;return}if(!p.ok)ok=false;
     r+=p.r*g/1000;chk+=p.pk&&!p.pk[5]&&p.pk[1]>0?Math.ceil(g/p.pk[1])*p.pk[2]:p.r*g/1000});
-  return{r:r*RESERVE,chk:chk*RESERVE,ok,have,tot:ing.length,none}}
+  return{r:r*RESERVE,chk:chk*RESERVE,ok,have,tot:ing.length,none,part:none.length>0}}
 const dishCost=d=>hasPrices()?costOf(d.ing):null;
-const costTxt=c=>!c?'':'≈'+NBS+rub(c.r);
+// никогда не «0 ₽» за то, что стоит денег: нет цены ни у сети, ни у Росстата — «цена уточняется», копейки — «до 1 ₽»
+const costTxt=c=>!c?'':c.part?'цена уточняется':'≈'+NBS+rub(c.r);
+const ingRub=v=>v<1?'до'+NBS+'1'+NBS+'₽':'≈'+NBS+rub(v);
 const people=()=>Math.max(1,Math.min(10,+S.profile.people||1));
 function packTxt(pk){if(pk[5])return 'на развес, за кг';const m=String(pk[4]).match(/(\d+(?:[.,]\d+)?)\s*(кг|гр|г|мл|л|шт)(?![а-яё])/i);return 'упаковка '+(m?m[1].replace('.',',')+NBS+m[2].toLowerCase().replace('гр','г'):Math.round(pk[1])+NBS+'г')}
 function gramsTxt(id,g){const x=KIT.it[id];return x.pc?`${pl(Math.round(g/x.pc),'шт','шт','шт')} · ${g} г`:`${g} г`}
@@ -1514,8 +1536,8 @@ function dayPlan(){
   let leftK=remK,leftB=budget;
   for(const [sl,ml,,,lab] of slots){const w=W[ml]/wsum,tk=Math.max(slots.length>1&&ml==='s'?150:250,remK*w),tp=remP*w,tb=budget*w;
     // обед с собой: то, что хранится и хорошо разогревается
-    const box=lunchbox&&ml==='l',fitK=d=>!used.has(d.id)&&d.nut.k<=Math.max(tk*1.6,leftK+150),ok1=R.filter(d=>d.m.includes(ml)&&fitK(d)),ok0=ok1.length?ok1:R.filter(fitK), /* блюд этого приёма нет (только чайник, узкие исключения) — берём любые подходящие */ok=box&&ok0.some(d=>d.keep>=1&&d.eq==='плита')?ok0.filter(d=>d.keep>=1&&d.eq==='плита'):ok0,cst=d=>{const c=dishCost(d);return c?c.r:0};
-    const score=d=>(d.eq==='духовка'?-.5:0)+(S.likes&&S.likes[d.id]?.3:0)-(S.dislikes&&S.dislikes[d.id]?.8:0)-healthPenalty(d)-Math.abs(d.nut.k-tk)/tk+.6*Math.min(d.nut.p/Math.max(tp,1),1.2)-(hasPrices()?cst(d)/Math.max(tb,60)*.25:0)-(cst(d)>leftB&&hasPrices()?3:0);
+    const box=lunchbox&&ml==='l',fitK=d=>!used.has(d.id)&&d.nut.k<=Math.max(tk*1.6,leftK+150),ok1=R.filter(d=>d.m.includes(ml)&&fitK(d)),ok0=ok1.length?ok1:R.filter(fitK), /* блюд этого приёма нет (только чайник, узкие исключения) — берём любые подходящие */ok=box&&ok0.some(d=>d.keep>=1&&d.eq==='плита')?ok0.filter(d=>d.keep>=1&&d.eq==='плита'):ok0,cst=d=>{const c=dishCost(d);return c?c.r:0},part=d=>{const c=dishCost(d);return !!(c&&c.part)};
+    const score=d=>(d.eq==='духовка'?-.5:0)+(S.likes&&S.likes[d.id]?.3:0)-(S.dislikes&&S.dislikes[d.id]?.8:0)-healthPenalty(d)-Math.abs(d.nut.k-tk)/tk+.6*Math.min(d.nut.p/Math.max(tp,1),1.2)-(hasPrices()?cst(d)/Math.max(tb,60)*.25:0)-(cst(d)>leftB&&hasPrices()?3:0)-(part(d)?.6:0);
     const ranked=ok.map(d=>[score(d),d]).sort((a,b)=>b[0]-a[0]).map(a=>a[1]);if(!ranked.length)continue;
     const skip=(S.cook.skip[sl]||0)%ranked.length,pick=S.cook.pick[sl]&&ranked.find(d=>d.id===S.cook.pick[sl]),d=pick||ranked[skip];
     used.add(d.id);leftK-=d.nut.k;leftB-=cst(d);out.push({sl,m:ml,lab:lab+(box?' · с собой, приготовить с вечера':''),d,c:dishCost(d),n:ranked.length})}
@@ -1556,11 +1578,12 @@ function chainRows(ing){ // сети по стоимости списка: сн�
   rows.forEach(x=>x.over=x.r>b);
   rows.sort((a,z)=>(!!a.avg-!!z.avg)||(!!a.over-!!z.over)||(z.have/z.tot-a.have/a.tot>.15?1:a.have/a.tot-z.have/z.tot>.15?-1:0)||a.r-z.r);
   return rows}
-function chainList(ing){const rows=chainRows(ing),cheap=Math.min(...rows.filter(x=>!x.avg).map(x=>x.r));
-  return rows.map(x=>{const old=!x.avg&&chAge(x.c)>14,st=x.over?'выше бюджета':x.r===cheap&&rows.filter(z=>!z.avg).length>1?'дешевле':'в бюджете';
+function chainList(ing){const rows=chainRows(ing),cheap=Math.min(...rows.filter(x=>!x.avg).map(x=>x.r)),top=Math.max(...rows.map(x=>x.r),1);
+  return rows.map((x,i)=>{const old=!x.avg&&chAge(x.c)>14,st=x.over?'выше бюджета':x.r===cheap&&!x.part&&rows.filter(z=>!z.avg).length>1?'дешевле':'в бюджете';
    return `<a class="li" style="text-decoration:none" href="${mapUrl(x.avg?'продукты':x.n)}" target="_blank" rel="noopener" aria-label="${x.n}: блюда около ${fmt(x.r)} рублей, чек около ${fmt(x.chk)} рублей, ${st}"><div class="ibox ${x.avg?'':'accent'}">${ic(x.avg?'wallet':'cart')}</div>
     <div style="flex:1;min-width:0"><div style="font-weight:650">${x.n}${x.d!=null?` <span class="muted" style="font-weight:500">· ${distTxt(x.d)}</span>`:''}</div>
     <div class="small muted">${x.avg?(()=>{const nn=CLOSED_CH.map(c=>[c,nearest(c)]).filter(x=>x[1]!=null).sort((a,b)=>a[1]-b[1]).slice(0,2);return (nn.length?`рядом ${nn.map(([c,d])=>c+' '+distTxt(d)).join(', ')} — открытых цен у них пока нет. `:'')+'Средние по региону, Росстат'})():(x.have<x.tot?`есть ${x.have} из ${x.tot}, остальное — по другим ценам`:'всё есть')+` · ${PRICES.chains[x.c].src==='отметки покупателей'?'по отметкам покупателей, ':'цены на '}${PRICES.chains[x.c].d}${old?' — могли измениться':''}${(()=>{const st=PRICES.chains[x.c].store,m=st&&st.match(/(?:^|,\s*)г\.?\s+([А-ЯЁ][^,]+)/),c=cityName();return m&&c&&m[1].trim()!==c?' · по данным: '+m[1].trim():''})()}`}</div>
+    <div class="cmp ${st==='дешевле'?'best':x.over?'over':''}" aria-hidden="true"><i style="transform:scaleX(${(x.r/top).toFixed(3)});--d:${i*60}ms"></i></div>
     <div class="tiny" style="margin-top:2px;color:${x.over?'var(--warn-text)':st==='дешевле'?'var(--ok-text)':'var(--text3)'};font-weight:600">${st}</div></div>
     <div style="text-align:right;white-space:nowrap"><div class="num" style="font-size:17px">≈${NBS}${rub(x.r)}</div><div class="tiny muted">чек ≈${NBS}${rub(x.chk)}</div></div></a>`}).join('')}
 function srcNote(){if(!hasPrices())return '';const c=PRICES.chains,l=[];
@@ -1568,7 +1591,9 @@ function srcNote(){if(!hasPrices())return '';const c=PRICES.chains,l=[];
   if(c.vv&&chLive('vv'))l.push(`ВкусВилл — сайт сети, ${c.vv.d} (${c.vv.note||'цены Москвы'})`);
   Object.keys(c).filter(k=>c[k].src==='отметки покупателей'&&chLive(k)).forEach(k=>l.push(`${c[k].n} — по отметкам покупателей «Цена другая?», ${c[k].d}`));
   if(c.rs)l.push(`средние по региону — Росстат, ${c.rs.d}`);
-  return `<div class="src" style="margin:2px 4px 14px">Цены для: ${placeTxt()}. ${l.join('; ')}. «≈» — на одного человека. Обычная цена полки, без акций и карт; суммы — с запасом 3 %. Для Пятёрочки, Перекрёстка, Чижика, Ленты и Ашана открытых цен пока нет — показываем ориентир «примерно». «≈» — блюда: сколько уйдёт продуктов; «чек» — сколько заплатите за целые упаковки${people()>1?` на ${pl(people(),'человека','человек','человек')}`:''}. Цены справочные, окончательная цена — в магазине.${GEO&&SHOPS&&Object.keys(SHOPS.chains||{}).length?' Магазины рядом: © участники OpenStreetMap.':''}</div>`}
+  // коротко — источники и даты; остальное — по «Подробнее»; подпись OpenStreetMap всегда видна (лицензия ODbL)
+  const sh=[c.mg&&chLive('mg')?'Магнит '+c.mg.d:'',c.vv&&chLive('vv')?'ВкусВилл '+c.vv.d:'',...Object.keys(c).filter(k=>c[k].src==='отметки покупателей'&&chLive(k)).map(k=>c[k].n+' '+c[k].d),c.rs?'Росстат — '+c.rs.d:''].filter(Boolean),osm=GEO&&SHOPS&&Object.keys(SHOPS.chains||{}).length;
+  return `<details class="src srcd" style="margin:2px 4px 14px"><summary>Цены для: ${placeTxt()} · ${sh.join(', ')}. Справочно.${osm?' Магазины: © OpenStreetMap.':''} <span class="srcm">Подробнее</span></summary><span class="srcx">${l.join('; ')}. «≈» — на одного человека. Обычная цена полки, без акций и карт; суммы — с запасом 3 %. Для Пятёрочки, Перекрёстка, Чижика, Ленты и Ашана открытых цен пока нет — показываем ориентир «примерно». «≈» — блюда: сколько уйдёт продуктов; «чек» — сколько заплатите за целые упаковки${people()>1?` на ${pl(people(),'человека','человек','человек')}`:''}. Цены справочные, окончательная цена — в магазине.${osm?' Магазины рядом: © участники OpenStreetMap, лицензия ODbL.':''}</span></details>`}
 function vFood(){
   const pr=S.profile,n=norm(pr),e=eaten(),P=dayPlan(),loaded=!!KIT,priced=hasPrices();
   const tot=P.slots.reduce((s,x)=>s+(x.c?x.c.r:0),0),kc=P.slots.reduce((s,x)=>s+x.d.nut.k,0),pp=P.slots.reduce((s,x)=>s+x.d.nut.p,0);
@@ -1601,10 +1626,10 @@ function dishCat(d){const t=new Set(d.ing.flatMap(([id])=>KIT.it[id].al||[])),id
   if(/суп|щи|борщ|уха|солянк|рассольник|окрошк|свекольник|шурп/i.test(d.n))return ['суп','bowl'];
   if(/каша|овсян|гречк|пшён|геркулес/i.test(d.n))return ['каша','bowl'];if(t.has('egg')&&ids.includes('egg'))return ['яйца','egg'];
   if(['kefir','ryazhenka','yogurt','tvorog'].some(x=>ids.includes(x)))return ['молочное','cup'];return ['овощи и крупы','leaf']}
-function dishRow(d,c,eb,swap){return `<div class="card tap dish" role="button" onclick="openDish('${d.id}')"><div class="row">
+function dishRow(d,c,eb,swap){return `<div class="card tap dish" role="button" onclick="dishFrom(this);openDish('${d.id}')"><div class="row">
     <div class="thumb">${d.img?pic(d.img,d.n):`<span class="dish-ic" aria-hidden="true">${ic(dishCat(d)[1])}</span>`}</div>
     <div style="flex:1;min-width:0">${eb?`<div class="tiny" style="color:var(--text3);font-weight:600;margin-bottom:2px">${eb}</div>`:''}<div class="title" style="font-size:16px">${d.n}</div><div class="small muted">${u(d.nut.k,'ккал')} · белок&nbsp;${u(d.nut.p,'г')} · ${d.min}&nbsp;мин</div></div>
-    <div style="text-align:right;flex:none">${c?`<div class="num" style="font-size:17px;white-space:nowrap">${costTxt(c)}</div>`:''}${swap?`<button class="tiny" style="margin-top:6px;color:var(--accent-text);font-weight:700;padding:6px 0" onclick="event.stopPropagation();swapDish('${swap}')" aria-label="Заменить блюдо">Заменить</button>`:''}</div></div></div>`}
+    <div style="text-align:right;flex:none">${c?c.part?`<div class="tiny muted" style="max-width:76px;line-height:1.25">${costTxt(c)}</div>`:`<div class="num" style="font-size:17px;white-space:nowrap">${costTxt(c)}</div>`:''}${swap?`<button class="tiny" style="margin-top:6px;color:var(--accent-text);font-weight:700;padding:6px 0" onclick="event.stopPropagation();swapDish('${swap}')" aria-label="Заменить блюдо">Заменить</button>`:''}</div></div></div>`}
 function swapDish(sl){dayPlan();S.cook.skip[sl]=(S.cook.skip[sl]||0)+1;delete S.cook.pick[sl];save();haptic(6);rerender()}
 function openFoodPlan(){sheet('Питание и бюджет',vFood().replace(/^<div class="top">[\s\S]*?<\/h1>/,''));SHEET_FN=openFoodPlan;kitchenLoad()}
 // рецепты, цены региона и магазины рядом (если человек сам дал геопозицию) — один раз на регион; потом перерисовываем открытую шторку
@@ -1615,7 +1640,7 @@ async function kitchenLoad(){geoAuto();const k=region()+(GEO?'+':'');if(kitchenL
   try{await loadKit();await loadPrices(PRICES&&PRICES.failed);if(GEO)await loadShops()}finally{kitchenLoad.busy=0;kitchenLoad.done=k}
   if(SHEET_FN===openFoodPlan&&$('#sheet').classList.contains('on'))keepScroll(()=>{ANIM=false;openFoodPlan();ANIM=!RM});else if(!$('#sheet').classList.contains('on'))rerender()}
 function openDishes(f){f=f||'all';const P=dayPlan(),R0=KIT?KIT.recipes:[],R=R0.filter(d=>!dishBan(d)),hid=R0.length-R.length;
-  const l=R.filter(d=>f==='all'||d.m.includes(f)).map(d=>({d,c:dishCost(d)})).sort((a,b)=>(a.c&&b.c?a.c.r-b.c.r:0)||a.d.nut.k-b.d.nut.k);
+  const l=R.filter(d=>f==='all'||d.m.includes(f)).map(d=>({d,c:dishCost(d)})).sort((a,b)=>(a.c&&b.c?(a.c.part-b.c.part)||a.c.r-b.c.r:0)||a.d.nut.k-b.d.nut.k);
   sheet('Блюда и рецепты',`<div class="chips" style="margin-bottom:10px">${[['all','Все'],['b','Завтрак'],['l','Обед'],['d','Ужин'],['s','Перекус']].map(([k,t])=>`<button class="chip ${f===k?'on':''}" onclick="openDishes('${k}')">${t}</button>`).join('')}</div>
    <div class="small muted" style="margin:0 4px 10px">${hasPrices()?`Цена порции — по самым низким ценам сетей в регионе «${regName(region())}». Сначала дешёвые.`:'Цены загрузятся, когда будет интернет.'} Осталось на сегодня ${u(P.remK,'ккал')} и ${rub(P.budget)}.${hid?` Скрыто ${pl(hid,'блюдо','блюда','блюд')} по «Не ем и аллергии».`:''}</div>
    ${l.map(({d,c})=>dishRow(d,c,[d.nut.k>P.remK+150?'больше остатка калорий':'',c&&c.r>P.budget?'выше остатка бюджета':''].filter(Boolean).join(' · ')||[...d.m].map(x=>SLOT[x]).join(' · '))).join('')}`);SHEET_FN=()=>openDishes(f)}
@@ -1630,27 +1655,43 @@ function openDish(id,n){const d=dishOf(id);if(!d){loadKit().then(()=>KIT&&KIT.re
   if(n)DISHN=n;else if(openDish.last!==id)DISHN=people();openDish.last=id;const N=DISHN,f=d.f||1,fam=(S.noeat||[]).includes('family')&&N>1&&!near1(f),K=fam?(f+N-1)/f:N; // граммы ниже — на N порций; в семье порция под план только у вас
   const c=dishCost(d),nn=norm(S.profile),P=dayPlan(),inPlan=P.slots.find(x=>x.d.id===id),ban=dishBan(d),tm=d.min0&&d.min0!==d.min?`${d.min0}–${d.min}`:d.min;
   const big=N>1||!near1(f),ingTxt=(id,g,m)=>{const x=KIT.it[id],G=near1(K)?g:g*K;return x.pc?`${pl(Math.round(G/x.pc),'шт','шт','шт')} · ${Math.round(G/x.pc)*x.pc} г`:`${near1(K)?Math.round(G):rG(G)} г${m&&near1(K)&&near1(f)?' · '+m:''}`};
-  sheet(d.n,`${ban?`<div class="card" role="alert" style="box-shadow:inset 4px 0 0 var(--warn),var(--shadow)"><div class="small"><b style="color:var(--warn-text)">В составе: ${ban}</b> — вы отметили это в «Не ем и аллергии».</div></div>`:''}${d.img?`<div class="plate" style="margin-bottom:12px">${pic(d.img,d.n)}<div class="capt"><span>${d.n}</span><span class="num">${u(d.nut.k,'ккал')}</span></div></div>${d.cr?`<div class="tiny muted" style="margin:-6px 4px 12px">Фото: ${d.cr[0]} · ${d.cr[1]} · <a href="${d.cr[2]}" target="_blank" rel="noopener" style="color:inherit">Wikimedia Commons</a></div>`:''}`:''}
-   <div class="card"><div class="row between"><div><div class="num" style="font-size:34px">${fmt(d.nut.k)}</div><div class="small muted">ккал в порции · ${tm} мин</div><div class="tiny muted" style="margin-top:2px">${d.yield&&d.yield.g?`тарелка ≈ ${u(Math.round(d.yield.g*f/10)*10,'г')} · `:''}${d.eq==='без готовки'?'без готовки':d.eq==='духовка'?'нужна духовка':'на плите'}${d.keep?' · в холодильнике '+pl(d.keep,'день','дня','дней'):''}</div>${!near1(f)&&Math.round(f*10)!==10?`<div class="tiny" style="margin-top:2px;color:var(--accent-text);font-weight:600">порция ×${f1(Math.round(f*10)/10)} — под ваш план</div>`:''}</div>${c?`<div style="text-align:right"><div class="pill ok">${costTxt(c)}</div><div class="tiny muted" style="margin-top:4px">за порцию${c.ok?'':' · часть цен примерно'}</div></div>`:''}</div>
-   <div class="row" style="gap:14px;margin-top:14px">${macroBars(d.nut,nn)}</div></div>
+  sheet(d.n,`${ban?`<div class="card" role="alert" style="box-shadow:inset 4px 0 0 var(--warn),var(--shadow)"><div class="small"><b style="color:var(--warn-text)">В составе: ${ban}</b> — вы отметили это в «Не ем и аллергии».</div></div>`:''}${d.img?`<div class="plate hero" style="margin-bottom:12px">${pic(d.img,d.n)}<div class="capt"><span>${d.n}</span><span class="num">${u(d.nut.k,'ккал')}</span></div></div>${d.cr?`<div class="tiny muted" style="margin:-6px 4px 12px">Фото: ${d.cr[0]} · ${d.cr[1]} · <a href="${d.cr[2]}" target="_blank" rel="noopener" style="color:inherit">Wikimedia Commons</a></div>`:''}`:''}
+   <div class="card dish-top"><div class="num" style="font-size:34px;line-height:1">${fmt(d.nut.k)}<span class="dku"> ккал</span></div>
+    <div class="small muted" style="margin-top:4px">в порции · <span class="nw">${tm}${NBS}мин</span>${d.yield&&d.yield.g?` · тарелка <span class="nw">≈${NBS}${u(Math.round(d.yield.g*f/10)*10,'г')}</span>`:''} · ${d.eq==='без готовки'?'без готовки':d.eq==='духовка'?'нужна духовка':'на плите'}${d.keep?' · в холодильнике '+pl(d.keep,'день','дня','дней'):''}</div>${!near1(f)&&Math.round(f*10)!==10?`<div class="tiny" style="margin-top:2px;color:var(--accent-text);font-weight:600">порция ×${f1(Math.round(f*10)/10)} — под ваш план</div>`:''}
+    ${c?`<div class="dcost small"><b class="num nw dc1">${costTxt(c)}</b>${c.part?'':` <span class="nw">за порцию</span>${c.ok?'':' · часть цен примерно'} · купить целыми упаковками <b class="num nw">≈${NBS}${rub(costOf(d.ing.map(([i,g])=>[i,g*K])).chk)}</b>${N>1?' на '+pl(N,'порцию','порции','порций'):''}`}</div>`:''}
+    <div class="tiny muted mr-h">от вашей нормы на день</div><div class="mrings">${macroRings(d.nut,nn)}</div></div>
    <div class="card row between" style="gap:10px;flex-wrap:wrap"><div style="min-width:0;flex:1 1 140px"><div style="font-weight:650">Готовлю на</div><div class="tiny muted">${fam?`вам — порция ×${f1(Math.round(f*10)/10)}${d.yield&&d.yield.g?` (≈${Math.round(d.yield.g*f/10)*10} г)`:''}, остальным — обычная${d.yield&&d.yield.g?` (≈${Math.round(d.yield.g/10)*10} г)`:''}`:N>1?'все граммы, вода и соль пересчитаны':'граммы на одну порцию'}</div></div>
     <div class="ctl" role="group" aria-label="Порций"><button class="rb" onclick="openDish('${id}',Math.max(1,DISHN-1))" aria-label="Меньше порций">−</button><span class="num" style="font-size:20px;min-width:64px;text-align:center">${pl(N,'порция','порции','порций')}</span><button class="rb" onclick="openDish('${id}',Math.min(10,DISHN+1))" aria-label="Больше порций">+</button></div></div>
    <h2 style="margin-top:14px">Состав и цены</h2><div class="card list">${d.ing.map(([k,g,m])=>{const p=hasPrices()&&kgPrice(k),x=KIT.it[k];
      return `<div class="li"><div style="flex:1;min-width:0"><div style="font-weight:600">${x.n} · ${ingTxt(k,g,m)}</div><div class="tiny muted">${p&&p.pk?`${packTxt(p.pk)} — ${rub(p.pk[2])}, ${chName(p.src)}${p.pk[3]?` (сейчас по акции ${rub(p.pk[3])}${p.pk[6]?' до '+p.pk[6].slice(8,10)+'.'+p.pk[6].slice(5,7):''})`:''}`:p?`${p.src==='rs'?'средняя цена по региону, Росстат':'оценка'}: ${rub(p.r)} за кг`:''} ${p?`<button class="pfix" onclick="openPriceFix('${k}')">Цена другая?</button>`:''}</div></div>
-       <div class="num" style="white-space:nowrap">${p?'≈'+NBS+rub(p.r*g*K/1000*RESERVE):'—'}</div></div>`}).join('')}
+       ${p?`<div class="num" style="white-space:nowrap">${ingRub(p.r*g*K/1000*RESERVE)}</div>`:'<div class="tiny muted" style="text-align:right;max-width:84px">цена уточняется</div>'}</div>`}).join('')}
      ${(d.extra||[]).map(([nm,g,m])=>{const txt=exTxt(nm,g,m,fam?f+N-1:K*f);return `<div class="li"><div style="flex:1;min-width:0"><div style="font-weight:600">${nm[0].toUpperCase()+nm.slice(1)} · ${txt}</div></div><div class="tiny muted">из дома</div></div>`}).join('')}
-     ${c?`<div class="li"><div style="flex:1;font-weight:650">${N>1?`Всего на ${pl(N,'порцию','порции','порций')}`:'Порция'}</div><div class="num" style="font-weight:700">≈${NBS}${rub(c.r*K)}</div></div>`:''}</div>
+     ${c?`<div class="li"><div style="flex:1;font-weight:650">${N>1?`Всего на ${pl(N,'порцию','порции','порций')}`:'Порция'}</div><div class="num" style="font-weight:700">≈${NBS}${rub(c.r*K)}${c.part?'+':''}</div></div>${c.part?`<div class="tiny muted" style="padding:0 0 10px">+ ${c.none.map(i=>KIT.it[i].n.toLowerCase()).join(', ')} — цена уточняется, в сумму не вошло</div>`:''}`:''}</div>
    <div class="tiny muted" style="margin:-4px 4px 12px">Граммы — сырых продуктов. Калории и цену считает код; соль, специи и вода в цену не входят.</div>
    ${hasPrices()?`<h2>Где купить</h2><div class="card list">${chainList(d.ing)}</div>${srcNote()}`:''}
    <h2>Как готовить</h2>${d.tools?`<div class="small muted" style="margin:-4px 4px 10px"><b style="color:var(--text)">Посуда:</b> ${d.tools}${N>1?` — на ${pl(N,'порцию','порции','порций')} возьмите посуду побольше`:''}</div>`:''}
-   <div class="card list steps">${d.steps.map(([m,t,a],i)=>{const par=/^(Параллельно|Пока )/.test(t);return `<div class="li" style="align-items:flex-start"><div class="stepn">${i+1}</div><div style="flex:1;min-width:0"><div class="tiny" style="color:var(--accent-text);font-weight:650;margin-bottom:2px">Шаг ${i+1} · ${a&&a!==m?a+'–'+m:m} мин${par?' · одновременно':''}</div><div>${scaleTxt(t,fam?f+N-1:K*f)}</div></div></div>`}).join('')}
+   <div class="card list steps">${d.steps.map(([m,t,a],i)=>{const par=/^(Параллельно|Пока )/.test(t);return `<div class="li" style="align-items:flex-start"><div class="stepn">${i+1}</div><div style="flex:1;min-width:0"><div class="tiny" style="color:var(--accent-text);font-weight:650;margin-bottom:2px">Шаг ${i+1} · <span class="nw">${a&&a!==m?a+'–'+m:m}&nbsp;мин</span>${par?' · одновременно':''}</div><div>${scaleTxt(t,fam?f+N-1:K*f)}</div></div></div>`}).join('')}
      <div class="li"><div style="flex:1" class="small muted">Всего</div><div class="num">${tm} мин</div></div></div>
    ${d.safe?`<div class="card row" style="gap:12px;align-items:flex-start"><div class="ibox ok">${ic('lock')}</div><div class="small"><b>Безопасно и вкусно.</b> ${d.safe}</div></div>`:''}
    <button class="btn" style="margin-bottom:10px" onclick="openCook('${id}')">${ic('play')} Готовить по шагам</button>
    ${inPlan?'':`<button class="btn sec" style="margin-bottom:10px" onclick="planDish('${id}')">В план на сегодня</button>`}
    <button class="btn ghost" onclick="cookedDish('${id}')">Приготовил — записать в дневник</button>
    <div class="row" style="gap:8px;justify-content:center;margin-top:4px;flex-wrap:wrap"><button class="chip ${S.likes&&S.likes[id]?'on':''}" onclick="dishTaste('${id}',1)" aria-pressed="${!!(S.likes&&S.likes[id])}">♥ Нравится</button><button class="chip ${S.dislikes&&S.dislikes[id]?'on':''}" onclick="dishTaste('${id}',-1)" aria-pressed="${!!(S.dislikes&&S.dislikes[id])}">Не понравилось</button></div>
-   <div class="concept">Рецепт и цифры — ориентир, не медицинская консультация</div>`);SHEET_FN=()=>openDish(id)}
+   <div class="concept">Рецепт и цифры — ориентир, не медицинская консультация</div>`);SHEET_FN=()=>openDish(id);dishFly()}
+/* фото «перелетает» из строки списка в шапку карточки (общий элемент): копия летит вместе со шторкой — сдвиг, масштаб и обрезка (clip-path),
+   только transform и clip-path; потом фото в карточке мягко отстаёт при прокрутке (параллакс). «Уменьшить движение» — без этого */
+let DFROM=null;
+function dishFrom(el){const t=el.querySelector('.thumb img');DFROM=t&&t.complete&&t.naturalWidth?{r:t.getBoundingClientRect(),src:t.currentSrc||t.src,rad:parseFloat(getComputedStyle(t.parentElement).borderRadius)||12,t:Date.now()}:null}
+function dishFly(){const f=DFROM;DFROM=null;dishPar();const h=$('#sbody .plate.hero img');if(!f||RM||!h||Date.now()-f.t>900)return;
+  const ph=$('#phone').getBoundingClientRect(),m=new DOMMatrix(getComputedStyle($('#sheet')).transform),hr=h.parentElement.getBoundingClientRect();
+  const to={x:hr.left-ph.left-m.m41,y:hr.top-ph.top-m.m42,w:hr.width,h:hr.height},fr={x:f.r.left-ph.left,y:f.r.top-ph.top,w:f.r.width,h:f.r.height};
+  const k=Math.max(fr.w/to.w,fr.h/to.h),ix=(to.w-fr.w/k)/2,iy=(to.h-fr.h/k)/2,el=document.createElement('div');
+  el.className='dfly';el.style.cssText=`left:${to.x}px;top:${to.y}px;width:${to.w}px;height:${to.h}px`;el.innerHTML=`<img src="${f.src}" alt="">`;$('#phone').appendChild(el);h.style.opacity=0;h.parentElement.classList.add('fly');
+  const dur=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--d-sheet-in'))||520,end=()=>{h.style.opacity='';h.parentElement.classList.remove('fly');el.remove()};
+  const a=el.animate([{transform:`translate(${fr.x-to.x-ix*k}px,${fr.y-to.y-iy*k}px) scale(${k})`,clipPath:`inset(${iy}px ${ix}px round ${f.rad/k}px)`},{transform:'none',clipPath:'inset(0px 0px round 20px)'}],
+    {duration:dur,easing:'cubic-bezier(.32,.72,0,1)'});a.onfinish=end;a.oncancel=end;setTimeout(end,dur+400)}
+function dishPar(){const sb=$('#sbody');if(RM||sb.dataset.par)return;sb.dataset.par=1;let q=0;
+  sb.addEventListener('scroll',()=>{if(q)return;q=requestAnimationFrame(()=>{q=0;const h=sb.querySelector('.plate.hero img');if(!h)return;const p=h.parentElement.offsetHeight||1;h.style.transform=`translateY(${Math.min(sb.scrollTop*.3,p*.12).toFixed(1)}px)`})},{passive:true})}
 /* ---------- «Готовить по шагам»: один экран с вертикальной прокруткой. Шапка с общим прогрессом → «Продукты» (нажал — кружок наполняется,
    строку прочёркивает линия, через миг она уезжает вниз) → «Шаги» (текущий раскрыт карточкой: огонь, время, посуда, таймер; остальные — строкой) → финал.
    Экран не гаснет (Wake Lock). Прогресс (галочки, сделанные шаги, таймеры) — в S.cookbook на сегодня: закрыли посреди — откроется там же ---------- */
@@ -1672,7 +1713,7 @@ const FIRE=/((?:на )?(?:очень )?(?:сильн|средн|слаб|уме�
 // огонь для чипса — последний в шаге («доведите на сильном, убавьте до слабого (2–3 из 9)» → «слабый огонь · 2–3 из 9»), в именительном падеже
 function cbFire(t){const l=[...t.matchAll(FIRES)].filter(x=>/огн/.test(x[0])||x[3]);if(!l.length){const c=t.match(/\d+\s?°C/);return c?'духовка '+c[0]:null}
   const x=l[l.length-1],k=w=>FIRE_N[w.toLowerCase()];return (x[2]?k(x[1]).replace(/ий$|ый$|ой$/,'е')+'-'+k(x[2]):k(x[1]))+' огонь'+(x[3]?' · '+x[3]:'')}
-function cbChips(t,m,a,tools){const out=[],f=cbFire(t);if(f)out.push(['flame',f]);out.push(['history',(a&&a!==m?a+'–'+m:m)+' мин']);
+function cbChips(t,m,a,tools){const out=[],f=cbFire(t);if(f)out.push(['flame',f]);out.push(['history',(a&&a!==m?a+'–'+m:m)+NBS+'мин']);
   const p=t.match(/(сковород|кастрюл|сотейник|ковш|форм[уеы]|противен|миск|чайник)[а-яё]*/i);
   if(p){const tl=(tools||'').split(/;\s*/).find(x=>x.toLowerCase().startsWith(p[1].toLowerCase()));out.push(['bowl',tl||p[0].toLowerCase()])}
   return out}
@@ -1684,14 +1725,16 @@ function cbNewBadges(id){const c0=S.cooked;S.cooked=[...(c0||[]),{id,d:today0()}
 function openCook(id){const d=dishOf(id);if(!d)return;let st=cbSt();
   if(!st||st.id!==id||st.d!==today0()){st=S.cookbook={id,d:today0(),N:DISHN||people(),got:[],done:[],tm:{}};save()}
   let el=$('#cook');if(!el){el=document.createElement('div');el.id='cook';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Готовить по шагам');$('#phone').appendChild(el)}
-  closeSheet();cbRender();el.classList.add('on');wakeOn();clearInterval(CBT);CBT=setInterval(cbTick,250);cbTick(1);haptic(8);
+  closeSheet();cbRender();el.classList.add('on');cbCascade(el);wakeOn();clearInterval(CBT);CBT=setInterval(cbTick,250);cbTick(1);haptic(8);
   if(st.done.length)requestAnimationFrame(()=>cbCenter(1))}
+// при открытии шапка, продукты и шаги появляются каскадом (по 35 мс), только transform и opacity
+function cbCascade(el){if(RM)return;[...el.querySelectorAll('.cb-hero>*,.cb-sh,#cbList>*,#cbSteps>*')].slice(0,22).forEach((x,i)=>x.animate([{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'none'}],{duration:440,delay:90+i*35,easing:EASE,fill:'backwards'}))}
 function cbRender(){const st=cbSt(),d=dishOf(st.id),el=$('#cook');if(!d||!el)return;const L=cbLines(d,st.N),n=d.steps.length,K=st.N*(d.f||1),tm=d.min0&&d.min0!==d.min?`${d.min0}–${d.min}`:d.min;
   const order=L.map((x,i)=>[x,i]).sort((a,b)=>st.got.includes(a[0][0])-st.got.includes(b[0][0])||a[1]-b[1]),p=cbProg();
   el.innerHTML=`<div class="cb-top"><button class="cb-x" onclick="closeCook()" aria-label="Закрыть">${ic('chevl')}</button><div class="cb-tt" aria-hidden="true">${d.n}</div><div class="cb-tbar" aria-hidden="true"><i></i></div></div>
    <div class="cb-scroll">
     <header class="cb-hero">${d.img?`<div class="cb-ph">${pic(d.img,d.n)}</div>`:`<div class="cb-ph cb-ic">${ic(dishCat(d)[1])}</div>`}
-     <h1 class="cb-h">${d.n}</h1><div class="cb-meta">≈ ${tm} мин · ${pl(st.N,'порция','порции','порций')}${d.yield&&d.yield.g?` · ${Math.round(d.yield.g*(d.f||1)*st.N/10)*10} г`:''}</div>
+     <h1 class="cb-h">${d.n}</h1><div class="cb-meta"><span class="nw">≈&nbsp;${tm}&nbsp;мин</span> · ${pl(st.N,'порция','порции','порций')}${d.yield&&d.yield.g?` · ${Math.round(d.yield.g*(d.f||1)*st.N/10)*10} г`:''}</div>
      <div class="cb-bar" role="progressbar" aria-label="Сделано" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p*100)}"><i style="transform:scaleX(${p})"></i></div></header>
     <section class="cb-sec"><div class="cb-sh"><h2>Продукты</h2><span class="cb-cnt" id="cbGotN"></span></div>
      <div class="cb-list" id="cbList">${order.map(([[k,nm,q],i])=>cbRow(k,nm,q,st.got.includes(k),i)).join('')}</div></section>
@@ -1700,7 +1743,7 @@ function cbRender(){const st=cbSt(),d=dishOf(st.id),el=$('#cook');if(!d||!el)ret
     ${st.done.length>=n?cbFinHtml(st,d):''}
    </div>`;cbProgUpd();const sc=el.querySelector('.cb-scroll'),h=el.querySelector('.cb-h');sc.addEventListener('scroll',()=>el.classList.toggle('sc',sc.scrollTop>h.offsetTop+h.offsetHeight-8),{passive:true})}
 function cbStepsHtml(st,d,K,cur){const n=d.steps.length;return d.steps.map(([m,t,a],i)=>{const dn=st.done.includes(i),par=/^(Параллельно|Пока )/.test(t),txt=scaleTxt(t,K),mm=a&&a!==m?a+'–'+m:m;
-  if(i!==cur)return `<button class="cb-st ${dn?'on':''}" data-i="${i}" onclick="cbOpenStep(${i})" aria-label="Шаг ${i+1}${dn?', сделан':''}. ${txt.replace(/"/g,'')}"><span class="cb-n">${dn?ic('check'):i+1}</span><span class="cb-s1"><span class="cb-s">${txt}</span></span><span class="cb-m">${mm} мин</span></button>`;
+  if(i!==cur)return `<button class="cb-st ${dn?'on':''}" data-i="${i}" onclick="cbOpenStep(${i})" aria-label="Шаг ${i+1}${dn?', сделан':''}. ${txt.replace(/"/g,'')}"><span class="cb-n">${dn?ic('check'):i+1}</span><span class="cb-s1"><span class="cb-s">${txt}</span></span><span class="cb-m">${mm}&nbsp;мин</span></button>`;
   const tm=st.tm[i];
   return `<div class="cb-st cur" data-i="${i}"><div class="cb-card"><div class="cb-ch"><span class="cb-big">${i+1}</span><span class="cb-of">из ${n}${par?' · одновременно с прошлым':''}</span></div>
     <p class="cb-txt"><span class="cb-s">${cbBold(txt)}</span></p>
