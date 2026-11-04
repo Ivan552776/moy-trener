@@ -673,52 +673,112 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 .dsel{margin-top:8px} .dsel .chip{font-size:13px;padding:6px 11px}
 .ddone{position:sticky;bottom:-16px;z-index:4;margin:12px -20px -16px;padding:12px 20px calc(env(safe-area-inset-bottom) + 22px);background:rgba(243,242,246,.82);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:0 -.5px 0 var(--line)}
 :root[data-scheme="dark"] .ddone{background:rgba(28,28,30,.82)}
-#cook{position:absolute;inset:0;z-index:26;background:var(--bg);opacity:0;pointer-events:none;transform:translateY(24px);transition:opacity .3s var(--ease-out),transform .45s var(--spring-sheet,cubic-bezier(.2,.9,.25,1))}
+/* цвета сцен анимаций шагов (cook-anim.js): светлая столешница, в тёмной теме — тёмный камень */
+#cook,.kitch{--ct0:#F7F1E8;--ct1:#E6DBCA;--ct2:#D6C8B2;--speck:#9C8B73;--light:.55;--steam:#9AA6AE;--edge:.5}
+:root[data-scheme="dark"] #cook{--ct0:#3A3B40;--ct1:#303135;--ct2:#2A2B2F;--speck:#000;--light:.14;--steam:#E9EEF2;--edge:.1}
+/* «Готовить по шагам» — «Кино»: постер, «Всё на столе», шаг в фокусе с анимацией действия, финал */
+#cook{position:absolute;inset:0;z-index:26;background:var(--bg);opacity:0;pointer-events:none;transform:translateY(24px);transition:opacity .3s var(--ease-out),transform .45s var(--spring-sheet,cubic-bezier(.2,.9,.25,1));overflow:hidden}
 #cook.on{opacity:1;pointer-events:auto;transform:none}
-.cb-top{position:absolute;z-index:2;top:0;left:0;right:0;display:flex;align-items:center;gap:10px;height:calc(env(safe-area-inset-top) + 60px);padding:calc(env(safe-area-inset-top) + 8px) 16px 8px;background:var(--bg)}
-.cb-top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:.5px;background:var(--line);opacity:0;transition:opacity .25s var(--ease-out)}
-.cb-tt{flex:1;min-width:0;font:650 16px/1.25 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;transform:translateY(6px);transition:opacity .25s var(--ease-out),transform .25s var(--ease-out)}
-#cook.sc .cb-tt{opacity:1;transform:none} #cook.sc .cb-top::after{opacity:1}
-.cb-tbar{position:absolute;left:16px;right:16px;bottom:2px;height:3px;border-radius:2px;background:var(--accent-soft);overflow:hidden;opacity:0;transition:opacity .25s var(--ease-out)} .cb-tbar i{display:block;height:100%;background:var(--grad);transform-origin:left;transition:transform .45s var(--ease-out)} #cook.sc .cb-tbar{opacity:1}
-.cb-x{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--glass,rgba(255,255,255,.6));-webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6);box-shadow:var(--shadow)} .cb-x .ic{width:22px;height:22px}
-.cb-scroll{position:absolute;inset:calc(env(safe-area-inset-top) + 60px) 0 0;overflow-y:auto;overscroll-behavior:contain;padding:4px 16px calc(env(safe-area-inset-bottom) + 40px)}
-.cb-hero{margin-bottom:24px}
-.cb-ph{width:100%;aspect-ratio:16/10;border-radius:24px;overflow:hidden;position:relative;margin-bottom:16px;background:var(--card2);box-shadow:0 18px 40px -18px rgba(4,60,40,.45),var(--shadow)} .cb-ph img{width:100%;height:100%;object-fit:cover;display:block}
-.cb-ph.cb-ic{display:grid;place-items:center;aspect-ratio:16/8;background:var(--grad);color:#fff} .cb-ph.cb-ic .ic{width:72px;height:72px;stroke-width:1.3}
-.cb-h{margin:0 2px 4px;font:700 28px/1.12 var(--display);letter-spacing:-.01em;text-wrap:balance;overflow-wrap:anywhere}
-.cb-meta{margin:0 2px 14px;font-size:15px;color:var(--text2)}
-.cb-bar{height:6px;margin:0 2px;border-radius:3px;background:var(--accent-soft);overflow:hidden} .cb-bar i{display:block;height:100%;border-radius:inherit;background:var(--grad);transform-origin:left;transition:transform .45s var(--ease-out)}
-.cb-sec{margin-bottom:24px} .cb-sh{position:sticky;top:-4px;z-index:1;display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 -16px 0;padding:8px 20px 8px;background:var(--bg)} .cb-sh h2{margin:0;font:700 20px var(--display)} .cb-cnt{font:600 14px var(--num);color:var(--text2);white-space:nowrap}
-.cb-list,.cb-steps{display:flex;flex-direction:column;padding:2px 16px;border-radius:22px;background:var(--card);box-shadow:var(--shadow)}
-.cb-row,.cb-st{display:flex;align-items:center;gap:14px;width:100%;min-height:56px;padding:10px 0;text-align:left;box-shadow:inset 0 -.5px 0 var(--line)} .cb-list>:last-child,.cb-steps>:last-child{box-shadow:none}
-.cb-chk{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 2px var(--line2,var(--card3));color:transparent;transition:background-color .2s var(--ease-out),box-shadow .2s var(--ease-out),color .2s var(--ease-out)} .cb-chk .ic{width:16px;height:16px;stroke-width:2.8}
-.cb-row.on .cb-chk{background:var(--accent);box-shadow:none;color:#fff}
-.cb-nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-weight:600;font-size:16px;line-height:1.3;overflow-wrap:anywhere;transition:opacity .3s var(--ease-out)} .cb-nm small{font-weight:500;font-size:14px;color:var(--text2)}
-.cb-row.on .cb-nm,.cb-st.on .cb-s1,.cb-st.striking .cb-txt{opacity:.45}
-/* зачёркивание: линия прорисовывается слева направо по всем строкам текста и так же втягивается обратно (фон строчного элемента — переносы не ломают линию) */
-.cb-s{background:linear-gradient(currentColor,currentColor) 0 60%/0 1.5px no-repeat;-webkit-box-decoration-break:slice;transition:background-size .3s var(--ease-out)}
-.cb-row.on .cb-s,.cb-st.on .cb-s,.cb-st.striking .cb-s{background-size:100% 1.5px}
-.cb-n{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:600 14px var(--num);color:var(--text2);box-shadow:inset 0 0 0 1.5px var(--line2,var(--card3))} .cb-n .ic{width:15px;height:15px;stroke-width:2.8}
-.cb-st.on .cb-n{background:var(--accent-soft);color:var(--accent-text);box-shadow:none}
-.cb-s1{flex:1;min-width:0;font-size:15px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;transition:opacity .3s var(--ease-out)}
-.cb-m{flex:none;font:500 13px var(--num);color:var(--text2);white-space:nowrap}
-.cb-st.cur{display:block;padding:10px 0;margin:0 -8px;width:auto}
-.cb-card{padding:16px 16px 14px;border-radius:20px;background:linear-gradient(180deg,var(--accent-soft),transparent 75%),var(--card);box-shadow:inset 0 0 0 1px var(--accent-line,var(--line))}
-.cb-ch{display:flex;align-items:baseline;gap:8px} .cb-big{font:300 46px/1 var(--num);letter-spacing:-.03em;color:var(--accent-text)} .cb-of{font-size:14px;color:var(--text2)}
-.cb-txt{margin:10px 0 12px;font-size:19px;line-height:1.45;text-wrap:pretty;transition:opacity .3s var(--ease-out)} .cb-txt b{font-weight:650}
-.cb-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px} .cb-chip{display:inline-flex;align-items:center;gap:5px;max-width:100%;padding:6px 10px;border-radius:999px;background:var(--card);font-size:13.5px;font-weight:500;box-shadow:inset 0 0 0 1px var(--line)} .cb-chip .ic{flex:none;width:15px;height:15px;color:var(--accent-text)}
-.cb-act{display:flex;align-items:center;gap:12px}
-.cb-timer{flex:none;position:relative;width:76px;height:76px;border-radius:50%;display:grid;place-items:center} .cb-timer>svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
-.cb-timer .tr{fill:none;stroke:var(--accent-soft);stroke-width:5} .cb-timer .tp{fill:none;stroke:var(--accent);stroke-width:5;stroke-linecap:round;stroke-dasharray:176;transition:stroke-dashoffset .25s linear}
-.cb-timer>span{position:relative;display:flex;flex-direction:column;align-items:center;line-height:1.1} .cb-timer b{font:700 17px var(--num)} .cb-timer small{font-size:11px;color:var(--text2)}
-.cb-timer.end{animation:cbpulse 1s ease-in-out infinite} @keyframes cbpulse{50%{transform:scale(1.06)}}
-.cb-done{flex:1;min-width:0;height:56px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:var(--pill);background:var(--grad);color:#fff;font:700 17px var(--font);box-shadow:0 10px 24px -12px rgba(4,120,87,.7);transition:transform .16s var(--ease-out)} .cb-done:active{transform:scale(.97)} .cb-done .ic{width:22px;height:22px;stroke-width:2.6}
-.cb-fin-in{display:flex;flex-direction:column;gap:10px;padding:26px 20px 18px;border-radius:24px;background:var(--card);box-shadow:var(--shadow-pop);text-align:center}
-.cb-fin-ic{align-self:center;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--grad);color:#fff;box-shadow:0 12px 28px -12px rgba(4,120,87,.7)} .cb-fin-ic .ic{width:32px;height:32px;stroke-width:2.4}
-.cb-fin h2{margin:6px 0 0;font:700 27px/1.15 var(--display)} .cb-fin p{margin:0 0 6px;font-size:15px;color:var(--text2)}
-.cb-bdg{display:flex;align-items:center;gap:12px;margin-bottom:4px;padding:10px 12px;border-radius:16px;background:var(--accent-soft);text-align:left} .cb-bdg b{display:block;font-size:15px} .cb-bdg small{font-size:13px;color:var(--text2)} .cb-bdg .bd-i{flex:none;background:var(--grad);color:#fff}
-.cb-fin.in .cb-fin-in{animation:cbin .5s var(--ease-out)} .cb-fin.in .cb-bdg{animation:cbin .5s .3s var(--ease-out) backwards} @keyframes cbin{from{opacity:0;transform:translateY(16px) scale(.97)}}
-@media (prefers-reduced-motion:reduce){.cb-timer.end,.cb-fin.in .cb-fin-in,.cb-fin.in .cb-bdg{animation:none} .cb-s,.cb-bar i,.cb-nm,.cb-s1,.cb-txt,.cb-chk{transition:none}}
+.kn-bar{position:absolute;z-index:8;top:calc(env(safe-area-inset-top) + 10px);left:12px;right:12px;display:flex;gap:8px;align-items:center;pointer-events:none}
+.kn-bar>*{pointer-events:auto} .kn-bar .sp{flex:1}
+.kn-ib{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--text);background:var(--glass,rgba(255,255,255,.6));-webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6);box-shadow:var(--shadow)}
+.kn-ib .ic{width:21px;height:21px} .kn-ib.on{color:var(--accent-text)}
+.kn-dark .kn-ib{color:#fff;background:rgba(0,0,0,.28)}
+.kn-scr{position:absolute;inset:0;overflow:hidden}
+.kn-in{animation:knIn .5s var(--ease-out) both} .kn-out{animation:knOut .32s var(--ease-out) both;pointer-events:none}
+@keyframes knIn{from{opacity:0;transform:translateX(8px)}} @keyframes knOut{to{opacity:0;transform:translateX(-8px)}}
+/* постер */
+.kn-cover{position:absolute;inset:0;background:#000;color:#fff}
+.kn-cover>img,.kn-cover>.kn-ph-ic{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:knKb 16s var(--ease-out) both}
+.kn-ph-ic{display:grid;place-items:center;background:var(--grad)} .kn-ph-ic .ic{width:96px;height:96px;stroke-width:1.2;color:#fff;opacity:.9}
+@keyframes knKb{from{transform:scale(1.1)}}
+.kn-cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.38) 0%,rgba(0,0,0,0) 24%,rgba(0,0,0,0) 40%,rgba(0,0,0,.72) 72%,rgba(0,0,0,.92) 100%)}
+.kn-tx0{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:0 22px calc(env(safe-area-inset-bottom) + 26px)}
+.kn-tx0>*{animation:knRise .8s var(--ease-out) both} .kn-tx0>*:nth-child(2){animation-delay:.08s} .kn-tx0>*:nth-child(3){animation-delay:.16s} .kn-tx0>*:nth-child(4){animation-delay:.24s}
+@keyframes knRise{from{opacity:0;transform:translateY(16px)}}
+.kn-eb{font:650 13px var(--font);letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.kn-cover h1{font:800 clamp(30px,9.6vw,42px)/1.04 var(--display);letter-spacing:-.03em;margin:8px 0 16px;text-wrap:balance;overflow-wrap:anywhere}
+.kn-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.kn-pill{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:999px;font:600 14px var(--font);color:#fff;white-space:nowrap;background:rgba(255,255,255,.15);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);box-shadow:inset 0 .5px 0 rgba(255,255,255,.35)}
+.kn-pill .ic{width:16px;height:16px}
+.kn-cta,.kn-btn{display:flex;align-items:center;justify-content:center;text-align:center}
+.kn-cta{position:relative;width:100%;height:60px;border-radius:999px;background:linear-gradient(180deg,#10B981,#047857);color:#fff;font:700 18px var(--font);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 10px 30px -8px rgba(16,185,129,.7);transition:transform .16s var(--ease-out)}
+.kn-cta:active,.kn-btn:active{transform:scale(.97)}
+.kn-cta{animation:knCta 2.4s ease-in-out infinite} @keyframes knCta{50%{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 0 6px rgba(52,211,153,.22),0 12px 40px -4px rgba(16,185,129,.95)}} /* мягкое свечение — тенью, не меняет размеры */
+@keyframes knGlow{0%,100%{opacity:.35;transform:scale(1.02)}50%{opacity:1;transform:scale(1.12)}}
+/* «Всё на столе» */
+.kn-mise{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top) + 66px) 16px calc(env(safe-area-inset-bottom) + 120px)}
+.kn-mh{display:flex;align-items:center;gap:14px;margin:0 4px 18px} .kn-mh h2{font:800 28px/1.05 var(--display);letter-spacing:-.03em;margin:0} .kn-mh p{color:var(--text2);font-size:14.5px;margin:4px 0 0}
+.kn-ring{position:relative;flex:none;width:62px;height:62px} .kn-ring svg{width:100%;height:100%;transform:rotate(-90deg)} .kn-ring .tr{fill:none;stroke:var(--accent-soft);stroke-width:6} .kn-ring .tp{fill:none;stroke:#10B981;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .6s var(--ease-out)}
+.kn-ring b{position:absolute;inset:0;display:grid;place-items:center;font:700 15px var(--num)}
+.kn-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;perspective:900px}
+.kn-tile{position:relative;min-height:168px;border-radius:22px;text-align:left;transform-style:preserve-3d;transition:transform .6s var(--spring)}
+.kn-tile.on{transform:rotateY(180deg)}
+.kn-back{visibility:hidden;transition:visibility 0s .28s} .kn-tile.on .kn-back{visibility:visible} .kn-face{transition:visibility 0s .28s} .kn-tile.on .kn-face{visibility:hidden} /* вторая сторона проявляется на середине переворота */
+.kn-face,.kn-back{position:absolute;inset:0;border-radius:inherit;padding:12px 12px 14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:var(--shadow)}
+.kn-face{background:var(--card2);display:flex;flex-direction:column} .kn-art{width:64px;height:64px;margin-bottom:8px} .kn-art svg{width:100%;height:100%}
+.kn-gen{display:grid;place-items:center;width:56px;height:56px;margin:4px;border-radius:50%;background:var(--accent-soft);color:var(--accent-text);font:750 22px var(--display)}
+.kn-face b{font:800 22px/1.05 var(--num);letter-spacing:-.02em} .kn-face span{font:600 14.5px/1.25 var(--font);margin-top:4px;overflow-wrap:anywhere} .kn-face small{font-size:12.5px;color:var(--text2);margin-top:2px}
+.kn-back{transform:rotateY(180deg);background:linear-gradient(180deg,#10B981,#047857);color:#fff;display:grid;place-items:center;align-content:center;gap:6px;text-align:center;font:650 14px var(--font)}
+.kn-back .ic{width:34px;height:34px;stroke-width:2.4}
+.kn-dock{position:absolute;left:0;right:0;bottom:0;padding:14px 16px calc(env(safe-area-inset-bottom) + 16px);background:linear-gradient(180deg,transparent,var(--bg) 40%);pointer-events:none} .kn-dock>*{pointer-events:auto}
+.kn-btn{width:100%;height:58px;border-radius:999px;background:var(--text);color:var(--bg);font:700 17px var(--font);transition:transform .16s var(--ease-out),background-color .3s}
+.kn-btn.em{background:linear-gradient(180deg,#10B981,#047857);color:#fff;box-shadow:0 10px 28px -10px rgba(16,185,129,.8)}
+/* шаг в фокусе */
+.kn-step{position:absolute;inset:0;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 64px) 18px calc(env(safe-area-inset-bottom) + 16px)}
+.kn-liq{position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,rgba(52,211,153,.16),rgba(4,120,87,.26));transform-origin:bottom;transform:scaleY(0);transition:transform .25s linear;pointer-events:none}
+.kn-step>*:not(.kn-liq){position:relative;z-index:1}
+/* сегменты прогресса — светящаяся линия шагов */
+.kn-segs{display:flex;gap:4px;margin-bottom:14px} .kn-segs i{flex:1;height:4px;border-radius:2px;background:var(--line);overflow:hidden;position:relative}
+.kn-segs i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#6EE7B7,#10B981);box-shadow:0 0 8px rgba(16,185,129,.8);transform-origin:left;transform:scaleX(var(--k,0));transition:transform .6s var(--ease-out)}
+.kn-sn{font:650 14px var(--font);color:var(--accent-text);margin-bottom:10px}
+.kn-main{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;overflow-y:auto}
+.kn-ill{position:relative;height:180px;border-radius:22px;overflow:hidden;flex:none;box-shadow:var(--shadow);isolation:isolate}
+.kn-ill svg{position:absolute;inset:0;width:100%;height:100%;transform-origin:50% 50%}
+.kn-tx{font:600 clamp(20px,6.2vw,25px)/1.32 var(--display);letter-spacing:-.015em;margin:14px 2px 10px;text-wrap:pretty} .kn-tx b{color:var(--accent-text);font-weight:750}
+.kn-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px} .kn-chip{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;background:var(--card);font-size:13.5px;font-weight:550;box-shadow:inset 0 0 0 1px var(--line)} .kn-chip .ic{width:15px;height:15px;color:var(--accent-text)}
+.kn-need{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:6px} .kn-need::-webkit-scrollbar{display:none}
+.kn-nc{flex:none;display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;border-radius:16px;background:var(--card);box-shadow:var(--shadow)} .kn-nc .a{width:34px;height:34px} .kn-nc .a svg{width:100%;height:100%} .kn-nc .kn-gen{width:30px;height:30px;margin:2px;font-size:14px}
+.kn-nc b{display:block;font:700 14px var(--num)} .kn-nc small{font-size:12px;color:var(--text2)}
+.kn-tap{position:absolute;top:0;bottom:0;z-index:2} .kn-tapR{right:0;width:45%} .kn-tapL{left:0;width:20%}
+.kn-act{display:flex;align-items:center;gap:10px;margin-top:10px}
+.kn-say{flex:none;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:var(--card);box-shadow:var(--shadow);color:var(--text)} .kn-say.on{background:var(--accent-soft);color:var(--accent-text)} .kn-say .ic{width:22px;height:22px}
+.kn-tm{flex:none;position:relative;width:64px;height:64px;border-radius:50%;display:grid;place-items:center} .kn-tm svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.kn-tm .tr{fill:none;stroke:var(--accent-soft);stroke-width:5} .kn-tm .tp{fill:none;stroke:#10B981;stroke-width:5;stroke-linecap:round;stroke-dasharray:176;transition:stroke-dashoffset .1s linear}
+.kn-tm b{position:relative;font:700 14px var(--num)} .kn-tm.end{animation:knPulse 1s ease-in-out infinite} @keyframes knPulse{50%{transform:scale(1.07);filter:drop-shadow(0 0 10px rgba(52,211,153,.9))}}
+/* все шаги — светящаяся линия пути */
+.kn-allon .kn-scr{visibility:hidden} .kn-all{position:absolute;inset:0;z-index:6;background:var(--bg);overflow-y:auto;padding:calc(env(safe-area-inset-top) + 66px) 18px 30px}
+.kn-all h2{font:800 26px var(--display);margin:0 4px 14px} .kn-path{position:relative;padding-left:40px}
+.kn-path::before{content:"";position:absolute;left:15px;top:10px;bottom:10px;width:3px;border-radius:2px;background:var(--line)}
+.kn-path .fl{position:absolute;left:15px;top:10px;width:3px;border-radius:2px;background:linear-gradient(180deg,#6EE7B7,#10B981);box-shadow:0 0 10px rgba(16,185,129,.8)}
+.kn-ps{position:relative;display:block;width:100%;text-align:left;padding:10px 12px;margin-bottom:8px;border-radius:16px;font-size:15px;line-height:1.38;color:var(--text2)}
+.kn-ps .d{position:absolute;left:-36px;top:10px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:700 12px var(--num);background:var(--bg);box-shadow:inset 0 0 0 2px var(--line)}
+.kn-ps.done .d{background:#10B981;color:#fff;box-shadow:none} .kn-ps.cur{background:var(--card);box-shadow:var(--shadow);color:var(--text)} .kn-ps.cur .d{box-shadow:inset 0 0 0 2px #10B981;color:var(--accent-text)}
+/* финал */
+.kn-fin{position:absolute;inset:0;overflow-y:auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:calc(env(safe-area-inset-top) + 70px) 20px calc(env(safe-area-inset-bottom) + 18px);background:radial-gradient(90% 50% at 50% 26%,rgba(16,185,129,.24),transparent 70%),var(--bg)}
+.kn-plate{position:relative;flex:none;width:min(58vw,220px);aspect-ratio:1;border-radius:50%}
+.kn-plate img,.kn-plate .kn-ph-ic{width:100%;height:100%;border-radius:50%;object-fit:cover;box-shadow:0 0 0 6px rgba(255,255,255,.7),0 30px 60px -20px rgba(4,60,40,.6)}
+.kn-plate::before{content:"";position:absolute;inset:-24px;border-radius:50%;background:radial-gradient(closest-side,rgba(52,211,153,.5),transparent);filter:blur(16px);z-index:-1;animation:knGlow 3s ease-in-out infinite}
+.kn-fin h2{font:800 32px/1.05 var(--display);letter-spacing:-.03em;margin:22px 0 4px} .kn-fin .sub{color:var(--text2)}
+.kn-mr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%;margin:18px 0 14px}
+.kn-mr div{display:flex;flex-direction:column;align-items:center;gap:3px} .kn-mr .rg{position:relative;width:54px;height:54px} .kn-mr svg{width:100%;height:100%;transform:rotate(-90deg)} .kn-mr .tr{fill:none;stroke:var(--line);stroke-width:5}
+.kn-mr .tp{fill:none;stroke-width:5;stroke-linecap:round;stroke-dasharray:138.2;stroke-dashoffset:138.2;transition:stroke-dashoffset 1.2s var(--ease-out)} .kn-mr .rg b{position:absolute;inset:0;display:grid;place-items:center;font:700 12px var(--num)}
+.kn-mr .v{font:750 18px var(--num)} .kn-mr .l{font-size:13px;color:var(--text2)}
+.kn-bdg{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:20px;background:var(--card);box-shadow:var(--shadow);text-align:left;margin-bottom:12px;transform:translateY(30px);opacity:0;transition:transform .7s var(--spring),opacity .4s}
+.kn-bdg.on{transform:none;opacity:1} .kn-bdg .bd-i{flex:none;background:var(--grad);color:#fff} .kn-bdg b{display:block;font-size:15.5px} .kn-bdg small{font-size:13px;color:var(--text2)}
+.kn-like{margin:10px 0 4px;height:44px;padding:0 18px;border-radius:999px;color:var(--accent-text);font:650 15px var(--font)}
+.kn-next{display:flex;align-items:center;gap:12px;width:100%;margin-top:12px;padding:10px;border-radius:20px;background:var(--card);box-shadow:var(--shadow);text-align:left}
+.kn-next .p{flex:none;width:64px;height:64px;border-radius:14px;overflow:hidden;background:var(--card2);display:grid;place-items:center} .kn-next .p img{width:100%;height:100%;object-fit:cover} .kn-next .p .ic{width:28px;height:28px;color:var(--accent-text)}
+.kn-next small{display:block;font-size:12.5px;color:var(--text2)} .kn-next b{display:block;font-size:15px;line-height:1.25} .kn-next .add{flex:none;margin-left:auto;height:38px;padding:0 12px;border-radius:999px;background:var(--accent-soft);color:var(--accent-text);font:650 13.5px var(--font)}
+.kn-fly{position:absolute;z-index:40;padding:10px 16px;border-radius:999px;background:linear-gradient(180deg,#10B981,#047857);color:#fff;font:800 17px var(--num);box-shadow:0 10px 30px -6px rgba(16,185,129,.9);pointer-events:none}
+/* «Моя кухня» в «Я» */
+.kitch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.kitch>button{position:relative;text-align:left;border-radius:16px;overflow:hidden;background:var(--card2);min-width:0}
+.kitch .p{aspect-ratio:1;display:grid;place-items:center;background:var(--card3);overflow:hidden} .kitch .p img{width:100%;height:100%;object-fit:cover} .kitch .p .ic{width:30px;height:30px;color:var(--accent-text)}
+.kitch b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;padding:6px 8px 0;font-size:12px;line-height:1.25;hyphens:manual;-webkit-hyphens:manual;overflow-wrap:normal;word-break:normal} /* максимум 2 строки, многоточие, перенос по словам */ .kitch small{display:block;padding:2px 8px 8px;font-size:11.5px;color:var(--text2)}
+.kitch .ht{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.85);color:#E11D48;font-size:13px}
+.kitch .sil .p{background:var(--card2)} .kitch .sil .p .ic{color:var(--text3);opacity:.5} .kitch .sil b{color:var(--text3)}
+@media (prefers-reduced-motion:reduce){.kn-cover>img,.kn-tx0>*,.kn-cta,.kn-in,.kn-out,.kn-tm.end,.kn-plate::before{animation:none} .kn-tile,.kn-bdg,.kn-segs i::after,.kn-mr .tp{transition:none}}
 /* карточка блюда: цена за порцию и чек, КБЖУ кольцами, сравнение сетей полосками, фото с параллаксом */
 .nw{white-space:nowrap} .dku{font:600 15px var(--font);color:var(--text2)}
 .dcost{margin-top:12px;color:var(--text2);line-height:1.45;text-wrap:pretty;hyphens:manual;-webkit-hyphens:manual} .dcost b{color:var(--text);font-size:16px} .dcost .dc1{color:var(--accent-text);font-size:18px}
@@ -854,7 +914,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-04-r66'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-04-r67'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1531,7 +1591,7 @@ function dayPlan(){
   if(!slots.length&&!late&&remK>250)slots=[['s','s',0,24,'Перекус']];
   // Рамадан: днём советов поесть нет; до рассвета — сухур, после заката — ифтар и перекус (время — по геопозиции или центру региона)
   const rm=ne.includes('ramadan')?ramadanSlots():null;if(rm){slots=rm.now==='suhur'?[['b','b',0,24,'Сухур — до '+rm.rise]]:rm.now==='iftar'?[['d','d',0,24,'Ифтар — после '+rm.set],['s','s',0,24,'Перекус']]:[];late=false}
-  if(!S.cook||S.cook.d!==td)S.cook={d:td,pick:{},skip:{},have:[]};
+  if(!S.cook||S.cook.d!==td){S.cook={d:td,pick:{},skip:{},have:[]};const nx=S.nextDish&&S.nextDish.d===td&&KIT.recipes.find(x=>x.id===S.nextDish.id);if(nx){S.cook.pick[nx.m.includes('d')?'d':nx.m[0]]=nx.id;S.nextDish=null}}
   const R=KIT?KIT.recipes.filter(d=>!dishBan(d)):[],W={b:.3,l:.4,d:.3,s:.15},wsum=slots.reduce((s,x)=>s+W[x[1]],0)||1,used=new Set(),out=[],lunchbox=ne.includes('lunchbox');
   let leftK=remK,leftB=budget;
   for(const [sl,ml,,,lab] of slots){const w=W[ml]/wsum,tk=Math.max(slots.length>1&&ml==='s'?150:250,remK*w),tp=remP*w,tb=budget*w;
@@ -1692,8 +1752,8 @@ function dishFly(){const f=DFROM;DFROM=null;dishPar();const h=$('#sbody .plate.h
     {duration:dur,easing:'cubic-bezier(.32,.72,0,1)'});a.onfinish=end;a.oncancel=end;setTimeout(end,dur+400)}
 function dishPar(){const sb=$('#sbody');if(RM||sb.dataset.par)return;sb.dataset.par=1;let q=0;
   sb.addEventListener('scroll',()=>{if(q)return;q=requestAnimationFrame(()=>{q=0;const h=sb.querySelector('.plate.hero img');if(!h)return;const p=h.parentElement.offsetHeight||1;h.style.transform=`translateY(${Math.min(sb.scrollTop*.3,p*.12).toFixed(1)}px)`})},{passive:true})}
-/* ---------- «Готовить по шагам»: один экран с вертикальной прокруткой. Шапка с общим прогрессом → «Продукты» (нажал — кружок наполняется,
-   строку прочёркивает линия, через миг она уезжает вниз) → «Шаги» (текущий раскрыт карточкой: огонь, время, посуда, таймер; остальные — строкой) → финал.
+/* ---------- «Готовить по шагам» — «Кино»: постер → «Всё на столе» (плитки с рисунками продуктов) → шаг в фокусе (анимация действия, крупный текст,
+   таймер-заливка, линия прогресса, чтение вслух, касание справа — дальше) → финал (тарелка, КБЖУ кольцами, «+ккал» в дневник, жетон, «завтра попробуйте»)) → финал.
    Экран не гаснет (Wake Lock). Прогресс (галочки, сделанные шаги, таймеры) — в S.cookbook на сегодня: закрыли посреди — откроется там же ---------- */
 let WL=null,CBT=null;
 const cbSt=()=>S.cookbook,EASE='cubic-bezier(.23,1,.32,1)';
@@ -1717,85 +1777,109 @@ function cbChips(t,m,a,tools){const out=[],f=cbFire(t);if(f)out.push(['flame',f]
   const p=t.match(/(сковород|кастрюл|сотейник|ковш|форм[уеы]|противен|миск|чайник)[а-яё]*/i);
   if(p){const tl=(tools||'').split(/;\s*/).find(x=>x.toLowerCase().startsWith(p[1].toLowerCase()));out.push(['bowl',tl||p[0].toLowerCase()])}
   return out}
-const cbBold=t=>t.replace(FIRE,'<b>$1</b>').replace(/(\d+(?:[–-]\d+)?\s?(?:мин(?:ут[а-я]*)?|сек[а-я]*)\.?)(?![а-яё])/g,'<b>$1</b>')
+const cbBold=t=>t.replace(/((?:\d+(?:[,.]\d+)?|[¼½¾⅓⅔⅕⅘])(?:\s|&nbsp;)?(?:мл|г|кг|л|шт|ч\. л\.|ст\. л\.|стакан[а-я]*)(?![а-яё])(?:\s(?:воды|соли|масла|молока|сахара|муки|бульона))?)/g,'<b>$1</b>').replace(FIRE,'<b>$1</b>').replace(/(\d+(?:[–-]\d+)?\s?(?:мин(?:ут[а-я]*)?|сек[а-я]*)\.?)(?![а-яё])/g,'<b>$1</b>')
   .replace(/((?:до|пока не?) (?:золотист|румян|мягк|прозрачн|загуст|корочк|готовност|кипени|без розов|хруст|впита)[^,.;]*)/gi,'<b>$1</b>');
-const cbCur=(st,d)=>st.cur!=null&&!st.done.includes(st.cur)?st.cur:d.steps.findIndex((_,i)=>!st.done.includes(i));
-const cbRow=(k,nm,q,on,n)=>`<button class="cb-row ${on?'on':''}" data-k="${k.replace(/"/g,'&quot;')}" data-n="${n}" onclick="cbGot(this)" role="checkbox" aria-checked="${on}"><span class="cb-chk">${ic('check')}</span><span class="cb-nm"><span><span class="cb-s">${nm}</span></span><small>${q}</small></span></button>`;
 function cbNewBadges(id){const c0=S.cooked;S.cooked=[...(c0||[]),{id,d:today0()}];const c=cookStats();S.cooked=c0;return BADGES.filter(b=>b[3](c)&&!(S.badges||[]).includes(b[0]))}
+/* анимации шагов — cook-anim.js (вид сверху, тематично под продукт и блюдо), грузится при первом открытии книги */
+let KN_LOAD=null;
+function knLib(){if(window.CA)return Promise.resolve();if(!KN_LOAD)KN_LOAD=new Promise(r=>{const s=document.createElement('script');s.src='cook-anim.js?v='+APPV;s.onload=r;s.onerror=r;document.head.appendChild(s)});return KN_LOAD}
+const KN_IC={grechka:'grechka',kur_grudka:'kur',kur_bedro:'kur',indeyka:'kur',farsh_kur:'kur',luk:'luk',morkov:'morkov',maslo_rast:'maslo',maslo_ol:'maslo',maslo_sliv:'maslo'};
+// рисунок продукта для плитки: свой рисунок, если есть; иначе — первая буква в мягком круге (без эмодзи)
+function knIcon(k,nm){if(window.CA){const id=k.slice(1);if(k[0]==='i'&&KN_IC[id])return CA.icon(KN_IC[id]);if(/^вод/i.test(nm))return CA.icon('voda');if(/^соль/i.test(nm))return CA.icon('sol')}return `<span class="kn-gen">${nm[0]}</span>`}
+const SPK='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
+  MUTE='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>',
+  LIST='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg>',
+  VOICE='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h2M8 8v8M12 5v14M16 8v8M20 11v2"/></svg>';
+let KNSC=null; // текущая сцена анимации шага
 function openCook(id){const d=dishOf(id);if(!d)return;let st=cbSt();
-  if(!st||st.id!==id||st.d!==today0()){st=S.cookbook={id,d:today0(),N:DISHN||people(),got:[],done:[],tm:{}};save()}
+  if(!st||st.id!==id||st.d!==today0()||st.ph==null){st=S.cookbook={id,d:today0(),N:DISHN||people(),got:[],ph:'cover',i:0,tm:{}};save()}
   let el=$('#cook');if(!el){el=document.createElement('div');el.id='cook';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Готовить по шагам');$('#phone').appendChild(el)}
-  closeSheet();cbRender();el.classList.add('on');cbCascade(el);wakeOn();clearInterval(CBT);CBT=setInterval(cbTick,250);cbTick(1);haptic(8);
-  if(st.done.length)requestAnimationFrame(()=>cbCenter(1))}
-// при открытии шапка, продукты и шаги появляются каскадом (по 35 мс), только transform и opacity
-function cbCascade(el){if(RM)return;[...el.querySelectorAll('.cb-hero>*,.cb-sh,#cbList>*,#cbSteps>*')].slice(0,22).forEach((x,i)=>x.animate([{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'none'}],{duration:440,delay:90+i*35,easing:EASE,fill:'backwards'}))}
-function cbRender(){const st=cbSt(),d=dishOf(st.id),el=$('#cook');if(!d||!el)return;const L=cbLines(d,st.N),n=d.steps.length,K=st.N*(d.f||1),tm=d.min0&&d.min0!==d.min?`${d.min0}–${d.min}`:d.min;
-  const order=L.map((x,i)=>[x,i]).sort((a,b)=>st.got.includes(a[0][0])-st.got.includes(b[0][0])||a[1]-b[1]),p=cbProg();
-  el.innerHTML=`<div class="cb-top"><button class="cb-x" onclick="closeCook()" aria-label="Закрыть">${ic('chevl')}</button><div class="cb-tt" aria-hidden="true">${d.n}</div><div class="cb-tbar" aria-hidden="true"><i></i></div></div>
-   <div class="cb-scroll">
-    <header class="cb-hero">${d.img?`<div class="cb-ph">${pic(d.img,d.n)}</div>`:`<div class="cb-ph cb-ic">${ic(dishCat(d)[1])}</div>`}
-     <h1 class="cb-h">${d.n}</h1><div class="cb-meta"><span class="nw">≈&nbsp;${tm}&nbsp;мин</span> · ${pl(st.N,'порция','порции','порций')}${d.yield&&d.yield.g?` · ${Math.round(d.yield.g*(d.f||1)*st.N/10)*10} г`:''}</div>
-     <div class="cb-bar" role="progressbar" aria-label="Сделано" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(p*100)}"><i style="transform:scaleX(${p})"></i></div></header>
-    <section class="cb-sec"><div class="cb-sh"><h2>Продукты</h2><span class="cb-cnt" id="cbGotN"></span></div>
-     <div class="cb-list" id="cbList">${order.map(([[k,nm,q],i])=>cbRow(k,nm,q,st.got.includes(k),i)).join('')}</div></section>
-    <section class="cb-sec"><div class="cb-sh"><h2>Шаги</h2><span class="cb-cnt" id="cbDoneN"></span></div>
-     <div class="cb-steps" id="cbSteps">${cbStepsHtml(st,d,K,cbCur(st,d))}</div></section>
-    ${st.done.length>=n?cbFinHtml(st,d):''}
-   </div>`;cbProgUpd();const sc=el.querySelector('.cb-scroll'),h=el.querySelector('.cb-h');sc.addEventListener('scroll',()=>el.classList.toggle('sc',sc.scrollTop>h.offsetTop+h.offsetHeight-8),{passive:true})}
-function cbStepsHtml(st,d,K,cur){const n=d.steps.length;return d.steps.map(([m,t,a],i)=>{const dn=st.done.includes(i),par=/^(Параллельно|Пока )/.test(t),txt=scaleTxt(t,K),mm=a&&a!==m?a+'–'+m:m;
-  if(i!==cur)return `<button class="cb-st ${dn?'on':''}" data-i="${i}" onclick="cbOpenStep(${i})" aria-label="Шаг ${i+1}${dn?', сделан':''}. ${txt.replace(/"/g,'')}"><span class="cb-n">${dn?ic('check'):i+1}</span><span class="cb-s1"><span class="cb-s">${txt}</span></span><span class="cb-m">${mm}&nbsp;мин</span></button>`;
-  const tm=st.tm[i];
-  return `<div class="cb-st cur" data-i="${i}"><div class="cb-card"><div class="cb-ch"><span class="cb-big">${i+1}</span><span class="cb-of">из ${n}${par?' · одновременно с прошлым':''}</span></div>
-    <p class="cb-txt"><span class="cb-s">${cbBold(txt)}</span></p>
-    <div class="cb-chips">${cbChips(t,m,a,d.tools).map(([g,x])=>`<span class="cb-chip">${ic(g)}${x}</span>`).join('')}</div>
-    <div class="cb-act">${m>=2?`<button class="cb-timer ${tm?'run':''}" id="cbt${i}" onclick="cbTimer(${i},${m})" aria-label="${tm?'Остановить таймер':'Таймер на '+m+' мин'}"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" class="tr"/><circle cx="32" cy="32" r="28" class="tp" style="stroke-dashoffset:${tm?0:176}"/></svg><span><b>${m}:00</b><small>таймер</small></span></button>`:''}
-     <button class="cb-done" onclick="cbDone(${i})">${ic('check')}<span>Сделано</span></button></div></div></div>`}).join('')}
-function cbFinHtml(st,d){const nb=cbNewBadges(st.id),lk=!!(S.likes&&S.likes[st.id]);
-  return `<section class="cb-fin" id="cbFin"><div class="cb-fin-in"><div class="cb-fin-ic">${ic('check')}</div><h2>Приятного аппетита!</h2>
-   <p>${u(d.nut.k,'ккал')} в порции${d.yield&&d.yield.g?` · тарелка ≈ ${u(Math.round(d.yield.g*(d.f||1)/10)*10,'г')}`:''}</p>
-   ${nb.length?`<div class="cb-bdg"><span class="bd-i">${ic(nb[0][4])}</span><div><b>Новый жетон: ${nb[0][1]}</b><small>появится, когда запишете блюдо</small></div></div>`:''}
-   <button class="btn" onclick="cookedDish('${st.id}',1)">Записать в дневник</button>
-   <button class="btn ghost" onclick="cbLike('${st.id}')" aria-pressed="${lk}">${lk?'♥ Нравится':'♡ Нравится — советовать чаще'}</button></div></section>`}
-function cbProg(){const st=cbSt(),d=dishOf(st.id),L=cbLines(d,st.N);return (L.filter(x=>st.got.includes(x[0])).length+st.done.length)/(L.length+d.steps.length)}
-function cbProgUpd(){const st=cbSt(),d=dishOf(st.id),L=cbLines(d,st.N),p=cbProg(),b=$('#cook .cb-bar');if(!b)return;b.firstElementChild.style.transform=$('#cook .cb-tbar i').style.transform=`scaleX(${p})`;b.setAttribute('aria-valuenow',Math.round(p*100));
-  $('#cbGotN').textContent=`${L.filter(x=>st.got.includes(x[0])).length} из ${L.length}`;$('#cbDoneN').textContent=`${st.done.length} из ${d.steps.length}`}
-// FLIP: запомнили, где были строки → переставили → плавно довели из старого места в новое (только transform)
-function cbFlip(box,mutate,enter){const r0=new Map([...box.children].map(x=>[x.dataset.i??x.dataset.k,x.getBoundingClientRect().top]));mutate();if(RM)return;
-  [...box.children].forEach(x=>{const k=x.dataset.i??x.dataset.k,dy=r0.has(k)?r0.get(k)-x.getBoundingClientRect().top:0;
-    if(enter&&enter(x))x.firstElementChild.animate([{opacity:0,transform:'translateY(10px) scale(.98)'},{opacity:1,transform:'none'}],{duration:320,easing:EASE});
-    else if(Math.abs(dy)>.5)x.animate([{transform:`translateY(${dy}px)`},{transform:'none'}],{duration:380,easing:EASE})})}
-function cbGot(b){const st=cbSt(),k=b.dataset.k,i=st.got.indexOf(k),on=i<0;on?st.got.push(k):st.got.splice(i,1);save();haptic(on?8:4);
-  b.classList.toggle('on',on);b.setAttribute('aria-checked',on);
-  if(on&&!RM)b.querySelector('.cb-chk').animate([{transform:'scale(.8)'},{transform:'scale(1.1)',offset:.6},{transform:'scale(1)'}],{duration:260,easing:EASE});
-  cbProgUpd();clearTimeout(cbGot.t);cbGot.t=setTimeout(cbSort,RM?0:420)}
-function cbSort(){const box=$('#cbList'),st=cbSt();if(!box)return;const it=[...box.children],want=[...it].sort((a,b)=>st.got.includes(a.dataset.k)-st.got.includes(b.dataset.k)||a.dataset.n-b.dataset.n);
-  if(want.every((x,i)=>x===it[i]))return;cbFlip(box,()=>want.forEach(x=>box.appendChild(x)))}
-function cbSteps(){const st=cbSt(),d=dishOf(st.id),box=$('#cbSteps');if(!box)return;cbFlip(box,()=>{box.innerHTML=cbStepsHtml(st,d,st.N*(d.f||1),cbCur(st,d))},x=>x.classList.contains('cur'));cbTick(1)}
-// текущий шаг — мягко в центр экрана (длинная карточка — к верху)
-function cbCenter(now){const sc=$('#cook .cb-scroll'),c=$('#cbSteps .cur')||$('#cbFin');if(!sc||!c)return;const r=c.getBoundingClientRect(),r0=sc.getBoundingClientRect(),h=sc.clientHeight;
-  const top=sc.scrollTop+r.top-r0.top-(r.height<h-140?(h-r.height)/2:80);sc.scrollTo({top:Math.max(0,top),behavior:now||RM?'instant':'smooth'})}
-function cbOpenStep(i){const st=cbSt();st.done=st.done.filter(x=>x!==i);st.cur=i;st.fin=0;save();haptic(6);const f=$('#cbFin');if(f)f.remove();cbSteps();cbProgUpd();setTimeout(cbCenter,RM?0:60)}
-function cbDone(i){const st=cbSt(),d=dishOf(st.id);if(!st.done.includes(i))st.done.push(i);delete st.tm[i];st.cur=null;save();haptic([8,40,12]);
-  const c=$(`#cbSteps .cb-st[data-i="${i}"]`);if(c)c.classList.add('striking');cbProgUpd();
-  setTimeout(()=>{cbSteps();if(st.done.length>=d.steps.length)cbFinish();else cbCenter()},RM?0:420)}
-function cbFinish(){const st=cbSt(),d=dishOf(st.id),sc=$('#cook .cb-scroll');if(!sc)return;if(!$('#cbFin'))sc.insertAdjacentHTML('beforeend',cbFinHtml(st,d));const f=$('#cbFin');f.classList.add('in');
-  setTimeout(cbCenter,RM?0:120);if(!st.fin){st.fin=1;save();setTimeout(cbConfetti,RM?0:380)}}
+  el.innerHTML=`<div class="kn-bar"><button class="kn-ib" onclick="closeCook()" aria-label="Закрыть">${ic('chevl')}</button><span class="sp"></span><button class="kn-ib" id="knAll" onclick="knAll()" aria-label="Все шаги">${LIST}</button><button class="kn-ib" id="knSnd" onclick="knSound()" aria-label="Звук">${S.cookSnd?SPK:MUTE}</button></div>`;
+  closeSheet();el.classList.add('on');wakeOn();clearInterval(CBT);CBT=setInterval(cbTick,100);haptic(8);knLib().then(()=>{if(window.CA&&S.cookSnd)CA.sound(true);knShow()})}
+function knSound(){S.cookSnd=!S.cookSnd;save();if(window.CA)CA.sound(S.cookSnd);$('#knSnd').innerHTML=S.cookSnd?SPK:MUTE;$('#knSnd').classList.toggle('on',S.cookSnd);haptic(6)}
+function knGo(ph){const st=cbSt();st.ph=typeof ph==='number'?'step':ph;if(typeof ph==='number')st.i=ph;save();haptic(8);knShow()}
+// смена экранов: новый приходит с лёгким сдвигом, прошлый тает (crossfade + 8 px)
+function knShow(){const st=cbSt(),d=dishOf(st.id),el=$('#cook');if(!d||!el)return;if(KNSC&&window.CA){CA.unmount(KNSC);KNSC=null}if('speechSynthesis' in window)speechSynthesis.cancel();
+  const old=el.querySelector('.kn-scr:not(.kn-out)'),nw=document.createElement('div');nw.className='kn-scr'+(old&&!RM?' kn-in':'');
+  nw.innerHTML=st.ph==='cover'?knCover(st,d):st.ph==='mise'?knMise(st,d):st.ph==='fin'?knFin(st,d):knStep(st,d);el.insertBefore(nw,el.querySelector('.kn-bar'));
+  el.classList.toggle('kn-dark',st.ph==='cover');$('#knAll').style.display=st.ph==='step'?'':'none';
+  if(old){old.querySelectorAll('[id]').forEach(x=>x.removeAttribute('id'));old.classList.add('kn-out');setTimeout(()=>old.remove(),RM?0:320)}
+  if(st.ph==='step')knMountStep(st,d);if(st.ph==='fin')knFinFx(st,d);if(st.ph==='mise')knRing()}
+function knCover(st,d){const tm=d.min0&&d.min0!==d.min?`${d.min0}–${d.min}`:d.min,c=dishCost(d);
+  return `<div class="kn-cover">${d.img?pic(d.img,d.n):`<div class="kn-ph-ic">${ic(dishCat(d)[1])}</div>`}<div class="kn-tx0"><div class="kn-eb">${[...d.m].map(x=>SLOT[x]).join(' · ')} · ${pl(st.N,'порция','порции','порций')}</div><h1>${d.n}</h1>
+   <div class="kn-pills"><span class="kn-pill">${ic('history')}${tm}${NBS}мин</span><span class="kn-pill">${ic('flame')}${fmt(d.nut.k)}${NBS}ккал</span>${c&&!c.part?`<span class="kn-pill">${ic('wallet')}≈${NBS}${rub(c.r*st.N)}</span>`:''}</div>
+   <button class="kn-cta" onclick="knGo('mise')">Начать готовить</button></div></div>`}
+function knMise(st,d){const L=cbLines(d,st.N),order=[...L.filter(x=>!st.got.includes(x[0])),...L.filter(x=>st.got.includes(x[0]))];
+  return `<div class="kn-mise"><div class="kn-mh"><div class="kn-ring"><svg viewBox="0 0 62 62"><circle cx="31" cy="31" r="26" class="tr"/><circle cx="31" cy="31" r="26" class="tp" style="stroke-dasharray:163.4;stroke-dashoffset:163.4"/></svg><b id="knN"></b></div><div><h2>Всё на столе</h2><p>Достаньте и отмерьте. Касание — отмечено</p></div></div>
+   <div class="kn-tiles" id="knTiles">${order.map(([k,nm,q])=>{const [g,...m]=q.split(' · '),on=st.got.includes(k);return `<button class="kn-tile ${on?'on':''}" data-k="${k.replace(/"/g,'&quot;')}" onclick="knGot(this)" aria-pressed="${on}" aria-label="${nm}, ${q}"><span class="kn-face"><span class="kn-art">${knIcon(k,nm)}</span><b>${g}</b><span>${nm}</span>${m.length?`<small>${m.join(' · ')}</small>`:''}</span><span class="kn-back">${ic('check')}<span>${nm}</span></span></button>`}).join('')}</div></div>
+   <div class="kn-dock"><button class="kn-btn" id="knGoSteps" onclick="knGo(0)">Начать по шагам</button></div>`}
+function knRing(){const st=cbSt(),d=dishOf(st.id),L=cbLines(d,st.N),n=L.filter(x=>st.got.includes(x[0])).length,r=$('#cook .kn-ring .tp');if(!r)return;r.style.strokeDashoffset=163.4*(1-n/L.length);$('#knN').textContent=n+'/'+L.length;
+  const b=$('#knGoSteps');b.classList.toggle('em',n===L.length);b.textContent=n===L.length?'Всё на столе — поехали':'Начать по шагам'}
+// касание: плитка переворачивается изумрудной стороной с галочкой и через миг уезжает в конец (FLIP)
+function knGot(t){const st=cbSt(),k=t.dataset.k,i=st.got.indexOf(k),on=i<0;on?st.got.push(k):st.got.splice(i,1);save();t.classList.toggle('on',on);t.setAttribute('aria-pressed',on);haptic(on?8:4);knRing();
+  clearTimeout(knGot.t);knGot.t=setTimeout(()=>{const box=$('#knTiles');if(!box)return;const it=[...box.children],r0=new Map(it.map(x=>[x,x.getBoundingClientRect()])),want=[...it.filter(x=>!st.got.includes(x.dataset.k)),...it.filter(x=>st.got.includes(x.dataset.k))];
+    if(want.every((x,j)=>x===it[j]))return;want.forEach(x=>box.appendChild(x));if(RM)return;want.forEach(x=>{const a=r0.get(x),b=x.getBoundingClientRect(),dx=a.left-b.left,dy=a.top-b.top;if(dx||dy)x.animate([{translate:`${dx}px ${dy}px`},{translate:'0 0'}],{duration:420,easing:EASE})})},RM?0:620)}
+const knNeed=(t,d)=>{const s=t.toLowerCase();return d.ing.filter(([id])=>{const n=KIT.it[id].n.toLowerCase().split(/[ (]/)[0].slice(0,4);return n.length>2&&s.includes(n)})};
+function knStep(st,d){const i=st.i,n=d.steps.length,[m,t,a]=d.steps[i],K=st.N*(d.f||1),txt=scaleTxt(t,K),par=/^(Параллельно|Пока )/.test(t),need=knNeed(t,d),tm=st.tm[i];
+  return `<div class="kn-step"><div class="kn-liq" id="knLiq"></div><div class="kn-segs" aria-hidden="true">${d.steps.map((_,k)=>`<i style="--k:${k<i?1:k===i?.5:0}"></i>`).join('')}</div>
+   <div class="kn-sn">Шаг ${i+1} из ${n}${par?' · одновременно с прошлым':''}</div>
+   <div class="kn-main"><div class="kn-ill" id="knIll" aria-hidden="true"></div><p class="kn-tx">${cbBold(txt)}</p>
+    <div class="kn-chips">${cbChips(t,m,a,d.tools).map(([g,x])=>`<span class="kn-chip">${ic(g)}${x}</span>`).join('')}</div>
+    ${need.length?`<div class="kn-need">${need.map(([id,g])=>{const x=KIT.it[id],G=g*K;return `<span class="kn-nc"><span class="a">${knIcon('i'+id,x.n)}</span><span><b>${x.pc?pl(Math.round(G/x.pc),'шт','шт','шт'):rG(G)+NBS+'г'}</b><small>${x.n}</small></span></span>`}).join('')}</div>`:''}
+    <div class="kn-tap kn-tapR" onclick="knNext()" aria-hidden="true"></div><div class="kn-tap kn-tapL" onclick="knPrev()" aria-hidden="true"></div></div>
+   <div class="kn-act">${m>=2?`<button class="kn-tm ${tm?'run':''}" id="cbt${i}" onclick="cbTimer(${i},${m})" aria-label="${tm?'Остановить таймер':'Таймер на '+m+' минут'}"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" class="tr"/><circle cx="32" cy="32" r="28" class="tp" style="stroke-dashoffset:${tm?0:176}"/></svg><b>${m}:00</b></button>`:''}
+    <button class="kn-say" id="knSay" onclick="knSay()" aria-label="Прочитать вслух">${VOICE}</button><button class="kn-btn ${i===n-1?'em':''}" onclick="knNext()">${i===n-1?'Готово!':'Дальше'}</button></div></div>`}
+function knMountStep(st,d){if(!window.CA)return;const [,t]=d.steps[st.i],r=CA.forStep(t,d.ing.map(([id])=>[id,KIT.it[id].n])),sc=r.make?r.make():CA.plateUp();KNSC=$('#knIll');CA.mount(KNSC,sc);CA.source(sc);cbTick(1)}
+function knNext(){const st=cbSt(),d=dishOf(st.id);if(st.i<d.steps.length-1){st.i++;save();haptic(8);knShow()}else{st.ph='fin';save();haptic([10,40,10]);knShow()}}
+function knPrev(){const st=cbSt();if(st.i>0){st.i--;save();haptic(6);knShow()}}
+function knSay(){const st=cbSt(),d=dishOf(st.id),b=$('#knSay');if(!('speechSynthesis' in window)){toast('Чтение вслух на этом телефоне недоступно',true);return}speechSynthesis.cancel();if(b.classList.contains('on')){b.classList.remove('on');return}
+  const u=new SpeechSynthesisUtterance(`Шаг ${st.i+1}. `+scaleTxt(d.steps[st.i][1],st.N*(d.f||1)).replace(/<[^>]+>/g,''));u.lang='ru-RU';const v=speechSynthesis.getVoices().find(v=>/^ru/i.test(v.lang));if(v)u.voice=v;u.rate=.98;b.classList.add('on');u.onend=()=>b.classList.remove('on');speechSynthesis.speak(u)}
+// все шаги: путь со светящейся линией до текущего шага; касание — перейти
+function knAll(){const st=cbSt(),d=dishOf(st.id),el=$('#cook');let box=el.querySelector('.kn-all');if(box){box.remove();el.classList.remove('kn-allon');return}el.classList.add('kn-allon');
+  box=document.createElement('div');box.className='kn-all kn-in';box.innerHTML=`<h2>Все шаги</h2><div class="kn-path"><span class="fl" id="knFl"></span>${d.steps.map(([m,t],k)=>`<button class="kn-ps ${k<st.i?'done':k===st.i?'cur':''}" onclick="this.closest('.kn-all').remove();$('#cook').classList.remove('kn-allon');knGo(${k})"><span class="d">${k<st.i?ic('check'):k+1}</span>${scaleTxt(t,st.N*(d.f||1)).replace(/<[^>]+>/g,'')} <span class="tiny muted">· ${m}${NBS}мин</span></button>`).join('')}</div>`;
+  el.insertBefore(box,el.querySelector('.kn-bar'));const cur=box.querySelector('.kn-ps.cur');if(cur)requestAnimationFrame(()=>{$('#knFl').style.height=(cur.offsetTop+22)+'px';cur.scrollIntoView({block:'center'})})}
+// завтра попробуйте: блюдо, которого ещё не готовили, подходящее по «Не ем» и не похожее на сегодняшнее
+function knTomorrow(d){const cooked=new Set((S.cooked||[]).map(x=>x.id)),day=new Date().getDate(),l=KIT.recipes.filter(x=>x.id!==d.id&&!dishBan(x)&&!cooked.has(x.id)&&!(S.dislikes&&S.dislikes[x.id]));
+  const pref=l.filter(x=>x.img&&x.m.includes('d')),pool=pref.length?pref:l;return pool.length?pool[day%pool.length]:null}
+function knFin(st,d){const nn=norm(S.profile),nb=cbNewBadges(st.id),lk=!!(S.likes&&S.likes[st.id]),tw=knTomorrow(d),run=cookRun()+((S.cooked||[]).some(x=>x.d===today0())?0:1);
+  const rg=(k,col,l)=>{const v=d.nut[k],pc=Math.round(v/Math.max(nn[k],1)*100);return `<div><span class="rg"><svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" class="tr"/><circle cx="25" cy="25" r="22" class="tp" data-pc="${Math.min(pc,100)}" style="stroke:${col}"/></svg><b>${pc}${NBS}%</b></span><span class="v">${fmt(v)}${NBS}г</span><span class="l">${l}</span></div>`};
+  return `<div class="kn-fin"><div class="kn-plate" id="knPlate">${d.img?pic(d.img,d.n):`<div class="kn-ph-ic">${ic(dishCat(d)[1])}</div>`}</div><h2>Приятного аппетита!</h2>
+   <div class="sub">${u(d.nut.k,'ккал')} в порции${run>1?` · ${pl(run,'день','дня','дней')} готовите дома`:''}</div>
+   <div class="kn-mr">${rg('p','var(--p)','Белки')}${rg('f','var(--f)','Жиры')}${rg('c','var(--c)','Углеводы')}</div>
+   ${nb.length?`<div class="kn-bdg" id="knBdg"><span class="bd-i">${ic(nb[0][4])}</span><div><b>Новый жетон: «${nb[0][1]}»</b><small>появится, когда запишете блюдо</small></div></div>`:''}
+   <button class="kn-btn em" id="knRec" onclick="knRecord(this,'${st.id}')">Записать в дневник · +${fmt(d.nut.k)}${NBS}ккал</button>
+   <button class="kn-like" onclick="cbLike('${st.id}')" aria-pressed="${lk}">${lk?'♥ Нравится':'♡ Нравится — советовать чаще'}</button>
+   ${tw?`<div class="kn-next"><span class="p">${tw.img?pic(tw.img,tw.n):ic(dishCat(tw)[1])}</span><span style="min-width:0"><small>Завтра попробуйте</small><b>${tw.n}</b><small>${tw.min}${NBS}мин · ${fmt(tw.nut.k)}${NBS}ккал</small></span><button class="add" onclick="knPlanTomorrow('${tw.id}')">В план</button></div>`:''}</div>`}
+function knFinFx(st,d){const pl0=$('#knPlate');if(!RM&&pl0)pl0.animate([{transform:'scale(.55)',opacity:0,filter:'blur(10px)'},{transform:'scale(1.04)',opacity:1,filter:'blur(0)',offset:.7},{transform:'scale(1)'}],{duration:1100,easing:EASE});
+  setTimeout(()=>{$('#cook').querySelectorAll('.kn-mr .tp').forEach(c=>c.style.strokeDashoffset=138.2*(1-c.dataset.pc/100));const b=$('#knBdg');if(b)b.classList.add('on')},RM?0:500);if(!st.fin){st.fin=1;save();setTimeout(cbConfetti,RM?0:350)}}
+// «Записать»: «+N ккал» улетает дугой вверх, к дневнику; блюдо записывается
+function knRecord(b,id){if(b.dataset.done)return;b.dataset.done=1;haptic([8,30,8]);const ph=$('#phone').getBoundingClientRect(),r=b.getBoundingClientRect(),el=document.createElement('div');el.className='kn-fly';el.textContent=b.textContent.split('·')[1].trim();$('#cook').appendChild(el);
+  const x0=r.left-ph.left+r.width/2-50,y0=r.top-ph.top;el.style.left=x0+'px';el.style.top=y0+'px';const done=()=>{el.remove();cookedDish(id,1)};if(RM){done();return}
+  el.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${ph.width*.2}px,${-y0*.6}px) scale(1.1)`,offset:.45},{transform:`translate(${ph.width*.3}px,${-y0+30}px) scale(.3)`,opacity:.2}],{duration:850,easing:'cubic-bezier(.5,0,.3,1)'}).onfinish=done}
+function knPlanTomorrow(id){const t=new Date();t.setDate(t.getDate()+1);S.nextDish={id,d:t.toISOString().slice(0,10)};save();haptic(8);toast('Завтра в плане: '+KIT.recipes.find(x=>x.id===id).n.toLowerCase())}
 function cbTimer(i,m){const st=cbSt();if(st.tm[i]){delete st.tm[i];save();cbTick(1);return}st.tm[i]=Date.now()+m*60000;save();haptic(10);cbTick(1);
   if('Notification' in window&&Notification.permission==='default'&&!cbTimer.asked){cbTimer.asked=1;try{Notification.requestPermission()}catch(e){}}}
-// таймер: кольцо идёт плавно, последние 10 секунд мягко пульсирует
+// таймер: кольцо плавно, фон шага наполняется «бульоном» снизу, последние 10 секунд — пульс
 function cbTick(force){const st=cbSt();if(!st||!$('#cook.on'))return;const d=dishOf(st.id);
-  Object.entries(st.tm||{}).forEach(([i,end])=>{const m=d.steps[i][0],left=Math.max(0,end-Date.now()),b=$('#cbt'+i);
-    if(b){b.classList.add('run');b.classList.toggle('end',left>0&&left<=10000);b.querySelector('.tp').style.strokeDashoffset=176*(1-left/(m*60000));
-      b.querySelector('b').textContent=left?Math.floor(left/60000)+':'+String(Math.floor(left/1000)%60).padStart(2,'0'):'Готово';b.querySelector('small').textContent=left?'стоп':'';b.setAttribute('aria-label',left?'Остановить таймер':'Время вышло')}
+  Object.entries(st.tm||{}).forEach(([i,end])=>{const m=d.steps[i][0],left=Math.max(0,end-Date.now()),b=$('#cbt'+i),k=1-left/(m*60000);
+    if(b){b.classList.add('run');b.classList.toggle('end',left>0&&left<=10000);b.querySelector('.tp').style.strokeDashoffset=(176*(1-k)).toFixed(1);b.querySelector('b').textContent=left?Math.floor(left/60000)+':'+String(Math.floor(left/1000)%60).padStart(2,'0'):'Готово';const lq=$('#knLiq');if(lq&&+i===st.i)lq.style.transform=`scaleY(${k.toFixed(3)})`}
     if(!left){delete st.tm[i];save();cbAlarm(+i)}});
-  if(force)document.querySelectorAll('#cook .cb-timer').forEach(b=>{const i=+b.id.slice(3);if(!st.tm[i]){b.classList.remove('run','end');b.querySelector('.tp').style.strokeDashoffset=176;b.querySelector('b').textContent=d.steps[i][0]+':00';b.querySelector('small').textContent='таймер';b.setAttribute('aria-label','Таймер на '+d.steps[i][0]+' мин')}})}
+  if(force)document.querySelectorAll('#cook .kn-tm').forEach(b=>{const i=+b.id.slice(3);if(!st.tm[i]){b.classList.remove('run','end');b.querySelector('.tp').style.strokeDashoffset=176;b.querySelector('b').textContent=d.steps[i][0]+':00';const lq=$('#knLiq');if(lq)lq.style.transform='scaleY(0)'}})}
+// серия готовки: сколько дней подряд (до сегодня или вчера) готовили по рецепту
+function cookRun(){const days=new Set((S.cooked||[]).map(x=>x.d));let n=0;const t=new Date();if(!days.has(today0()))t.setDate(t.getDate()-1);for(;;){const k=t.toISOString().slice(0,10);if(!days.has(k))break;n++;t.setDate(t.getDate()-1)}return n}
+/* «Моя кухня» в «Я»: приготовленные блюда — карточки с датой, «готовили N раз», сердечко; пустые места — силуэты непробованных */
+function kitchenCard(){const l=S.cooked||[];if(!KIT)return '';const by={};l.forEach(x=>{const o=by[x.id]=by[x.id]||{n:0,d:''};o.n++;if(x.d>o.d)o.d=x.d});const ids=Object.keys(by).sort((a,z)=>by[z].d.localeCompare(by[a].d)),rest=KIT.recipes.filter(d=>!by[d.id]&&!dishBan(d)),run=cookRun();
+  const card=id=>{const d=KIT.recipes.find(x=>x.id===id);if(!d)return '';const o=by[id];return `<button onclick="openDish('${id}')"><span class="p">${d.img?pic(d.img,d.n):ic(dishCat(d)[1])}</span>${S.likes&&S.likes[id]?'<span class="ht">♥</span>':''}<b>${d.n}</b><small>${o.n>1?`готовили ${o.n} раза`:'готовили'} · ${o.d.slice(8,10)}.${o.d.slice(5,7)}</small></button>`};
+  return `<div class="card"><div class="row between" style="margin-bottom:10px;gap:10px"><div style="font-weight:650">Моя кухня</div><div class="tiny muted" style="text-align:right">${run>1?`<b style="color:var(--accent-text)">${pl(run,'день','дня','дней')} готовлю дома</b> · `:''}${ids.length} из ${KIT.recipes.length}</div></div>
+   <div class="kitch">${ids.slice(0,9).map(card).join('')}${rest.slice(0,Math.max(0,(ids.length%3?3-ids.length%3:3))).map(d=>`<button class="sil" onclick="openDish('${d.id}')"><span class="p">${ic(dishCat(d)[1])}</span><b>Ещё не пробовали</b><small>${d.min}${NBS}мин</small></button>`).join('')}</div>
+   <div class="tiny muted" style="margin-top:8px">${ids.length?`Ещё ${pl(rest.length,'рецепт','рецепта','рецептов')} ждут — откройте блюдо и нажмите «Готовить по шагам».`:'Откройте блюдо и нажмите «Готовить по шагам» — здесь соберётся ваша коллекция.'}</div></div>`}
 function cbAlarm(i){haptic([300,120,300,120,300]);toast(`Шаг ${i+1}: время вышло`);
   try{const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),g=a.createGain();o.frequency.value=880;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.001,a.currentTime);[0,.35,.7].forEach(t=>{g.gain.exponentialRampToValueAtTime(.3,a.currentTime+t+.02);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+t+.25)});o.start();o.stop(a.currentTime+1)}catch(e){}
   if(document.hidden&&'Notification' in window&&Notification.permission==='granted'&&navigator.serviceWorker)navigator.serviceWorker.ready.then(r=>r.showNotification('Мой тренер',{body:`Шаг ${i+1}: время вышло`,tag:'cook',icon:'icon-192.png',badge:'badge-96.png'})).catch(()=>{})}
 function cbConfetti(){if(RM)return;confetti(44,.5,.42,['#047857','#10B981','#34D399','#FFFFFF','#D1FAE5'],1500)} // мягко: меньше частиц, изумрудные и белые
 function dishTaste(id,v){S.likes=S.likes||{};S.dislikes=S.dislikes||{};const L=v>0?S.likes:S.dislikes,O=v>0?S.dislikes:S.likes;if(L[id])delete L[id];else{L[id]=1;delete O[id]}if(S.cook)S.cook.skip={};save();haptic(8);toast(L[id]?(v>0?'Будем советовать чаще':'Будем советовать реже'):'Сняли отметку');keepScroll(()=>openDish(id))}
-function cbLike(id){S.likes=S.likes||{};S.likes[id]=S.likes[id]?0:1;if(!S.likes[id])delete S.likes[id];save();haptic(8);const sc=$('#cook .cb-scroll'),y=sc.scrollTop;cbRender();$('#cook .cb-scroll').scrollTop=y;toast(S.likes[id]?'Будем советовать чаще':'Убрали из любимых')}
-function closeCook(){clearInterval(CBT);wakeOff();const el=$('#cook');if(el)el.classList.remove('on');haptic(6)}
+function cbLike(id){S.likes=S.likes||{};S.likes[id]=S.likes[id]?0:1;if(!S.likes[id])delete S.likes[id];save();haptic(8);const b=$('#cook .kn-like');if(b){b.textContent=S.likes[id]?'♥ Нравится':'♡ Нравится — советовать чаще';b.setAttribute('aria-pressed',!!S.likes[id])}toast(S.likes[id]?'Будем советовать чаще':'Убрали из любимых')}
+function closeCook(){clearInterval(CBT);wakeOff();if(KNSC&&window.CA){CA.unmount(KNSC);KNSC=null}if('speechSynthesis' in window)speechSynthesis.cancel();const el=$('#cook');if(el)el.classList.remove('on');haptic(6)}
 async function wakeOn(){try{if('wakeLock' in navigator&&!WL){WL=await navigator.wakeLock.request('screen');WL.addEventListener('release',()=>{WL=null})}}catch(e){}}
 function wakeOff(){try{WL&&WL.release()}catch(e){}WL=null}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&$('#cook.on')){wakeOn();cbTick(1)}});
@@ -2774,8 +2858,9 @@ function vMe(){ // личный кабинет как «Настройки» н�
     ${row('openFoodPlan()','accent','food','Питание и бюджет',`${fmt(budgetOf(pr))} ₽ в день`)}
     ${row('openDiet()','warn','heart','Не ем и аллергии',dietSub())}
     ${COACH_ON?'':'<!--'}<button class="rowbtn" onclick="pickCoach()"><div class="coach-ava sm">${coachSvg(S.coach,32)}</div>
-  ${badgesCard()}<div class="t">Мой тренер<small>${coach().n} — ${coach().r}</small></div><span class="chev">${ic('chev')}</span></button>${COACH_ON?'':'-->'}
+<div class="t">Мой тренер<small>${coach().n} — ${coach().r}</small></div><span class="chev">${ic('chev')}</span></button>${COACH_ON?'':'-->'}
   </div>
+  ${kitchenCard()}${badgesCard()}
   <div class="card list">
     ${row('openWeight()','c','weight','Вес',w.length?`${(''+lastW).replace('.',',')} кг · ${pl(w.length,'запись','записи','записей')}`:'записать сегодняшний')}
     ${row('openHistory()','volt','history','История',S.workouts||S.forms.length?[S.workouts?pl(S.workouts,'тренировка','тренировки','тренировок'):'',S.forms.length?pl(S.forms.length,'разбор','разбора','разборов'):''].filter(Boolean).join(' · '):'тренировки и разборы техники')}
@@ -3180,7 +3265,10 @@ function newDid(){try{if(crypto.randomUUID)return crypto.randomUUID()}catch(e){}
   const b=new Uint8Array(16);try{crypto.getRandomValues(b)}catch(e){for(let i=0;i<16;i++)b[i]=Math.random()*256|0}
   b[6]=b[6]&15|64;b[8]=b[8]&63|128;const h=[...b].map(x=>x.toString(16).padStart(2,'0')).join('');
   return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20)}
-async function api(path,body,ms){const ac=new AbortController(),t=setTimeout(()=>ac.abort(),ms||8000);
+// автопроверки (Playwright ставит navigator.webdriver) на живом сайте не пишут на сервер: иначе в статистике «тысячи заходов»; тест может включить сеть ключом mt-test-net
+const API_WRITE=/^\/(visit|reviews|push\/|price-report|sync\/put)/;
+async function api(path,body,ms){if(body&&navigator.webdriver&&location.hostname==='moytrener-app.ru'&&API_WRITE.test(path)){let net=false;try{net=!!localStorage.getItem('mt-test-net')}catch(e){}if(!net)return {ok:true,status:200,data:{ok:true,test:true}}}
+  const ac=new AbortController(),t=setTimeout(()=>ac.abort(),ms||8000);
   try{const r=await fetch(API+path,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:ac.signal,credentials:'omit',cache:'no-store',mode:'cors'});
     let data=null;if(r.status!==204){try{data=await r.json()}catch(e){}}
     if(!r.ok)console.warn('Сервер:',path,r.status);return {ok:r.ok,status:r.status,data}}
