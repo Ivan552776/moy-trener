@@ -650,7 +650,7 @@ function plateUp(items = ['grechka', 'kur']) {
   const T = 4;
   function frame(t, emit) { t %= T; const a = clamp((t - .2) / .6), b = clamp((t - 1) / .6), f = t > 3.6 ? 1 - (t - 3.6) / .4 : 1;
     por.setAttribute('transform', `translate(0 ${((1 - eOut(a)) * -10).toFixed(1)}) scale(1)`); por.setAttribute('opacity', (a * f).toFixed(2)); side.setAttribute('transform', `translate(${((1 - eOut(b)) * 14).toFixed(1)} ${((1 - eOut(b)) * -8).toFixed(1)})`); side.setAttribute('opacity', (b * f).toFixed(2));
-    if (a > 0 && a < .1 && frame._p !== Math.floor(t)) { frame._p = Math.floor(t); emit && emit('plate') } }
+    if (a > 0 && !frame._p) { frame._p = 1; emit && emit('plate') } if (a === 0) frame._p = 0 }
   return sc0(id, svg, frame, T, 'Выложить на тарелку', 'и подать', 'plate') }
 
 /* настоять: накрытая кастрюля, полотенце сверху, лёгкий пар, тонкое кольцо времени */
@@ -811,7 +811,7 @@ function crack(vessel = 'bowl') { const { id, svg } = scene(['towel']); defs(svg
   function frame(t, emit) { t %= T; const k = clamp((t - .5) / .4), sp = clamp((t - .9) / 1.2), f = t > T - .4 ? (T - t) / .4 : 1;
     egg.setAttribute('transform', `translate(${cx} ${(cy - 30 + eOut(clamp(t / .5)) * 18).toFixed(1)}) scale(${(1.2 - clamp(t / .5) * .2).toFixed(3)})`); egg.setAttribute('opacity', t < 1.6 ? 1 : 0);
     L.setAttribute('transform', `translate(${(-k * 14).toFixed(1)} 0) rotate(${(-k * 30).toFixed(1)})`); Rr.setAttribute('transform', `translate(${(k * 14).toFixed(1)} 0) rotate(${(k * 30).toFixed(1)})`);
-    if (k > 0 && k < .1 && frame._c !== Math.floor(t / T)) { frame._c = Math.floor(t / T); emit && emit('chop') }
+    if (k > 0 && k < .1 && frame._c !== Math.floor(t / T)) { frame._c = Math.floor(t / T); emit && emit('crack') }
     const r = eOut(sp) * 34; white.setAttribute('d', `M${cx - r} ${cy}Q${cx - r} ${cy - r * .9} ${cx} ${cy - r * .85}Q${cx + r * 1.1} ${cy - r * .8} ${cx + r} ${cy + r * .1}Q${cx + r * .8} ${cy + r} ${cx} ${cy + r * .9}Q${cx - r * 1.05} ${cy + r * .8} ${cx - r} ${cy}Z`); white.setAttribute('opacity', (sp > 0 ? .97 * f : 0).toFixed(2));
     yolk.setAttribute('cx', cx + 2); yolk.setAttribute('cy', cy); yolk.setAttribute('r', (sp > 0 ? 9 * f : 0).toFixed(1)); yh.setAttribute('cx', cx - 1); yh.setAttribute('cy', cy - 3); yh.setAttribute('r', (sp > 0 ? 3 * f : 0).toFixed(1)); v.shine && v.shine(t) }
   return sc0(id, svg, frame, T, 'Разбить яйцо', vessel === 'pan' ? 'на сковороду' : 'в миску', 'chop') }
@@ -923,34 +923,38 @@ function iconOld(k) { const id = ++UID, sh = `<ellipse cx="32" cy="56" rx="20" r
       <path d="M17 40Q22 28 32 27Q42 28 47 40Q32 44 17 40Z" fill="#fff"/>${[...Array(12)].map((_, i) => `<rect x="${(18 + R(i, 0, 26)).toFixed(1)}" y="${(31 + R(i + 2, 0, 9)).toFixed(1)}" width="1.6" height="1.6" rx=".3" fill="#DDE3E8"/>`).join('')}<path d="M24 33Q28 29 33 29" stroke="#E4E9ED" stroke-width="1.4" fill="none"/>`);
   } return w(sh) }
 
-/* ---------- звук: синтез Web Audio, тихо; непрерывные звуки (вода, шкворчание) — шум через фильтры ---------- */
-let AC = null, ON = false, noiseBuf = null, loops = {};
-function ac() { if (!AC) { AC = new (window.AudioContext || window.webkitAudioContext)(); const n = AC.sampleRate * 2; noiseBuf = AC.createBuffer(1, n, AC.sampleRate); const d = noiseBuf.getChannelData(0); for (let i = 0; i < n; i++)d[i] = Math.random() * 2 - 1 } return AC }
-function noise(dur, f1, f2, vol, t0 = 0) { const a = ac(), s = a.createBufferSource(), bp = a.createBiquadFilter(), g = a.createGain(), n = a.currentTime + t0; s.buffer = noiseBuf; bp.type = 'bandpass'; bp.frequency.value = f1; bp.Q.value = f2;
-  g.gain.setValueAtTime(vol, n); g.gain.exponentialRampToValueAtTime(.0001, n + dur); s.connect(bp); bp.connect(g); g.connect(a.destination); s.start(n, Math.random()); s.stop(n + dur + .02) }
-function tone(f0, f1, dur, vol) { const a = ac(), o = a.createOscillator(), g = a.createGain(), n = a.currentTime; o.frequency.setValueAtTime(f0, n); o.frequency.exponentialRampToValueAtTime(f1, n + dur); g.gain.setValueAtTime(vol, n); g.gain.exponentialRampToValueAtTime(.0001, n + dur); o.connect(g); g.connect(a.destination); o.start(n); o.stop(n + dur + .02) }
-function loop(name, f, q, vol, hp) { if (loops[name]) return; const a = ac(), s = a.createBufferSource(), bp = a.createBiquadFilter(), g = a.createGain(); s.buffer = noiseBuf; s.loop = true; bp.type = hp ? 'highpass' : 'bandpass'; bp.frequency.value = f; bp.Q.value = q; g.gain.value = 0;
-  g.gain.linearRampToValueAtTime(vol, a.currentTime + .25); s.connect(bp); bp.connect(g); g.connect(a.destination); s.start(); loops[name] = { s, g } }
-function unloop(name) { const l = loops[name]; if (!l) return; l.g.gain.linearRampToValueAtTime(0, ac().currentTime + .25); l.s.stop(ac().currentTime + .3); delete loops[name] }
-/* настоящие записи CC0 (BigSoundBank, docs/zvuki-istochniki.md): короткие mp3 в snd/, грузятся при включении звука; пока не загрузились — синтез */
-const SAMP = {}, SND = ['nozh-1', 'nozh-2', 'nozh-3', 'nozh-4', 'hrust-1', 'hrust-2', 'hrust-3', 'voda', 'shkvor', 'bulk', 'kip', 'kryshka', 'lozhka-1', 'lozhka-2', 'lozhka-3', 'gul', 'zvonok', 'terka'], SLOOP = {};
-// длинные записи (вода, шкворчание, кипение, гул духовки) — по кругу, мягко входят и уходят; пока запись не загрузилась — синтез
-function sloop(n, vol) { if (SLOOP[n]) return true; const b = SAMP[n]; if (!b || b === 'loading') return false; const a = ac(), s = a.createBufferSource(), g = a.createGain(); s.buffer = b; s.loop = true; g.gain.value = 0; g.gain.linearRampToValueAtTime(vol, a.currentTime + .3); s.connect(g); g.connect(a.destination); s.start(0, Math.random() * b.duration * .5); SLOOP[n] = { s, g }; return true }
-function sunloop(n) { const l = SLOOP[n]; if (!l) return; const a = ac(); l.g.gain.linearRampToValueAtTime(0, a.currentTime + .3); l.s.stop(a.currentTime + .35); delete SLOOP[n] }
+/* ---------- звук: только настоящие записи (BigSoundBank CC0, Pixabay — docs/zvuki-istochniki.md), без синтеза.
+   Громкость выровнена в файлах (tools/zvuki/build.py): удары и действия ≈ −20 dBFS, фон (шкворчание, кипение, тушение, духовка) на 6 дБ тише;
+   здесь у всех одна громкость G. Циклы играются по окну [0,1 с; 0,1 с + L] — стык без щелчка. Звук идёт в момент события анимации. ---------- */
+let AC = null, ON = false;
+function ac() { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); return AC }
+const G = .8, LOOPL = { terka: 3, melnica: 2.4, skalka: 1.7, venchik: 3, voda: 3, shkvor: 3, kip: 3, bulk: 3, gul: 3 };
+const SAMP = {}, SND = ['nozh-1', 'nozh-2', 'nozh-3', 'nozh-4', 'hrust-1', 'hrust-2', 'hrust-3', 'luk-1', 'luk-2', 'luk-3', 'kapusta-1', 'kapusta-2', 'kapusta-3', 'chistka', 'sol', 'kryshka',
+  'lozhka-1', 'lozhka-2', 'lozhka-3', 'zvonok', ...Object.keys(LOOPL)], SLOOP = {};
 function loadSamples() { SND.forEach(n => { if (SAMP[n]) return; SAMP[n] = 'loading'; fetch(BASE + 'snd/' + n + '.mp3').then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(b => ac().decodeAudioData(b)).then(buf => SAMP[n] = buf).catch(() => delete SAMP[n]) }) }
-function play(n, vol = .8, delay = 0, rate = 1) { const b = SAMP[n]; if (!b || b === 'loading') return false; const a = ac(), s = a.createBufferSource(), g = a.createGain(); s.buffer = b; s.playbackRate.value = rate; g.gain.value = vol; s.connect(g); g.connect(a.destination); s.start(a.currentTime + delay); return true }
-const pick = (p, n) => p + (1 + Math.floor(Math.random() * n));
+function play(n, vol = G, delay = 0, rate = 1) { const b = SAMP[n]; if (!b || b === 'loading') return false; if (window.__snd) window.__snd.push(n); const a = ac(), s = a.createBufferSource(), g = a.createGain(); s.buffer = b; s.playbackRate.value = rate; g.gain.value = vol; s.connect(g); g.connect(a.destination); s.start(a.currentTime + delay); return true }
+// цикл: мягкий вход 0,3 с; keep — сколько секунд держать без новых событий анимации (мельница крутится, скалка ходит), потом мягко гаснет
+function sloop(n, vol = G, keep = 0, rate = 1) { const L = LOOPL[n], b = SAMP[n]; let l = SLOOP[n];
+  if (!l) { if (!b || b === 'loading') return false; const a = ac(), s = a.createBufferSource(), g = a.createGain(); s.buffer = b; s.loop = true; s.loopStart = .1; s.loopEnd = .1 + L; s.playbackRate.value = rate;
+    g.gain.value = 0; g.gain.linearRampToValueAtTime(vol, a.currentTime + .3); s.connect(g); g.connect(a.destination); s.start(0, .1 + Math.random() * L); l = SLOOP[n] = { s, g }; if (window.__snd) window.__snd.push(n) }
+  clearTimeout(l.t); if (keep) l.t = setTimeout(() => sunloop(n), keep * 1000); return true }
+function sunloop(n) { const l = SLOOP[n]; if (!l) return; clearTimeout(l.t); const a = ac(); l.g.gain.cancelScheduledValues(a.currentTime); l.g.gain.setValueAtTime(l.g.gain.value, a.currentTime); l.g.gain.linearRampToValueAtTime(0, a.currentTime + .25); l.s.stop(a.currentTime + .3); delete SLOOP[n] }
+const pick = (p, n) => p + (1 + Math.floor(Math.random() * n)); let solAt = 0;
 function sfx(ev, arg) { if (!ON) return;
-  // нож: стук по доске в момент касания лезвия + хруст продукта (морковь звонче, лук тише и выше, мясо — без хруста)
-  if (ev === 'chop') { if (play(pick('nozh-', 4), .75, 0, .96 + Math.random() * .08)) { if (arg === 'morkov') play(pick('hrust-', 3), .5, .004); else if (arg === 'luk') play(pick('hrust-', 3), .28, .004, 1.18) } else { noise(.05, 2200, .8, .28); tone(170, 90, .07, .22) } }
-  else if (ev === 'rattle') { for (let i = 0; i < 5; i++)noise(.018, 5200, 2, .06, i * .02) }
-  else if (ev === 'pourSalt') noise(.2, 6500, 1.4, .025); else if (ev === 'grain') noise(.012, 7000, 3, .02);
-  else if (ev === 'grate') sloop('terka', .5); else if (ev === 'simmer') sloop('bulk', .42); else if (ev === 'lid') play('kryshka', .5); else if (ev === 'oven') sloop('gul', .16); else if (ev === 'plate') play(pick('lozhka-', 3), .55);
-  else if (ev === 'bubble') { if (sloop('kip', .38)) return; if (Math.random() < .7) tone(R(Math.random() * 99, 240, 380), R(Math.random() * 99, 520, 900), .07, .05) }
-  else if (ev === 'pour') { if (!sloop('voda', .45)) loop('pour', 900, .7, .09) } else if (ev === 'pour-stop') { unloop('pour'); sunloop('voda') }
-  else if (ev === 'sizzle') { if (sloop('shkvor', .42)) return; loop('sizzle', 3400, .4, .045, true); if (Math.random() < .2) noise(.02, 6000, 3, .05) }
-  else if (ev === 'scrape') { if (sloop('shkvor', .24)) { if (Math.random() < .015) play(pick('lozhka-', 3), .3); return } loop('sizzle', 3400, .4, .025, true); if (Math.random() < .04) noise(.16, 1200, 1.2, .05) } }
-function stopAll() { Object.keys(loops).forEach(unloop); Object.keys(SLOOP).forEach(sunloop) }
+  // нарезать: лук и капуста — свои записи (нож + хруст вместе); морковь — нож и хруст моркови; остальное — нож по доске
+  if (ev === 'chop') { if (arg === 'luk') play(pick('luk-', 3)); else if (arg === 'kapusta') play(pick('kapusta-', 3)); else { play(pick('nozh-', 4), G, 0, .96 + Math.random() * .08); if (arg === 'morkov') play(pick('hrust-', 3), G * .8, .004) } }
+  else if (ev === 'pound') play(pick('nozh-', 4), G, 0, .5);                 // отбить: тот же стук, на октаву ниже — глухой удар молотка
+  else if (ev === 'pat') play(pick('nozh-', 4), G * .6, 0, .45);             // сформовать: мягкий шлепок
+  else if (ev === 'crack') play(pick('lozhka-', 3), G, 0, .8);               // яйцо о край миски
+  else if (ev === 'grate') sloop('terka', G, .45); else if (ev === 'peel') play('chistka'); else if (ev === 'grind') sloop('melnica', G, .35);
+  else if (ev === 'roll') sloop('skalka', G, .6); else if (ev === 'whisk') sloop('venchik', G, .45);
+  else if (ev === 'pourSalt') { if (Date.now() - solAt > 1500) { solAt = Date.now(); play('sol') } }
+  else if (ev === 'pour') sloop('voda'); else if (ev === 'pour-stop') sunloop('voda');
+  else if (ev === 'oil' || ev === 'pourThick') sloop('voda', G * .7, .3, .7); else if (ev === 'oil-stop') sunloop('voda');
+  else if (ev === 'sizzle') sloop('shkvor'); else if (ev === 'scrape') { sloop('shkvor'); if (Math.random() < .015) play(pick('lozhka-', 3), G * .5) }
+  else if (ev === 'bubble') sloop('kip'); else if (ev === 'simmer') sloop('bulk'); else if (ev === 'lid') play('kryshka', G * .7);
+  else if (ev === 'oven') sloop('gul'); else if (ev === 'plate') play(pick('lozhka-', 3)) }
+function stopAll() { Object.keys(SLOOP).forEach(sunloop) }
 
 /* ---------- запуск: общий цикл кадров, вне экрана сцены стоят; «уменьшить движение» — один кадр ---------- */
 const scenes = new Set(); let raf = 0, SRC = null;
@@ -960,5 +964,5 @@ function mount(el, sc, opts = {}) { el.innerHTML = ''; el.appendChild(sc.svg); s
 function unmount(el) { const sc = el._sc; if (!sc) return; scenes.delete(sc); io && io.unobserve(el); if (SRC === sc) { SRC = null; stopAll() } el._sc = null }
 function tick(now) { raf = requestAnimationFrame(tick); const br = (1 + .005 * (1 - Math.cos(now / 6000 * 2 * Math.PI))).toFixed(4); scenes.forEach(sc => { if (!sc.vis) return; sc.svg.style.transform = `scale(${br})`; sc.frame((now - sc.t0) / 1000, SRC === sc ? sfx : null) }) }
 window.CA = { soak, dry, crack, add, drain, spread, show, CAT, prodsIn, verbs, iconFor, names, VERB, cut, pour, salt, fry, boil, stir, grate, rinse, peel, pound, pepper, oil, bringBoil, simmer, bake, whisk, form, roll, batter, plateUp, rest, forStep, mount, unmount, F, icon,
-  ding() { if (ON) play('zvonok', .45) }, sound(on) { ON = on; if (on) { ac().resume(); loadSamples() } else stopAll(); return ON }, source(sc) { if (SRC !== sc) stopAll(); SRC = sc }, get on() { return ON } };
+  ding() { if (ON) play('zvonok') }, sound(on) { ON = on; if (on) { ac().resume(); loadSamples() } else stopAll(); return ON }, source(sc) { if (SRC !== sc) stopAll(); SRC = sc }, get on() { return ON } };
 })();

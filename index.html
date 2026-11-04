@@ -918,7 +918,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-04-r70'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-04-r71'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1508,7 +1508,7 @@ function sunTimes(lat,lon,date=new Date()){const rad=Math.PI/180,d0=new Date(Dat
   const Jt=2451545+Js+.0053*Math.sin(M*rad)-.0069*Math.sin(2*L*rad),dec=Math.asin(Math.sin(L*rad)*Math.sin(23.44*rad));
   const h=(Math.sin(-.833*rad)-Math.sin(lat*rad)*Math.sin(dec))/(Math.cos(lat*rad)*Math.cos(dec));if(h<-1||h>1)return null; // полярный день или ночь
   const w=Math.acos(h)/rad,toD=J=>new Date((J-2440587.5)*864e5);return{rise:toD(Jt-w/360),set:toD(Jt+w/360)}}
-function ramadanSlots(){const r=KIT&&KIT.regions.find(x=>x.code===region()),pos=GEO||(r?[r.lat,r.lon]:null);if(!pos)return null;const t=sunTimes(pos[0],pos[1]);if(!t)return null;
+function ramadanSlots(){const r=KIT&&KIT.regions.find(x=>x.code===region()),pos=GEO||(cityName()&&S.cityPos)||(r?[r.lat,r.lon]:null);if(!pos)return null;const t=sunTimes(pos[0],pos[1]);if(!t)return null;
   const now=new Date(),hm=d=>d.toTimeString().slice(0,5);
   // днём советов поесть нет: ифтар — после заката, сухур — до рассвета (за 20 минут)
   return{now:now<t.rise?'suhur':now>t.set?'iftar':'day',rise:hm(t.rise),set:hm(t.set)}}
@@ -1579,6 +1579,22 @@ const people=()=>Math.max(1,Math.min(10,+S.profile.people||1));
 function packTxt(pk){if(pk[5])return 'на развес, за кг';const m=String(pk[4]).match(/(\d+(?:[.,]\d+)?)\s*(кг|гр|г|мл|л|шт)(?![а-яё])/i);return 'упаковка '+(m?m[1].replace('.',',')+NBS+m[2].toLowerCase().replace('гр','г'):Math.round(pk[1])+NBS+'г')}
 function gramsTxt(id,g){const x=KIT.it[id];return x.pc?`${pl(Math.round(g/x.pc),'шт','шт','шт')} · ${g} г`:`${g} г`}
 /* план на остаток дня: приёмы, что ещё впереди, и блюдо на каждый — под калории, белок и деньги */
+/* текущий город подстраивает советы (мягкий приоритет, не фильтр): привычные для региона блюда и дешёвые сезонные овощи и фрукты по месяцу и климату */
+const REG_DISH=[ // регионы → блюда из базы, которые там привычны
+  [['tat','bash','chu','udm','mel','uly','orb','pnz','sam'],['azu','shurpa','pelmeni','plov_baranina','lagman']],
+  [['dag','kbr','kchr','oset','ing','chech','ady','stv','kalm'],['chahohbili','shurpa_baranina','plov_baranina','buterbrod_zern_adygeyskiy','adygeyskiy_zhareny_ovoshchi','salat_grecheskiy']],
+  [['svr','che','per','tyu','kurg','hmao','yanao','nsk','oms','tom','kem','alt','altr','krs','khak','tyva','irk','bur','zab'],['pelmeni','uha','okroshka_kefir','shchi_kislye','pechen_grechka']],
+  [['prm','khb','amu','mag','sah','kam','chuk','evr','yak'],['uha','gorbusha_ovoshchi','gorbusha_zapech','mimoza','mintay_ris','mintay_tomat','ryb_kotlety','mintay_ovoshchi_grechka','treska_ovoshchi_kartofel','salat_kalmar_yaico','krevetki_ris_ovoshchi','kalmar_ris_kabachok','pelmeni']],
+  [['arh','mur','kar','komi','nao'],['uha','treska_ovoshchi_kartofel','treska_kartofel_zapech','seld_kartofel','shuba','ryb_kotlety']],
+  [['krd','ros','krm','sev','ast','vgg'],['borsch','ragu_baklazhan_perets','baklazhany_grechka','ikra_kabachkovaya','perets_farsh','salat_grecheskiy','salat_ovoshchi']]];
+const CLIM_S=['krd','ros','krm','sev','ast','vgg','stv','dag','kbr','kchr','oset','ing','chech','ady','kalm'],CLIM_C=['arh','mur','kar','komi','nao','yanao','hmao','tyva','irk','bur','zab','yak','mag','chuk','kam','sah','evr','amu','khb','krs','khak','altr','tom','kem','nsk','oms','alt'];
+// сезон по месяцу (0 — январь) для средней полосы; юг — на месяц раньше, Сибирь, Север и Дальний Восток — на месяц позже
+const SEAS_M=[['kapusta','kv_kapusta','morkov','svekla','kartofel','yabloko'],['kapusta','kv_kapusta','morkov','svekla','kartofel','yabloko'],['kapusta','kv_kapusta','morkov','svekla','kartofel'],['kapusta','morkov','svekla','kartofel'],['redis','luk_zel','ukrop','kapusta','kartofel'],['redis','luk_zel','ukrop','salat_list','ogurets','kabachok'],
+  ['ogurets','kabachok','pomidor','ukrop','yagody','cv_kapusta','kartofel','kapusta'],['pomidor','ogurets','kabachok','baklazhan','perets','yabloko','yagody','kartofel','morkov','svekla','cv_kapusta','brokkoli'],['kapusta','svekla','morkov','kartofel','tykva','yabloko','grusha','pomidor','kabachok','perets'],['kapusta','svekla','tykva','morkov','kartofel','yabloko'],['kapusta','kv_kapusta','svekla','morkov','kartofel','tykva','yabloko'],['kapusta','kv_kapusta','svekla','morkov','kartofel','yabloko','mandarin']];
+function seasonNow(){const r=region(),m=new Date().getMonth(),sh=CLIM_S.includes(r)?1:CLIM_C.includes(r)?-1:0;let l=SEAS_M[(m+sh+12)%12];if(CLIM_C.includes(r))l=l.filter(x=>x!=='baklazhan');return l}
+const regDish=d=>{const r=region();return REG_DISH.some(([rs,ds])=>rs.includes(r)&&ds.includes(d.id))};
+const seasonIn=d=>{const S0=seasonNow();return d.ing.filter(([id,g])=>S0.includes(id)&&g>=40).map(([id])=>id)};
+const placeBonus=d=>(regDish(d)?.25:0)+Math.min(.24,seasonIn(d).length*.08);
 function dayPlan(){
   const pr=S.profile,n=norm(pr),e=eaten(),hr=new Date().getHours(),td=today0();let late=hr>=21||hr<5;
   const remK=Math.max(n.kcal-e.k,0),remP=Math.max(n.p-Math.round(e.p),0),budget=Math.max(budgetOf(pr)-e.cost,0);
@@ -1602,7 +1618,7 @@ function dayPlan(){
   for(const [sl,ml,,,lab] of slots){const w=W[ml]/wsum,tk=Math.max(slots.length>1&&ml==='s'?150:250,remK*w),tp=remP*w,tb=budget*w;
     // обед с собой: то, что хранится и хорошо разогревается
     const box=lunchbox&&ml==='l',fitK=d=>!used.has(d.id)&&d.nut.k<=Math.max(tk*1.6,leftK+150),ok1=R.filter(d=>d.m.includes(ml)&&fitK(d)),ok0=ok1.length?ok1:R.filter(fitK), /* блюд этого приёма нет (только чайник, узкие исключения) — берём любые подходящие */ok=box&&ok0.some(d=>d.keep>=1&&d.eq==='плита')?ok0.filter(d=>d.keep>=1&&d.eq==='плита'):ok0,cst=d=>{const c=dishCost(d);return c?c.r:0},part=d=>{const c=dishCost(d);return !!(c&&c.part)};
-    const score=d=>(d.eq==='духовка'?-.5:0)+(S.likes&&S.likes[d.id]?.3:0)-(S.dislikes&&S.dislikes[d.id]?.8:0)-healthPenalty(d)-Math.abs(d.nut.k-tk)/tk+.6*Math.min(d.nut.p/Math.max(tp,1),1.2)-(hasPrices()?cst(d)/Math.max(tb,60)*.25:0)-(cst(d)>leftB&&hasPrices()?3:0)-(part(d)?.6:0);
+    const score=d=>placeBonus(d)+(d.eq==='духовка'?-.5:0)+(S.likes&&S.likes[d.id]?.3:0)-(S.dislikes&&S.dislikes[d.id]?.8:0)-healthPenalty(d)-Math.abs(d.nut.k-tk)/tk+.6*Math.min(d.nut.p/Math.max(tp,1),1.2)-(hasPrices()?cst(d)/Math.max(tb,60)*.25:0)-(cst(d)>leftB&&hasPrices()?3:0)-(part(d)?.6:0);
     const ranked=ok.map(d=>[score(d),d]).sort((a,b)=>b[0]-a[0]).map(a=>a[1]);if(!ranked.length)continue;
     const skip=(S.cook.skip[sl]||0)%ranked.length,pick=S.cook.pick[sl]&&ranked.find(d=>d.id===S.cook.pick[sl]),d=pick||ranked[skip];
     used.add(d.id);leftK-=d.nut.k;leftB-=cst(d);out.push({sl,m:ml,lab:lab+(box?' · с собой, приготовить с вечера':''),d,c:dishCost(d),n:ranked.length})}
@@ -1674,7 +1690,7 @@ function vFood(){
    <div class="howto-s">${[['spark','План','калории, белок и бюджет на остаток дня'],['food','Блюда','под план, вкусы и аллергии'],['cart','Покупки','список и где дешевле рядом'],['check','Приготовил','шаги с таймером — и в дневник']].map(([i,t,d],k)=>`<div class="hs"><span class="hs-i">${ic(i)}</span><b>${k+1}. ${t}</b><small>${d}</small></div>`).join('')}</div></div>`}
   <h2>Что приготовить сегодня</h2>
   <button class="pill" style="margin:-4px 4px 10px;border:0;cursor:pointer" onclick="openDiet()">${dietOn()?dietSub()+' — изменить':'Не ем и аллергии — указать'}</button>
-  ${!loaded?`<div class="card small muted">Загружаем рецепты…</div>`:P.slots.length?`<div class="small muted" style="margin:-4px 4px 10px">Осталось ${u(P.remK,'ккал')} и ${u(P.remP,'г')} белка, бюджет ${rub(P.budget)}${priced?` · план ≈ ${u(kc,'ккал')}, ${u(pp,'г')} белка, ${rub(tot)}`:''}</div>
+  ${!loaded?`<div class="card small muted">Загружаем рецепты…</div>`:P.slots.length?`<div class="small muted" style="margin:-4px 4px 10px">Для: ${placeTxt()} · осталось ${u(P.remK,'ккал')} и ${u(P.remP,'г')} белка, бюджет ${rub(P.budget)}${priced?` · план ≈ ${u(kc,'ккал')}, ${u(pp,'г')} белка, ${rub(tot)}`:''}</div>
   ${P.slots.map(x=>dishRow(x.d,x.c,`${x.top?'Перекус · добор белка':(x.lab||SLOT[x.m])+' · '+dishCat(x.d)[0]}${salty(x.d)?' · солоновато':''}`,x.n>1&&!x.top?x.sl:null)).join('')}
   ${P.slots.length&&(!P.okK||!P.okP)?`<div class="small" style="margin:-2px 4px 10px;color:var(--warn-text)">${!P.okK&&P.fitK<P.remK?`Оставшихся приёмов хватит на ≈${u(P.fitK,'ккал')} из ${u(P.remK,'ккал')} — порции уже увеличены до предела. Остальное — перекусом или завтра.`:!P.okK?`План ≈${u(P.fitK,'ккал')} — порции уменьшены до предела.`:''} ${!P.okP?`Белка в плане ${u(P.fitP,'г')} из ${u(P.remP,'г')}: больше не собрать без перебора калорий — добавьте творог, яйца или кефир.`:''}</div>`:''}
   ${priced&&tot>P.budget?`<div class="small" style="margin:-2px 4px 10px;color:var(--warn-text)">Даже самые дешёвые блюда стоят больше остатка бюджета — дешевле всего крупы, яйца, творог, кефир. Отметьте, что уже есть дома, — пересчитаем.</div>`:''}
@@ -1745,6 +1761,7 @@ function openDish(id,n){const d=dishOf(id);if(!d){loadKit().then(()=>KIT&&KIT.re
    <div class="card dish-top"><div class="num" style="font-size:34px;line-height:1">${fmt(d.nut.k)}<span class="dku"> ккал</span></div>
     <div class="small muted" style="margin-top:4px">в порции · <span class="nw">${tm}${NBS}мин</span>${d.yield&&d.yield.g?` · тарелка <span class="nw">≈${NBS}${u(Math.round(d.yield.g*f/10)*10,'г')}</span>`:''} · ${d.eq==='без готовки'?'без готовки':d.eq==='духовка'?'нужна духовка':'на плите'}${d.keep?' · в холодильнике '+pl(d.keep,'день','дня','дней'):''}</div>${!near1(f)&&Math.round(f*10)!==10?`<div class="tiny" style="margin-top:2px;color:var(--accent-text);font-weight:600">порция ×${f1(Math.round(f*10)/10)} — под ваш план</div>`:''}
     ${c?`<div class="dcost small"><b class="num nw dc1">${costTxt(c)}</b>${c.part?'':` <span class="nw">за порцию</span>${c.ok?'':' · часть цен примерно'} · купить целыми упаковками <b class="num nw">≈${NBS}${rub(costOf(d.ing.map(([i,g])=>[i,g*K])).chk)}</b>${N>1?' на '+pl(N,'порцию','порции','порций'):''}`}</div>`:''}
+    ${(()=>{const sz=seasonIn(d),rd=regDish(d);return rd||sz.length?`<div class="tiny" style="margin-top:6px;color:var(--accent-text);font-weight:600">${rd?'Привычное блюдо':'По сезону'}${sz.length?(rd?' · по сезону: ':': ')+sz.map(i=>KIT.it[i].n.toLowerCase().split(/[ (]/)[0]).join(', '):''} — для: ${placeTxt()}</div>`:''})()}
     <div class="tiny muted mr-h">от вашей нормы на день</div><div class="mrings">${macroRings(d.nut,nn)}</div></div>
    <div class="card row between" style="gap:10px;flex-wrap:wrap"><div style="min-width:0;flex:1 1 140px"><div style="font-weight:650">Готовлю на</div><div class="tiny muted">${fam?`вам — порция ×${f1(Math.round(f*10)/10)}${d.yield&&d.yield.g?` (≈${Math.round(d.yield.g*f/10)*10} г)`:''}, остальным — обычная${d.yield&&d.yield.g?` (≈${Math.round(d.yield.g/10)*10} г)`:''}`:N>1?'все граммы, вода и соль пересчитаны':'граммы на одну порцию'}</div></div>
     <div class="ctl" role="group" aria-label="Порций"><button class="rb" onclick="openDish('${id}',Math.max(1,DISHN-1))" aria-label="Меньше порций">−</button><span class="num" style="font-size:20px;min-width:64px;text-align:center">${pl(N,'порция','порции','порций')}</span><button class="rb" onclick="openDish('${id}',Math.min(10,DISHN+1))" aria-label="Больше порций">+</button></div></div>
@@ -1967,7 +1984,7 @@ function openRegion(q=''){const R=KIT?KIT.regions:[],k=norm_(q),C=CITIES||[];
    ${cities.length?`<div class="small muted" style="margin:0 4px 6px">Города</div><div class="card list">${cities.map(c=>`<button class="li" style="width:100%;text-align:left" onclick="setCity('${c[0].replace(/'/g,'')}','${c[1]}')"><div style="flex:1;min-width:0">${c[0]}<div class="tiny muted">${regName(c[1])}</div></div>${cityName()===c[0]?`<span class="pill ok">выбран</span>`:''}</button>`).join('')}</div>`:''}
    ${regs.length?`<div class="small muted" style="margin:0 4px 6px">Регионы</div><div class="card list">${regs.map(r=>`<button class="li" style="width:100%;text-align:left" onclick="setRegion('${r.code}')"><div style="flex:1">${r.n}</div>${r.code===region()&&!cityName()?`<span class="pill ok">выбран</span>`:''}</button>`).join('')}</div>`:''}
    <div class="tiny muted" style="margin:6px 4px 12px">Справочник городов: HFLabs, CC BY-SA 4.0</div>`);SHEET_FN=null;if(!KIT)loadKit().then(()=>KIT&&openRegion(q));if(!CITIES)loadCities().then(()=>openRegion(q))}
-function setCity(n,r){S.city=[n,r];setRegion(r,n)}
+function setCity(n,r){const c=(CITIES||[]).find(x=>x[0]===n&&x[1]===r);S.city=[n,r];S.cityPos=c?[c[2],c[3]]:null;setRegion(r,n)}
 function setRegion(c,city){S.region=c;if(!city)S.city=null;save();PRICES=null;SHOPS=null;kitchenLoad.done=null;haptic(8);toast('Цены для: '+(city||regName(c)));closeSheet();openFoodPlan()}
 const IOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 // где человек: ближайший город справочника (до 60 км) или ближайший регион; координаты — только в памяти
@@ -1979,7 +1996,7 @@ function geoFind(cb){if(!navigator.geolocation||!window.isSecureContext){cb('na'
   navigator.geolocation.getCurrentPosition(ok,e=>{if(e&&e.code===1){cb('denied');return}
     navigator.geolocation.getCurrentPosition(ok,e2=>cb(e2&&e2.code===1?'denied':'timeout'),{enableHighAccuracy:false,timeout:3000,maximumAge:Infinity})}, // тайм-аут — последнее место, что знает телефон (по сети)
     {enableHighAccuracy:false,timeout:10000,maximumAge:3600000})}
-function applyPlace(pl){S.region=pl.reg;S.city=pl.city?[pl.city,pl.reg]:null;S.geoSeen=pl.city||pl.reg;save();PRICES=null;SHOPS=null;kitchenLoad.done=null}
+function applyPlace(pl){S.region=pl.reg;S.city=pl.city?[pl.city,pl.reg]:null;S.cityPos=pl.city&&pl.pos?pl.pos:null;S.geoSeen=pl.city||pl.reg;save();PRICES=null;SHOPS=null;kitchenLoad.done=null}
 // подсказка, если геопозиция не пришла: что нажать на этом телефоне
 function geoHint(st,pick){const how=IOS?`<b>iPhone:</b> Настройки → Конфиденциальность и безопасность → Службы геолокации → включите; там же «Сайты Safari» → «При использовании». Если приложение на экране «Домой» — то же для Safari.`
    :`<b>Android, Chrome:</b> нажмите на значок замка или настроек слева от адреса сайта → Разрешения → Местоположение → «Разрешить». Проверьте, что геолокация включена в шторке телефона.`;
