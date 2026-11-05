@@ -336,7 +336,7 @@ function pour(liq = 'voda', items = []) {
     const empty = clamp((t - .6) / 3.1);
     jwat.setAttribute('transform', `translate(${(tilt * 12 + empty * 6).toFixed(1)} 0) scale(${(1 - empty * .5).toFixed(3)} ${(1 - empty * .35).toFixed(3)})`);
     const fill = t < .6 ? 0 : t < 3.7 ? eIO((t - .6) / 3.1) : 1, wout = t > T - .3 ? 1 - eIO((t - (T - .3)) / .3) : 1;   // вода набирается и держится до конца цикла
-    wat.setAttribute('opacity', (lerp(.22, .92, fill * wout)).toFixed(2)); cres.setAttribute('opacity', (fill * wout * .38).toFixed(2));
+    wat.setAttribute('opacity', (lerp(.22, items.length ? .5 : .92, fill * wout)).toFixed(2));   // в кастрюле что-то есть — сквозь воду его видно cres.setAttribute('opacity', (fill * wout * .38).toFixed(2));
     glint.setAttribute('cx', (pot.cx - 18).toFixed(1)); glint.setAttribute('cy', (pot.cy - 20).toFixed(1)); glint.setAttribute('opacity', (.12 + fill * .2).toFixed(2));
     const sx = JX + Math.cos(JR) * 50 * (1 - tilt * .1), sy = JY + Math.sin(JR) * 50, ex = sx + 13 + wob(t, 2) * .8, ey = sy + 15 + wob(t, 5) * .6;   // струя заметной длины: от носика к воде
     if (fk > 0) { const w = 3.4 * fk;
@@ -356,7 +356,7 @@ function pour(liq = 'voda', items = []) {
 const BROTH = { grechka: { c0: '#CDAE84', c1: '#A9824F', items: [['grechka', 150, .95]] }, borsch: { c0: '#C9465F', c1: '#8E1B36', items: [['svekla', 10, .9], ['kapusta', 10, 1], ['kartofel', 8, 1], ['morkov', 6, .8], ['ukrop', 14, 1.3]] }, voda: { c0: '#9FDAF7', c1: '#3E93CC', items: [] } };
 function brothOf(items) { const it = items.filter(k => F[k]), so = it.filter(solid); let c0 = '#A9DCF5', c1 = '#4E9ED6';
   if (it.includes('svekla')) [c0, c1] = ['#C9465F', '#8E1B36']; else if (it.some(k => /^(tomat|ketchup|pomidor)$/.test(k))) [c0, c1] = ['#E0674A', '#A8321F'];
-  else if (it.some(k => /^(moloko|kefir|ryazhenka|smetana|smetana20|yogurt)$/.test(k))) [c0, c1] = ['#FDFBF4', '#E9E1CE']; else { const g = it.find(k => GRAINY.has(KIND[k])); if (g) [c0, c1] = [mixc(F[g].c, '#ffffff', .25), mixc(F[g].c, '#5a3a1a', .2)] }
+  else if (it.some(k => /^(moloko|kefir|ryazhenka|smetana|smetana20|yogurt)$/.test(k))) [c0, c1] = ['#FDFBF4', '#E9E1CE']; else { const g = it.find(k => GRAINY.has(KIND[k])), gc = g ? F[g].c : (items.map(k => CAT[k]).find(C => C && GRAINY.has(C[2])) || [])[3]; if (gc) [c0, c1] = [mixc(gc, '#ffffff', .25), mixc(gc, '#5a3a1a', .2)] }   // каша — цвета крупы (и той, что есть только в каталоге)
   return { c0, c1, items: so.map(k => [k, Math.max(3, Math.round(countOf(k) / Math.max(1, so.length * .6))), scaleOf(k)]) } }
 function brothTop(pot, id, kind) {
   const B = Array.isArray(kind) ? brothOf(kind) : BROTH[kind] || BROTH.voda; defs(pot.inner.ownerSVGElement, `<radialGradient id="br${id}" cx=".4" cy=".36" r=".72"><stop offset="0" stop-color="${B.c0}"/><stop offset="1" stop-color="${B.c1}"/></radialGradient>`);
@@ -402,7 +402,7 @@ function salt(kind = 'grechka') {
 function piecesIn(svg, id, c, items, n) {
   const list = []; items = items.filter(solid); if (!items.length) return list; if (items.every(k => GRAINY.has(KIND[k]))) n = 90;
   for (let i = 0; i < n; i++) { const f = items[i % items.length], a = R(i + 3, 0, 6.283), r = Math.sqrt(R(i + 17, .02, .9)) * c.r, w = E('g', {}, svg), shd = E('g', { filter: `url(#sbs${id})`, opacity: .45 }, w), body = E('g', {}, w);
-    const k = KIND[f], sm = GRAINY.has(k); H(shd, sm ? '' : k === 'coin' ? '<circle r="7.6" fill="#000"/>' : k === 'cube' ? '<rect x="-4.4" y="-4.4" width="8.8" height="8.8" rx="2" fill="#000"/>' : '<circle r="8" fill="#000"/>');
+    const k = KIND[f] === 'crumb' ? 'ball' : KIND[f], sm = GRAINY.has(k);   // творог на сковороде — это сырники H(shd, sm ? '' : k === 'coin' ? '<circle r="7.6" fill="#000"/>' : k === 'cube' ? '<rect x="-4.4" y="-4.4" width="8.8" height="8.8" rx="2" fill="#000"/>' : '<circle r="8" fill="#000"/>');
     top(body, f, k, sm ? .95 : f === 'kur' || IS_KUR(f) ? 1.25 : 1.05, i, id); list.push({ w, shd, body, x: c.cx + Math.cos(a) * r, y: c.cy + Math.sin(a) * r, a, r, s: i }) }
   return list
 }
@@ -714,7 +714,7 @@ function plateUp(items = ['grechka', 'kur']) {
   const spoon = E('g', {}, svg); H(spoon, shade(id, '<ellipse rx="26" ry="19"/><path d="M20 -12L96 -64" stroke="#000" stroke-width="7"/>', 5, 8, .25) + `<path d="M18 -10L96 -64" stroke="url(#hnd${id})" stroke-width="7" stroke-linecap="round"/><ellipse rx="26" ry="19" fill="url(#rim${id})"/><ellipse rx="22" ry="15.5" fill="url(#wal${id})"/><path d="M-18 -6Q-10 -14 4 -14" stroke="#fff" stroke-width="2" fill="none" opacity=".7" stroke-linecap="round"/>`);
   svg.insertBefore(spoon, por);   // еда лежит в ложке (поверх неё)
   const T = 4.4, PX = 166, PY = 90, SX2 = 206, SY2 = 84;
-  const carry = (t, t0, x, y) => { const k = clamp((t - t0) / .55), d = clamp((t - t0 - .55) / .3), o = clamp((t - t0 - .85) / .45); return { k, d, o, sx: lerp(x + 150, x, eOut(k)) + eIn(o) * 160, sy: lerp(y - 110, y, eOut(k)) - eIn(o) * 120 } };
+  const carry = (t, t0, x, y) => { const k = clamp((t - t0) / .55), d = clamp((t - t0 - .55) / .3), o = clamp((t - t0 - .85) / .45); return { k, d, o, sx: lerp(x + 230, x, eOut(k)) + eIn(o) * 220, sy: lerp(y - 170, y, eOut(k)) - eIn(o) * 170 } };
   function frame(t, emit) { t %= T; const A = carry(t, .05, PX, PY), Bq = carry(t, 1.5, SX2, SY2), f = t > T - .4 ? 1 - (t - (T - .4)) / .4 : 1, two = !!items[1];
     // порция: пока в ложке — едет с ней и сжата; после опускания — на тарелке, расправляется
     const pa = A.d > 0 ? 1 : .5, ax = A.d > 0 ? 0 : A.sx - PX, ay = A.d > 0 ? 0 : A.sy - PY;
@@ -734,7 +734,7 @@ function rest(kind = 'grechka') {
   H(svg, `<g transform="translate(170 90) rotate(-12)">${shade(id, '<rect x="-60" y="-52" width="120" height="104" rx="10"/>', 4, 6, .25)}<rect x="-60" y="-52" width="120" height="104" rx="10" fill="#F4FBF8"/>${[0, 1, 2, 3, 4, 5, 6].map(i => `<rect x="${-60 + i * 17 + 4}" y="-52" width="8" height="104" fill="#10B981" opacity=".22"/><rect x="-60" y="${-52 + i * 15 + 4}" width="120" height="7" fill="#10B981" opacity=".22"/>`).join('')}</g>`);
   const ring = E('circle', { cx: 286, cy: 34, r: 14, fill: 'none', stroke: '#10B981', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-dasharray': 88, transform: 'rotate(-90 286 34)' }, svg); E('circle', { cx: 286, cy: 34, r: 14, fill: 'none', stroke: '#10B981', 'stroke-width': 3, opacity: .18 }, svg);
   const st = steamUp(svg, id, 4, 170, 50, 30), T = 6;
-  function frame(t, emit) { t %= T; ring.setAttribute('stroke-dashoffset', (88 * (1 - t / T)).toFixed(1)); st(t * .6) }
+  function frame(t, emit) { t %= T; ring.setAttribute('stroke-dashoffset', (88 * (1 - t / T)).toFixed(1)); st(t * .6); if (t > .2 && !frame._c) { frame._c = 1; emit && emit('cover') } if (t < .2) frame._c = 0 }
   return sc0(id, svg, frame, T, 'Настоять', 'под крышкой и полотенцем', null) }
 
 
@@ -855,14 +855,14 @@ function fillPieces(p, id, c, items, total) { const list = []; let s = 0; const 
 function show(items = []) { const { id, svg } = scene(['towel']); defs(svg, metalDefs(id)); boardTop(svg, id, 60, 30, 232, 120); decor(svg, id, ['dill']);
   const it = [...new Set(items)].slice(0, 3), gs = it.map((k, i) => { const g = E('g', {}, svg), sz = it.length === 1 ? 104 : it.length === 2 ? 86 : 72; H(g, shade(id, `<ellipse cx="${sz / 2}" cy="${sz * .82}" rx="${sz * .34}" ry="${sz * .08}"/>`, 2, 3, .25) + artAt(k, 0, 0, sz)); return { g, sz, x: 176 - (it.length * (sz + 6)) / 2 + i * (sz + 6), y: 90 - sz / 2 } });
   const sweep = E('rect', { x: -60, y: 20, width: 40, height: 150, fill: '#fff', opacity: .0, transform: 'skewX(-18)' }, svg), T = 4;
-  function frame(t) { t %= T; gs.forEach((q, i) => { const b = Math.sin((t / T) * 2 * Math.PI + i * 1.3) * 1.6; q.g.setAttribute('transform', `translate(${q.x.toFixed(1)} ${(q.y + b).toFixed(1)})`) });
+  function frame(t, emit) { t %= T; gs.forEach((q, i) => { if (t > .15 + i * .35 && t < .5 + i * .35 && frame['_p' + i] !== Math.floor(t / T + .01)) { frame['_p' + i] = Math.floor(t / T + .01); emit && emit('place') } if (t < .1) frame['_p' + i] = -1; const b = Math.sin((t / T) * 2 * Math.PI + i * 1.3) * 1.6; q.g.setAttribute('transform', `translate(${q.x.toFixed(1)} ${(q.y + b).toFixed(1)})`) });
     const k = (t % T) / T; sweep.setAttribute('x', (40 + k * 300).toFixed(0)); sweep.setAttribute('opacity', (Math.sin(k * Math.PI) * .12).toFixed(2)) }
   return sc0(id, svg, frame, T, 'Подготовить', names(it), null) }
 
 function soak(items = []) { const { id, svg } = scene(['towel']); defs(svg, metalDefs(id));
   const b = bowlTop(svg, id, 180, 90, 74), wat = E('circle', { cx: b.cx, cy: b.cy, r: b.r, fill: '#9FD6F2', opacity: .25 }, b.inner), P = fillPieces(b.inner, id, { cx: b.cx, cy: b.cy, r: b.r * .85 }, items.length ? items : []);
   const bub = [...Array(14)].map((_, i) => E('circle', { r: R(i, 1, 2.4), fill: '#fff', opacity: 0 }, b.inner)), ring = E('circle', { cx: 300, cy: 34, r: 14, fill: 'none', stroke: '#10B981', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-dasharray': 88, transform: 'rotate(-90 300 34)' }, svg), T = 5;
-  function frame(t) { t %= T; const k = clamp(t / (T * .8)); wat.setAttribute('opacity', (.25 + k * .4).toFixed(2)); P.forEach(q => q.w.setAttribute('transform', `translate(${(q.x + wob(t * .4, q.s)).toFixed(1)} ${(q.y + wob(t * .5, q.s + 2)).toFixed(1)}) scale(${(1 + k * .1).toFixed(3)})`));
+  function frame(t, emit) { t %= T; emit && emit('soak'); const k = clamp(t / (T * .8)); wat.setAttribute('opacity', (.25 + k * .4).toFixed(2)); P.forEach(q => q.w.setAttribute('transform', `translate(${(q.x + wob(t * .4, q.s)).toFixed(1)} ${(q.y + wob(t * .5, q.s + 2)).toFixed(1)}) scale(${(1 + k * .1).toFixed(3)})`));
     bub.forEach((e, i) => { const q = ((t * .5 + i / bub.length) % 1); e.setAttribute('cx', (b.cx + Math.cos(i * 2.2) * R(i, 8, b.r * .8)).toFixed(1)); e.setAttribute('cy', (b.cy + Math.sin(i * 2.2) * R(i, 8, b.r * .8) - q * 6).toFixed(1)); e.setAttribute('opacity', (Math.sin(q * Math.PI) * .6).toFixed(2)) });
     ring.setAttribute('stroke-dashoffset', (88 * (1 - t / T)).toFixed(1)) }
   return sc0(id, svg, frame, T, 'Замочить', names(items) + ' в воде', null) }
@@ -871,7 +871,7 @@ function dry(f) { const { id, svg } = scene(); defs(svg, metalDefs(id)); boardTo
   const it = f ? [f] : [], prod = E('g', {}, svg); if (f) { if (solid(f) && ['chunk', 'leaf', 'speck', 'floret', 'berry', 'shrimp', 'ring'].includes(KIND[f])) fillPieces(prod, id, { cx: 170, cy: 90, r: 44 }, it, 9); else H(prod, artAt(f, 118, 38, 104)) }
   const tw = E('g', {}, svg); H(tw, shade(id, '<rect x="-46" y="-34" width="92" height="68" rx="6"/>', 4, 6, .25) + `<rect x="-46" y="-34" width="92" height="68" rx="6" fill="#FFFFFF"/>${[...Array(40)].map((_, i) => `<circle cx="${-40 + (i % 8) * 11.4}" cy="${-28 + Math.floor(i / 8) * 13}" r="1.1" fill="#E5E9EC"/>`).join('')}`);
   const wet = [...Array(6)].map((_, i) => E('circle', { r: R(i, 5, 10), fill: '#D9E8F2', opacity: 0 }, tw)), T = 3.2;
-  function frame(t, emit) { t %= T; const up = hit(t, 1.05); const io2 = (1 - eOut(clamp(t / .35))) + eIn(clamp((t - (T - .4)) / .4)); tw.setAttribute('transform', `translate(170 ${(88 - up * 4 - io2 * 150).toFixed(1)}) scale(${(1 + up * .06).toFixed(3)}) rotate(-6)`);   // полотенце кладут сверху и убирают вверх
+  function frame(t, emit) { t %= T; const up = hit(t, 1.05); const io2 = (1 - eOut(clamp(t / .35))) + eIn(clamp((t - (T - .4)) / .4)); if (up > .8 && !frame._h) { frame._h = 1; emit && emit('pat') } if (up < .5) frame._h = 0; tw.setAttribute('transform', `translate(170 ${(88 - up * 4 - io2 * 150).toFixed(1)}) scale(${(1 + up * .06).toFixed(3)}) rotate(-6)`);   // полотенце кладут сверху и убирают вверх
     wet.forEach((e, i) => { e.setAttribute('cx', R(i, -30, 30).toFixed(1)); e.setAttribute('cy', R(i + 4, -20, 20).toFixed(1)); e.setAttribute('opacity', t > .4 + i * .3 && t < T - .4 ? .7 : 0) }) }
   return sc0(id, svg, frame, T, 'Обсушить', names(it) + ' бумажным полотенцем', null) }
 
@@ -885,29 +885,42 @@ function crack(vessel = 'bowl') { const { id, svg } = scene(['towel']); defs(svg
   function frame(t, emit) { t %= T; const k = clamp((t - .5) / .4), sp = clamp((t - .9) / 1.2), f = t > T - .4 ? (T - t) / .4 : 1;
     const gone = eIn(clamp((t - 1.05) / .6)); egg.setAttribute('transform', `translate(${cx} ${(lerp(-24, cy - 12, eOut(clamp(t / .5))) - gone * (cy + 30)).toFixed(1)}) scale(${(1.2 - clamp(t / .5) * .2).toFixed(3)})`); egg.setAttribute('opacity', t < 1.7 ? 1 : 0);   // скорлупа приходит сверху и уходит вверх (в руке)
     L.setAttribute('transform', `translate(${(-k * 14).toFixed(1)} 0) rotate(${(-k * 30).toFixed(1)})`); Rr.setAttribute('transform', `translate(${(k * 14).toFixed(1)} 0) rotate(${(k * 30).toFixed(1)})`);
-    if (k > 0 && k < .1 && frame._c !== Math.floor(t / T)) { frame._c = Math.floor(t / T); emit && emit('crack') }
+    if (k > 0 && !frame._c) { frame._c = 1; emit && emit('crack') } if (k === 0) frame._c = 0;   // без узкого окна: на телефоне, пропускающем кадры, стук не теряется
     const r = eOut(sp) * 34; white.setAttribute('d', `M${cx - r} ${cy}Q${cx - r} ${cy - r * .9} ${cx} ${cy - r * .85}Q${cx + r * 1.1} ${cy - r * .8} ${cx + r} ${cy + r * .1}Q${cx + r * .8} ${cy + r} ${cx} ${cy + r * .9}Q${cx - r * 1.05} ${cy + r * .8} ${cx - r} ${cy}Z`); white.setAttribute('opacity', (sp > 0 ? .97 * f : 0).toFixed(2));
     yolk.setAttribute('cx', cx + 2); yolk.setAttribute('cy', cy); yolk.setAttribute('r', (sp > 0 ? 9 * f : 0).toFixed(1)); yh.setAttribute('cx', cx - 1); yh.setAttribute('cy', cy - 3); yh.setAttribute('r', (sp > 0 ? 3 * f : 0).toFixed(1)); v.shine && v.shine(t) }
   return sc0(id, svg, frame, T, 'Разбить яйцо', vessel === 'pan' ? 'на сковороду' : 'в миску', 'chop') }
 
 function vesselOf(svg, id, vessel) { return vessel === 'pan' ? panTop(svg, id, 160, 90, 76) : vessel === 'bowl' ? bowlTop(svg, id, 172, 90, 76) : (() => { const p = potTop(svg, id, 172, 90, 76); E('circle', { cx: p.cx, cy: p.cy, r: p.r, fill: '#A9DCF5', opacity: .55 }, p.inner); return p })() }
 // добавить: кусочки падают сверху (крупнее и с дальней тенью — ближе к камере) и ложатся; reverse — вынуть: поднимаются, с них капает
-function add(items = [], vessel = 'pot', reverse = false) { const { id, svg } = scene(['towel']); defs(svg, metalDefs(id));
-  const v = vesselOf(svg, id, vessel), c = { cx: v.cx, cy: v.cy, r: v.r * .8 }, it = items.filter(solid), lay = E('g', {}, svg), drops = [];
+function add(items = [], vessel = 'pot', reverse = false, base = []) { const { id, svg } = scene(['towel']); defs(svg, metalDefs(id));
+  const v = vesselOf(svg, id, vessel), c = { cx: v.cx, cy: v.cy, r: v.r * .8 }, drops = [];
+  // в посуде уже есть то, что клали раньше: в кастрюле — бульон или каша с кусочками, на сковороде и в миске — кусочки; новое падает поверх
+  const bs = base.filter(solid); let bob0 = null; if (bs.length || (vessel === 'pot' && base.length)) { if (vessel === 'pot') bob0 = brothTop(v, id, base); else { const bl = E('g', {}, svg), L0 = fillPieces(bl, id, { cx: v.cx, cy: v.cy, r: v.r * .78 }, bs, Math.min(60, bs.reduce((a, k) => a + Math.min(countOf(k), 30), 0))); bob0 = t => L0.forEach(q => q.w.setAttribute('transform', `translate(${(q.x + wob(t * .5, q.s) * .8).toFixed(1)} ${(q.y + wob(t * .6, q.s + 3) * .8).toFixed(1)})`)) } }
+  const it = items.filter(k => solid(k) && !(bs.includes(k) && !reverse)), lay = E('g', {}, svg);
   const P = it.length ? fillPieces(lay, id, c, it, Math.min(26, it.reduce((a, k) => a + Math.min(countOf(k), 14), 0))) : [];
   P.forEach(q => { q.d = R(q.s + 11, 0, .9); q.oy = -(q.y + 24) - R(q.s, 0, 30) });   // кусочки входят сверху из-за кадра (из рук), а не из воздуха
-  if (!it.length && items.length) { const liq = items[0]; E('circle', { cx: v.cx, cy: v.cy, r: v.r * .6, fill: F[liq] ? F[liq].c : '#fff', opacity: .0, class: 'lq' }, v.inner || svg) }
+  const nl = items.filter(k => !solid(k) && !FREE.has(k)); if (!it.length && nl.length) { const liq = nl[0]; E('circle', { cx: v.cx, cy: v.cy, r: v.r * (bs.length ? .42 : .6), fill: F[liq] ? F[liq].c : '#fff', opacity: .0, class: 'lq', 'data-max': bs.length ? .4 : .8 }, v.inner || svg) }
   for (let i = 0; i < 6; i++) drops.push(E('circle', { r: 1.6, fill: '#E6F6FF', opacity: 0 }, svg));
   const rg = vessel !== 'pan' ? rings(v.inner || svg, 8) : null, sz = vessel === 'pan' ? [...Array(10)].map(() => E('circle', { r: 1.2, fill: '#FFF6D6', opacity: 0 }, svg)) : [];
+  // «Вынуть»: шумовка входит из-за кадра, собирает кусочки и уносит их вверх; с неё капает
+  let sp = null; if (reverse) { sp = E('g', {}, svg); svg.insertBefore(sp, lay); H(sp, shade(id, '<ellipse rx="24" ry="18"/><path d="M18 -10L96 -64" stroke="#000" stroke-width="7"/>', 5, 8, .25) + `<path d="M18 -10L96 -64" stroke="url(#hnd${id})" stroke-width="7" stroke-linecap="round"/><ellipse rx="24" ry="18" fill="url(#rim${id})"/><ellipse rx="20" ry="14.5" fill="url(#wal${id})"/>${[...Array(12)].map((_, i) => `<circle cx="${(Math.cos(i * 2.4) * Math.sqrt(i / 12) * 14).toFixed(1)}" cy="${(Math.sin(i * 2.4) * Math.sqrt(i / 12) * 10).toFixed(1)}" r="1.3" fill="#9AA6AE"/>`).join('')}`) }
+  const spAt = t => { const a = eOut(clamp(t / .5)), b = eIn(clamp((t - 1.2) / .7)), x0 = v.cx + 8, y0 = v.cy + 4; return { x: lerp(x0 + 170, x0, a) + b * 190 + Math.sin(clamp((t - .5) / .7) * Math.PI) * 6, y: lerp(y0 - 130, y0, a) - b * 150 } };
   const T = 3.6;
   function frame(t, emit) { t %= T; v.shine && v.shine(t);
+    if (reverse) { bob0 && bob0(t); const S = spAt(t); sp.setAttribute('transform', `translate(${S.x.toFixed(1)} ${S.y.toFixed(1)}) rotate(-14)`); sp.setAttribute('opacity', t < 2 ? 1 : 0);
+      if (t > .5 && !frame._d) { frame._d = 1; emit && emit('lift') } if (t < .5) frame._d = 0; if (t > 1.2 && t < 1.95) emit && emit('drip');
+      P.forEach(q => { const e = eIO(clamp((t - .55 - q.d * .3) / .4)), tx = S.x + (q.x - v.cx) * .2, ty = S.y + (q.y - v.cy) * .2, bob = e < 1 && vessel === 'pot' ? Math.sin(t * 2.2 + q.s) * 1.2 * (1 - e) : 0;
+        q.w.setAttribute('transform', `translate(${lerp(q.x, tx, e).toFixed(1)} ${(lerp(q.y, ty, e) + bob).toFixed(1)}) scale(${lerp(1, .8, e).toFixed(3)})`); q.w.setAttribute('opacity', t < 2 ? 1 : 0) });
+      drops.forEach((e, i) => { const q = ((t * 1.6 + i / 6) % 1); e.setAttribute('cx', (S.x - 10 + i * 4).toFixed(1)); e.setAttribute('cy', (S.y + 6 + q * 22).toFixed(1)); e.setAttribute('opacity', t > 1.2 && t < 1.95 ? ((1 - q) * .9).toFixed(2) : 0) });
+      rg && rg.frame(t); return }
     P.forEach(q => { let k = clamp((t - q.d) / .7); if (reverse) k = 1 - clamp((t - .4 - q.d) / .9); const e = reverse ? eIO(k) : eIn(k), land = !reverse && k >= 1, bob = land ? (vessel === 'pot' ? Math.sin(t * 2.2 + q.s) * 1.2 : 0) : 0, y = q.y + (1 - e) * q.oy + bob, s = 1 + (1 - e) * .5;   // падает с ускорением, в кастрюле покачивается на воде — стал частью содержимого
       if (!reverse && k >= 1 && q._r !== Math.floor(t / T)) { q._r = Math.floor(t / T); if (rg) rg.at(q.x, q.y, t, .5); else q.sp = t }
       q.w.setAttribute('transform', `translate(${q.x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(3)})`); q.w.setAttribute('opacity', (reverse ? (k > .05 ? 1 : 0) : (t > T - .35 ? (T - t) / .35 : k > 0 ? 1 : 0)).toFixed(2));
       if (!reverse && k > .95 && q._l !== Math.floor(t / T) && q.s % 4 === 0) { q._l = Math.floor(t / T); emit && emit(vessel === 'pan' ? 'sizzle' : 'bubble') } });
     rg && rg.frame(t); sz.forEach((e, i) => { const q = P[i % Math.max(1, P.length)]; if (!q || q.sp == null) { e.setAttribute('opacity', 0); return } const k = clamp((t - q.sp) / .5), a = i * 2.4; e.setAttribute('cx', (q.x + Math.cos(a) * (4 + k * 8)).toFixed(1)); e.setAttribute('cy', (q.y + Math.sin(a) * (4 + k * 8)).toFixed(1)); e.setAttribute('opacity', (k > 0 && k < 1 ? (1 - k) * .9 : 0).toFixed(2)) });   // на сковороде — брызги масла
     if (t < .05) P.forEach(q => q.sp = null);
-    const lq = svg.querySelector('.lq'); if (lq) lq.setAttribute('opacity', (clamp(t / 1.5) * .8 * (t > T - .35 ? (T - t) / .35 : 1)).toFixed(2));
+    bob0 && bob0(t); if (!it.length && !svg.querySelector('.lq') && bs.length && Math.floor(t / .5) !== frame._b) { frame._b = Math.floor(t / .5); emit && emit(vessel === 'pan' ? 'sizzle' : 'simmer') }   // ничего нового не падает — посуда звучит своим фоном
+    const lq = svg.querySelector('.lq'); if (lq && t < 1.5) emit && emit('drip'); if (lq) lq.setAttribute('opacity', (clamp(t / 1.5) * +lq.getAttribute('data-max') * (t > T - .35 ? (T - t) / .35 : 1)).toFixed(2));
     drops.forEach((e, i) => { const q = ((t * 1.3 + i / 6) % 1); e.setAttribute('cx', (v.cx - 20 + i * 8).toFixed(1)); e.setAttribute('cy', (v.cy - 40 + q * 30).toFixed(1)); e.setAttribute('opacity', reverse && t > .8 ? (1 - q).toFixed(2) : 0) }) }
   return sc0(id, svg, frame, T, reverse ? 'Вынуть' : 'Добавить', names(items), vessel === 'pan' ? 'sizzle' : 'bubble') }
 
@@ -922,7 +935,7 @@ function spread(items = []) { const { id, svg } = scene(); defs(svg, metalDefs(i
   H(svg, shade(id, '<rect x="110" y="40" width="120" height="100" rx="18"/>', 4, 6, .3) + `<rect x="110" y="40" width="120" height="100" rx="18" fill="#B9773E"/><rect x="117" y="47" width="106" height="86" rx="13" fill="#F1D7A6"/>${[...Array(30)].map((_, i) => `<circle cx="${(122 + R(i, 0, 96)).toFixed(1)}" cy="${(52 + R(i + 3, 0, 76)).toFixed(1)}" r="${R(i + 5, .6, 1.4).toFixed(1)}" fill="#D9B07C"/>`).join('')}`);
   defs(svg, `<clipPath id="sp${id}"><rect x="117" y="47" width="106" height="86" rx="13"/></clipPath>`); const lay = E('rect', { x: 117, y: 47, width: 0, height: 86, fill: P.c, opacity: .92, 'clip-path': `url(#sp${id})` }, svg);
   const kn = E('g', {}, svg); H(kn, shade(id, '<rect x="-34" y="-6" width="68" height="12" rx="6"/>', 4, 6, .25) + `<rect x="-34" y="-6" width="52" height="12" rx="6" fill="url(#bld${id})"/><rect x="18" y="-4" width="40" height="8" rx="4" fill="url(#khd${id})"/>`), T = 3.4;
-  function frame(t) { t %= T; const k = clamp(t / (T * .8)), f = t > T - .3 ? (T - t) / .3 : 1; lay.setAttribute('width', (106 * eOut(k)).toFixed(1)); lay.setAttribute('opacity', (.92 * f).toFixed(2)); kn.setAttribute('transform', `translate(${(130 + k * 70).toFixed(1)} ${(90 + Math.sin(t * 7) * 26).toFixed(1)}) rotate(${(Math.sin(t * 7) * 10).toFixed(1)})`) }
+  function frame(t, emit) { t %= T; if (t < T * .8) emit && emit('spread'); const k = clamp(t / (T * .8)), f = t > T - .3 ? (T - t) / .3 : 1; lay.setAttribute('width', (106 * eOut(k)).toFixed(1)); lay.setAttribute('opacity', (.92 * f).toFixed(2)); kn.setAttribute('transform', `translate(${(130 + k * 70).toFixed(1)} ${(90 + Math.sin(t * 7) * 26).toFixed(1)}) rotate(${(Math.sin(t * 7) * 10).toFixed(1)})`) }
   return sc0(id, svg, frame, T, 'Намазать', names([k]), null) }
 
 /* ---------- привязка шага: действие — по первому глаголу шага, продукт — только названный в этом шаге
@@ -932,9 +945,10 @@ const TITLE = { cut: 'Нарезать', tear: 'Разобрать руками'
   pour: 'Залить', salt: 'Посолить', pepper: 'Поперчить', add: 'Добавить', stir: 'Перемешать', drain: 'Откинуть', plateUp: 'Подать', lift: 'Вынуть', rest: 'Дать постоять', show: 'Подготовить' };
 const LIQ = new Set(['voda', 'moloko', 'kefir', 'ryazhenka', 'yogurt', 'smetana', 'smetana20', 'maslo_rast', 'maslo_ol', 'soy_sous', 'ketchup', 'tomat', 'uksus', 'lim_sok', 'mayonez', 'myod']);
 const GRAINY = new Set(['grain', 'rice', 'seed', 'lentil', 'pea', 'flake', 'tube', 'bean', 'powder']);
-function vesselIn(t, act) { return /сковород|сотейник|противн/.test(t) && !/кастрюл|ковш/.test(t) ? 'pan' : /миск|салатник|тарелк|контейнер|банк/.test(t) && !/кастрюл|ковш|сковород/.test(t) ? 'bowl' : ['fry', 'oil', 'batter'].includes(act) ? 'pan' : 'pot' }
+function vesselIn(t, act) { return /сковород|сотейник|противн/.test(t) && !/кастрюл|ковш/.test(t) ? 'pan' : /миск|салатник|тарелк|контейнер|банк/.test(t) && !/кастрюл|ковш|сковород/.test(t) ? 'bowl' : /кастрюл|ковш|казан/.test(t) ? 'pot' : ['fry', 'oil', 'batter'].includes(act) ? 'pan' : 'pot' }
+const VNAMED = /кастрюл|ковш|казан|сковород|сотейник|противн|миск|салатник|тарелк|контейнер|банк|форм/;
 function stepParts(text, ing) { const t = text.toLowerCase(), vs = verbs(t), ps = prodsIn(t, ing); return { t, vs, ps } }
-function forStep(text, ing, prev = []) {
+function forStep(text, ing, prev = [], noBase = false) {
   const { t, vs, ps } = stepParts(text, ing); let v = vs[0] || null;
   if (v && vs[1] && ['rest', 'show', 'simmer'].includes(v.a) && !/[.;]/.test(t.slice(v.at, vs[1].at)) && !['rest', 'show', 'simmer', 'salt', 'pepper'].includes(vs[1].a) && /накройте пл|накройте плёнк|дайте ост|остудите|разделите|отложите|проверьте/.test(t.slice(v.at, v.at + 16))) { vs.shift(); v = vs[0] }
   let act = v ? v.a : /сковород|сотейник|жар/.test(t) ? 'fry' : /духовк/.test(t) ? 'bake' : /кастрюл|ковш|вар/.test(t) ? 'boil' : 'show';
@@ -948,10 +962,11 @@ function forStep(text, ing, prev = []) {
   else if (act === 'rest' && /дайте/.test(v.w) && /стечь|стекл/.test(after)) act = 'drain';
   else if (act === 'add' && /на тарелк|на блюд|в тарелк|на хлеб|на лаваш|на лист салат|порци/.test(after)) act = 'plateUp';
   else if (act === 'plateUp' && /выложите|разложите/.test(v.w) && /сковород|кастрюл|в соус|в бульон|в миск|в форм|противен|в ковш|сотейник/.test(after)) act = /противен|в форм/.test(after) ? 'bake' : 'add';
+  else if (act === 'plateUp' && /выложите|разложите/.test(v.w) && /слоем|поверх/.test(after) && !/тарелк|блюд|порци|подав/.test(t)) act = 'add';   // «выложите рис ровным слоем» — в ту же посуду
   else if (act === 'pour' && /полейте|сбрызните/.test(v.w) && /подав|тарелк|сверху|перед подачей/.test(t)) act = 'plateUp';
   else if (v && act === 'show' && /готовьте/.test(v.w)) act = /сковород|жар/.test(t) ? 'fry' : /духовк/.test(t) ? 'bake' : 'boil';
   else if (v && act === 'show' && /сделайте|разделите/.test(v.w) && /лепёшк|лепешк|котлет|шарик|колбаск|углублен/.test(after)) act = 'form';
-  else if (v && act === 'show' && /поставьте/.test(v.w) && /в кастрюл|в сковород|в сотейник|в ковш|на сковород/.test(after)) act = 'add';
+  else if (v && act === 'show' && /поставьте/.test(v.w) && /в кастрюл|в сковород|в сотейник|в ковш|на сковород/.test(after) && !(/вод/.test(after) && /огонь|плит/.test(after))) act = 'add';
   else if (v && act === 'show' && /поставьте/.test(v.w)) act = /огонь|плит/.test(after) ? 'bringBoil' : /холодильник/.test(after) ? 'rest' : 'show';
   // продукты шага: сначала в части предложения с этим глаголом, иначе — перед глаголом в том же предложении, иначе — во всём шаге
   const food = ps.filter(x => !FREE.has(x.k)), cut0 = v ? Math.max(sStart, t.lastIndexOf(',', v.at), t.lastIndexOf(':', v.at), vs.filter(x => x.at < v.at).map(x => x.at + x.w.length).pop() || 0) : 0;
@@ -961,18 +976,32 @@ function forStep(text, ing, prev = []) {
   if (v && !own.length) own = food.filter(x => x.at >= sStart && x.at < v.at); if (!own.length && !VESSEL_ACT.has(act) && !['fry', 'stir', 'simmer', 'bake', 'drain', 'plateUp', 'lift'].includes(act)) own = food;
   let items = [...new Set(own.map(x => x.k))], src = items.length ? 'step' : 'none';
   const waterOnly = ['bringBoil', 'pour'].includes(act) && v && /(?<![а-яё])вод/.test(t.slice(v.at, end));
+  // «доведите воду до кипения, положите картофель» — в кипящей воде то, что в неё кладут в этом же шаге
+  if (waterOnly && !items.length) { const m = t.search(/положите|опустите|всыпьте|добавьте|отправьте|выложите/); if (m >= 0) items = [...new Set(food.filter(x => x.at > m && solid(x.k) && !LIQ.has(x.k)).map(x => x.k))].slice(0, 3); if (items.length) src = 'step' }
   if (!items.length && !waterOnly) { for (let i = prev.length - 1; i >= 0 && !items.length; i--) { const pf = prodsIn(prev[i].toLowerCase(), ing).filter(x => !FREE.has(x.k)); items = [...new Set(pf.map(x => x.k))].slice(0, 3) } if (items.length) src = 'carry' }
   if (items.length && !items.some(solid) && ['plateUp', 'add', 'fry', 'stir', 'bake', 'spread'].includes(act)) { for (let i = prev.length - 1; i >= 0; i--) { const pf = prodsIn(prev[i].toLowerCase(), ing).filter(x => !FREE.has(x.k) && solid(x.k)).map(x => x.k); if (pf.length) { items = [...new Set([...pf.slice(0, 2), ...items])]; src = 'step+carry'; break } } }
-  const liq = (v ? ps.filter(x => x.at >= v.at && x.at < end) : ps).map(x => x.k).find(k => LIQ.has(k)), vessel = vesselIn(t, act);
+  // «Разогрейте масло на сковороде, обжарьте курицу» — главное в шаге жарка: на сковороде то, что жарят, а не одно масло
+  if (act === 'oil' && vs.slice(1).some(x => ['fry', 'add', 'plateUp', 'stir'].includes(x.a))) { const fr = [...new Set(food.filter(x => x.at > v.at && solid(x.k) && !LIQ.has(x.k)).map(x => x.k))]; if (fr.length) { act = 'fry'; items = fr.slice(0, 3); src = 'step' } }
+  const liq = (v ? ps.filter(x => x.at >= v.at && x.at < end) : ps).map(x => x.k).find(k => LIQ.has(k)); let vessel = vesselIn(t, act);
+  // посуда не названа в шаге («Соберите рис горкой», «Влейте воду») — та же, что на последнем шаге с посудой
+  if (!noBase && ['add', 'pour', 'lift'].includes(act) && !VNAMED.test(t)) for (let i = prev.length - 1; i >= 0; i--) { const q = forStep(prev[i], ing, prev.slice(0, i), true); if (q.act === 'plateUp') break; if (['add', 'boil', 'simmer', 'fry', 'stir', 'pour', 'bringBoil', 'oil'].includes(q.act)) { vessel = q.vessel === 'bowl' ? 'bowl' : q.vessel; break } }
   const solidItems = items.filter(k => !(['pour'].includes(act) && LIQ.has(k)));
+  // что уже лежит в этой посуде с прошлых шагов (посуда не бывает пустой, если в неё уже клали): шаги назад до подачи, та же посуда
+  const base = []; if (!noBase && ['add', 'pour', 'lift'].includes(act)) { for (let i = prev.length - 1, n = 0; i >= 0 && n < 6; i--, n++) { const q = forStep(prev[i], ing, prev.slice(0, i), true);
+      if (q.act === 'plateUp') break; if (q.act === 'lift') { q.prods.forEach(k => { const j = base.indexOf(k); if (j >= 0) base.splice(j, 1) }); continue }
+      // та же посуда (или в одном из шагов посуда не названа — значит, та же); промытое, замоченное и сформованное потом кладут в посуду
+      const same = ['add', 'boil', 'simmer', 'fry', 'stir', 'pour', 'bringBoil', 'salt', 'pepper', 'rest', 'oil'].includes(q.act) && (q.vessel === vessel || !VNAMED.test(prev[i].toLowerCase()) || !VNAMED.test(t));
+      if (q.act === 'form') { if (!base.length) q.prods.forEach(k => base.push(k)); break }   // до лепки котлет — другое блюдо этого рецепта (гарнир)
+      if (!same && !(['rinse', 'soak'].includes(q.act) && !base.length)) continue;
+      q.prods.filter(k => !FREE.has(k) && !LIQ.has(k) && !base.includes(k)).forEach(k => base.push(k)) } }
   const POT = /кастрюл|ковш|вод|бульон|суп|каш|соус/.test(t) || !items.some(solid), one = items[0], forms = /тефтел|шарик|фрикадел|скатайте|ёжик|ежик/.test(t);
   const make = { cut: () => one && solid(one) ? cut(one) : show(items), tear: () => one && solid(one) ? cut(one) : show(items), /* «разберите на соцветия» — ножом, продукт так же уменьшается */ grate: () => one ? grate(one) : show(items), peel: () => one && !GRAINY.has(KIND[one]) && solid(one) ? peel(one) : show(items),
     rinse: () => rinse(one), soak: () => soak(items), dry: () => dry(one), crack: () => crack(vessel === 'pan' ? 'pan' : 'bowl'), whisk: () => whisk(items), pound: () => pound(one), knead: () => one && KIND[one] === 'ball' ? form(one, forms) : roll(),
     roll: () => roll(), form: () => form(items.find(k => KIND[k] === 'ball') || one, forms), coat: () => stir(items, 'bowl'), spread: () => spread(items), oil: () => oil(items.find(k => /^maslo/.test(k))),
     bringBoil: () => bringBoil(items), boil: () => boil(items), simmer: () => simmer(items), salt: () => POT ? salt(items) : show(items), pepper: () => POT ? pepper(items) : show(items), rest: () => rest(items), fry: () => fry(items), stir: () => stir(items, vessel === 'pan' ? 'pan' : 'bowl'),
-    bake: () => bake(items), batter: () => batter(), pour: () => pour(liq || 'voda', solidItems), add: () => add(items, vessel), lift: () => add(items, vessel, true), drain: () => drain(items), plateUp: () => plateUp(items), show: () => show(items) }[act];
+    bake: () => bake(items), batter: () => batter(), pour: () => pour(liq || 'voda', solidItems.filter(solid).length ? solidItems : base.slice(0, 3)), add: () => add(items, vessel, false, base.slice(0, 3)), lift: () => add(items, vessel, true, base.filter(k => !items.includes(k)).slice(0, 3)), drain: () => drain(items), plateUp: () => plateUp(items), show: () => show(items) }[act];
   const wrap = () => { const sc = make(); sc.title = TITLE[act]; sc.sub = names(items) || sc.sub; sc.items = items; return sc };
-  return { act, verb: v ? v.w : null, prods: items, src, liq: liq || null, vessel, prod: one || null, make: wrap } }
+  return { act, verb: v ? v.w : null, prods: items, src, liq: liq || null, vessel, base, prod: one || null, make: wrap } }
 
 /* ---------- рисунок продукта для плиток: каталог, старые ручные рисунки — для моркови, лука, курицы, гречки, масла, воды, соли ---------- */
 const OLD_IC = { morkov: 'morkov', luk: 'luk', kur_grudka: 'kur', indeyka: 'kur', kur_bedro: 'kur', grechka: 'grechka', maslo_rast: 'maslo', voda: 'voda', sol: 'sol', kur: 'kur', maslo: 'maslo' };
@@ -1002,7 +1031,7 @@ function iconOld(k) { const id = ++UID, sh = `<ellipse cx="32" cy="56" rx="20" r
   } return w(sh) }
 
 /* ---------- звук: только настоящие записи (BigSoundBank CC0, Pixabay — docs/zvuki-istochniki.md), без синтеза.
-   Громкость выровнена в файлах (tools/zvuki/build.py): удары и действия ≈ −20 dBFS, фон (шкворчание, кипение, тушение, духовка) на 6 дБ тише;
+   Громкость выровнена в файлах (tools/zvuki/build.py): удары и действия ≈ −20 dBFS, фон на 6 дБ тише; поверх множители в sfx() — каждое действие в приложении звучит ≈ −24 LUFS ±1,5 (замер: promo/work/anim-loud.mjs);
    здесь у всех одна громкость G. Циклы играются по окну [0,1 с; 0,1 с + L] — стык без щелчка. Звук идёт в момент события анимации. ---------- */
 let AC = null, ON = false;
 function ac() { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); return AC }
@@ -1031,18 +1060,22 @@ function soft() { Object.keys(SLOOP).forEach(n => { const l = SLOOP[n]; clearTim
 const pick = (p, n) => p + (1 + Math.floor(Math.random() * n)); let solAt = 0;
 function sfx(ev, arg) { if (!ON) return;
   // нарезать: лук и капуста — свои записи (нож + хруст вместе); морковь — нож и хруст моркови; остальное — нож по доске
-  if (ev === 'chop') { if (arg === 'luk') play(pick('luk-', 3)); else if (arg === 'kapusta') play(pick('kapusta-', 3)); else if (arg === 'morkov') { play(pick('nozh-', 4), G * .62, 0, .96 + Math.random() * .08); play(pick('hrust-', 3), G * .62, .004) } else play(pick('nozh-', 4), G, 0, .96 + Math.random() * .08) }   // морковь: нож и хруст вместе — каждый тише, в сумме та же громкость
-  else if (ev === 'pound') play(pick('nozh-', 4), G, 0, .5);                 // отбить: тот же стук, на октаву ниже — глухой удар молотка
-  else if (ev === 'pat') play(pick('nozh-', 4), G * .6, 0, .45);             // сформовать: мягкий шлепок
-  else if (ev === 'crack') play(pick('lozhka-', 3), G, 0, .8);               // яйцо о край миски
+  if (ev === 'chop') { if (arg === 'luk') play(pick('luk-', 3), G * .84); else if (arg === 'kapusta') play(pick('kapusta-', 3), G * .63); else if (arg === 'morkov') { play(pick('nozh-', 4), G * .55, 0, .96 + Math.random() * .08); play(pick('hrust-', 3), G * .55, .004) } else play(pick('nozh-', 4), G * .9, 0, .96 + Math.random() * .08) }   // морковь: нож и хруст вместе — каждый тише, в сумме та же громкость
+  else if (ev === 'pound') play(pick('nozh-', 4), G * .78, 0, .5);                 // отбить: тот же стук, на октаву ниже — глухой удар молотка
+  else if (ev === 'pat') play(pick('nozh-', 4), G * .81, 0, .45);             // сформовать: мягкий шлепок
+  else if (ev === 'crack') play(pick('lozhka-', 3), G * .77, 0, .8);               // яйцо о край миски
   else if (ev === 'grate') sloop('terka', G, .45); else if (ev === 'peel') play('chistka'); else if (ev === 'grind') sloop('melnica', G, .35);
-  else if (ev === 'roll') sloop('skalka', G, .6); else if (ev === 'whisk') sloop('venchik', G, .45);
+  else if (ev === 'roll') sloop('skalka', G, .6); else if (ev === 'whisk') sloop('venchik', G * 1.08, .45);
   else if (ev === 'pourSalt') { if (Date.now() - solAt > 1500) { solAt = Date.now(); play('sol') } }
   else if (ev === 'pour') sloop('voda'); else if (ev === 'pour-stop') sunloop('voda');
-  else if (ev === 'oil' || ev === 'pourThick') sloop('voda', G * .7, .3, .7); else if (ev === 'oil-stop') sunloop('voda');
-  else if (ev === 'sizzle') sloop('shkvor'); else if (ev === 'scrape') { sloop('shkvor'); if (Math.random() < .015) play(pick('lozhka-', 3), G * .5) }
-  else if (ev === 'bubble') sloop('kip'); else if (ev === 'simmer') sloop('bulk'); else if (ev === 'lid') play('kryshka', G * .7);
-  else if (ev === 'oven') sloop('gul'); else if (ev === 'plate') play(pick('lozhka-', 3)) }
+  else if (ev === 'oil' || ev === 'pourThick') sloop('voda', G * 1.06, .3, .7); else if (ev === 'oil-stop') sunloop('voda');
+  else if (ev === 'sizzle') sloop('shkvor', G * 1.48); else if (ev === 'scrape') { sloop('shkvor', G * 1.48); if (Math.random() < .015) play(pick('lozhka-', 3), G * .5) }
+  else if (ev === 'bubble') sloop('kip', G * 1.5); else if (ev === 'simmer') sloop('bulk', G * 1.32); else if (ev === 'lid') play('kryshka', G * .7);
+  else if (ev === 'oven') sloop('gul', G * 1.5);
+  else if (ev === 'lift') play(pick('lozhka-', 3), G * .8); else if (ev === 'drip') sloop('voda', G * 1.1, .3, 1.35);   // шумовка о край, с неё капает
+  else if (ev === 'cover') play('kryshka', G * 1.05); else if (ev === 'place') play(pick('lozhka-', 3), G * .7, 0, .7);   // накрыть; положить продукт на доску
+  else if (ev === 'soak') sloop('voda', G * 1.02, .4, .6); else if (ev === 'spread') sloop('skalka', G * .7, .35, 1.4);   // вода в миске; нож по хлебу
+  else if (ev === 'plate') play(pick('lozhka-', 3), G * .68) }
 function stopAll() { Object.keys(SLOOP).forEach(sunloop) }
 
 /* ---------- запуск: общий цикл кадров, вне экрана сцены стоят; «уменьшить движение» — один кадр ---------- */
@@ -1052,6 +1085,6 @@ function mount(el, sc, opts = {}) { el.innerHTML = ''; el.appendChild(sc.svg); s
   if (RM) { sc.frame(sc.T * .45); return sc } if (!raf) raf = requestAnimationFrame(tick); return sc }
 function unmount(el) { const sc = el._sc; if (!sc) return; scenes.delete(sc); io && io.unobserve(el); if (SRC === sc) { SRC = null; soft() } el._sc = null }
 function tick(now) { raf = requestAnimationFrame(tick); const br = (1 + .005 * (1 - Math.cos(now / 6000 * 2 * Math.PI))).toFixed(4); scenes.forEach(sc => { if (!sc.vis) return; sc.svg.style.transform = `scale(${br})`; sc.frame((now - sc.t0) / 1000, SRC === sc ? sfx : null) }) }
-window.CA = { soak, dry, crack, add, drain, spread, show, CAT, prodsIn, verbs, iconFor, names, VERB, cut, pour, salt, fry, boil, stir, grate, rinse, peel, pound, pepper, oil, bringBoil, simmer, bake, whisk, form, roll, batter, plateUp, rest, forStep, mount, unmount, F, icon,
+window.CA = { _sfx: (e, a) => sfx(e, a), soak, dry, crack, add, drain, spread, show, CAT, prodsIn, verbs, iconFor, names, VERB, cut, pour, salt, fry, boil, stir, grate, rinse, peel, pound, pepper, oil, bringBoil, simmer, bake, whisk, form, roll, batter, plateUp, rest, forStep, mount, unmount, F, icon,
   ding() { if (ON) play('zvonok') }, sound(on) { ON = on; if (on) { iosPlayback(); const a = ac(); a.resume(); try { const s = a.createBufferSource(); s.buffer = a.createBuffer(1, 1, 22050); s.connect(a.destination); s.start(0) } catch (e) {} loadSamples() } else { stopAll(); if (SIL) SIL.pause() } return ON }, source(sc) { if (SRC !== sc) soft(); SRC = sc }, get on() { return ON } };
 })();
