@@ -933,7 +933,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-05-r112'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-05-r112e'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -2708,7 +2708,7 @@ const sub3=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],dot3=(a,b)=>a[0]*b[0]+a[1]*b[1
 const a3=(w,i,j,k)=>ang3(sub3(w[i],w[j]),sub3(w[k],w[j]));
 const off3=(v,T)=>{const d=dot3(v,T);return [v[0]-T[0]*d,v[1]-T[1]*d,v[2]-T[2]*d]}; // составляющая v поперёк оси T
 const FT={ // пороги (градусы, доли)
-  sqDepth:95,luDepth:105,valg:.7,asym:25,back:-3,backAbs:8,sag:21,pushDepth:100,flare:65,benchFlare:80,benchDepth:95,pressTop:165,curlFwd:35,swing:22,hinge:135};
+  sqDepth:95,luDepth:105,valg:.7,asym:25,back:-3,backAbs:8,sag:21,pushDepth:100,flare:65,benchFlare:80,benchDepth:95,pressTop:165,curlFwd:35,swing:22,hinge:135,pressLean:15};
 function valg3(w){ // колени внутрь: расстояние между коленями / между щиколотками вдоль оси таза (норма ≥ 0,9)
   const h=nrm3(sub3(w[24],w[23])),ks=Math.abs(dot3(sub3(w[26],w[25]),h)),as=Math.abs(dot3(sub3(w[28],w[27]),h));return as<.12?NaN:ks/as}
 function back3(w){ // круглая спина: насколько голова и верх спины ушли вперёд-вниз от продолжения линии таз → плечи (MediaPipe не видит позвонки — судим по плечам и ушам)
@@ -2787,7 +2787,7 @@ function analyze(ex,S2){
     if(sw>15){findings.push({j:['таз'],k:'Раскачиваете корпус',d:`Корпус качается на ${Math.round(sw)}° — гантели идут рывком. Возьмите вес полегче, корпус неподвижен.`,at:torso.indexOf(Math.max(...torso))});score-=15}
   }
   if(ex==='press'){
-    const lean=Math.max(...torso);if(side&&lean>12){findings.push({j:['таз'],k:'Прогиб в пояснице',d:`Корпус отклоняется на ${Math.round(lean)}°. Напрягите пресс, не подталкивайте гантели корпусом.`,at:torso.indexOf(lean)});score-=20}else if(side)good.push('Корпус стабилен');
+    const lean=npPct(torso,90);if(side&&lean>FT.pressLean){findings.push({j:['таз'],k:'Прогиб в пояснице',d:`Корпус отклоняется на ${Math.round(lean)}°. Напрягите пресс, не подталкивайте гантели корпусом.`,at:torso.indexOf(lean)});score-=20}else if(side)good.push('Корпус стабилен');
     const top=npPct(elbow.map((a,i)=>Math.max(a,elbR[i],elbL[i])),95);m3.top=top;if(top<FT.pressTop){findings.push({j:['локоть'],k:'Не дожимаете вверх',d:`Локоть распрямляется только до ${Math.round(top)}°. Выжимайте до полного выпрямления.`,at:elbow.indexOf(Math.max(...elbow))});score-=15}
   }
   if(!reps.length&&ex!=='plank'){findings.push({k:'Повторы не распознаны',d:'Не нашли ни одного полного движения: снимите сбоку, чтобы были видны колени и таз, 2–5 повторов.',at:0});score-=30}
@@ -3056,7 +3056,12 @@ function exClassify(x,C=EXR.d.cls){let h=x.map((v,i)=>(v-C.mu[i])/C.sd[i]);
   C.layers.forEach((L,li)=>{h=L.W.map((w,o)=>w.reduce((s,wi,i)=>s+wi*h[i],L.b[o]));if(li<C.layers.length-1)h=h.map(v=>Math.max(0,v))});
   const m=Math.max(...h),e=h.map(v=>Math.exp(v-m)),z=e.reduce((s,v)=>s+v,0);return e.map(v=>v/z)}
 async function loadExRecog(){
-  if(EXR.d)return EXR.d;const d=await fetch('data/ex-recog.json').then(r=>r.json());d.stretchSet=new Set(d.stretch);EXR.d=d;return d}
+  if(EXR.d)return EXR.d;const d=await fetch('data/ex-recog.json').then(r=>r.json());d.stretchSet=new Set(d.stretch);d.popSet=new Set(d.pop||[]);EXR.d=d;return d}
+async function loadExAll(){ // классификатор по позе на все упражнения с данными (3D-тень, видео техники, эталонные фото); веса float16: W1[hid×in],b1,W2[n×hid],b2
+  const d=EXR.d;if(!d||!d.all)return null;if(d.all.C)return d.all.C;const u=new Uint16Array(await fetch(d.all.file).then(r=>r.arrayBuffer())),n=d.all.ids.length,h=d.all.hid,m=d.all.in;let o=0;
+  const rd=(r,c)=>Array.from({length:r},()=>{const a=new Float32Array(c);for(let j=0;j<c;j++)a[j]=f16(u[o++]);return a});
+  const W1=rd(h,m),b1=rd(1,h)[0],W2=rd(n,h),b2=rd(1,n)[0];
+  return d.all.C={mu:d.all.mu,sd:d.all.sd,layers:[{W:W1,b:b1},{W:W2,b:b2}],idx:Object.fromEntries(d.all.ids.map((id,i)=>[id,i]))}}
 async function loadExClip(){ // эмбеддинги эталонных фото и названий — под ту же модель, что распознаёт еду
   if(EXR.clip)return EXR.clip;await loadClip();const d=EXR.d,buf=await fetch(d.clip.file).then(r=>r.arrayBuffer()),u=new Uint16Array(buf),N=d.clip.ids.length,dim=u.length/N/3;
   const get=(i,s)=>{const v=new Float32Array(dim),o=(i*3+s)*dim;for(let j=0;j<dim;j++)v[j]=f16(u[o+j]);return v};
@@ -3081,6 +3086,14 @@ async function exRecognize(fr,ar,frameEmb){
     const fam=Object.keys(fp).sort((a,b)=>fp[b]-fp[a])[0];ten={fam,p:fp[fam]};
     if(fam!=='other'&&fp[fam]>=D.ten.thr){const mem=new Set(D.ten.classes.filter(c=>D.ten.fam[c]===fam)),ki=Object.fromEntries(cid.map((id,k)=>[id,k]));
       const inF=[...mem].filter(id=>id in ki).sort((a,b)=>sc[ki[a]]-sc[ki[b]]).map(id=>ki[id]);order=inF.concat(order.filter(k=>!mem.has(cid[k])))}}
+  // Пятёрка «Что вы делали?» из трёх независимых мнений (ex3_mix.py): прежнее распознавание (поза + MobileCLIP + тень) — 1-е, 4-е места;
+  // классификатор всех упражнений по позе (ex3_train.py; +wp упражнениям с 3D-тенью — самым частым) — 2-е, 5-е; MobileCLIP по кадрам — 3-е.
+  // В пятёрке не больше одного упражнения на семейство движения (присед, выпад, жим лёжа…), чтобы варианты были разными. Первый ответ не меняется.
+  try{const AC=await loadExAll();if(AC){const pa=exClassify(xf,AC),A=D.all,fk=k=>A.fam[cid[k]]||'#'+k,byS=f=>sc.map((_,k)=>k).sort((a,b)=>f(b)-f(a));
+    const L=[order,byS(k=>{const j=AC.idx[cid[k]];return (j!=null?Math.log(pa[j]+1e-12):-1e9)+(D.popSet.has(cid[k])?A.wp:0)}),zi?byS(k=>W.wi*zi[k]+(zt?W.wt*zt[k]:0)):order];
+    const head=[],hs=new Set(),cnt={},pos=L.map(()=>0);
+    for(const src of A.pattern){const l=L[src];while(pos[src]<l.length){const k=l[pos[src]++],f=fk(k);if(hs.has(k)||(cnt[f]||0)>=A.cap)continue;head.push(k);hs.add(k);cnt[f]=(cnt[f]||0)+1;break}}
+    order=head.concat(order.filter(k=>!hs.has(k)))}}catch(err){console.warn('модель всех упражнений не загрузилась',err)}
   order=order.slice(0,8);
   return {top:order.map(k=>({id:cid[k],s:sc[k]})),ten,e,win,cls:D.cls.classes.map((c,i)=>[c,p[i]]).sort((a,b)=>b[1]-a[1]).slice(0,3),ref:id=>byId[id]}}
 
