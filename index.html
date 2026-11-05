@@ -932,7 +932,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-05-r84'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-05-r85'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -2246,6 +2246,7 @@ function openScan(){
     <div class="bigicon">${ic('cam')}</div>
     <div class="title" style="margin-top:12px">Сфотографировать</div><div class="small muted">или выбрать фото из галереи</div>
     <input type="file" accept="image/*" style="display:none" onclick="scanMark()" onchange="gotPhoto(this)"></label>
+   ${DEV.inApp?`<div class="small muted" style="margin:10px 4px 0;text-align:center">${INAPP_HINT}</div>`:''}
    <button class="btn sec" style="margin-top:12px" onclick="openSearch()">${ic('search')} Найти в базе продуктов и блюд</button>
    <div class="small muted" style="margin:14px 4px 8px">Или пример для показа:</div>
    ${Object.entries(DISHES).filter(([,d])=>d.img).map(([id,d])=>`<button class="opt" onclick="recognize('${id}')">${plateMini(d)}<div style="flex:1"><div style="font-weight:700">${d.name}</div><div class="small muted">${d.store?'магазинное блюдо из нашей базы':'домашнее блюдо'}</div></div><span class="chev">${ic('chev')}</span></button>`).join('')}`);
@@ -2258,14 +2259,27 @@ const TFJS_URL=LIB('transformers.min.js'); // @huggingface/transformers 4.3.2
 let CLIP=null,CLIPLOAD=null,CLIPDB=null;
 const HEAVY=SRV+'/trener-files/';
 const f16=u=>{const s=u>>15,e=(u>>10)&31,m=u&1023;return (s?-1:1)*(e===0?m*5.960464477539063e-8:e===31?(m?NaN:Infinity):Math.pow(2,e-15)*(1+m/1024))};
+// что нужно нейросети в браузере: WebAssembly с SIMD и потоки-модули (iOS 15 и ниже — без них); нет — честно говорим и ведём в поиск
+const INAPP_HINT='Для фото лучше открыть в Safari или Chrome: «…» или «⋮» → «Открыть в браузере».';
+// какую модель брать на этом устройстве: 'none' — iOS ниже 16.4 (нет SIMD в WebAssembly); 'lite' — встроенные браузеры, Android с памятью ≤3 ГБ, после сбоя; иначе 'full'
+function clipPlan(){const m=navigator.userAgent.match(/OS (\d+)_(\d+)[_ ].*like Mac OS X/);if(m&&(+m[1]<16||(+m[1]===16&&+m[2]<4)))return 'none';
+  if(DEV.inApp||S.clipLite||loadClip.lowSpace||(navigator.deviceMemory&&navigator.deviceMemory<=3))return 'lite';return 'full'}
+function clipUnsupported(){
+  if(clipPlan()==='none')return 'На этой версии iOS нейросеть не запускается (нужна iOS 16.4 или новее).';
+  if(typeof WebAssembly!=='object')return 'Браузер не умеет запускать нейросети.';
+  try{if(!WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,5,1,96,0,1,123,3,2,1,0,10,10,1,8,0,65,0,253,15,253,98,11])))return 'Браузер устарел для нейросети (нужна iOS 16.4 или новее).'}catch(e){return 'Браузер устарел для нейросети.'}
+  return ''}
 async function loadClip(onStatus){
   if(CLIP)return CLIP;
+  {const why=clipUnsupported();if(why)throw new Error('не поддерживается: '+why)}
   const subs=loadClip.subs||(loadClip.subs=new Set());if(onStatus){subs.add(onStatus);if(loadClip.last)onStatus(loadClip.last)}
   if(CLIPLOAD)return CLIPLOAD;
   const say=s=>{loadClip.last=s;subs.forEach(f=>{try{f(s)}catch(e){}})};
   // без движения 45 с во время скачивания (оборвалась мобильная связь) — честная ошибка с «Повторить», а не вечное ожидание
   let tick=Date.now(),dl=true,imp=false,dog=null;const stall=new Promise((_,rej)=>{dog=setInterval(()=>{if(dl&&Date.now()-tick>(imp?45000:150000))rej(new Error('нет связи: загрузка модели остановилась'))},3000)});
-  CLIPLOAD=Promise.race([stall,(async()=>{say('Загружаем движок нейросети (один раз)…');const T=await import(TFJS_URL);tick=Date.now();imp=true;T.env.allowRemoteModels=false;T.env.allowLocalModels=true;
+  // мало свободного места (<300 МБ): лёгкая модель и без записи в кэш — иначе Safari не может её сохранить и вкладка падает
+  try{const e=navigator.storage&&navigator.storage.estimate&&await navigator.storage.estimate();loadClip.lowSpace=!!(e&&e.quota&&e.quota-(e.usage||0)<300e6)}catch(e){}
+  CLIPLOAD=Promise.race([stall,(async()=>{say('Загружаем движок нейросети (один раз)…');const T=await import(TFJS_URL);tick=Date.now();imp=true;T.env.allowRemoteModels=false;T.env.allowLocalModels=true;if(loadClip.lowSpace||loadClip.noCache)T.env.useBrowserCache=false;
     // тяжёлые файлы (модель 72 МБ и движок 27 МБ) — с нашего сервера в России: GitHub из России по мобильной сети отдаёт их еле-еле.
     // Выбранный источник запоминаем: без сети модель берётся из памяти телефона по тому же адресу
     let hv=S.heavyBase;if(!hv){hv='gh';try{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),4000);const r=await fetch(HEAVY+'models/mobileclip-s2/config.json',{signal:ac.signal,cache:'no-store'});clearTimeout(tm);if(r.ok)hv='ru'}catch(e){}}
@@ -2282,14 +2296,18 @@ async function loadClip(onStatus){
     // база распознавания: дообученные веса по группам (clipdb.bin, float16) + список позиций; модель берём ту, на которой обучали
     const [db,bin]=await Promise.all([fetch('models/clipdb.json',{cache:'no-cache'}).then(r=>r.json()),fetch('models/clipdb.bin',{cache:'no-cache'}).then(r=>r.arrayBuffer())]);
     if(db.v!==2||!Array.isArray(db.bias)||bin.byteLength!==db.groups*db.dim*2)throw new Error('база распознавания старого формата — обновите приложение');
-    const dir=db.dir||'mobileclip',mb=db.mb||72;
+    const liteDev=db.lite&&clipPlan()==='lite',dir=db.dir||'mobileclip',mb=liteDev?db.lite.mb:(db.mb||72);
     // проценты — по сумме всех файлов модели (событие progress_total библиотеки); если его нет — по самому файлу .onnx. Маленький config.json первым не даёт «100%»
     let last=-9,tot=false;const cb=p=>{let pc;if(p.status==='progress_total'){tot=true;pc=p.progress}else if(p.status==='progress'&&!tot&&/\.onnx$/.test(p.file||''))pc=p.progress;else return;
       if(!(pc>=0))return;tick=Date.now();if(pc>=99.9){if(last<100){last=100;dl=false;say('Скачано. Запускаем нейросеть в телефоне — обычно 5–15 секунд, один раз за запуск приложения')}return}
       if(pc-last>=1){last=pc;const all=tot&&p.total>1e6?p.total/1e6:mb,got=tot&&p.loaded>=0?p.loaded/1e6:all*pc/100,w=loadClip.wmb||0;
         say(`Скачиваем распознавание: ${Math.floor(w+got)} из ${Math.round(w+all)} МБ (${Math.floor((w+got)/(w+all)*100)}%) — один раз, дальше без интернета`)}};
     const load=dt=>T.CLIPVisionModelWithProjection.from_pretrained(dir,{dtype:dt,device:'wasm',progress_callback:cb});
-    const dts=db.dtypes||['q4','fp16'];let model=null,err=null;for(const dt of dts){try{model=await load(dt);break}catch(e){err=e;last=-9;tot=false;console.warn('модель '+dt+' не пошла',e)}}if(!model)throw err;
+    // по умолчанию точная модель; лёгкая сжатая (int8) — во встроенных браузерах Instagram/Telegram/VK и после сбоя на этом устройстве (S.clipLite)
+    const lite=liteDev;loadClip.lite=!!lite;
+    const dts=lite?[db.lite.dtype,...(db.dtypes||['fp16'])]:(db.dtypes||['q4','fp16']);let model=null,err=null;for(const dt of dts){try{model=await load(dt);break}catch(e){err=e;last=-9;tot=false;console.warn('модель '+dt+' не пошла',e);
+      // не удалось записать в кэш (переполнена память телефона) — грузим в память без кэша, ещё раз
+      if(/quota|storage|cache|QuotaExceeded/i.test(String(e&&(e.name+' '+e.message)))&&T.env.useBrowserCache!==false){T.env.useBrowserCache=false;loadClip.noCache=true;try{model=await load(dt);break}catch(e2){err=e2}}}}if(!model)throw err;
     const proc=await T.AutoProcessor.from_pretrained(dir);
     const u16=new Uint16Array(bin),dim=db.dim,G=db.groups,W=[];for(let g=0;g<G;g++){const v=new Float32Array(dim);for(let j=0;j<dim;j++)v[j]=f16(u16[g*dim+j]);W.push(v)}
     const byG=Array.from({length:G},()=>[]);db.items.forEach((x,i)=>byG[x.k].push(i));
@@ -2313,7 +2331,8 @@ function clipMatch(e){ // дообученный классификатор по
 // если телефон всё же перезапустил страницу, пока открыта камера или галерея, — возвращаем человека к записи блюда, а не на главный экран
 function scanMark(){try{sessionStorage.setItem('yb-scan',String(Date.now()))}catch(e){}}
 function scanUnmark(){try{sessionStorage.removeItem('yb-scan')}catch(e){}}
-function scanResume(){let t=0;try{t=+sessionStorage.getItem('yb-scan')||0}catch(e){}scanUnmark();
+function scanResume(){if(S.clipBusy&&Date.now()-S.clipBusy<5*60e3&&!S.clipLite){S.clipLite=1;S.clipBusy=0;save()} // страница перезагрузилась во время распознавания — телефону не хватило памяти: дальше лёгкая модель
+  let t=0;try{t=+sessionStorage.getItem('yb-scan')||0}catch(e){}scanUnmark();
   if(t&&Date.now()-t<5*60e3&&!S.onb){openScan();setTimeout(()=>toast('Телефону не хватило памяти, фото не дошло. Выберите его ещё раз — должно получиться',true),400)}}
 function gotPhoto(inp){
   scanUnmark();const f=inp.files&&inp.files[0];if(!f)return;SC.photo=null;SC.thumb=null;
@@ -2335,19 +2354,22 @@ async function photoFlow(){
   const opens=await new Promise(r=>{const im=new Image();im.onload=()=>r(im.naturalWidth>0);im.onerror=()=>r(false);im.src=SC.photo});
   if(!alive())return;
   if(!opens){sheet('Фото не открылось',`<div class="card small muted">Этот формат фото телефон не показывает (часто так бывает с HEIC). Снимите камерой из приложения или выберите фото в JPEG.</div><button class="btn sec" onclick="SC.photo=null;openSearch()">${ic('search')} Найти в базе по названию</button>`);return}
+  // iOS ниже 16.4: нейросеть здесь не запустится — фото не теряем, оно попадёт в запись; блюдо человек выбирает поиском
+  if(clipPlan()==='none'){sheet('Что на фото?',`<div class="plate" style="margin-bottom:12px"><img src="${SC.photo}" alt=""></div><div class="card small"><b>На этой версии iOS узнавание по фото недоступно — выберите блюдо.</b> <span class="muted">Фото сохранится в записи, калории посчитаем по базе.</span></div><button class="btn" onclick="openSearch()">${ic('search')} Найти блюдо по названию</button>`);return}
   const st=t=>{const el=$('#fdst');if(el)el.textContent=t};
   let top=[],lerr='';
-  try{const embed=await loadClip(st);st('Сравниваем с базой…');SC.emb=await embed(SC.photo);top=clipMatch(SC.emb)}catch(e){console.error(e);top=null;lerr=String(e&&e.message||'')}
+  try{S.clipBusy=Date.now();save();const embed=await loadClip(st);st('Сравниваем с базой…');SC.emb=await embed(SC.photo);top=clipMatch(SC.emb)}catch(e){console.error(e);top=null;lerr=String(e&&e.message||'');if(!/нет связи|не поддерживается/.test(lerr)&&!S.clipLite){S.clipLite=1;CLIPLOAD=null}}
+  S.clipBusy=0;save();
   if(!alive()||!$('#fdst'))return; // пользователь закрыл шторку или снял другое фото
   await loadDB();if(!alive())return;
   const sure=top&&top.length&&top[0].p>=0.08; // ниже — скорее не еда или совсем незнакомое
   const rows=sure?top.filter((g,k)=>k<3||g.p>=0.08).slice(0,4).map(g=>{const it=CLIPDB.db.items;const x=it[g.i];const lab=i=>it[i].n.replace(/\(.*?\)/g,'').replace(/[«»]/g,'').trim(),dup=new Set(g.ids.map(lab)).size<g.ids.length; // «Картофель отварной» есть и блюдом, и продуктом — подписываем
-    const vars=g.ids.length>1?`<div class="chips" style="margin-top:6px">${g.ids.map(i=>`<span class="chip ${i===g.i?'on':''}" role="button" onclick="event.stopPropagation();pickMatch(${i})">${lab(i)}${dup&&g.ids.filter(j=>lab(j)===lab(i)).length>1?(it[i].t==='d'?' · блюдо':' · продукт'):''}</span>`).join('')}</div>`:'';
-    const sub=x.t==='d'?'блюдо · посчитаем по рецепту':(()=>{const pr=DB.products.find(p=>p.id===x.id);return pr?`продукт · ${Math.round(pr.kcal||kcalOf(pr))} ккал на 100 г`:'продукт'})();
+    const vars=g.ids.length>1?`<div class="chips" style="margin-top:6px">${g.ids.map(i=>`<span class="chip ${i===g.i?'on':''}" role="button" onclick="event.stopPropagation();pickMatch(${i})">${lab(i)}${dup&&g.ids.filter(j=>lab(j)===lab(i)).length>1?(it[i].t==='r'?' · из книги':it[i].t==='d'?' · блюдо':' · продукт'):''}</span>`).join('')}</div>`:'';
+    const sub=x.t==='r'?'блюдо из книги · порция на выбор':x.t==='d'?'блюдо · посчитаем по рецепту':(()=>{const pr=DB.products.find(p=>p.id===x.id);return pr?`продукт · ${Math.round(pr.kcal||kcalOf(pr))} ккал на 100 г`:'продукт'})();
     return `<button class="opt" onclick="pickMatch(${g.i})"><div class="ibox" style="background:var(--accent-soft);color:var(--accent-text)">${ic('food')}</div><div style="flex:1"><div style="font-weight:700">${g.ids.length>1?groupTitle(g.ids.map(i=>it[i].n)):x.n}</div><div class="small muted">${g.p>=.9?'очень похоже':g.p>=.3?'похоже':'возможно'} · ${sub}</div>${vars}</div><span class="chev">${ic('chev')}</span></button>`}).join(''):'';
   const nref=(S.refs||[]).length;
   sheet('Что на фото?',`<div class="plate" style="margin-bottom:12px"><img src="${SC.photo}" alt=""></div>
-    ${top===null?`${/нет связи|fetch|network|load/i.test(lerr)&&!CLIP?`<div class="card small" style="margin-bottom:8px"><b>Загрузка модели оборвалась.</b> <span class="muted">Похоже, пропала связь. Скачанное не пропадает — «Повторить» продолжит.</span></div><button class="btn" style="margin-bottom:10px" onclick="photoFlow()">Повторить</button>`:`<div class="card small muted">Модель распознавания не загрузилась (при первом запуске нужен интернет, ~100 МБ, лучше по Wi-Fi; дальше работает без сети). Заранее можно скачать в «Я» → «Работа без интернета». Пока найдите продукт в базе вручную.</div>`}`:rows?`<div class="small muted" style="margin:0 4px 8px">Похоже на это из нашей базы — выберите, что на самом деле</div>${rows}`:`<div class="card small muted">Не узнали. Снимите ближе и при хорошем свете или найдите в базе — ваш выбор запомнится.</div>`}
+    ${top===null?`${/нет связи|fetch|network|load/i.test(lerr)&&!CLIP?`<div class="card small" style="margin-bottom:8px"><b>Загрузка модели оборвалась.</b> <span class="muted">Похоже, пропала связь. Скачанное не пропадает — «Повторить» продолжит.</span></div><button class="btn" style="margin-bottom:10px" onclick="photoFlow()">Повторить</button>`:`<div class="card small"><b>${loadClip.lowSpace||/quota|storage/i.test(lerr)?'На телефоне мало свободного места — освободите 300 МБ или выберите блюдо поиском.':'Не получилось распознать на этом телефоне.'}</b> <span class="muted">${loadClip.lowSpace||/quota|storage/i.test(lerr)?'Фото сохранится в записи.':clipUnsupported()||'Нейросети не хватило памяти или браузер её не запустил.'} Найдите блюдо по названию — это быстро.${DEV.inApp?' '+INAPP_HINT:IOS?' Если открыто не в Safari — откройте сайт в Safari.':''}</span></div>`}`:rows?`<div class="small muted" style="margin:0 4px 8px">Похоже на это из нашей базы — выберите, что на самом деле</div>${rows}`:`<div class="card small muted">Не узнали. Снимите ближе и при хорошем свете или найдите в базе — ваш выбор запомнится.</div>`}
     <button class="btn sec" onclick="openSearch()">${ic('search')} Найти в базе по названию</button>
     <button class="btn ghost" onclick="openBarcode()">Это упаковка? Штрихкод</button>
     <div class="concept">Модель MobileCLIP (Apple, открытая), дообученная на ${CLIPDB&&CLIPDB.db.nphoto?CLIPDB.db.nphoto.toLocaleString('ru-RU'):'тысячах'} фото еды, сравнивает снимок со всеми ${CLIPDB?CLIPDB.db.items.length:'500+'} позициями нашей базы — ничего чужого предложить не может. Каждый ваш выбор запоминается в телефоне${nref?` (уже ${nref})`:''} и в следующий раз подсказка точнее. Состав и калории всегда из базы, а не «на глаз».</div>`);
@@ -2359,8 +2381,24 @@ async function pickMatch(i){ // пользователь подтвердил п
   const x=CLIPDB.db.items[i];
   if(!DB||DB.failed){await loadDB();if(DB.failed)return toast('База продуктов не загрузилась — проверьте интернет и нажмите ещё раз',true)}
   if(SC.emb){S.refs=S.refs||[];const e=Array.from(SC.emb,v=>Math.max(-127,Math.min(127,Math.round(v*600))));S.refs.push({id:x.id,e,sc:600,d:today0(),m:CLIPDB.db.model});if(S.refs.length>150)S.refs.splice(0,S.refs.length-150);save()}
-  if(x.t==='d')dishFromDB(x.id);else productPortion(x.id);
+  if(x.t==='r')photoPortion(x.id.slice(2));else if(x.t==='d')dishFromDB(x.id);else productPortion(x.id);
 }
+// блюдо из книги по фото: порция «маленькая / средняя / большая» в граммах, ккал и БЖУ считает код по рецепту (на порцию книги × доля)
+const PPORT=[['Маленькая',.7],['Средняя',1],['Большая',1.4]];
+async function photoPortion(id,k){
+  if(!KIT){await loadKit();if(!KIT)return toast('Книга блюд не загрузилась — проверьте интернет',true)}
+  const d=dishOf(id);if(!d)return productPortion(id);k=k==null?1:k;const g=(d.yield&&d.yield.g)||300,n=d.nut;
+  sheet(d.n,`<div class="plate" style="margin-bottom:12px"><img src="${SC&&SC.photo||d.img}" alt=""></div>
+    <div class="card"><div class="small muted" style="margin-bottom:8px">Какая порция? Порция книги — ${g} г</div>
+     <div class="chips">${PPORT.map(([l,m])=>`<span class="chip ${m===k?'on':''}" role="button" onclick="photoPortion('${id}',${m})">${l} · ${Math.round(g*m/10)*10} г</span>`).join('')}</div>
+     <div class="row between" style="margin-top:12px"><b class="num" style="font-size:28px">${fmt(Math.round(n.k*k))} <small style="font:500 13px var(--font);color:var(--text2)">ккал</small></b><span class="small muted">Б ${fmt(Math.round(n.p*k))} · Ж ${fmt(Math.round(n.f*k))} · У ${fmt(Math.round(n.c*k))}</span></div></div>
+    <button class="btn" onclick="photoPortionLog('${id}',${k})">Записать в дневник</button>
+    <button class="btn ghost" onclick="openDish('${id}')">Рецепт и состав</button>
+    <div class="small muted" style="text-align:center">Калории посчитаны кодом по составу рецепта, не «на глаз»</div>`);
+}
+function photoPortionLog(id,k){const d=dishOf(id);if(!d)return;if(S.day!==today0())rollDay();S.foodN=(S.foodN||0)+1;const n=d.nut;
+  S.log.push({d:today0(),t:new Date().toTimeString().slice(0,5),n:d.n,img:(SC&&SC.thumb)||d.img||'',k:Math.round(n.k*k),p:Math.round(n.p*k*10)/10,f:Math.round(n.f*k*10)/10,c:Math.round(n.c*k*10)/10,acc:'средняя',src:'фото'});
+  S.entries=(S.entries||0)+1;save();closeSheet();DIR='';S.tab='today';render();toTop();toast('Записано · '+u(Math.round(n.k*k),'ккал'))}
 function recognize(id){
   if(!SC)SC={photo:null};const d=JSON.parse(JSON.stringify(DISHES[id]));SC.id=id;SC.d=d;
   sheet('Узнаём блюдо…',`<div class="plate">${plateInner(d)}<div class="scanline"></div></div><div class="card" style="margin-top:12px"><div class="sk" style="width:55%"></div><div class="sk" style="width:85%;margin-top:10px"></div><div class="sk" style="width:35%;margin-top:10px"></div></div><div class="small muted" style="text-align:center">Сверяем с базой блюд и продуктов Москвы</div>`);
