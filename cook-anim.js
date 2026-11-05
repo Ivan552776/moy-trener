@@ -260,7 +260,7 @@ function cut(f = 'morkov') {
    <clipPath id="cp${id}" clipPathUnits="userSpaceOnUse"><rect x="-400" y="-400" width="1200" height="1000"/></clipPath><clipPath id="cf${id}" clipPathUnits="userSpaceOnUse"><rect x="0" y="-400" width="0" height="1000"/></clipPath>` +
    [...Array(N)].map((_, k) => `<clipPath id="cs${id}_${k}" clipPathUnits="userSpaceOnUse"><rect x="0" y="-400" width="0" height="1000"/></clipPath>`).join(''));
   const cpR = svg.querySelector(`#cp${id} rect`), cfR = svg.querySelector(`#cf${id} rect`), use = (p, a = {}) => E('use', Object.assign({ href: `#art${id}` }, a), p);
-  const board = E('g', {}, svg), pg = E('g', { 'clip-path': `url(#cp${id})` }, board), fg = E('g', { 'clip-path': `url(#cf${id})` }, board), sh0 = use(pg, { filter: `url(#ps${id})`, opacity: .3, transform: 'translate(4 6)' }), pu = use(pg);
+  const board = E('g', { 'data-probe': 'prod' }, svg), pg = E('g', { 'clip-path': `url(#cp${id})` }, board), fg = E('g', { 'clip-path': `url(#cf${id})` }, board), sh0 = use(pg, { filter: `url(#ps${id})`, opacity: .3, transform: 'translate(4 6)' }), pu = use(pg);
   use(fg, { filter: `url(#fl${id})`, opacity: .95 });
   const pile = E('g', {}, svg), per = kd === 'cube' ? 2 : 1, spots = [...Array(N * per)].map((_, j) => { const a = R(j + 3, -1, 1), r = Math.sqrt(R(j + 11, 0, 1));
     return { x: 252 + a * 26 * r + R(j, -4, 4), y: 92 + (R(j + 7, -1, 1)) * 26 * r } });
@@ -299,7 +299,9 @@ function cut(f = 'morkov') {
       s.pcs.forEach((q, n) => { const qx = lerp(x, q.s.x, eOut(clamp((ts - .3) / .25))), qy = lerp(y, q.s.y, eOut(clamp((ts - .3) / .25)));
         q.w.setAttribute('transform', `translate(${qx.toFixed(1)} ${qy.toFixed(1)}) scale(${lerp(.35, 1, eOut(tip)).toFixed(3)} 1)`); q.w.setAttribute('opacity', (tip * fout).toFixed(2)) }) })
   }
-  return { svg, frame, T, title: 'Нарезать', sub: `${P.n} — ${P.cut === 'coin' ? 'кружками' : P.cut === 'cube' ? 'кубиком' : 'кусочками'}`, sound: 'chop' }
+  // замер для проверки (tools): видимая длина продукта и сколько кусочков на доске
+  const probe = () => ({ size: +cpR.getAttribute('width') - 400 - L, pieces: sl.filter(q => q.pcs.some(z => +z.w.getAttribute('opacity') > .5)).length })
+  return { svg, frame, T, probe, title: 'Нарезать', sub: `${P.n} — ${P.cut === 'coin' ? 'кружками' : P.cut === 'cube' ? 'кубиком' : 'кусочками'}`, sound: 'chop' }
 }
 
 /* ---------- 2. Налить воду (сверху): струя бьёт в точку, круги расходятся, гладь растёт к стенкам ---------- */
@@ -500,7 +502,7 @@ function grate(f = 'morkov') {
     const q = i / N, a = R(i, 0, 6.283), r = Math.sqrt(q) * R(i + 3, .55, 1); return { w, x: 178 + Math.cos(a) * r * 34, y: 136 + Math.sin(a) * r * 11 - (1 - q) * 3, r: R(i, 0, 180) } });
   H(svg, shade(id, '<rect x="150" y="30" width="56" height="96" rx="8"/>', 5, 7, .3) + `<rect x="150" y="30" width="56" height="96" rx="8" fill="url(#rim${id})"/><rect x="156" y="36" width="44" height="84" rx="5" fill="#B9C1C8"/>
    ${[...Array(9)].map((_, r) => [...Array(5)].map((_, c) => `<path d="M${161 + c * 8 + (r % 2) * 4} ${42 + r * 8.6}q3 -2 6 0" stroke="#5E666E" stroke-width="1.6" fill="none"/>`).join('')).join('')}<path d="M152 36V120" stroke="#fff" stroke-width="1.6" opacity=".6"/><rect x="160" y="18" width="36" height="12" rx="6" fill="url(#khd${id})"/>`);
-  const pr = E('g', {}, svg), L0 = 46, L1 = 16, top0 = -24;
+  const pr = E('g', { 'data-probe': 'prod' }, svg), L0 = 46, L1 = 16, top0 = -24;
   const shd = E('rect', { x: -10, y: top0, width: 20, height: L0, rx: 9, fill: '#000', opacity: .3, filter: `url(#sb${id})`, transform: 'translate(5 7)' }, pr);
   const body = E('rect', { x: -10, y: top0, width: 20, height: L0, rx: 9, fill: SK ? SK : `url(#gp${id})` }, pr);
   H(pr, `<path d="M-5 -18V-2" stroke="#fff" stroke-width="2" opacity=".45" stroke-linecap="round"/><path d="M-9 -14q9 2 18 0" stroke="${P.d}" stroke-width=".7" fill="none" opacity=".4"/>`);
@@ -515,7 +517,7 @@ function grate(f = 'morkov') {
     if (rub && Math.floor(t / .31) !== frame._g) { frame._g = Math.floor(t / .31); emit && emit('grate') }
     fly.forEach((e, i) => { const q = ((t * 2.2 + i / fly.length) % 1); e.setAttribute('transform', `translate(${(178 + R(i, -14, 14) * q).toFixed(1)} ${(122 + q * 12).toFixed(1)}) rotate(${(i * 40 + q * 200).toFixed(0)})`); e.setAttribute('opacity', (rub && t > .2 ? Math.sin(q * Math.PI) * .9 : 0).toFixed(2)) });
     const n = Math.floor(used * N); mound.setAttribute('rx', (2 + used * 34).toFixed(1)); mound.setAttribute('ry', (1 + used * 11).toFixed(1)); mound.setAttribute('opacity', (used * .45 * fout).toFixed(2)); sh.forEach((s, i) => { s.w.setAttribute('opacity', i < n ? fout.toFixed(2) : 0); s.w.setAttribute('transform', `translate(${s.x.toFixed(1)} ${s.y.toFixed(1)}) rotate(${s.r.toFixed(0)})`) }) }
-  return sc0(id, svg, frame, T, 'Натереть', `${P.n} — на тёрке`, 'grate') }
+  return Object.assign(sc0(id, svg, frame, T, 'Натереть', `${P.n} — на тёрке`, 'grate'), { probe: () => ({ size: +body.getAttribute('height'), pieces: sh.filter(q => +q.w.getAttribute('opacity') > .5).length }) }) }
 
 /* промыть: в миске вода кружит крупу, сверху льётся вода, круги */
 function rinse(f) {
@@ -567,7 +569,7 @@ function peel(f = 'kartofel') {
       ribG.setAttribute('transform', `translate(${lerp(0, pp.x - cx0, g).toFixed(1)} ${(lerp(0, pp.y - cy0, g) - Math.sin(g * Math.PI) * 8).toFixed(1)}) translate(${cx0.toFixed(1)} ${cy0.toFixed(1)}) scale(${sc.toFixed(3)}) rotate(${(g * pp.r).toFixed(1)}) translate(${(-cx0).toFixed(1)} ${(-cy0).toFixed(1)})`);
       ribG.setAttribute('opacity', (1 - clamp((drop - .6) / .4)).toFixed(2)) } else ribG.setAttribute('opacity', 0);
     pileP.forEach((p, i) => { p.w.setAttribute('opacity', (tp < 0 ? 0 : (i < pi || end ? 1 : i === pi ? clamp((drop - .55) / .45) : 0) * fout).toFixed(2)); p.w.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) rotate(${p.r.toFixed(0)})`) }) }
-  return sc0(id, svg, frame, T, 'Очистить', `${P.n} — овощечисткой`, 'peel') }
+  return Object.assign(sc0(id, svg, frame, T, 'Очистить', `${P.n} — овощечисткой`, 'peel'), { probe: () => ({ size: NB - bands.reduce((a, b) => a + (+(b.g.getAttribute('transform') || '').match(/scale\(([\d.]+)/)?.[1] || 0), 0), pieces: pileP.filter(q => +q.w.getAttribute('opacity') > .5).length + (+ribG.getAttribute('opacity') > .3 ? 1 : 0) }) }) }
 
 /* отбить: молоток вверх-вниз (тень), кусок мяса с каждым ударом шире */
 const MEAT = (f, id) => (!f || f === 'kur' || IS_KUR(f)) ? `url(#chk${id})` : F[f] ? F[f].c : '#E7A59A';
@@ -964,7 +966,7 @@ function forStep(text, ing, prev = []) {
   const liq = (v ? ps.filter(x => x.at >= v.at && x.at < end) : ps).map(x => x.k).find(k => LIQ.has(k)), vessel = vesselIn(t, act);
   const solidItems = items.filter(k => !(['pour'].includes(act) && LIQ.has(k)));
   const POT = /кастрюл|ковш|вод|бульон|суп|каш|соус/.test(t) || !items.some(solid), one = items[0], forms = /тефтел|шарик|фрикадел|скатайте|ёжик|ежик/.test(t);
-  const make = { cut: () => one && solid(one) ? cut(one) : show(items), tear: () => show(items), grate: () => one ? grate(one) : show(items), peel: () => one && !GRAINY.has(KIND[one]) && solid(one) ? peel(one) : show(items),
+  const make = { cut: () => one && solid(one) ? cut(one) : show(items), tear: () => one && solid(one) ? cut(one) : show(items), /* «разберите на соцветия» — ножом, продукт так же уменьшается */ grate: () => one ? grate(one) : show(items), peel: () => one && !GRAINY.has(KIND[one]) && solid(one) ? peel(one) : show(items),
     rinse: () => rinse(one), soak: () => soak(items), dry: () => dry(one), crack: () => crack(vessel === 'pan' ? 'pan' : 'bowl'), whisk: () => whisk(items), pound: () => pound(one), knead: () => one && KIND[one] === 'ball' ? form(one, forms) : roll(),
     roll: () => roll(), form: () => form(items.find(k => KIND[k] === 'ball') || one, forms), coat: () => stir(items, 'bowl'), spread: () => spread(items), oil: () => oil(items.find(k => /^maslo/.test(k))),
     bringBoil: () => bringBoil(items), boil: () => boil(items), simmer: () => simmer(items), salt: () => POT ? salt(items) : show(items), pepper: () => POT ? pepper(items) : show(items), rest: () => rest(items), fry: () => fry(items), stir: () => stir(items, vessel === 'pan' ? 'pan' : 'bowl'),
