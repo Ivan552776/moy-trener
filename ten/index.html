@@ -7,10 +7,10 @@
 <title>Анатомия · Мой тренер</title>
 <link rel="icon" href="../favicon-32.png">
 <!-- всё для первого кадра — сразу и параллельно: просмотрщик, облегчённые мышцы, студийный свет -->
-<link rel="modulepreload" href="ten.js?v=r102">
-<link rel="preload" href="m/anatomy_xs.json?v=r102" as="fetch" crossorigin="anonymous">
-<link rel="preload" href="m/muscles_xs.bin?v=r102" as="fetch" crossorigin="anonymous">
-<link rel="preload" href="env.hdr?v=r102" as="fetch" crossorigin="anonymous">
+<link rel="modulepreload" href="ten.js?v=r103">
+<link rel="preload" href="m/anatomy_xs.json?v=r103" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="m/muscles_xs.bin?v=r103" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="env.hdr?v=r103" as="fetch" crossorigin="anonymous">
 <style>
 :root{--stage-hi:#F4F4F2;--stage-lo:#D9DAD7;--glass:rgba(255,255,255,.66);--glass-b:rgba(255,255,255,.8);--line:rgba(11,13,18,.08);
   --text:#0B0D12;--text2:#5E6472;--text3:#8C93A1;--accent:#047857;--accent-hi:#10B981;--accent-text:#047857;--accent-soft:rgba(4,120,87,.10);
@@ -162,7 +162,7 @@ body.poster .top,body.poster .dock,body.poster .cr,body.poster #labels,body.post
 const qs = new URLSearchParams(location.search);
 if (qs.get('embed')) document.body.classList.add('embed'); if (qs.has('poster')) document.body.classList.add('poster');
 if (qs.has('close')) { const b = document.createElement('button'); b.className = 'x0 glass'; b.setAttribute('aria-label', 'Закрыть'); b.textContent = '×'; b.onclick = () => parent.postMessage({ ten: 'close' }, location.origin); document.querySelector('.top').prepend(b) }
-const VER = 'r102'; // менять вместе с файлами модели и упражнений (и в ссылках предзагрузки выше)
+const VER = 'r103'; // менять вместе с файлами модели и упражнений (и в ссылках предзагрузки выше)
 const { mountAnatomy } = await (async () => { for (let i = 0; ; i++) { try { return await import('./ten.js?v=' + VER + (i ? '&r=' + i : '')) } catch (e) { if (i >= 2) throw e; await new Promise(r => setTimeout(r, 900 * (i + 1))) } } })(); // сеть мигнула при выкладке — повторяем (новый адрес: браузер помнит неудачный импорт)
 const $ = s => document.querySelector(s);
 if (qs.get('theme')) document.documentElement.dataset.theme = qs.get('theme');
