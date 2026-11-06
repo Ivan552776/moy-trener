@@ -1166,6 +1166,287 @@ button.home-v{display:block;width:100%;padding:0;text-align:left;position:relati
 .zm-g{display:grid;grid-template-columns:repeat(5,1fr);gap:4px} .zm-c{display:flex;flex-direction:column;align-items:center;min-width:0} .zm-c small{font-size:12px;color:var(--text2)} .zm-c b{font-size:19px} .zm-c i{font-style:normal;font-size:12px;color:var(--text3);font-variant-numeric:tabular-nums}
 .zm-bf{display:flex;gap:10px;align-items:baseline;margin-top:10px;font-size:13px;color:var(--text2);line-height:1.35} .zm-bf>b{font-size:24px;color:var(--text);flex:none}
 @media (prefers-reduced-motion: reduce){.dy-sum .dy-bar>i,.ad-tab,.cl-d{transition:none} .cl-d:active{transform:none}}
+/* ===== Подписка «Полный», приглашения, розыгрыш (06.11.2026) ===== */
+.pw-hero{display:flex;gap:14px;align-items:center;padding:4px 4px 16px}
+.pw-ic{width:56px;height:56px;flex:none;border-radius:18px;display:grid;place-items:center;background:var(--grad-hero);color:#fff;box-shadow:var(--shadow-hero);animation:pwpop 520ms var(--spring-soft) both}
+.pw-ic .ic{width:28px;height:28px}
+.pw-eb{font-size:13px;font-weight:650;color:var(--accent-text);letter-spacing:.01em}
+.pw-tt{font:700 22px/1.2 var(--display);letter-spacing:-.02em;margin-top:2px;text-wrap:balance}
+.pw-ds{font-size:15px;color:var(--text2);margin-top:4px;text-wrap:pretty}
+@keyframes pwpop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+.pw-seg{position:relative;display:grid;grid-template-columns:1fr 1fr;background:var(--card2);border-radius:var(--pill);padding:3px;margin:0 0 12px}
+.pw-seg button{position:relative;z-index:1;text-align:center;height:38px;border-radius:var(--pill);font-size:15px;font-weight:600;color:var(--text2);transition:color .2s}
+.pw-seg button[aria-pressed=true]{color:var(--text)}
+.pw-seg i{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:var(--pill);background:var(--sheet-card);box-shadow:0 1px 2px rgba(16,20,40,.08),0 4px 12px -6px rgba(16,20,40,.2);transition:transform 420ms var(--spring-sheet)}
+.pw-seg.fam i{transform:translateX(100%)}
+.pw-plans{display:grid;gap:10px;margin-bottom:12px}
+.pw-plan{position:relative;display:flex;align-items:center;gap:12px;width:100%;padding:16px 16px 16px 18px;border-radius:20px;background:var(--sheet-card);box-shadow:inset 0 0 0 1.5px var(--line);transition:box-shadow .25s var(--ease-out),transform var(--d-press) var(--ease-out)}
+.pw-plan:active{transform:scale(.98)}
+.pw-plan.on{box-shadow:inset 0 0 0 2px var(--accent),0 10px 26px -18px var(--accent)}
+.pw-plan .rd{width:24px;height:24px;flex:none;border-radius:50%;box-shadow:inset 0 0 0 2px var(--line2);display:grid;place-items:center;transition:box-shadow .25s}
+.pw-plan .rd::after{content:'';width:12px;height:12px;border-radius:50%;background:var(--accent);transform:scale(0);transition:transform 380ms var(--spring-soft)}
+.pw-plan.on .rd{box-shadow:inset 0 0 0 2px var(--accent)} .pw-plan.on .rd::after{transform:scale(1)}
+.pw-pn{font-weight:650;font-size:17px}
+.pw-pr{margin-left:auto;text-align:right;line-height:1.15}
+.pw-pr b{font:700 22px var(--num);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.pw-pr small{display:block;font-size:13px;color:var(--text2);font-weight:500}
+.pw-sub{font-size:13px;color:var(--text2);margin-top:2px}
+.pw-sub s{color:var(--text3)}
+.pw-badge{position:absolute;top:-9px;right:16px;padding:3px 9px;border-radius:var(--pill);background:var(--accent);color:var(--on-accent);font-size:12px;font-weight:700;letter-spacing:.01em}
+.pw-fd{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:16px;background:var(--accent-soft);color:var(--accent-text);font-size:14px;font-weight:600;margin:-2px 0 12px}
+.pw-fd .bar2{flex:none;width:64px;height:6px;border-radius:3px;background:rgba(4,120,87,.18);overflow:hidden}
+.pw-fd .bar2 i{display:block;height:100%;background:var(--accent);border-radius:3px;transform-origin:left;animation:pwbar 900ms cubic-bezier(.22,1,.36,1) both}
+@keyframes pwbar{from{transform:scaleX(0)}}
+.pw-inc{list-style:none;margin:0;padding:6px 16px;border-radius:20px;background:var(--sheet-card)}
+.pw-inc li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;font-size:15px;box-shadow:inset 0 -.5px 0 var(--line)} .pw-inc li:last-child{box-shadow:none}
+.pw-inc .ic{width:18px;height:18px;flex:none;margin-top:1px;color:var(--accent-text)}
+.pw-two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.pw-two>div{border-radius:20px;background:var(--sheet-card);padding:14px}
+.pw-two h4{margin:0 0 8px;font-size:13px;font-weight:700;color:var(--text2);letter-spacing:.01em}
+.pw-two p{margin:0;padding:5px 0;font-size:14px;line-height:1.3;display:flex;gap:6px} .pw-two p .ic{width:15px;height:15px;flex:none;margin-top:2px}
+.pw-two .fr .ic{color:var(--ok-text)} .pw-two .pd .ic{color:var(--accent-text)}
+.pw-zero{text-align:center;padding:2px 0 14px}
+.pw-zero .num{font-size:64px;line-height:1;letter-spacing:-.03em;display:block}
+.pw-zero span{font-size:15px;color:var(--text2)}
+.pw-note{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--text2);padding:12px 4px;text-wrap:pretty}
+.pw-note .ic{width:18px;height:18px;flex:none;color:var(--accent-text);margin-top:1px}
+.pw-cons{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:18px;background:var(--sheet-card);font-size:14px;line-height:1.35;margin:10px 0 12px;cursor:pointer}
+.pw-cons input{appearance:none;-webkit-appearance:none;width:24px;height:24px;flex:none;margin:0;border-radius:7px;box-shadow:inset 0 0 0 2px var(--line2);display:grid;place-items:center;transition:background .2s,box-shadow .2s}
+.pw-cons input:checked{background:var(--accent);box-shadow:none}
+.pw-cons input::after{content:'';width:12px;height:7px;border:2.5px solid #fff;border-top:0;border-right:0;transform:translateY(-2px) rotate(-45deg) scale(0);transition:transform 300ms var(--spring-soft)}
+.pw-cons input:checked::after{transform:translateY(-2px) rotate(-45deg) scale(1)}
+.btn:disabled{opacity:.45;box-shadow:none}
+.pw-fine{text-align:center;font-size:13px;color:var(--text3);margin:2px 8px 10px;text-wrap:balance}
+.pw-fine a{color:var(--text2)}
+.pw-ok{text-align:center;padding:10px 0 4px}
+.pw-ok .pw-ic{margin:0 auto 12px;width:72px;height:72px;border-radius:24px}
+.pw-wait{width:28px;height:28px;border-radius:50%;border:3px solid var(--accent-soft);border-top-color:var(--accent);margin:8px auto 14px;animation:pwspin .9s linear infinite}
+@keyframes pwspin{to{transform:rotate(1turn)}}
+.pw-lockpill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--pill);background:var(--accent-soft);color:var(--accent-text);font-size:12px;font-weight:700;vertical-align:2px}
+.pw-lockpill .ic{width:12px;height:12px}
+/* статус подписки в профиле */
+.sb-hero{border-radius:var(--r-hero);padding:20px;background:var(--grad-hero);color:#fff;box-shadow:var(--shadow-hero);margin-bottom:12px}
+.sb-hero.free{background:var(--sheet-card);color:var(--text);box-shadow:none}
+.sb-hero .eb{font-size:13px;font-weight:650;opacity:.8}
+.sb-hero .tt{font:700 28px/1.1 var(--display);letter-spacing:-.02em;margin-top:4px}
+.sb-hero .ds{font-size:15px;opacity:.85;margin-top:6px}
+.amb{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--pill);background:linear-gradient(135deg,#FCD34D,#F59E0B);color:#3B2600;font-size:12px;font-weight:700;margin-left:6px;vertical-align:2px}
+/* приглашение */
+.iv-qr{display:grid;place-items:center;padding:22px;border-radius:28px;background:#fff;box-shadow:var(--shadow);margin-bottom:12px;animation:pwpop 520ms var(--spring-soft) both}
+.iv-qr .qr{width:min(220px,62vw);height:auto;display:block}
+.iv-qr .lnk{margin-top:12px;font:600 15px var(--num);color:#0B0D12;letter-spacing:.01em}
+.iv-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px} .iv-btns .btn{margin:0}
+.iv-lad{position:relative;display:flex;justify-content:space-between;padding:6px 6px 0;margin:4px 0 6px}
+.iv-lad::before,.iv-lad b.fill{content:'';position:absolute;left:24px;right:24px;top:24px;height:4px;border-radius:2px;background:var(--card3)}
+.iv-lad b.fill{background:var(--accent);right:auto;transform-origin:left;animation:pwbar 1000ms cubic-bezier(.22,1,.36,1) both}
+.iv-st{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;width:64px;text-align:center}
+.iv-st .dot{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--sheet-card);box-shadow:inset 0 0 0 2px var(--line2);font:700 15px var(--num)}
+.iv-st.on .dot{background:var(--accent);color:var(--on-accent);box-shadow:0 6px 16px -8px var(--accent);animation:pwpop 520ms var(--spring-soft) both}
+.iv-st small{font-size:12px;line-height:1.2;color:var(--text2)}
+.iv-nx{text-align:center;font-size:15px;font-weight:600;margin:6px 0 2px}
+#qrov{position:absolute;inset:0;z-index:40;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;opacity:0;transform:scale(.96);transition:opacity .3s var(--ease-out),transform 420ms var(--spring-sheet)}
+#qrov.on{opacity:1;transform:none}
+#qrov .qr{width:min(78vw,340px);height:auto}
+#qrov .t{font:700 22px var(--display);color:#0B0D12;text-align:center} #qrov .s{font-size:15px;color:#5E6472;text-align:center}
+#qrov .x{position:absolute;top:calc(env(safe-area-inset-top) + 14px);right:16px;width:44px;height:44px;border-radius:50%;background:#ECEEF3;color:#0B0D12;font-size:18px}
+/* розыгрыш */
+.dr-stage{position:relative;border-radius:var(--r-hero);overflow:hidden;background:radial-gradient(120% 90% at 50% 0%,#0E6B50 0%,#064E3B 55%,#03261D 100%);margin-bottom:12px;box-shadow:var(--shadow-hero)}
+.dr-stage canvas{display:block;width:100%;height:280px}
+.dr-cap{position:absolute;left:16px;right:16px;bottom:12px;display:flex;justify-content:space-between;align-items:flex-end;color:#fff;pointer-events:none}
+.dr-cap b{font:700 28px var(--num);font-variant-numeric:tabular-nums;letter-spacing:-.02em;display:block}
+.dr-cap span{font-size:13px;opacity:.8}
+.dr-live{position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:var(--pill);background:rgba(232,89,12,.92);color:#fff;font-size:12px;font-weight:700;letter-spacing:.02em}
+.dr-live i{width:7px;height:7px;border-radius:50%;background:#fff;animation:drblink 1.2s ease-in-out infinite}
+@keyframes drblink{50%{opacity:.25}}
+.dr-my{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.dr-tk{display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 6px;border-radius:var(--pill);background:var(--accent-soft);color:var(--accent-text);font:700 15px var(--num);font-variant-numeric:tabular-nums}
+.dr-tk i{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#6EE7B7,#047857 70%);box-shadow:inset 0 -2px 3px rgba(0,0,0,.25)}
+.dr-tk.new{animation:drnew 700ms var(--spring-soft) both}
+@keyframes drnew{from{transform:translateY(-14px) scale(.7);opacity:0}}
+.dr-prz{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.dr-pz{border-radius:22px;background:var(--sheet-card);padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.dr-pz .ico{display:flex;gap:2px;color:var(--accent-text);height:34px;align-items:flex-end}
+.dr-pz .ico svg{width:24px;height:30px}
+.dr-pz .ico svg.ph{width:20px;height:34px}
+.dr-pz b{font-size:15px;line-height:1.25}
+.dr-pz .pg{height:6px;border-radius:3px;background:var(--card3);overflow:hidden}
+.dr-pz .pg i{display:block;height:100%;border-radius:3px;background:var(--accent);transform-origin:left;animation:pwbar 1000ms cubic-bezier(.22,1,.36,1) both}
+.dr-pz small{font-size:13px;color:var(--text2);font-variant-numeric:tabular-nums}
+.dr-win{display:flex;align-items:center;gap:12px;padding:10px 0;box-shadow:inset 0 -.5px 0 var(--line);animation:drnew 700ms var(--spring-soft) both}
+.dr-win:last-child{box-shadow:none}
+.dr-win .ball{width:36px;height:36px;flex:none;border-radius:50%;display:grid;place-items:center;font:700 12px var(--num);color:#0B0D12;background:radial-gradient(circle at 35% 30%,#fff,#E3E6EC 70%);box-shadow:inset 0 -3px 5px rgba(0,0,0,.18)}
+.dr-win.me .ball{background:radial-gradient(circle at 35% 30%,#6EE7B7,#047857 70%);color:#fff}
+.dr-hash{font:500 12px ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all;color:var(--text2);background:var(--card2);padding:8px 10px;border-radius:12px;margin-top:6px}
+.dr-rules summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-weight:650}
+.dr-rules summary::-webkit-details-marker{display:none}
+.dr-rules[open] summary .chev{transform:rotate(90deg)} .dr-rules summary .chev{transition:transform .3s var(--spring-soft)}
+.dr-rules ol{padding-left:20px;margin:10px 0 0;font-size:14px;line-height:1.45;color:var(--text2)} .dr-rules li{margin-bottom:6px}
+.dr-draft{display:inline-block;padding:2px 8px;border-radius:var(--pill);background:var(--warn-soft);color:var(--warn-text);font-size:12px;font-weight:700}
+.vf-row{display:flex;gap:10px;align-items:flex-start;padding:10px 0;font-size:14px;box-shadow:inset 0 -.5px 0 var(--line)} .vf-row:last-child{box-shadow:none}
+.vf-row .st{width:22px;height:22px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--card3)}
+.vf-row .st.ok{background:var(--ok-soft);color:var(--ok-text)} .vf-row .st.bad{background:var(--bad-soft);color:var(--bad-text)}
+.pt-card{display:flex;gap:12px;align-items:center}
+.pt-card .pw-ic{width:44px;height:44px;border-radius:14px;animation:none} .pt-card .pw-ic .ic{width:22px;height:22px}
+@media (prefers-reduced-motion:reduce){.pw-ic,.iv-qr,.iv-st.on .dot,.dr-tk.new,.dr-win,#qrov,.pw-seg i,.pw-plan .rd::after,.pw-fd .bar2 i,.dr-pz .pg i,.iv-lad b.fill{animation:none!important;transition:opacity .15s!important}}
+
+.dr-stage canvas{height:300px}
+.dr-cap{position:static;padding:0 18px 16px;margin-top:-6px}
+.dr-snd{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.14);color:#fff;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.dr-snd .ic{width:20px;height:20px}
+.dr-wins{padding:0 14px 10px}
+.dr-wins .dr-win{color:#fff;box-shadow:inset 0 -.5px 0 rgba(255,255,255,.14)} .dr-wins .tiny{color:rgba(255,255,255,.65)}
+.dr-prz{grid-template-columns:1fr}
+.dr-mych span{white-space:nowrap}
+
+/* перекидное табло */
+.flap{display:inline-flex;gap:2px;vertical-align:middle;perspective:260px}
+.fl{position:relative;display:inline-block;width:.78em;height:1.25em;line-height:1.25em;text-align:center;border-radius:.18em;background:#16181F;color:#fff;font:700 1em var(--num);font-variant-numeric:tabular-nums;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+:root[data-scheme="dark"] .fl{background:#2C2E36}
+.fl::after{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.55);box-shadow:0 1px 0 rgba(255,255,255,.08);z-index:3}
+.fl-u,.fl-d,.fl-ft,.fl-fb{position:absolute;left:0;right:0;height:50%;overflow:hidden;backface-visibility:hidden;display:block;text-align:center}
+.fl-u,.fl-ft{top:0;line-height:1.25em} .fl-d,.fl-fb{top:50%;line-height:0}
+.fl-u{background:linear-gradient(#22252E,#191B22)} .fl-d{background:linear-gradient(#15171D,#101217)}
+.fl-ft{transform-origin:50% 100%;background:linear-gradient(#262A34,#191B22);z-index:2;box-shadow:inset 0 -6px 8px -6px rgba(0,0,0,.6)}
+.fl-fb{transform-origin:50% 0;background:linear-gradient(#15171D,#101217);z-index:2;box-shadow:inset 0 6px 8px -6px rgba(0,0,0,.6)}
+.flsep{display:inline-block;padding:0 1px;font:700 1em var(--num);color:var(--text2)}
+.tk .flap{font-size:13px} .dr-cd .flap{font-size:16px} .dw-c .flap{font-size:24px}
+
+/* карточка-приглашение */
+.ivc{position:relative;overflow:hidden;border-radius:28px;padding:22px 20px 18px;margin-bottom:12px;color:#fff;text-align:center;--gx:30%;--gy:20%;
+  background:radial-gradient(90% 60% at 85% 0%,rgba(110,231,183,.35),transparent 60%),linear-gradient(160deg,#10865F,#065F46 55%,#022C21);box-shadow:var(--shadow-hero);animation:ivup 640ms var(--spring-sheet) both}
+.ivc::before{content:'';position:absolute;inset:0;background:var(--paper,none);opacity:.35;mix-blend-mode:soft-light;pointer-events:none}
+.ivc-gl{position:absolute;inset:0;pointer-events:none;background:radial-gradient(40% 30% at var(--gx) var(--gy),rgba(255,255,255,.22),transparent 70%);transition:background .2s}
+@keyframes ivup{from{transform:translateY(40px) scale(.96);opacity:0}}
+.ivc-eb{font-size:15px;font-weight:600;opacity:.9}
+.ivc-big{font:800 40px/1.02 var(--display);letter-spacing:-.03em;margin-top:6px}
+.ivc-s{font-size:14px;opacity:.8;margin-top:6px}
+.ivc-qr{display:block;margin:16px auto 10px;padding:14px;border-radius:24px;background:#FFFDF7;box-shadow:0 18px 40px -18px rgba(0,0,0,.6)}
+.ivc-qr canvas{display:block;width:200px;height:200px}
+.ivc-l{font:600 15px var(--num);letter-spacing:.01em;opacity:.95}
+#qrov .qrf{width:min(80vw,320px);height:min(80vw,320px);display:block;border-radius:20px;background:#fff}
+.qrf-rev{transform-origin:center;transform-box:fill-box;animation:qrrev 900ms cubic-bezier(.22,1,.36,1) both}
+@keyframes qrrev{from{transform:scale(0)}}
+.qrf-logo{animation:qrlogo 700ms 700ms var(--spring-soft) both}
+@keyframes qrlogo{0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+/* успешная оплата */
+.ps{text-align:center;padding:6px 0 4px}
+.ps-c{width:84px;height:84px;margin:0 auto 14px}
+.ps-c svg{width:84px;height:84px;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ps-r{stroke:#10B981;stroke-width:3;stroke-dasharray:151;stroke-dashoffset:151;animation:psdraw 600ms cubic-bezier(.65,0,.35,1) forwards;transform-box:fill-box;transform-origin:center;transform:rotate(-90deg)}
+.ps-k{stroke:#047857;stroke-width:4;stroke-dasharray:36;stroke-dashoffset:36;animation:psdraw 380ms 520ms cubic-bezier(.65,0,.35,1) forwards}
+@keyframes psdraw{to{stroke-dashoffset:0}}
+.ps-card{border-radius:24px;background:var(--sheet-card);padding:18px 16px;text-align:left;animation:ivup 700ms 650ms var(--spring-sheet) both}
+.ps-eb{font-size:12px;font-weight:700;color:var(--accent-text);text-transform:uppercase;letter-spacing:.06em}
+.ps-list{list-style:none;margin:12px 0 0;padding:0}
+.ps-list li{position:relative;display:flex;align-items:center;gap:10px;padding:7px 0 7px 30px;font-size:14px}
+.ps-lk,.ps-ok{position:absolute;left:0;top:6px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center}
+.ps-lk{background:var(--card2);color:var(--text3);animation:pslk 360ms calc(1100ms + var(--k) * 140ms) var(--ease-out) forwards}
+.ps-ok{background:var(--accent);color:#fff;transform:scale(0);animation:psok 460ms calc(1180ms + var(--k) * 140ms) var(--spring-soft) forwards}
+.ps-lk .ic,.ps-ok .ic{width:13px;height:13px}
+@keyframes pslk{to{transform:translateY(-6px) rotate(-20deg);opacity:0}}
+@keyframes psok{to{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.ivc,.ps-card{animation:none}.ps-r,.ps-k{animation:none;stroke-dashoffset:0}.ps-lk{animation:none;opacity:0}.ps-ok{animation:none;transform:none}.qrf-rev,.qrf-logo{animation:none}}
+/* розыгрыш v3: карточки участника, вылет шара, иллюстрации призов, таблица бесплатно/Полный */
+.dr-pz{flex-direction:row;align-items:flex-start;gap:14px;padding:16px}
+.dr-pz.wk{background:linear-gradient(150deg,var(--accent-soft),transparent 70%),var(--sheet-card);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.dr-art{flex:none;width:76px;height:76px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 25%,#ECFDF5,#A7F3D0 70%);position:relative;overflow:hidden}
+:root[data-scheme="dark"] .dr-art{background:radial-gradient(circle at 30% 25%,#1F4D3E,#0B2A21 75%)}
+.dr-art svg{width:46px;height:46px;flex:none} .dr-art svg+svg{width:34px;height:34px;margin-left:-14px;margin-top:22px}
+.dr-pzb{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.dr-eb{font-size:12px;font-weight:700;color:var(--accent-text);letter-spacing:.02em;text-transform:uppercase}
+.dr-nx{color:var(--accent-text)!important;font-weight:600}
+/* «кошелёк» карточек участника: перфорация, зубчатый корешок, бумажная фактура, защитный узор, голограмма */
+.dw{position:relative;height:156px;margin:0 0 16px;cursor:pointer;--hx:30%;--hy:20%}
+.dt{position:absolute;left:8px;right:60px;top:8px;height:128px;display:flex;transform-origin:50% 150%;
+  transform:translate(calc(var(--i) * 3px),calc(var(--i) * -3px)) rotate(calc(var(--i) * -1.2deg));transition:transform 560ms var(--spring-sheet);
+  z-index:calc(10 - var(--i));will-change:transform}
+.dt::before{content:'';position:absolute;left:4px;right:2px;top:8px;bottom:-2px;border-radius:14px;box-shadow:0 8px 18px -4px rgba(16,20,40,.22);z-index:-1}
+.dw.fan .dt{transform:rotate(calc((var(--i) - 2) * 9deg)) translateY(calc(var(--i) * 2px))}
+.dt-main{position:relative;flex:1;min-width:0;padding:12px 14px;border-radius:14px 0 0 14px;overflow:hidden;color:#0B0D12;background:#FFFDF7;
+  -webkit-mask:radial-gradient(circle 5px at 100% 12px,transparent 4.5px,#000 5px) 0 0/100% 24px repeat-y;mask:radial-gradient(circle 5px at 100% 12px,transparent 4.5px,#000 5px) 0 0/100% 24px repeat-y}
+.dt-main::before{content:'';position:absolute;inset:0;opacity:.6;background:
+  repeating-linear-gradient(45deg,rgba(4,120,87,.06) 0 1px,transparent 1px 7px),repeating-linear-gradient(-45deg,rgba(4,120,87,.05) 0 1px,transparent 1px 9px),
+  var(--paper,none)}
+.dt-main::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.55) calc(var(--hx) - 5%),transparent calc(var(--hx) + 12%));pointer-events:none}
+.dt-holo{position:absolute;right:16px;top:12px;width:34px;height:34px;border-radius:50%;opacity:.85;
+  background:conic-gradient(from calc(var(--hy) * 3.6deg) at var(--hx) var(--hy),#A7F3D0,#93C5FD,#F9A8D4,#FDE68A,#A7F3D0);box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}
+.dt-eb{position:relative;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#047857}
+.dt-n{position:relative;font:800 42px/1 var(--num);letter-spacing:.04em;font-variant-numeric:tabular-nums;margin-top:6px;color:#0B0D12}
+.dt-m{position:relative;font-size:13px;color:#5E6472;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70%}
+.dt-k{position:absolute;right:14px;bottom:10px;font-size:11px;font-weight:700;color:#047857;padding:2px 8px;border-radius:999px;background:rgba(4,120,87,.10)}
+.dt-stub{width:46px;flex:none;border-radius:0 12px 12px 0;background:#F1ECDD;border-left:2px dashed rgba(4,120,87,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#047857;
+  -webkit-mask:radial-gradient(circle 4px at 100% 8px,transparent 3.5px,#000 4px) 0 0/100% 16px repeat-y;mask:radial-gradient(circle 4px at 100% 8px,transparent 3.5px,#000 4px) 0 0/100% 16px repeat-y;
+  transition:transform 700ms var(--spring-soft),opacity .5s .25s;transform-origin:0 100%}
+.dt-stub span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.dt-stub b{font:800 12px var(--num);writing-mode:vertical-rl;transform:rotate(180deg)}
+.dw.torn .dt-stub{transform:translate(16px,30px) rotate(28deg);opacity:0}
+.dt.win .dt-main{box-shadow:inset 0 0 0 2px #10B981} .dt.win .dt-n{color:#047857}
+.dt.win{animation:dtwin 1.6s var(--ease-io) 2}
+@keyframes dtwin{50%{transform:translate(calc(var(--i) * 3px),calc(var(--i) * -3px)) rotate(calc(var(--i) * -1.2deg)) scale(1.03)}}
+.dw-c{position:absolute;right:0;top:40px;width:56px;text-align:center;display:flex;flex-direction:column}
+.dw-c b{font-size:30px;line-height:1;color:var(--accent-text)} .dw-c>span{font-size:12px;color:var(--text2);margin-top:4px}
+/* победный шар «в экран» */
+.drfly{position:absolute;inset:0;z-index:45;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;pointer-events:none;background:rgba(3,20,15,0);transition:background .5s}
+.drfly.on{background:radial-gradient(70% 50% at 50% 42%,rgba(6,95,70,.35),rgba(3,20,15,.74))}
+.drfly.out{opacity:0;transition:opacity .45s .1s}
+.drfly-glow{position:absolute;left:50%;top:42%;width:340px;height:340px;margin:-170px 0 0 -170px;border-radius:50%;background:radial-gradient(circle,rgba(110,231,183,.55),rgba(110,231,183,0) 65%);opacity:0;transform:scale(.6);transition:opacity .6s,transform 900ms var(--spring-soft)}
+.drfly.rev .drfly-glow{opacity:1;transform:scale(1)}
+.drfly-ball{width:190px;height:190px;border-radius:50%;display:grid;place-items:center;margin-top:-6vh;
+  background:radial-gradient(circle at 34% 28%,#fff 0,#F3F5F8 38%,#C3C9D2 78%,#8A93A1 100%);box-shadow:0 30px 60px -20px rgba(0,0,0,.55),inset -10px -16px 30px rgba(0,0,0,.12);will-change:transform}
+.drfly.me .drfly-ball{background:radial-gradient(circle at 34% 28%,#ECFDF5 0,#6EE7B7 30%,#059669 72%,#03392B 100%)}
+.drfly-ball b{font:800 62px var(--num);letter-spacing:.02em;color:#0B0D12;font-variant-numeric:tabular-nums}
+.drfly.me .drfly-ball b{color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.25)}
+.drfly-txt{text-align:center;color:#fff;opacity:0;transform:translateY(14px) scale(.96);transition:opacity .4s,transform 600ms var(--spring-soft);padding:0 20px}
+.drfly.rev .drfly-txt{opacity:1;transform:none}
+.drfly-txt .t{font:800 28px/1.15 var(--display);letter-spacing:-.02em;text-shadow:0 2px 12px rgba(0,0,0,.4)} .drfly-txt .p{font-size:17px;opacity:.9;margin-top:6px}
+.drfly-txt .m{display:inline-block;margin-top:10px;padding:5px 14px;border-radius:999px;background:#fff;color:#047857;font-weight:800}
+/* таблица «бесплатно / Полный» */
+.pw-tb{border-radius:20px;background:var(--sheet-card);padding:6px 14px;margin-bottom:12px;font-size:14px}
+.pw-tr{display:grid;grid-template-columns:1.25fr .9fr 1.05fr;gap:8px;align-items:center;padding:8px 0;box-shadow:inset 0 -.5px 0 var(--line)} .pw-tr:last-child{box-shadow:none}
+.pw-tr.h{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.04em} .pw-tr.h span:last-child{color:var(--accent-text)}
+.pw-tr span:nth-child(2){color:var(--text2)} .pw-tr span.no{color:var(--text3)} .pw-tr span.pd{font-weight:650;color:var(--text)}
+.pw-tr .ic{width:16px;height:16px;color:var(--ok-text)} .pw-tr .pd .ic{color:var(--accent-text)}
+.pw-step{font-size:15px;line-height:1.4;padding:10px 4px;text-wrap:pretty}
+.pw-left{display:flex;gap:8px;align-items:center;padding:10px 14px;border-radius:16px;background:var(--accent-soft);color:var(--text);font-size:14px;margin-bottom:12px}
+.pw-left .ic{width:18px;height:18px;flex:none;color:var(--accent-text)} .pw-left button{color:var(--accent-text);font-weight:650;text-decoration:underline;text-underline-offset:2px}
+.pw-lockcard{display:flex;gap:12px;align-items:center;width:100%;text-align:left}
+.pw-lk{width:40px;height:40px;flex:none;border-radius:12px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-text)} .pw-lk .ic{width:20px;height:20px}
+@media (prefers-reduced-motion:reduce){.dt,.dt-stub,.drfly-txt,.drfly-glow{transition:opacity .15s!important}.dt.win{animation:none}}
+
+.dr-tax{font:700 17px/1.2 var(--display);letter-spacing:-.01em;color:var(--accent-text);background:var(--accent-soft);border-radius:14px;padding:10px 12px;text-wrap:balance}
+.dr-pz.big{grid-column:1/-1}
+.dr-mych{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:2px}
+.dr-mych b{font-size:15px} .dr-mych span{font:700 17px var(--num);color:var(--accent-text);font-variant-numeric:tabular-nums}
+.dr-lad{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:12px 0;text-align:center}
+.dr-lad>div{display:flex;flex-direction:column;gap:4px} .dr-lad small{font-size:12px;color:var(--text2)} .dr-lad b{font:700 16px var(--num);background:var(--card2);border-radius:10px;padding:4px 0}
+.dr-lad .lab b{background:none;font:600 11px var(--font);color:var(--text2);padding:7px 0 6px}
+.inp.wc{display:block;width:100%;height:48px;border:0;border-radius:14px;background:var(--card2);padding:0 14px;font:500 16px var(--font);color:var(--text);margin-bottom:8px}
+#paybn{position:absolute;left:12px;right:12px;top:calc(env(safe-area-inset-top) + 10px);z-index:31;display:flex;align-items:center;gap:10px;padding:10px 10px 10px 12px;border-radius:20px;background:var(--card);box-shadow:var(--shadow-pop);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);transform:translateY(-140%);opacity:0;transition:transform 520ms var(--spring-sheet),opacity .3s}
+#paybn.on{transform:none;opacity:1}
+#paybn .t{flex:1;font-size:15px;font-weight:600;line-height:1.25}
+#paybn button{flex:none;height:34px;padding:0 12px;border-radius:var(--pill);background:var(--accent);color:var(--on-accent);font-size:14px;font-weight:650}
+.pw-ic.sm{width:32px;height:32px;border-radius:10px;animation:none} .pw-ic.sm .ic{width:18px;height:18px}
+.tk{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:6px 6px 6px 14px;border-radius:var(--pill);background:var(--card);box-shadow:var(--shadow)}
+.tk-v{flex:1;min-width:0;height:22px;overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+.tk-r{display:flex;width:max-content;will-change:transform}
+.tk-r.run{animation:tkmove linear infinite}
+.tk-v.hold .tk-r{animation-play-state:paused}
+.tk-s{display:flex;align-items:center;flex:none}
+.tk-dot{width:4px;height:4px;border-radius:50%;background:var(--text3);margin:0 14px;flex:none}
+@keyframes tkmove{to{transform:translateX(-50%)}}
+.tk-r.rm .tk-s+.tk-s{display:none} .tk-r.rm .tk-dot{display:none} .tk-r.rm span{position:absolute;left:0;opacity:0;transition:opacity .4s} .tk-r.rm span.on{opacity:1}
+.odo{display:inline-flex;flex-direction:column;height:22px;overflow:hidden;vertical-align:top}
+.odo-o,.odo-n{display:block;height:22px;animation:odo 400ms cubic-bezier(.22,1,.36,1) forwards}
+@keyframes odo{to{transform:translateY(-22px)}}
+.dr-cd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px}.dr-cdl{font-size:12px;color:var(--text2);font-weight:600}
+.dr-seats{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left}.dr-seats .flap{font-size:26px}
+.iv-cnt{display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;color:var(--text2);margin:6px 0 4px}.iv-cnt .flap{font-size:20px}
+.tk-r span{height:22px;line-height:22px;font-size:14px;color:var(--text2);white-space:nowrap}
+.tk-r b{color:var(--text);position:relative}
+.tk-b{flex:none;height:32px;padding:0 14px;border-radius:var(--pill);background:var(--accent-soft);color:var(--accent-text);font-size:14px;font-weight:700}
+.tk-m{position:absolute;left:100%;top:-2px;margin-left:3px;font-style:normal;font-size:12px;color:var(--accent-text);animation:tkm 1.6s var(--ease-out) forwards}
+@keyframes tkm{from{opacity:0;transform:translateY(6px)}20%{opacity:1;transform:none}to{opacity:0;transform:translateY(-10px)}}
+@media (prefers-reduced-motion:reduce){.tk-r{animation:none!important}#paybn{transition:opacity .15s!important;transform:none}}
 </style>
 </head>
 <body>
@@ -1198,7 +1479,7 @@ button.home-v{display:block;width:100%;padding:0;text-align:left;position:relati
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-07-r125'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r126'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>',cup:'<path d="M7 4h10l-1.3 15.2a2 2 0 0 1-2 1.8h-3.4a2 2 0 0 1-2-1.8z"/><path d="M7.4 9h9.2"/>',expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -2071,7 +2352,7 @@ function streakSync(){const td=today0();if(!S.profile||S.onb||S.stkDay===td)retu
   if(S.msShow)setTimeout(()=>{const v=S.msShow;S.msShow=0;save();if(v&&!$('#sheet.on'))openMilestone(v)},900);
   else if(S.frzMsg)setTimeout(()=>{toast(`Заморозка сохранила серию: ${pl(+S.frzMsg||1,'день','дня','дней')} без захода`);S.frzMsg=0;save()},900)}
 function openMilestone(m){m=+m||0;const T={7:['Неделя подряд','Привычка запускается. Так держать!'],30:['Месяц подряд','Это уже образ жизни. Вы большой молодец.'],100:['100 дней подряд','Сотня! Редкий результат — гордитесь собой.'],365:['Год подряд','Целый год заботы о себе. Браво!']}[m]||['Новая веха',''];
-  sheet('Серия',`<div class="ms-w"><div class="ms-f">${ic('flame')}</div><div class="num ms-n">${m}</div><div class="ms-t">${T[0]}</div><div class="ms-s">${T[1]}</div></div><button class="btn" onclick="closeSheet()">Спасибо!</button>`);haptic([10,60,10,60,20]);cbConfetti()}
+  sheet('Серия',`<div class="ms-w"><div class="ms-f">${ic('flame')}</div><div class="num ms-n">${m}</div><div class="ms-t">${T[0]}</div><div class="ms-s">${T[1]}</div></div><button class="btn" onclick="closeSheet()">Спасибо!</button><button class="btn sec" onclick="payCard('streak',${m})">${ic('share')} Поделиться</button>`);haptic([10,60,10,60,20]);cbConfetti()}
 function openStreak(){const st=streakDays(),F=frz(),nx=MS.find(x=>x>st)||Math.ceil((st+1)/100)*100,pv=[0,...MS].filter(x=>x<=st).pop()||0,wd=Math.min(S.done.length,weekPlanCount()),wp=weekPlanCount();
   sheet('Серия',`<div class="card stk"><div class="stk-h">${ic('flame')}<b class="num">${st}</b></div><div class="stk-l">${pl(st,'день','дня','дней').replace(/^\d+\s/,'')} подряд</div><div class="stk-s">Считаем дни, когда вы заходили, записывали еду или тренировались</div>
    <div class="stk-ms"><div class="row between"><span>Следующая веха — ${pl(nx,'день','дня','дней')}</span><b class="num">${st} из ${nx}</b></div><div class="bar"><i style="width:${Math.max(4,Math.round((st-pv)/(nx-pv)*100))}%"></i></div></div>${streakCal()}</div>
@@ -2166,7 +2447,7 @@ function vToday(){
    <button class="qk-b tap" onclick="${done||wfull?`go('gym')`:`go('gym');setTimeout(()=>openExercise(${ex}),350)`}">${ic('gym')}<b>Тренировка</b></button>
    ${photoBtn('qk-b tap',`${ic('cam')}<b>Сканер</b>`)}
   </div>
-  ${wsCard()}
+  ${payTodayCard()}${wsCard()}
   ${postNow()&&KIT&&A.b[0]!=="go('food')"?`<div id="postd">${postCard()}</div>`:''}
   ${rows?`<h2>План на сегодня</h2><div class="card pday">${rows}</div>`:''}
   <h2>Съедено сегодня</h2>
@@ -4748,7 +5029,7 @@ function vMe(){ // личный кабинет как «Настройки» н�
   const row=(fn,cl,icn,t,sub)=>`<button class="rowbtn" onclick="${fn}"><div class="ibox me-i">${ic(icn)}</div><div class="t">${t}${sub?`<small>${sub}</small>`:''}</div><span class="chev">${ic('chev')}</span></button>`;
   const TH={light:'светлая',dark:'тёмная',auto:'как в телефоне'};
   return `<div class="top"><div><div class="eyebrow">Ваш план и настройки</div><div class="date">Профиль</div></div></div>
-  <button class="card tap me-card" onclick="openEdit()"><div class="me-ava">${ava()}</div><div style="flex:1;min-width:0"><div class="me-nm">${pr.name==='Вы'?'Ваш профиль':esc(pr.name)}</div>
+  <button class="card tap me-card" onclick="openEdit()"><div class="me-ava">${ava()}</div><div style="flex:1;min-width:0"><div class="me-nm">${pr.name==='Вы'?'Ваш профиль':esc(pr.name)}${(((payS().srv||{}).ref||{}).badges||[]).includes('amb')?'<span class="amb">Амбассадор</span>':''}</div>
     <div class="small muted">${g.n} · ${(''+lastW).replace('.',',')} кг · ${fmt(n.kcal)} ккал в день</div>${n.bmi>=35||n.bmi<16?`<div class="tiny" style="margin-top:4px;color:var(--warn-text)">ИМТ ${dec(n.bmi)} — посоветуйтесь с врачом</div>`:''}${n.minor||n.under?`<div class="tiny" style="margin-top:4px;color:var(--warn-text)">${n.minor?'До 18 лет — план с ограничениями':'Вес ниже нормы — план держит вес'}</div>`:''}</div><span class="me-ed">Изменить</span></button>
   ${dietHint()}<div class="card list">${AC?row('openAccount()','ok','me','Аккаунт',esc((AC.u&&AC.u.email)||(AC.how==='vk'?'VK ID':'Яндекс ID'))+(AC.wait?' · выберите данные':AC.dirty?' · сохраняем':' · сохранено')):row("openAuth()",'accent','me','Войти, чтобы данные не потерялись','Яндекс, VK ID или почта')}</div>
   <div class="card list">
@@ -4770,7 +5051,9 @@ function vMe(){ // личный кабинет как «Настройки» н�
     ${row('openRemind()','primary','bell','Напоминания',R?remSub(remR()):'выключены')}
     ${row('openReviews()','warn','star','Отзывы',L.length?`${rvAvg(L).toFixed(1).replace('.',',')} ★ · ${pl(L.length,'отзыв','отзыва','отзывов')}`:'оставить первый')}
     ${row('openOffline()','c','download','Без интернета',S.offline?'всё скачано':'скачать заранее по Wi-Fi')}
-    ${row('openSub()','warn','spark','Подписка','пока бесплатно')}
+    ${payOn()?row('openSub()','warn','spark','Подписка',paySubLine()):''}
+    ${payOn()?row('openInvite()','ok','people','Пригласить друга',(payS().srv&&payS().srv.ref&&payS().srv.ref.paid)?`оплатили ${payS().srv.ref.paid} · получено ${pl(payS().srv.ref.days,'день','дня','дней')}`:'друг — 14 дней бесплатно, вам — +7 дней'):''}
+    ${payOn()?row('openDraw()','accent','star','Розыгрыш призов','среди подписчиков · по правилам'):''}
   </div>
   <div class="card list">
     ${row('openData()','ok','lock','Данные и конфиденциальность',AC?'копия в аккаунте, сервер в России':'всё хранится на этом телефоне')}
@@ -4898,7 +5181,7 @@ function openHistory(){
    Токен хранится отдельно от S (localStorage mt-token). Фото еды и миниатюры разборов на сервер не уходят.
    Изменения уходят через ~3 с после save() и при уходе в фон; без сети копятся и уходят позже. */
 const YA_ID='2e79d1aead1043668b762b669a9a6833',VK_ID='54870088',AUTH_BASE='https://moytrener-app.ru/auth/';
-const SYNC_LOCAL=['meas','restEnd','woW','lim','exBan','wkMy','alg','locRem','pph','fam','did','remind','tab','theme','offline','visitAt','visitOk','consentAsked','sets','startedAt','authAsked','useDay']; // своё у каждого телефона
+const SYNC_LOCAL=['meas','restEnd','woW','lim','exBan','wkMy','alg','pay','locRem','pph','fam','did','remind','tab','theme','offline','visitAt','visitOk','consentAsked','sets','startedAt','authAsked','useDay']; // своё у каждого телефона
 const HOWN={yandex:'через Яндекс ID',vk:'через VK ID',mail:'по почте'};
 var AC=(()=>{try{return JSON.parse(localStorage.getItem('mt-token'))||null}catch(e){return null}})(),SYNC={}; // var: save() зовут раньше, чем дойдём до этой строки
 function acSave(){try{AC?localStorage.setItem('mt-token',JSON.stringify(AC)):localStorage.removeItem('mt-token')}catch(e){}}
@@ -5068,13 +5351,6 @@ function openData(){
 }
 function exportData(){try{const blob=new Blob([JSON.stringify(S,null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='moy-trener-'+today0()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast('Файл сохранён')}catch(e){toast('Не удалось сохранить файл',true)}}
 function confirmReset(){sheet('Удалить всё?',`<div class="card">Профиль, дневник, вес и разборы техники будут удалены с этого телефона${AC?' и вместе с аккаунтом — с сервера':''}. Вернуть их будет нельзя.</div><button class="btn danger" id="acDel" onclick="${AC?'acDelete()':'resetAll()'}">Да, удалить всё</button><button class="btn ghost" onclick="openData()">Отмена</button>`)}
-function openSub(){
-  sheet('Подписка',`<div class="card"><div class="small muted">Что будет платным</div><div class="title" style="margin-top:4px">Разбор техники без лимита, тренер и тренды</div><div class="small muted" style="margin-top:6px">Запись еды и база продуктов останутся бесплатными. Цена и условия ещё не определены.</div></div>
-   <div class="card list">${[['Запись еды по фото, базе и штрихкоду','бесплатно'],['Норма, программа, вес и история','бесплатно'],['3D-анатомия и упражнения','бесплатно'],['Разбор техники по видео','3 видео в неделю бесплатно, дальше по подписке'],['Тренер без лимита и тренды за месяцы','по подписке']].map(([a,b])=>`<div class="li" style="align-items:flex-start"><div style="flex:1"><div style="font-weight:600">${a}</div><div class="small muted">${b}</div></div>${b.startsWith('бесплатно')?`<span style="color:var(--ok-text)">${ic('check','style="width:18px;height:18px"')}</span>`:`<span class="pill accent" style="flex:none">${ic('lock','style="width:14px;height:14px"')} Плюс</span>`}</div>`).join('')}</div>
-   <h2 style="margin-top:22px">Что говорят пользователи</h2><div class="rvbox">${rvInner()}</div>
-   <div class="small muted" style="margin:12px 4px">При оформлении подписки понадобится ${docA('recurrent','согласие на автоматические списания')}.</div>
-   <button class="btn sec" onclick="closeSheet()">Понятно</button>`);rvLoad();
-}
 
 /* ---------- Чат ---------- */
 function openChat(){
@@ -5132,7 +5408,7 @@ let OB=0,D={...DEF},obDir='',obPct=0;
 const STEPS=6; // обложка + 5 экранов: цель · о себе и обычный день · бюджет и город · тренировки · план. «Не ем» — потом, мягкой подсказкой в «Еде» и профиле
 /* ---------- юридическое окно перед анкетой: соглашение и политика, отдельное согласие на обработку ПДн (152-ФЗ с 01.09.2025), 14+ ----------
    Редакция документов — LEGAL_V: сменили её — спросим снова. Документы открываются внутри приложения (legal/*.html). */
-const LEGAL_V='2026-11-01.3',LEGAL={terms:'Пользовательское соглашение',privacy:'Политика обработки персональных данных',consent:'Согласие на обработку персональных данных',recurrent:'Согласие на автоматические списания',requisites:'Реквизиты'};
+const LEGAL_V='2026-11-01.3',LEGAL={terms:'Пользовательское соглашение',privacy:'Политика обработки персональных данных',consent:'Согласие на обработку персональных данных',recurrent:'Согласие на автоматические списания',requisites:'Реквизиты',oferta:'Оферта подписки',['pravila-rozygrysha']:'Правила розыгрыша призов'};
 const consentOk=()=>!!(S.consent&&S.consent.v===LEGAL_V);
 let CONS={a:false,b:false,c:false,after:''};
 const docA=(k,txt)=>`<a class="doclink" href="legal/${k}.html" onclick="event.preventDefault();event.stopPropagation();docView('${k}')">${txt}</a>`;
@@ -5586,12 +5862,654 @@ function pushTick(){const R=S.remind;if(!R||!R.on||S.onb||!S.profile||pushTick.b
 // нажали на напоминание: адрес вида ./#gym или ./#food открывает нужный экран
 function openHash(h){h=String(h||'').replace(/^#/,'');const ch=h.match(/^ch=(train7|nosweet)\.(\d{4})(\d\d)(\d\d)$/);if(ch){try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}S.chInv={id:ch[1],st:ch[2]+'-'+ch[3]+'-'+ch[4]};save();if(!S.onb)setTimeout(()=>{closeSheet();go('today')},350);return} // приглашение в челлендж: покажем на главной (и после анкеты)
   if(!h||S.onb)return;try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}
-  const m={gym:()=>go('gym'),food:()=>go('food'),scan:openScan,weight:openWeight,remind:openRemind,reviews:openReviews,review:()=>openReviewForm(),myreview:openMyReview};
+  const m={gym:()=>go('gym'),food:()=>go('food'),scan:openScan,weight:openWeight,remind:openRemind,reviews:openReviews,review:()=>openReviewForm(),myreview:openMyReview,...(payOn()?{sub:openSub,draw:openDraw,invite:openInvite}:{})};
   const mr=h.match(/^myreview-(\d+)$/);if(mr){setTimeout(()=>openMyReview(mr[1]),350);return} // из уведомления «ответили на ваш отзыв»
   if(m[h])setTimeout(m[h],350);else if([...TABIDS,'tech'].includes(h)){closeSheet();go(h)}}
 window.addEventListener('hashchange',()=>openHash(location.hash));
 if('serviceWorker' in navigator)try{navigator.serviceWorker.addEventListener('message',e=>{const o=e.data&&e.data.open;if(o)try{openHash(new URL(o,location.href).hash)}catch(_){}})}catch(e){}
 window.addEventListener('online',()=>{if(S.remind&&(S.remind.on||S.remind.unsub))remSync()});
+
+/* QR-код без библиотек: байтовый режим, уровни M и H, версии 1–10. qrMake(text,'H') → {n, m:[[0/1]]}.
+   Фирменный вид: скруглённые точки, «глаза» #047857, молния в центре (уровень H держит до 30 % потерь). Проверка: promo/work/podpiska/anim.mjs (BarcodeDetector). */
+const QRT={M:[0,[16,10,1,0],[28,16,1,0],[44,26,1,0],[32,18,2,0],[43,24,2,0],[27,16,4,0],[31,18,4,0],[38,22,2,2],[36,22,3,2],[43,26,4,1]],
+  H:[0,[9,17,1,0],[16,28,1,0],[13,22,2,0],[9,16,4,0],[11,22,2,2],[15,28,4,0],[13,26,4,1],[14,26,4,2],[12,24,4,4],[15,28,6,2]]},QRL={M:0,H:2};
+const QRC={}; // готовые коды: подбор маски — самая дорогая часть, второй раз не считаем
+function qrMake(txt,lvl){lvl=lvl==='H'?'H':'M';const ck=lvl+'|'+txt;if(QRC[ck])return QRC[ck];const by=[...new TextEncoder().encode(txt)],TT=QRT[lvl];
+  const AL=[0,[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50]];
+  let v=1;for(;v<=10;v++){const t=TT[v],cap=t[0]*t[2]+(t[0]+1)*t[3];if(4+(v<10?8:16)+by.length*8<=cap*8)break}if(v>10)throw new Error('qr: длинно');
+  const t=TT[v],cap=t[0]*t[2]+(t[0]+1)*t[3],bits=[],put=(x,n)=>{for(let i=n-1;i>=0;i--)bits.push(x>>i&1)};
+  put(4,4);put(by.length,v<10?8:16);by.forEach(b=>put(b,8));put(0,Math.min(4,cap*8-bits.length));while(bits.length%8)bits.push(0);
+  const dat=[];for(let i=0;i<bits.length;i+=8)dat.push(parseInt(bits.slice(i,i+8).join(''),2));for(let p=0;dat.length<cap;p^=1)dat.push(p?0x11:0xEC);
+  const EX=[],LG=[];for(let i=0,x=1;i<255;i++){EX[i]=x;LG[x]=i;x<<=1;if(x&256)x^=0x11D}const mul=(a,b)=>a&&b?EX[(LG[a]+LG[b])%255]:0;
+  let g=[1];for(let i=0;i<t[1];i++){const ng=Array(g.length+1).fill(0);g.forEach((c,j)=>{ng[j]^=c;ng[j+1]^=mul(c,EX[i])});g=ng}
+  const rs=d=>{const r=Array(t[1]).fill(0);d.forEach(c=>{const f=c^r.shift();r.push(0);g.slice(1).forEach((gc,j)=>r[j]^=mul(gc,f))});return r};
+  const blk=[];let o=0;for(let i=0;i<t[2]+t[3];i++){const n=t[0]+(i>=t[2]?1:0);blk.push(dat.slice(o,o+n));o+=n}
+  const ecs=blk.map(rs),cw=[];for(let i=0;i<=t[0];i++)blk.forEach(b=>{if(i<b.length)cw.push(b[i])});for(let i=0;i<t[1];i++)ecs.forEach(e=>cw.push(e[i]));
+  const N=17+4*v,M=[...Array(N)].map(()=>Array(N).fill(0)),F=[...Array(N)].map(()=>Array(N).fill(0)),set=(r,c,b)=>{M[r][c]=b?1:0;F[r][c]=1};
+  const finder=(r,c)=>{for(let i=-1;i<=7;i++)for(let j=-1;j<=7;j++){const y=r+i,x=c+j;if(y<0||x<0||y>=N||x>=N)continue;set(y,x,i>=0&&i<=6&&j>=0&&j<=6&&(i===0||i===6||j===0||j===6||(i>=2&&i<=4&&j>=2&&j<=4)))}};
+  finder(0,0);finder(0,N-7);finder(N-7,0);for(let i=8;i<N-8;i++){set(6,i,i%2===0);set(i,6,i%2===0)}
+  const A=AL[v];A.forEach(r=>A.forEach(c=>{if(F[r][c])return;for(let i=-2;i<=2;i++)for(let j=-2;j<=2;j++)set(r+i,c+j,Math.max(Math.abs(i),Math.abs(j))!==1)}));
+  set(N-8,8,1);for(let i=0;i<9;i++){if(!F[8][i])F[8][i]=1;if(!F[i][8])F[i][8]=1}for(let i=0;i<8;i++){F[8][N-1-i]=1;F[N-1-i][8]=1}
+  if(v>=7){let d=v<<12;for(let i=17;i>=12;i--)if(d>>i&1)d^=0x1F25<<(i-12);const vi=v<<12|d;for(let i=0;i<18;i++){const b=vi>>i&1,r=Math.floor(i/3),c=N-11+i%3;set(r,c,b);set(c,r,b)}}
+  const cb=[];cw.forEach(c=>{for(let i=7;i>=0;i--)cb.push(c>>i&1)});let k=0;
+  for(let c=N-1,up=1;c>0;c-=2,up^=1){if(c===6)c=5;for(let s=0;s<N;s++){const r=up?N-1-s:s;for(let d=0;d<2;d++){const x=c-d;if(!F[r][x]){M[r][x]=k<cb.length?cb[k]:0;k++}}}}
+  const MK=[(r,c)=>(r+c)%2===0,(r)=>r%2===0,(r,c)=>c%3===0,(r,c)=>(r+c)%3===0,(r,c)=>(Math.floor(r/2)+Math.floor(c/3))%2===0,(r,c)=>r*c%2+r*c%3===0,(r,c)=>(r*c%2+r*c%3)%2===0,(r,c)=>((r+c)%2+r*c%3)%2===0];
+  const L=QRL[lvl],fmt=(m,mk)=>{let d=(L<<3|mk)<<10;for(let i=14;i>=10;i--)if(d>>i&1)d^=0x537<<(i-10);const f=((L<<3|mk)<<10|d)^0x5412;
+    for(let i=0;i<15;i++){const b=f>>i&1;if(i<6)m[i][8]=b;else if(i<8)m[i+1][8]=b;else m[N-15+i][8]=b;if(i<8)m[8][N-1-i]=b;else if(i<9)m[8][15-i-1+1]=b;else m[8][15-i-1]=b}m[N-8][8]=1};
+  // штраф маски (ISO 18004) — строками: в 10–20 раз быстрее, чем перебор массивов (на слабом телефоне сборка QR стояла полсекунды)
+  const cnt=(str,pat)=>{let n=0,i=str.indexOf(pat);while(i>=0){n++;i=str.indexOf(pat,i+1)}return n};
+  const pen=m=>{let p=0,dk=0;const rows=m.map(r=>r.join('')),cols=[];for(let j=0;j<N;j++){let c='';for(let i=0;i<N;i++)c+=m[i][j];cols.push(c)}
+    for(const L of [rows,cols])for(const str of L){let run=1;for(let j=1;j<N;j++){if(str[j]===str[j-1]){run++;if(run===5)p+=3;else if(run>5)p++}else run=1}p+=40*(cnt(str,'10111010000')+cnt(str,'00001011101'))}
+    for(let i=0;i<N-1;i++){const a=m[i],b=m[i+1];for(let j=0;j<N-1;j++){const s=a[j]+b[j]+a[j+1]+b[j+1];if(s===0||s===4)p+=3}}
+    for(const r of rows)for(let j=0;j<N;j++)if(r[j]==='1')dk++;return p+Math.floor(Math.abs(dk*20/(N*N)-10))*10};
+  let best=null,bp=1e9;for(let mk=0;mk<8;mk++){const m=M.map((r,i)=>r.map((x,j)=>!F[i][j]&&MK[mk](i,j)?x^1:x));fmt(m,mk);const p=pen(m);if(p<bp){bp=p;best=m}}
+  return QRC[ck]={n:N,m:best}}
+function qrSvg(txt,fg,bg){const q=qrMake(txt),n=q.n+8;let d='';q.m.forEach((r,i)=>r.forEach((x,j)=>{if(x)d+=`M${j+4} ${i+4}h1v1h-1z`}));
+  return `<svg class="qr" viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges" role="img" aria-label="QR-код"><rect width="${n}" height="${n}" rx="2" fill="${bg||'#fff'}"/><path d="${d}" fill="${fg||'#0B0D12'}"/></svg>`}
+function qrDraw(ctx,txt,x,y,size,fg){const q=qrMake(txt),s=size/q.n;ctx.fillStyle=fg||'#0B0D12';q.m.forEach((r,i)=>r.forEach((v,j)=>{if(v)ctx.fillRect(Math.round(x+j*s),Math.round(y+i*s),Math.ceil(s),Math.ceil(s))}))}
+// фирменный QR: точки, скруглённые «глаза», молния в центре; тот же рисунок — в SVG (экран) и на canvas (картинка для сторис)
+const QR_BOLT='M13 2 4.5 13.5H11l-1 8.5L19.5 10H13z';
+function qrFancyParts(txt){const q=qrMake(txt,'H'),N=q.n,eye=(r,c)=>(r<7&&c<7)||(r<7&&c>=N-7)||(r>=N-7&&c<7),lg=Math.ceil(N*.24)|1,l0=(N-lg)/2;
+  const logo=(r,c)=>r>=l0-.5&&r<l0+lg-.5&&c>=l0-.5&&c<l0+lg-.5,dots=[];q.m.forEach((row,r)=>row.forEach((x,c)=>{if(x&&!eye(r,c)&&!logo(r,c))dots.push([r,c])}));return {N,dots,lg,l0}}
+function qrFancySvg(txt,cls){const {N,dots,lg,l0}=qrFancyParts(txt),P=2,W=N+P*2,c=N/2+P;
+  const eyeP=(x,y)=>`<rect x="${x+.5}" y="${y+.5}" width="6" height="6" rx="2" fill="none" stroke="#047857" stroke-width="1"/><rect x="${x+2}" y="${y+2}" width="3" height="3" rx="1" fill="#047857"/>`;
+  return `<svg class="qrf ${cls||''}" viewBox="0 0 ${W} ${W}" role="img" aria-label="QR-код приглашения"><defs><mask id="qrm"><circle class="qrf-rev" cx="${c}" cy="${c}" r="${W*.75}" fill="#fff"/></mask></defs>
+   <rect width="${W}" height="${W}" rx="4" fill="#fff"/><g mask="url(#qrm)" fill="#0B0D12">${dots.map(([r,cc])=>`<circle cx="${cc+P+.5}" cy="${r+P+.5}" r=".43"/>`).join('')}</g>
+   ${eyeP(P,P)}${eyeP(P+N-7,P)}${eyeP(P,P+N-7)}
+   <g class="qrf-logo" style="transform-origin:${c}px ${c}px"><rect x="${l0+P+.35}" y="${l0+P+.35}" width="${lg-.7}" height="${lg-.7}" rx="${lg*.28}" fill="#047857"/><path d="${QR_BOLT}" fill="#fff" transform="translate(${c-lg*.34} ${c-lg*.34}) scale(${lg*.68/24})"/></g></svg>`}
+function qrFancyDraw(ctx,txt,x,y,size){const {N,dots,lg,l0}=qrFancyParts(txt),s=size/N;ctx.fillStyle='#0B0D12';
+  ctx.beginPath();dots.forEach(([r,c])=>{const cx=x+(c+.5)*s,cy=y+(r+.5)*s;ctx.moveTo(cx+s*.43,cy);ctx.arc(cx,cy,s*.43,0,6.283)});ctx.fill();
+  const eye=(cx,cy)=>{ctx.strokeStyle='#047857';ctx.lineWidth=s;payRR(ctx,x+(cx+.5)*s,y+(cy+.5)*s,6*s,6*s,2*s);ctx.stroke();ctx.fillStyle='#047857';payRR(ctx,x+(cx+2)*s,y+(cy+2)*s,3*s,3*s,s);ctx.fill()};
+  eye(0,0);eye(N-7,0);eye(0,N-7);ctx.fillStyle='#047857';payRR(ctx,x+(l0+.35)*s,y+(l0+.35)*s,(lg-.7)*s,(lg-.7)*s,lg*.28*s);ctx.fill();
+  const c=x+N/2*s,cy=y+N/2*s;ctx.save();ctx.translate(c-lg*.34*s,cy-lg*.34*s);ctx.scale(lg*.68*s/24,lg*.68*s/24);ctx.fillStyle='#fff';ctx.fill(new Path2D(QR_BOLT));ctx.restore()}
+
+/* ---------- Подписка «Полный» (Продамус), пробный период, приглашения, розыгрыш призов ----------
+   Доступ решает сервер (/pay/status): оплата приходит только вебхуком Продамуса с верной подписью. Пробный период
+   начинается с первого касания платной функции и хранится на сервере по устройству и аккаунту (сброс не помогает).
+   Бесплатно навсегда: анкета и норма, дневник, сканер, 1 день меню с ценами, 3 разбора техники в месяц, челлендж,
+   3D-атлас, вода, вес, серия. Розыгрыш — стимулирующее мероприятие (ст. 9 38-ФЗ), не лотерея: «номер участника», «шанс». */
+const PAY_TRIAL=7,PAY_SITE='https://moytrener-app.ru/',PAY_MAIL='ncochetow@yandex.ru';
+const PAY_FEAT={
+  week:['food','Меню на неделю','Семь дней меню под вашу норму и бюджет — с ценами магазинов рядом'],
+  swap:['swap','Замены в меню','«Заменить», «Хочу другое» и «Своё» — меню подстроится за секунду'],
+  shop:['cart','Продукты на неделю','Один список покупок на неделю и режим «Я в магазине»'],
+  shops:['pin','Сравнение магазинов','Где дешевле собрать ваше меню — по ценам сетей рядом'],
+  program:['gym','Программа на неделю','План тренировок под ваш уровень, место и цель'],
+  sets:['bolt','Режим подходов','Тренер ведёт по подходам: вес, повторы, отдых'],
+  recipe:['bowl','Вся книга рецептов','Все рецепты и «Готовить по шагам». Бесплатно — 5 рецептов на ваш выбор'],
+  tech:['pose','Разбор техники без лимита','Бесплатно — 1 разбор в месяц. В Полном — сколько угодно'],
+  scan:['cam','Сканер без ограничений','Бесплатно — 3 распознавания в день. В Полном — сколько угодно'],
+  swapex:['swap','Замена упражнений','Подберём замену под ваш зал, дом и самочувствие'],
+  ex3d:['muscle','Все 3D-упражнения','Бесплатно — атлас мышц и 10 базовых упражнений. В Полном — все'],
+  weight:['weight','График и прогноз веса','Темп, прогноз и подсказки, когда вес встал'],
+  kitchen:['home','Кухня без отходов','Остатки, «Что есть дома» и готовка впрок'],
+  fam:['people','Семейное меню','Порции по норме каждого в семье'],
+  any:['spark','Полный доступ','Еда и тренировки вместе — на всю неделю вперёд']};
+const PAY_INC=[['food','Меню на неделю, «Заменить», «Хочу другое», «Своё»'],['cam','Сканер еды без ограничений'],['cart','Продукты на неделю и сравнение магазинов'],['gym','Программа, замены упражнений, режим подходов'],['muscle','Все 3D-упражнения'],['bowl','Все рецепты и «Готовить по шагам»'],['pose','Разбор техники без лимита'],['weight','График и прогноз веса'],['home','Остатки, холодильник, впрок, семья'],['star','Розыгрыши призов для подписчиков']];
+const PAY_FREE=['Анкета и норма КБЖУ','Дневник','Сканер еды — 3 раза в день','Меню на сегодня','5 рецептов на выбор','Тренировка дня','3D-атлас и 10 упражнений','1 разбор техники в месяц','Вес — запись','Вода, серия, челлендж'];
+// таблица «бесплатно / с подпиской» — одна на пейвол, пробный период и профиль
+const PAY_TABLE=[['Дневник и норма КБЖУ','да','да'],['Сканер еды','3 в день','без ограничений'],['Меню','на сегодня','на неделю, с заменами'],['Продукты и магазины','—','да'],['Рецепты','5 на выбор','все + по шагам'],['Тренировки','тренировка дня','программа, замены, подходы'],['3D-упражнения','атлас и 10','все'],['Разбор техники','1 в месяц','без лимита'],['Вес','запись','график и прогноз'],['Кухня: остатки, впрок, семья','—','да'],['Розыгрыши призов','—','да'],['Вода, серия, челлендж','да','да']];
+const payTable=()=>`<div class="pw-tb" role="table"><div class="pw-tr h" role="row"><span></span><span>Бесплатно</span><span>Полный</span></div>${PAY_TABLE.map(([a,f,p])=>`<div class="pw-tr" role="row"><span>${a}</span><span class="${f==='—'?'no':''}">${f==='да'?ic('check'):f}</span><span class="pd">${p==='да'?ic('check'):p}</span></div>`).join('')}</div>`;
+const PAY_EX10=['Bodyweight_Squat','Pushups','Plank','Bodyweight_Walking_Lunge','Butt_Lift_Bridge','Barbell_Deadlift','Barbell_Bench_Press_-_Medium_Grip','Wide-Grip_Lat_Pulldown','Dumbbell_Bicep_Curl','Crunches'];
+// лимит сканов без сети: счётчик дня в трёх местах (память страницы, IndexedDB, Cache) — берём максимум; сервер главный при связи
+const PAYLIM={k:()=>'lim-'+today0()};
+function payLimRead(){let n=0;try{const v=JSON.parse(localStorage.getItem('mt-lim')||'{}');if(v.d===today0())n=v.n||0}catch(e){}return Math.max(n,PAYLIM.idb||0,PAYLIM.cache||0)}
+function payLimWrite(n){const v=JSON.stringify({d:today0(),n});try{localStorage.setItem('mt-lim',v)}catch(e){}PAYLIM.idb=PAYLIM.cache=n;
+  try{caches.open('trener-id').then(c=>c.put('/lim',new Response(v))).catch(()=>{})}catch(e){}
+  try{const r=indexedDB.open('trener-lim',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>{try{r.result.transaction('kv','readwrite').objectStore('kv').put(v,'scan')}catch(e){}}}catch(e){}}
+function payLimLoad(){try{caches.open('trener-id').then(c=>c.match('/lim')).then(m=>m&&m.text()).then(t=>{const v=t&&JSON.parse(t);if(v&&v.d===today0())PAYLIM.cache=v.n}).catch(()=>{})}catch(e){}
+  try{const r=indexedDB.open('trener-lim',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>{try{const g=r.result.transaction('kv').objectStore('kv').get('scan');g.onsuccess=()=>{const v=g.result&&JSON.parse(g.result);if(v&&v.d===today0())PAYLIM.idb=v.n}}catch(e){}}}catch(e){}}
+function payScanLeft(){const u=((payS().srv||{}).usage||{}).scan,srv=u&&payS().srv.at&&new Date(payS().srv.at).toDateString()===new Date().toDateString()?u.used:0;return Math.max(0,3-Math.max(payLimRead(),srv))}
+function payScanFree(){if(payAccess())return true;if(payScanLeft()>0){const n=payLimRead()+1;payLimWrite(n);api('/pay/use',{did:S.did,token:payTok(),kind:'scan',offline:!navigator.onLine}).then(r=>{if(r.data&&r.data.usage){const P=payS();if(P.srv){P.srv.usage=r.data.usage;save()}if(r.data.usage.scan.used>n)payLimWrite(r.data.usage.scan.used)}});return true}return false}
+function payScanNote(){if(!payOn()||payAccess())return '';const l=payScanLeft();return `<div class="pw-left">${ic('cam')}<span>${l?`Осталось ${l} из 3 бесплатных распознаваний сегодня`:'Бесплатные распознавания на сегодня закончились'} · <button onclick="openPaywall('scan')">без ограничений — в Полном</button></span></div>`}
+function payExFree(id){if(payAccess())return true;if(!id||PAY_EX10.includes(id))return true;try{return program().ex.some(x=>(x[4]||x.id)===id)}catch(e){return false}}
+function payPick(id){const P=payS(),pk=((P.srv||{}).picks||{}).ids||P.picks||[];if(pk.length>=5)return;const ids=[...new Set([...pk,id])];
+  P.picks=ids;if(P.srv){P.srv.picks={...(P.srv.picks||{}),ids}}save();api('/pay/picks',{did:S.did,token:payTok(),ids}).then(r=>{if(r.ok&&r.data){P.srv&&(P.srv.picks=r.data.picks);save()}});closeSheet();toast(`Рецепт ${ids.length} из 5 бесплатных`);setTimeout(()=>openDish(id),320)}
+function payPickUnset(id){const P=payS(),ids=(((P.srv||{}).picks||{}).ids||P.picks||[]).filter(x=>x!==id);api('/pay/picks',{did:S.did,token:payTok(),ids}).then(r=>{if(r.ok){P.picks=ids;P.srv&&(P.srv.picks=r.data.picks);save();toast('Рецепт убран — выберите другой');openSub()}else toast(r.status===409?'Менять набор можно раз в месяц':'Нет связи — попробуйте позже',true)})}
+const payS=()=>{if(!S.pay||typeof S.pay!=='object')S.pay={};return S.pay};
+const payTok=()=>(typeof AC!=='undefined'&&AC&&AC.t)||undefined;
+const rubN=n=>fmt(Math.round(n))+NBS+'₽';
+const dmy=ts=>{const d=new Date(ts);return d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})};
+const dmyY=ts=>new Date(ts).toLocaleDateString('ru-RU');
+const n4=n=>'№ '+String(n).padStart(4,'0');
+// уже были с нами до выпуска подписки — 7 дней Полного в подарок (одно сообщение)
+const PAY_OLD=(()=>{try{const x=JSON.parse(localStorage.getItem('yb-demo2'));return !!(x&&x.profile&&!x.onb&&!x.pay)}catch(e){return false}})();
+// выключатель: оплата включена, только когда сервер ответил enabled:true (ключи Продамуса вписаны); нет ответа — выключено
+function payOn(){const s=payS().srv;return !!(s&&s.enabled===true&&Date.now()-(s.at||0)<7*864e5)}
+function payUntil(){const P=payS(),s=P.srv;let u=0;if(s&&s.access_until)u=s.access_until*1000;if(P.trial&&P.trial.end)u=Math.max(u,P.trial.end);return u}
+function payAccess(){return payUntil()>Date.now()}
+function payPaid(){const s=payS().srv;return !!(s&&s.paid&&s.until*1000>Date.now())}
+function payTrialOn(){const P=payS();return !!(P.trial&&P.trial.end>Date.now()&&!payPaid())}
+function payDaysLeft(){return Math.max(0,Math.ceil((payUntil()-Date.now())/864e5))}
+function payApply(d){if(!d||typeof d.now!=='number')return;const P=payS(),was=payAccess()&&payOn(),wasPaid=payPaid(),wasOn=payOn();P.srv={...d,at:Date.now()};
+  if(!d.enabled){if(!S.onb&&S.profile)P.legacy=1;save();if(wasOn)rerender();return} // оплата выключена: всё как до подписки; кто пользуется сейчас — получит подарок при включении
+  if(P.legacy&&!P.trial&&!P.giftSeen&&!d.paid&&!(d.trial&&d.trial.start)){const now=Date.now();P.trial={start:now,end:now+PAY_TRIAL*864e5};save();
+    api('/pay/trial',{did:S.did,token:payTok()}).then(r=>{if(r.ok)payApply(r.data)});setTimeout(()=>{if(!S.onb&&!$('#sheet').classList.contains('on')&&!P.giftSeen)openGift()},1200)}
+  if(d.trial&&d.trial.start)P.trial={start:d.trial.start*1000,end:d.trial.end*1000}; // сервер главный: сброс данных телефона пробный не продлевает
+  save();if(d.paid&&!wasPaid&&P.wait){P.wait=null;save();payPaidNow()}if((was!==payAccess()||!wasOn)&&!$('#sheet').classList.contains('on'))rerender();payRefCheck()}
+async function paySync(force){if(paySync.busy||S.onb)return;if(!force&&Date.now()-(paySync.at||0)<60e3)return;paySync.busy=1;
+  try{const P=payS(),nm=S.profile&&S.profile.name&&S.profile.name!=='Вы'?S.profile.name:'';
+    if(P.refCode&&!P.refSent){const r=await api('/pay/ref',{did:S.did,token:payTok(),code:P.refCode});if(r.status&&r.status!==0&&r.status!==429){P.refSent=1;save()}}
+    const r=await api('/pay/status',{did:S.did,token:payTok(),nick:nm});if(r.ok)payApply(r.data);
+    if(payOn()&&(!P.drawAt||Date.now()-P.drawAt>300e3)){const had=!!P.draw;await drLoad();P.drawAt=Date.now();save();if(!had&&P.draw&&S.tab==='today'&&!$('#sheet').classList.contains('on'))rerender()}
+    if(P.trial&&P.trial.end>Date.now()&&!(P.srv&&P.srv.trial&&P.srv.trial.start)&&P.srv&&typeof P.srv.now==='number'){/* пробный начат без сети — сообщаем серверу, пока он идёт */const t=await api('/pay/trial',{did:S.did,token:payTok()});if(t.ok)payApply(t.data)}}
+  finally{paySync.busy=0;paySync.at=Date.now()}}
+function payTrialStart(){const P=payS();if(P.trial)return;const now=Date.now();P.trial={start:now,end:now+PAY_TRIAL*864e5};save();
+  api('/pay/trial',{did:S.did,token:payTok()}).then(r=>{if(r.ok)payApply(r.data)});payBanner('Включили 7 дней Полного — бесплатно, без карты','Что входит',"openTrialInfo()")}
+// небольшая плашка сверху (как toast), с одной кнопкой; не мешает открыть функцию
+function payBanner(t,b,fn){let el=$('#paybn');if(!el){el=document.createElement('div');el.id='paybn';el.setAttribute('role','status');$('#phone').appendChild(el)}
+  el.innerHTML=`<span class="pw-ic sm">${ic('spark')}</span><span class="t">${t}</span>${b?`<button onclick="document.getElementById('paybn').classList.remove('on');${fn}">${b}</button>`:''}`;
+  requestAnimationFrame(()=>el.classList.add('on'));clearTimeout(payBanner.t);payBanner.t=setTimeout(()=>el.classList.remove('on'),5200)}
+function payGate(feat){if(!payOn())return true;if(payAccess())return true;if(!payS().trial){payTrialStart();return true}openPaywall(feat);return false}
+// 5 рецептов на выбор бесплатно; блюда из меню на сегодня открываются всегда (1 день меню бесплатно)
+function payRecipeFree(id,cook){if(payAccess()||!payS().trial)return false;const P=payS(),pk=((P.srv||{}).picks||{}).ids||P.picks||[];
+  if(!cook){try{if(dayPlan().slots.some(x=>x.d&&x.d.id===id))return true}catch(e){}} // меню на сегодня — всегда
+  if(pk.includes(id))return true;PWS.pick=pk.length<5?id:null;return false} // не выбран — пейвол с кнопкой «Сделать одним из 5 бесплатных»
+function payFormsMonth(){const m=new Date();m.setDate(1);m.setHours(0,0,0,0);const u=((payS().srv||{}).usage||{}).tech;return Math.max((S.forms||[]).filter(f=>f.t>=m.getTime()).length,u?u.used:0)}
+function payWrap(name,feat,free){const f=window[name];if(typeof f!=='function'||f.payWrapped)return;const w=function(...a){if(!payOn())return f.apply(this,a);if(free&&free.apply(this,a))return f.apply(this,a);if(!payGate(feat))return;return f.apply(this,a)};w.payWrapped=1;window[name]=w}
+function payLockPill(){return payAccess()||!payS().trial?'':`<span class="pw-lockpill">${ic('lock')}Полный</span>`}
+
+/* --- пейвол --- */
+let PWS={fam:false,plan:null,cons:false,feat:'any'};
+function payPlans(){const s=payS().srv||{},fd=!PWS.fam&&(s.founder_left==null?1000:s.founder_left)>0,y=PWS.fam?5490:fd?2990:3990,m=PWS.fam?990:690,ym=Math.round(y/12);
+  return [{id:PWS.fam?'fam_year':fd?'founder':'year',n:'Год',p:ym,sub:`${rubN(y)} в год`+(PWS.fam?' · до 4 человек':fd?' · цена основателя':''),anc:PWS.fam?'':'по отдельности от 2 239 ₽/мес',off:Math.round((1-ym/m)*100),sum:y,per:'год'},
+          {id:PWS.fam?'fam_month':'month',n:'Месяц',p:m,sub:PWS.fam?'до 4 человек':'помесячно',sum:m,per:'месяц'}]}
+function openPaywall(feat){PWS.feat=feat||PWS.feat||'any';if(!PWS.plan)PWS.plan=null;PWS.cons=false;payPaint();SHEET_FN=()=>payPaint(true);paySync(true)}
+function payPaint(keep){const P=payS(),s=P.srv||{},F=PAY_FEAT[PWS.feat]||PAY_FEAT.any,PL=payPlans();if(!PL.some(x=>x.id===PWS.plan))PWS.plan=PL[0].id;
+  const sel=PL.find(x=>x.id===PWS.plan),on=s.enabled===true,fl=s.founder_left,next=new Date();sel.per==='год'?next.setFullYear(next.getFullYear()+1):next.setMonth(next.getMonth()+1);
+  const ref=s.ref||{};
+  sheet('Полный доступ',`<div class="pw-hero"><div class="pw-ic">${ic(F[0])}</div><div style="min-width:0"><div class="pw-eb">${PWS.feat==='any'?'Подписка «Полный»':'Доступно в Полном'}</div><div class="pw-tt">${F[1]}</div><div class="pw-ds">${F[2]}</div></div></div>
+   ${P.trial&&!payAccess()?`<div class="pw-note">${ic('lock')}<div>Пробный период закончился ${dmy(P.trial.end)}. Ваши данные на месте — продолжите с того же места.</div></div>`:''}
+   <div class="pw-seg${PWS.fam?' fam':''}" role="group" aria-label="Для кого"><i></i><button aria-pressed="${!PWS.fam}" onclick="PWS.fam=false;PWS.plan=null;payPaint(1)">Для себя</button><button aria-pressed="${PWS.fam}" onclick="PWS.fam=true;PWS.plan=null;payPaint(1)">Семья · до 4</button></div>
+   <div class="pw-plans" role="radiogroup">${PL.map(x=>`<button class="pw-plan${x.id===PWS.plan?' on':''}" role="radio" aria-checked="${x.id===PWS.plan}" onclick="PWS.plan='${x.id}';payPaint(1)">${x.off>0?`<span class="pw-badge">−${x.off} %</span>`:''}<span class="rd"></span><div style="min-width:0"><div class="pw-pn">${x.n}</div><div class="pw-sub">${x.sub}${x.anc?`<br><s>${x.anc}</s>`:''}</div></div><div class="pw-pr"><b>${fmt(x.p)} ₽</b><small>в месяц</small></div></button>`).join('')}</div>
+   ${!PWS.fam&&fl>0&&fl<1000?`<div class="pw-fd">${ic('star')}<span style="flex:1">Цена основателя 2 990 ₽ в год — осталось ${fmt(fl)} из 1 000 мест</span><span class="bar2"><i style="width:${Math.max(4,Math.round(fl/10))}%"></i></span></div>`:''}
+   ${PWS.feat==='recipe'&&PWS.pick?`<button class="btn sec" style="box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--accent-text)" onclick="payPick('${esc(PWS.pick)}')">Сделать одним из 5 бесплатных · осталось ${5-((((payS().srv||{}).picks||{}).ids||payS().picks||[]).length)}</button>`:''}
+   ${PWS.fam?`<div class="pw-note">${ic('people')}<div><b>Вы + 3 близких, у каждого свой аккаунт.</b> Свой вес, своё меню и тренировки — никто не видит чужие данные. Пригласите по ссылке или QR.</div></div>`:''}
+   ${payTable()}
+   ${sel.per==='год'?`<div class="pw-note">${ic('heart')}<div><b>14 дней на возврат</b> за год — без вопросов. Дальше — деньги за неиспользованные месяцы.</div></div>`:''}
+   <button class="pw-note tap" style="width:100%;text-align:left" onclick="openInvite()">${ic('people')}<div><b>Пригласите друзей — получайте месяцы бесплатно.</b> ${ref.paid?`Уже ${pl(ref.paid,'друг оплатил','друга оплатили','друзей оплатили')}.`:'За каждого оплатившего — +7 дней.'}</div></button>
+   ${on?`<label class="pw-cons"><input type="checkbox" id="pwcons" onchange="PWS.cons=this.checked;document.getElementById('pwgo').disabled=!this.checked"${PWS.cons?' checked':''}><span>Согласен(на) на автопродление: ${rubN(sel.sum)} раз в ${sel.per==='год'?'год':'месяц'} до отмены — по ${docA('oferta','оферте')} и ${docA('recurrent','согласию на списания')}.</span></label>
+   <button class="btn" id="pwgo"${PWS.cons?'':' disabled'} onclick="payGo()">Оформить за ${rubN(sel.sum)}</button>
+   <div class="pw-fine">Списание сегодня — ${rubN(sel.sum)}, следующее — ${dmyY(next)}. Отменить можно в любой момент в Профиле → Подписка. Оплата — через Продамус.</div>`
+   :P.interest||s.interest?`<button class="btn sec" disabled>${ic('check')} Записали — включим 7 дней бесплатно</button><div class="pw-fine">Оплата откроется на днях. Как только включим — у вас будет ещё 7 дней Полного бесплатно.</div>`
+   :`<button class="btn" onclick="payInterest()">Оплата откроется на днях</button><div class="pw-fine">Нажмите — и мы включим 7 дней Полного бесплатно, как только откроем оплату. Списаний не будет.</div>`}
+   <div class="pw-fine">${docA('oferta','Оферта подписки')} · ${docA('terms','Соглашение')}</div>`);
+  if(keep)$('#sbody').classList.add('keep');SHEET_FN=()=>payPaint(true)}
+async function payInterest(){const P=payS();P.interest=Date.now();save();haptic(8);payPaint(true);const r=await api('/pay/interest',{did:S.did,token:payTok(),plan:PWS.plan});if(r.ok)payApply(r.data);toast('Записали. Включим 7 дней бесплатно, как только откроем оплату')}
+async function payGo(){if(!PWS.cons)return;const b=$('#pwgo');if(b){b.disabled=true;b.innerHTML='<span class="pw-wait" style="width:20px;height:20px;margin:0;border-width:2.5px"></span>'}
+  const r=await api('/pay/link',{did:S.did,token:payTok(),plan:PWS.plan,consent:true},15000);
+  if(r.ok&&r.data&&r.data.enabled&&/^https:\/\/[\w.-]+\.payform\.ru\//.test(r.data.url||'')){const P=payS();P.wait={plan:r.data.plan,at:Date.now()};save();location.assign(r.data.url);return}
+  if(r.ok&&r.data&&r.data.enabled===false){payApply(r.data);payPaint(true);return}
+  if(b){b.disabled=false;b.textContent='Попробовать ещё раз'}toast(r.status===0?'Нет интернета — оплата не открылась':'Не получилось открыть оплату — попробуйте ещё раз',true)}
+// вернулись с платёжной страницы: ждём уведомление банка, доступ — без перезагрузки
+function openPayWait(){const P=payS();sheet('Оплата',`<div class="pw-ok"><div class="pw-wait"></div><div class="pw-tt">Проверяем оплату</div><div class="pw-ds" style="margin:6px 12px 16px">Банк подтверждает платёж — обычно это 10–30 секунд. Можно закрыть: доступ включится сам.</div></div><button class="btn sec" onclick="closeSheet()">Закрыть</button>`);
+  let n=0;clearInterval(openPayWait.t);openPayWait.t=setInterval(()=>{n++;if(payPaid()||n>60||!P.wait){clearInterval(openPayWait.t);if(!payPaid()&&n>60&&$('#stitle').textContent==='Оплата')sheet('Оплата',`<div class="pw-ok"><div class="pw-tt">Подтверждения пока нет</div><div class="pw-ds" style="margin:6px 12px 16px">Если деньги списались — доступ включится в течение часа. Не включился — напишите: ${PAY_MAIL}</div></div><button class="btn sec" onclick="closeSheet()">Понятно</button>`);return}paySync(true)},3000)}
+function payPaidNow(){clearInterval(openPayWait.t);const s=payS().srv||{};
+  sheet('Готово',`<div class="ps"><div class="ps-c"><svg viewBox="0 0 52 52" aria-hidden="true"><circle class="ps-r" cx="26" cy="26" r="24"/><path class="ps-k" d="M15 27l7 7 15-16"/></svg></div>
+    <div class="ps-card"><div class="ps-eb">Подписка активна</div><div class="pw-tt">Полный включён</div><div class="pw-ds">${s.until?`До ${dmy(s.until*1000)}`:''}${s.autorenew?' · отменить можно в Профиле':''}</div>
+    <ul class="ps-list">${PAY_INC.map(([i,t],k)=>`<li style="--k:${k}"><span class="ps-lk">${ic('lock')}</span><span class="ps-ok">${ic('check')}</span>${t}</li>`).join('')}</ul></div></div>
+   <button class="btn" onclick="closeSheet();rerender()">Отлично</button>`);
+  haptic([12,60,12,60,30]);if(DRS.ctx||DRS.on){drsInit();setTimeout(()=>{drsPlay('chord')},650)}setTimeout(()=>{if(typeof confetti==='function'&&!RM)confetti(60,.5,.32,['#047857','#10B981','#34D399','#FFFFFF','#D1FAE5'],1600)},700)}
+
+/* --- «0 ₽ — 7 дней бесплатно» --- */
+function openTrialInfo(){const P=payS(),days=P.srv&&P.srv.trial&&P.srv.trial.days||PAY_TRIAL,end=P.trial?P.trial.end:Date.now()+days*864e5,PL=payPlans();if(!PL.some(x=>x.id===PWS.plan))PWS.plan=PL[0].id;const sel=PL.find(x=>x.id===PWS.plan);
+  sheet('7 дней бесплатно',`<div class="pw-zero"><b class="num">0 ₽</b><span>сегодня · ${days} дней всё открыто</span></div>
+   <div class="pw-step"><b>${dmy(end)}</b> — пробный закончится. Бесплатное останется, остальное закроется; ваши записи никуда не денутся.</div>
+   ${payTable()}
+   <div class="pw-plans" role="radiogroup" style="margin-top:12px">${PL.map(x=>`<button class="pw-plan${x.id===PWS.plan?' on':''}" role="radio" aria-checked="${x.id===PWS.plan}" onclick="PWS.plan='${x.id}';openTrialInfo();$('#sbody').classList.add('keep')">${x.off>0?`<span class="pw-badge">−${x.off} %</span>`:''}<span class="rd"></span><div style="min-width:0"><div class="pw-pn">${x.n}</div><div class="pw-sub">${x.sub}</div></div><div class="pw-pr"><b>${fmt(x.p)} ₽</b><small>в месяц</small></div></button>`).join('')}</div>
+   <div class="pw-step">Если решите продолжить: <b>${rubN(sel.sum)}</b> — в день оформления, не раньше ${dmy(end)}. Пробный период — без карты и без автосписаний: подписку оформляете только вы, отдельной кнопкой.</div>
+   <div class="pw-step">Отменить подписку — в любой момент: Профиль → Подписка.</div>
+   ${P.trial?`<button class="btn" onclick="closeSheet()">Понятно</button>`:`<button class="btn" onclick="payTrialStart();closeSheet()">Начать бесплатно</button>`}
+   <div class="pw-fine">${docA('oferta','Оферта подписки')}</div>`);SHEET_FN=null}
+function openGift(){const P=payS();P.giftSeen=1;save();
+  sheet('Подарок',`<div class="pw-ok"><div class="pw-ic">${ic('star')}</div><div class="pw-tt">7 дней Полного — в подарок</div><div class="pw-ds" style="margin:6px 8px 14px;text-wrap:pretty">Мы запускаем подписку. Спасибо, что вы с нами с самого начала: всё, чем вы пользовались, работает как прежде до ${dmy(payUntil()||Date.now()+7*864e5)}.</div></div>
+   <div class="card" style="font-size:15px;text-wrap:pretty">Потом бесплатными останутся дневник, сканер еды, меню на день, 3 разбора техники в месяц, челлендж, 3D-атлас, вода, вес и серия. Данные не удаляются.</div>
+   <button class="btn" onclick="closeSheet()">Спасибо</button><button class="btn ghost" onclick="openPaywall('any')">Что будет в подписке</button>`)}
+
+/* --- профиль: управление подпиской --- */
+function paySubLine(){const s=payS().srv||{};if(payPaid())return (s.family_member?'Семья':'Полный')+' · до '+dmy(s.until*1000);if(payTrialOn())return 'пробный · '+pl(payDaysLeft(),'день','дня','дней');if(payAccess())return 'Полный · до '+dmy(payUntil());return 'бесплатный · от 249 ₽/мес'}
+function openSub(){const P=payS(),s=P.srv||{},paid=payPaid(),tr=payTrialOn(),own=paid&&!s.family_member,fam=s.family;
+  const hero=paid?`<div class="sb-hero"><div class="eb">Подписка</div><div class="tt">${s.family_member?'Семья':/fam/.test(s.plan)?'Полный · Семья':'Полный'}</div><div class="ds">${s.family_member?`Доступ от семейной подписки до ${dmy(s.until*1000)}`:s.autorenew?`Следующее списание ${dmy(s.until*1000-864e5)} · ${rubN(s.amount||0)}`:`Автопродление выключено · доступ до ${dmy(s.until*1000)}`}</div></div>`
+   :tr?`<div class="sb-hero"><div class="eb">Пробный период</div><div class="tt">Ещё ${pl(payDaysLeft(),'день','дня','дней')}</div><div class="ds">Полный до ${dmy(payUntil())} · без карты, списаний не будет</div></div>`
+   :payAccess()?`<div class="sb-hero"><div class="eb">Бонус</div><div class="tt">Полный</div><div class="ds">До ${dmy(payUntil())}</div></div>`
+   :`<div class="sb-hero free"><div class="eb" style="color:var(--text2)">Сейчас</div><div class="tt">Бесплатный</div><div class="ds" style="color:var(--text2)">Дневник, сканер, меню на день, 3 разбора в месяц и всё базовое — навсегда</div></div>`;
+  sheet('Подписка',`${hero}
+   ${paid?'':`<button class="btn" onclick="openPaywall('any')">${P.trial?'Оформить Полный — от 249 ₽/мес':'Попробовать 7 дней бесплатно'}</button>`}
+   ${own&&fam?`<div class="card"><div class="title">Семья: вы + ${fam.members} из ${fam.max}</div><div class="small muted" style="margin-top:4px">У каждого свой аккаунт и свои данные — никто не видит чужой вес и здоровье.</div>
+     ${(fam.list||[]).map(m=>`<div class="li"><div style="flex:1">${esc(m.nick)}<div class="tiny muted">с ${dmy(m.since*1000)}</div></div><button class="btn ghost sm" onclick="payFamRemove(${m.n})"${fam.swaps_left?'':' disabled'}>Исключить</button></div>`).join('')}
+     ${fam.members<fam.max?`<div class="iv-qr" style="margin:12px 0 0;padding:16px">${qrSvg(PAY_SITE+'?fam='+(fam.code||''))}<div class="lnk">Присоединиться к семье</div></div><button class="btn sec" style="margin:10px 0 0" onclick="payShare('Присоединяйся к моей семейной подписке «Мой тренер»',PAY_SITE+'?fam=${esc(fam.code||'')}')">Отправить приглашение</button>`:''}
+     <div class="tiny muted" style="margin-top:8px">Замен участников в этом месяце: ${fam.swaps_left} из 2</div></div>`:''}
+   ${s.family_member?`<div class="card"><div class="title">Вы в семейной подписке</div><div class="small muted" style="margin-top:4px">Полный доступ, пока действует подписка владельца.</div><button class="btn ghost sm" style="margin-top:8px" onclick="payFamLeave()">Выйти из семьи</button></div>`:''}
+   ${!payAccess()&&(((s.picks||{}).ids)||P.picks||[]).length?`<div class="card"><div class="title">Мои 5 бесплатных рецептов</div>${((s.picks||{}).ids||P.picks||[]).map(id=>{const d=KIT&&KIT.recipes.find(r=>r.id===id);return `<div class="li"><span style="flex:1">${esc(d?d.n:id)}</span><button class="btn ghost sm" onclick="payPickUnset('${esc(id)}')">Убрать</button></div>`}).join('')}<div class="tiny muted">Менять набор — раз в месяц</div></div>`:''}
+   <div class="card list">
+    <button class="rowbtn" onclick="openInvite()"><div class="ibox">${ic('people')}</div><div class="t">Пригласить друга<small>${s.ref&&s.ref.paid?`оплатили ${s.ref.paid} · получено ${pl(s.ref.days,'день','дня','дней')}`:'друг — 14 дней бесплатно, вам — +7 дней'}</small></div><span class="chev">${ic('chev')}</span></button>
+    <button class="rowbtn" onclick="openDraw()"><div class="ibox">${ic('star')}</div><div class="t">Розыгрыш призов<small>среди подписчиков · по правилам</small></div><span class="chev">${ic('chev')}</span></button>
+    ${paid?'':`<button class="rowbtn" onclick="payFamJoin()"><div class="ibox">${ic('home')}</div><div class="t">У меня есть код семьи<small>если близкий оформил «Семью»</small></div><span class="chev">${ic('chev')}</span></button>`}
+    ${own&&s.autorenew?`<button class="rowbtn" onclick="paySubCancelAsk()"><div class="ibox bad">${ic('x')}</div><div class="t" style="color:var(--bad)">Отменить автопродление<small>доступ останется до ${dmy(s.until*1000)}</small></div><span class="chev">${ic('chev')}</span></button>`:''}
+   </div>
+   <h2>Бесплатно навсегда</h2><ul class="pw-inc" style="margin-bottom:12px">${PAY_FREE.map(t=>`<li>${ic('check')}<span>${t}</span></li>`).join('')}</ul>
+   <div class="pw-fine">${docA('oferta','Оферта подписки')} · ${docA('recurrent','Согласие на списания')} · ${docA('requisites','Реквизиты')}</div>`);SHEET_FN=openSub;paySync()}
+function paySubCancelAsk(){const s=payS().srv||{};sheet('Отменить автопродление?',`<div class="card" style="text-wrap:pretty">Списаний больше не будет. Полный останется до ${dmy((s.until||0)*1000)} — потом откроются только бесплатные функции. Данные не удалятся.</div>
+   <button class="btn danger" id="sbCancel" onclick="paySubCancel()">Отменить автопродление</button><button class="btn ghost" onclick="openSub()">Оставить</button>`)}
+async function paySubCancel(){const b=$('#sbCancel');if(b){b.disabled=true;b.textContent='Отменяем…'}const r=await api('/pay/cancel',{did:S.did,token:payTok()},20000);
+  if(r.ok){payApply(r.data);toast('Автопродление отменено');openSub();return}
+  if(r.status===409)sheet('Отмена автопродления',`<div class="card" style="text-wrap:pretty">Отменим вручную в течение дня — напишите на <a href="mailto:${PAY_MAIL}?subject=${encodeURIComponent('Отмена автопродления')}&body=${encodeURIComponent('Номер устройства: '+S.did)}">${PAY_MAIL}</a>. Списаний после письма не будет.</div><button class="btn sec" onclick="openSub()">Назад</button>`);
+  else{if(b){b.disabled=false;b.textContent='Отменить автопродление'}toast(r.status===0?'Нет интернета — попробуйте ещё раз':'Не получилось — попробуйте ещё раз',true)}}
+function payFamJoin(){sheet('Код семьи',`<div class="small muted" style="margin:0 4px 12px">Код показывается у того, кто оформил «Семью»: Профиль → Подписка.</div>
+   <input class="inp" id="famcode" maxlength="12" autocomplete="off" autocapitalize="characters" placeholder="Например, 4F2A9C1B" style="width:100%;height:54px;border-radius:16px;border:0;background:var(--sheet-card);padding:0 16px;font:600 20px var(--num);letter-spacing:.1em;margin-bottom:12px">
+   <button class="btn" onclick="payFamGo()">Подключиться</button><button class="btn ghost" onclick="openSub()">Назад</button>`);setTimeout(()=>{const i=$('#famcode');i&&i.focus()},350)}
+async function payFamRemove(n){const r=await api('/pay/family/remove',{did:S.did,token:payTok(),n});if(r.ok){payApply(r.data);toast('Участник исключён');openSub()}else toast(r.status===429?'Больше 2 замен в месяц нельзя':'Не получилось — попробуйте позже',true)}
+async function payFamLeave(){const r=await api('/pay/family/remove',{did:S.did,token:payTok(),leave:true});if(r.ok){payApply(r.data);toast('Вы вышли из семьи');openSub()}}
+function payFamInvite(code){sheet('Семейная подписка',`<div class="pw-ok"><div class="pw-ic">${ic('people')}</div><div class="pw-tt">Вас приглашают в семью</div><div class="pw-ds" style="margin:6px 8px 16px">Полный доступ по семейной подписке близкого. Ваши данные — только ваши: никто не видит ваш вес и здоровье.</div></div>
+   <button class="btn" onclick="document.getElementById('famcode')||0;payFamGo('${esc(code)}')">Присоединиться</button><button class="btn ghost" onclick="closeSheet()">Не сейчас</button>`)}
+async function payFamGo(c){const v=typeof c==='string'?c:(($('#famcode')||{}).value||'');const r=await api('/pay/family',{did:S.did,token:payTok(),code:v.trim()});
+  if(r.ok){payApply(r.data);toast('Готово — вы в семейной подписке');openSub();return}
+  const e=r.data&&r.data.error;toast(r.status===404?'Код не найден — проверьте буквы':e==='other_family'?'Вы уже в другой семье — сначала выйдите из неё':e==='has_own'?'У вас своя подписка — семья не нужна':r.status===409?'В семье уже 4 человека':r.status===0?'Нет интернета':'Не получилось — попробуйте ещё раз',true)}
+async function payShare(text,url){try{if(navigator.share){await navigator.share({title:'Мой тренер',text,url});return}}catch(e){if(e&&e.name==='AbortError')return}
+  try{await navigator.clipboard.writeText(text+(url?' '+url:''));toast('Скопировали — вставьте в сообщение')}catch(e){toast('Не получилось поделиться',true)}}
+
+/* --- пригласи друга: QR, лестница наград --- */
+const payLink=c=>PAY_SITE+'?r='+c;
+async function payRefLoad(){const r=await api('/pay/refcode',{did:S.did,token:payTok()});if(r.ok&&r.data&&r.data.code){const P=payS();P.ref=r.data;save();(window.requestIdleCallback||setTimeout)(()=>{try{qrFancyParts(payLink(r.data.code))}catch(e){}})}return payS().ref}
+function payRefCheck(){const P=payS(),s=P.srv,r=s&&s.ref;if(!r)return;if(P.refSeen==null){P.refSeen=r.paid;save();return}const seen=P.refSeen||0;if(r.paid>seen){P.refSeen=r.paid;save();
+  const steps=(P.ref&&P.ref.ladder&&P.ref.ladder.steps)||[{n:3},{n:5},{n:10}];const st=steps.find(x=>x.n>seen&&x.n<=r.paid);
+  if(st){if(typeof cbConfetti==='function')cbConfetti();payBanner(`Награда за ${pl(st.n,'друга','друзей','друзей')}: ${st.days>=365?'год':st.days>=60?'+2 месяца':'+1 месяц'} Полного`,'Смотреть',"openInvite()")}
+  else payBanner(`Друг оплатил подписку — вам +7 дней`,'Смотреть',"openInvite()")}}
+function openInvite(){const P=payS(),R=P.ref;
+  if(!R){sheet('Пригласить друга',`<div class="iv-qr"><div class="pw-wait"></div><div class="lnk">Готовим вашу ссылку…</div></div>`);SHEET_FN=null;
+    payRefLoad().then(r=>{if($('#stitle').textContent!=='Пригласить друга')return;if(r)openInvite();else sheet('Пригласить друга',`<div class="card emp">Ссылка появится, когда будет интернет.</div><button class="btn sec" onclick="openInvite()">Повторить</button>`)});return}
+  const L=R.ladder||{each_days:7,steps:[{n:3,days:30},{n:5,days:60,badge:'amb'},{n:10,days:365,tickets:5}]},nodes=[{n:1,t:`+${L.each_days||7} дней`},...L.steps.map(x=>({n:x.n,t:x.days>=365?'год':x.days>=60?'+2 мес'+(x.badge?' · значок':''):'+1 мес'}))];
+  const m=R.paid||0,last=nodes[nodes.length-1].n,idx=nodes.findIndex(x=>x.n>m),fr=idx<0?1:idx===0?0:((idx-1)+(m-nodes[idx-1].n)/(nodes[idx].n-nodes[idx-1].n))/(nodes.length-1);
+  const nick=(S.profile&&S.profile.name!=='Вы'&&S.profile.name)||'';
+  sheet('Пригласить друга',`<div class="ivc" onpointermove="ivTilt(event,this)"><div class="ivc-eb">${nick?esc(nick)+' приглашает вас':'Ваше приглашение'}</div><div class="ivc-big">14 дней<br>бесплатно</div><div class="ivc-s">другу по вашей ссылке</div>
+     <button class="ivc-qr" onclick="payQrFull()" aria-label="Показать QR на весь экран"><canvas id="ivqr" width="220" height="220" aria-label="QR-код приглашения" role="img"></canvas></button><div class="ivc-l">moytrener-app.ru/?r=${esc(R.code)}</div><i class="ivc-gl"></i></div>
+   <div class="iv-btns"><button class="btn" onclick="payInviteShare()">${ic('share')}Поделиться</button><button class="btn sec" onclick="payInviteShare(true)">${ic('download')}Сохранить картинку</button></div>
+   <button class="btn ghost" onclick="payQrFull()">${ic('expand')} Показать QR на весь экран</button>
+   <div class="card"><div class="title">Ваши награды${(R.badges||[]).includes('amb')?'<span class="amb">Амбассадор</span>':''}</div>
+    <div class="iv-lad" style="--fill:${fr}"><b class="fill" style="width:calc((100% - 48px) * ${fr.toFixed(3)})"></b>${nodes.map(x=>`<div class="iv-st${m>=x.n?' on':''}"><div class="dot">${x.n}</div><small>${x.t}</small></div>`).join('')}</div>
+    <div class="iv-nx">${R.next?`До следующей награды — ещё ${pl(R.next.left,'друг','друга','друзей')}`:m>=last?'Все награды получены — спасибо!':''}</div>
+    <div class="iv-cnt"><span>оплатили</span><b class="flapbox" id="ivpaid">${flapHTML(Math.min(m,payS().ivSeen||0))}</b><span>из ${R.next?R.next.n:last}</span></div><div class="small muted" style="text-align:center">Пригласили ${R.invited} · оплатили ${m}${R.waiting?` · ждут 14 дней: ${R.waiting}`:''} · получено ${pl(R.days||0,'день','дня','дней')}</div></div>
+   ${(R.list||[]).length?`<div class="card list">${R.list.slice(-10).reverse().map(x=>`<div class="li"><div style="flex:1">Друг ${x.n}<div class="tiny muted">пришёл ${x.d}</div></div><span class="pill${x.paid?' accent':''}">${x.paid?'оплатил':x.wait?'оплатил · 14 дней':'пробует'}</span></div>`).join('')}</div>`:''}
+   <div class="card" style="font-size:14px;line-height:1.45;color:var(--text2);text-wrap:pretty"><b style="color:var(--text)">Как это работает.</b> Друг открывает вашу ссылку и получает 14 дней бесплатно вместо 7. Когда он оплатит подписку и не вернёт деньги 14 дней, вам — +${L.each_days||7} дней Полного и ещё один шанс в ${docA('pravila-rozygrysha','розыгрыше призов')} (не больше 10 за друзей). Себя пригласить нельзя. Делитесь лично — не в рекламе и не в Instagram.</div>`);SHEET_FN=openInvite;requestAnimationFrame(()=>{const cv=$('#ivqr');if(cv)qrAnim(cv,payLink(R.code))});
+  {const P2=payS();if((P2.ivSeen||0)!==m)setTimeout(()=>{const b=$('#ivpaid');if(b)flapSet(b,m);P2.ivSeen=m;save()},500)}
+  payRefLoad().then(r=>{if(r&&(r.paid!==m||r.invited!==R.invited)&&$('#stitle').textContent==='Пригласить друга')openInvite()})}
+// «Созвездие»: точки модулей вылетают из облака, соседние соединяются тонкими линиями, линии сливаются в модули,
+// «глаза» дорисовываются обводкой, в конце молния и блик. ~1,6 с (повторно 0,4 с), canvas 60 к/с; reduced-motion — сразу готовый код.
+function qrAnim(cv,txt,big){const dpr=Math.min(2,devicePixelRatio||1),S0=cv.clientWidth||220;cv.width=cv.height=Math.round(S0*dpr);const c=cv.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);
+  const {N,dots,lg,l0}=qrFancyParts(txt),pad=S0*.05,sz=S0-pad*2,s=sz/N,cx=pad+N/2*s;
+  const fin=()=>{c.clearRect(0,0,S0,S0);qrFancyDraw(c,txt,pad,pad,sz)};
+  if(RM){fin();return}const again=qrAnim.seen&&qrAnim.seen.has(txt);(qrAnim.seen=qrAnim.seen||new Set()).add(txt);
+  // время по сценарию Ивана (с): точки 0–0,5 · линии 0,4–1,1 · сборка 0,9–1,4 · глаза 1,0–1,5 · молния и блик 1,4–1,8; повторно — то же за 0,4 с
+  const T=again?.4:1.8,k=T/1.8,ph=(t,a,b)=>Math.min(1,Math.max(0,(t-a*k)/((b-a)*k))),ease=x=>1-Math.pow(1-x,3),eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+  const pts=dots.map(([r,cc])=>{const a=Math.random()*6.283,d=S0*(.18+Math.random()*.42);return {tx:pad+(cc+.5)*s,ty:pad+(r+.5)*s,sx:S0/2+Math.cos(a)*d,sy:S0/2+Math.sin(a)*d,dl:Math.random()*.15}});
+  const ix=new Map(dots.map(([r,cc],i)=>[r*N+cc,i])),nb=[];dots.forEach(([r,cc],i)=>{const a=ix.get(r*N+cc+1),b=ix.get((r+1)*N+cc),d=ix.get((r+1)*N+cc+1);if(a!=null&&cc+1<N)nb.push([i,a]);if(b!=null)nb.push([i,b]);if(d!=null&&cc+1<N&&a==null&&b==null)nb.push([i,d])});
+  const eye=(ex,ey,q)=>{if(q<=0)return;const x=pad+(ex+.5)*s,y=pad+(ey+.5)*s,w=6*s,L=4*w*eio(q);c.strokeStyle='#047857';c.lineWidth=s;c.lineCap='round';c.beginPath();c.moveTo(x+w/2,y);
+    let left=L,px=x+w/2,py=y;for(const [qx,qy] of [[x+w,y],[x+w,y+w],[x,y+w],[x,y],[x+w/2,y]]){const d=Math.hypot(qx-px,qy-py);if(left<=0)break;const f=Math.min(1,left/d);c.lineTo(px+(qx-px)*f,py+(qy-py)*f);left-=d;px=qx;py=qy}c.stroke();
+    if(q>.7){c.globalAlpha=(q-.7)/.3;c.fillStyle='#047857';payRR(c,pad+(ex+2)*s,pad+(ey+2)*s,3*s,3*s,s);c.fill();c.globalAlpha=1}};
+  const t0=performance.now();
+  const frame=now=>{if(!cv.isConnected)return;const t=(now-t0)/1000;c.clearRect(0,0,S0,S0);
+    const pd=ph(t,0,.5),ln=ph(t,.4,1.1),as=ph(t,.9,1.4),ey=ph(t,1,1.5),lo=ph(t,1.4,1.65),sh=ph(t,1.45,1.8);if(!frame.s1&&ln>0){frame.s1=1;if(!again)drsPlay('shimmer')}if(!frame.s2&&lo>0){frame.s2=1;drsPlay('click')}
+    const P=pts.map(p=>{const q=ease(Math.min(1,Math.max(0,(pd-p.dl)/(1-p.dl))));return [p.sx+(p.tx-p.sx)*q,p.sy+(p.ty-p.sy)*q,q]});
+    // линии-«созвездие»: светятся, тянутся к соседям, затухают по мере сборки
+    const la=Math.sin(Math.PI*ln)*(1-as*.9);if(la>.01){c.save();c.lineCap='round';c.beginPath();
+      for(const [a,b] of nb){const A=P[a],B=P[b];if(A[2]<.2||B[2]<.2)continue;const g=Math.min(1,ln*1.6);c.moveTo(A[0],A[1]);c.lineTo(A[0]+(B[0]-A[0])*g,A[1]+(B[1]-A[1])*g)}
+      c.strokeStyle=`rgba(16,185,129,${(.28*la).toFixed(3)})`;c.lineWidth=Math.max(3,s*.6);c.stroke();c.strokeStyle=`rgba(4,120,87,${(.95*la).toFixed(3)})`;c.lineWidth=Math.max(1,s*.16);c.stroke();c.restore()}
+    // точки: светлые искры → тёмные модули нужного размера
+    const rr=s*(.14+.29*eio(as)),col=as<1?`rgb(${Math.round(16+(11-16)*as)},${Math.round(185-(185-13)*as)},${Math.round(129-(129-18)*as)})`:'#0B0D12';
+    c.fillStyle=col;c.beginPath();P.forEach(([x,y])=>{c.moveTo(x+rr,y);c.arc(x,y,rr,0,6.283)});c.fill();
+    eye(0,0,ey);eye(N-7,0,ey);eye(0,N-7,ey);
+    if(lo>0){const sc=lo<.6?eio(lo/.6)*1.14:1.14-.14*eio((lo-.6)/.4);c.save();c.translate(cx,cx);c.scale(sc,sc);c.translate(-cx,-cx);c.fillStyle='#047857';payRR(c,pad+(l0+.35)*s,pad+(l0+.35)*s,(lg-.7)*s,(lg-.7)*s,lg*.28*s);c.fill();c.translate(cx-lg*.34*s,cx-lg*.34*s);c.scale(lg*.68*s/24,lg*.68*s/24);c.fillStyle='#fff';c.fill(new Path2D(QR_BOLT));c.restore()}
+    if(sh>0&&sh<1){c.save();c.globalCompositeOperation='source-atop';const gx=-S0*.6+sh*S0*2.2,g=c.createLinearGradient(gx,0,gx+S0*.45,S0*.45);g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(.5,'rgba(255,255,255,.6)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(0,0,S0,S0);c.restore()}
+    if(t<T){requestAnimationFrame(frame);return}fin()}; // в конце — точный кадр из qrFancyDraw: код читается идеально
+  requestAnimationFrame(frame)}
+function ivTilt(e,el){if(RM)return;const r=el.getBoundingClientRect();el.style.setProperty('--gx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');el.style.setProperty('--gy',((e.clientY-r.top)/r.height*100).toFixed(1)+'%')}
+// картинка для «Поделиться» и сторис: 1080×1920, тот же фирменный QR
+async function payInviteBlob(){const R=payS().ref||await payRefLoad();if(!R)return null;const url=payLink(R.code),W=1080,H=1920,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d'),F='-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif',nick=(S.profile&&S.profile.name!=='Вы'&&S.profile.name)||'';
+  let g=c.createLinearGradient(0,0,W,H);g.addColorStop(0,'#10865F');g.addColorStop(.5,'#065F46');g.addColorStop(1,'#022C21');c.fillStyle=g;c.fillRect(0,0,W,H);
+  g=c.createRadialGradient(W*.85,H*.12,0,W*.85,H*.12,W*.8);g.addColorStop(0,'rgba(110,231,183,.35)');g.addColorStop(1,'rgba(110,231,183,0)');c.fillStyle=g;c.fillRect(0,0,W,H);
+  c.fillStyle='rgba(255,255,255,.8)';c.font=`600 42px ${F}`;c.fillText('Мой тренер',96,150);
+  c.fillStyle='#fff';c.font=`600 54px ${F}`;c.fillText(nick?`${nick} приглашает вас`:'Приглашение для вас',96,330);
+  c.font=`800 150px ${F}`;c.fillText('14 дней',96,500);c.font=`800 112px ${F}`;c.fillText('бесплатно',96,620);
+  c.fillStyle='rgba(255,255,255,.85)';c.font=`500 44px ${F}`;c.fillText('Меню под ваш бюджет, тренировки и',96,730);c.fillText('сканер еды — в одном приложении',96,790);
+  const q=640,qx=(W-q)/2,qy=930;c.fillStyle='#FFFDF7';c.shadowColor='rgba(0,0,0,.35)';c.shadowBlur=60;c.shadowOffsetY=24;payRR(c,qx-56,qy-56,q+112,q+112,64);c.fill();c.shadowColor='transparent';
+  qrFancyDraw(c,url,qx,qy,q);c.fillStyle='#fff';c.font=`600 42px ${F}`;c.textAlign='center';c.fillText(url.replace(/^https:\/\//,''),W/2,qy+q+150);c.fillStyle='rgba(255,255,255,.7)';c.font=`500 36px ${F}`;c.fillText('Наведите камеру телефона на код',W/2,qy+q+210);c.textAlign='left';
+  return await new Promise(r=>cv.toBlob(r,'image/png'))}
+async function payInviteShare(save){const b=await payInviteBlob();if(!b)return toast('Нет связи — ссылка появится позже',true);const R=payS().ref,file=new File([b],'moy-trener-priglashenie.png',{type:'image/png'});
+  if(!save){try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Мой тренер',text:'14 дней «Мой тренер» бесплатно по моей ссылке',url:payLink(R.code)});return}}catch(e){if(e&&e.name==='AbortError')return}
+    return payShare('Мой тренер — меню под бюджет и тренировки в телефоне. По моей ссылке — 14 дней бесплатно',payLink(R.code))}
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast('Картинка сохранена — 1080×1920, для сторис')}
+function payQrFull(){const R=payS().ref;if(!R)return;let o=$('#qrov');if(!o){o=document.createElement('div');o.id='qrov';o.setAttribute('role','dialog');$('#phone').appendChild(o)}
+  o.innerHTML=`<button class="x" onclick="payQrClose()" aria-label="Закрыть">✕</button><div class="t">Наведите камеру</div><canvas id="qrfull" class="qrf big" width="320" height="320" role="img" aria-label="QR-код приглашения"></canvas><div class="s">14 дней «Мой тренер» бесплатно<br>moytrener-app.ru/?r=${esc(R.code)}</div>`;
+  requestAnimationFrame(()=>{o.classList.add('on');const cv=$('#qrfull');if(cv){qrAnim.seen&&qrAnim.seen.delete('full|'+R.code);qrAnim(cv,payLink(R.code),1)}});try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(w=>payQrFull.w=w).catch(()=>{})}catch(e){}}
+function payQrClose(){const o=$('#qrov');if(!o)return;o.classList.remove('on');setTimeout(()=>o.remove(),380);try{payQrFull.w&&payQrFull.w.release()}catch(e){}}
+
+/* --- карточки для «Поделиться» (canvas, наш стиль) --- */
+function payRR(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+async function payCard(kind,arg){const R=payS().ref||await payRefLoad(),url=R?payLink(R.code):PAY_SITE,story=kind==='streak',W=1080,H=story?1920:1350;
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d'),F='-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif';
+  const g=c.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0E7A5A');g.addColorStop(.55,'#065F46');g.addColorStop(1,'#03261D');c.fillStyle=g;c.fillRect(0,0,W,H);
+  const rg=c.createRadialGradient(W*.15,H*.9,0,W*.15,H*.9,W*.9);rg.addColorStop(0,'rgba(52,211,153,.28)');rg.addColorStop(1,'rgba(52,211,153,0)');c.fillStyle=rg;c.fillRect(0,0,W,H);
+  c.fillStyle='rgba(255,255,255,.75)';c.font=`600 40px ${F}`;c.fillText('Мой тренер',90,140);
+  c.fillStyle='#fff';
+  if(story){c.font=`800 380px ${F}`;c.textAlign='center';c.fillText(String(arg||7),W/2,760);c.font=`700 78px ${F}`;c.fillText(pl(+arg||7,'день','дня','дней').replace(/^\d+\s/,'')+' подряд',W/2,880);
+    c.font=`500 44px ${F}`;c.fillStyle='rgba(255,255,255,.8)';c.fillText('держу план питания и тренировок',W/2,960);c.textAlign='left'}
+  else{c.font=`800 92px ${F}`;['Меню под бюджет','и тренер','в телефоне'].forEach((t,i)=>c.fillText(t,90,320+i*104));c.font=`500 44px ${F}`;c.fillStyle='rgba(255,255,255,.82)';c.fillText('По моей ссылке — 14 дней бесплатно',90,690)}
+  const q=story?520:460,qx=(W-q)/2,qy=story?1140:780;c.fillStyle='#fff';payRR(c,qx-36,qy-36,q+72,q+72,48);c.fill();qrDraw(c,url,qx,qy,q,'#0B0D12');
+  c.fillStyle='rgba(255,255,255,.85)';c.font=`600 38px ${F}`;c.textAlign='center';c.fillText(url.replace(/^https:\/\//,''),W/2,qy+q+110);c.textAlign='left';
+  const blob=await new Promise(r=>cv.toBlob(r,'image/png'));if(!blob){toast('Не получилось сделать карточку',true);return}
+  const file=new File([blob],story?'moy-trener-seriya.png':'moy-trener-priglashenie.png',{type:'image/png'});
+  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Мой тренер'});return}}catch(e){if(e&&e.name==='AbortError')return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast('Карточка сохранена')}
+
+/* --- розыгрыш призов: барабан на canvas (2.5D, пружинная физика, 60 к/с) --- */
+let DRW=null,DRD=null;
+function drIco(kind,n){const jar='<svg viewBox="0 0 24 30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="6" y="2" width="12" height="5" rx="1.5"/><path d="M5 9a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v17a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M5 14h14M5 21h14"/></svg>',ph='<svg class="ph" viewBox="0 0 20 34" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="1.5" width="16" height="31" rx="4"/><path d="M8 4.5h4"/><circle cx="10" cy="28.5" r="1.2" fill="currentColor"/></svg>';return Array(n).fill(kind==='ph'?ph:jar).join('')}
+async function drLoad(){const r=await api('/pay/draw?did='+encodeURIComponent(S.did));if(r.ok&&r.data&&r.data.tiers){DRD=r.data;payS().draw=r.data;save()}return DRD||payS().draw||null}
+const DR_DEF={tiers:[{tier:'t1000',goal:1000,prize:'5 наборов спортивного питания',n:5,status:'wait',rule:'со 2-й оплаты месячной или с годовой',tax:'Приз дешевле 4 000 ₽ — налога нет'},{tier:'t3000',goal:3000,prize:'2 смартфона iPhone',n:2,status:'wait',rule:'с 3 оплаченных месяцев подряд или с годовой',tax:'Выиграл — забрал. Налог платим мы'}],payers:0};
+const pct=p=>p==null?'—':p>=.995?'≈ 99 %':p>=.1?'≈ '+Math.round(p*100)+' %':'≈ '+(Math.max(p,.0001)*100).toFixed(p<.01?2:1).replace('.',',')+' %';
+const chW=n=>pl(n,'шанс','шанса','шансов');
+// иллюстрации призов (без брендов): банка протеина, шейкер, смартфон, «месяцы подписки»
+const DR_ART={
+  jar:`<svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="dja" x1="0" x2="1"><stop offset="0" stop-color="#065F46"/><stop offset=".5" stop-color="#10B981"/><stop offset="1" stop-color="#064E3B"/></linearGradient></defs><rect x="18" y="8" width="28" height="8" rx="3" fill="#E5E7EB"/><rect x="14" y="15" width="36" height="42" rx="7" fill="url(#dja)"/><rect x="14" y="27" width="36" height="16" fill="#fff" opacity=".92"/><path d="M22 35h20M26 39h12" stroke="#047857" stroke-width="2.5" stroke-linecap="round"/><rect x="18" y="18" width="4" height="34" rx="2" fill="#fff" opacity=".25"/></svg>`,
+  shaker:`<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 14h20l-2 6H24z" fill="#9CA3AF"/><rect x="26" y="7" width="12" height="7" rx="2" fill="#6B7280"/><path d="M23 20h18l-3 37a3 3 0 0 1-3 3H29a3 3 0 0 1-3-3z" fill="#D1FAE5" stroke="#10B981" stroke-width="2"/><path d="M25 38h14l-1 17H26z" fill="#34D399" opacity=".8"/><path d="M28 24v10" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".8"/></svg>`,
+  phone:`<svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="dph" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F2937"/><stop offset="1" stop-color="#4B5563"/></linearGradient><linearGradient id="dsc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34D399"/><stop offset=".6" stop-color="#047857"/><stop offset="1" stop-color="#064E3B"/></linearGradient></defs><rect x="17" y="4" width="30" height="56" rx="7" fill="url(#dph)"/><rect x="19.5" y="6.5" width="25" height="51" rx="5" fill="url(#dsc)"/><rect x="27" y="9" width="10" height="3" rx="1.5" fill="#111"/><path d="M22 20c8-6 14 8 20 2" stroke="#fff" stroke-width="1.5" fill="none" opacity=".5"/></svg>`,
+  months:`<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="12" width="44" height="42" rx="8" fill="#fff" stroke="#10B981" stroke-width="2.5"/><rect x="10" y="12" width="44" height="12" rx="8" fill="#10B981"/><path d="M22 7v9M42 7v9" stroke="#065F46" stroke-width="3" stroke-linecap="round"/><text x="32" y="47" text-anchor="middle" font-size="18" font-weight="800" fill="#047857" font-family="ui-rounded,system-ui">3</text></svg>`};
+const drArt=t=>t.tier==='t3000'?DR_ART.phone:t.weekly?(DR_ART.months+DR_ART.jar):(DR_ART.jar+DR_ART.shaker);
+// карточка участника — как настоящий бланк: перфорация, зубчатый край, крупный номер, ник, дата, защитный узор и голограмма
+function drCard(n,i,o){return `<div class="dt${o.me?' me':''}${o.win?' win':''}" style="--i:${i}"><div class="dt-main"><div class="dt-holo"></div><div class="dt-eb">Номер участника</div><div class="dt-n">${String(n).padStart(4,'0')}</div><div class="dt-m">${esc(o.nick||'')}${o.date?' · '+esc(o.date):''}</div><div class="dt-k">${esc(o.kind||'шанс')}</div></div><div class="dt-stub"><span>Мой тренер</span><b>${String(n).padStart(4,'0')}</b></div></div>`}
+// бумажная фактура: шум рисуется один раз маленьким canvas (фильтр feTurbulence на шести карточках давал кадр 200 мс)
+function drPaper(){if(drPaper.ok)return;drPaper.ok=1;try{const c=document.createElement('canvas');c.width=c.height=96;const g=c.getContext('2d'),im=g.createImageData(96,96);for(let i=0;i<im.data.length;i+=4){const v=120+Math.random()*60;im.data[i]=v;im.data[i+1]=v*.95;im.data[i+2]=v*.8;im.data[i+3]=Math.random()*26}g.putImageData(im,0,0);document.documentElement.style.setProperty('--paper',`url(${c.toDataURL()})`)}catch(e){}}
+function drWallet(s,D){drPaper();const ch=s.chances||{},main=D.tiers[0]||{},n=Math.min(6,ch[main.tier]||0),pn=s.pnum;if(!pn||!n)return '';
+  const nick=(S.profile&&S.profile.name!=='Вы'&&S.profile.name)||'',date=main.weekly&&main.at?new Date(main.at*1000).toLocaleDateString('ru-RU',{day:'numeric',month:'short'})+' · 20:00':main.deadline?'до '+dmyY(main.deadline+'T12:00:00'):'';
+  const win=(D.tiers.flatMap(t=>t.winners||[])).some(w=>w.ticket===pn),J=s.draw_join||{};
+  return `<div class="dw${J.join?' torn':''}" id="dwal" onclick="drsInit();this.classList.toggle('fan');drsPlay('rustle')" onpointermove="drTilt(event,this)" role="button" aria-label="Мои шансы: ${n}. Нажмите, чтобы развернуть веером">
+    ${Array.from({length:n},(_,i)=>drCard(pn,i,{me:1,win,nick,date,kind:i?'шанс '+(i+1):'шанс 1'})).join('')}
+    <div class="dw-c"><b class="flapbox" id="dwn">${flapHTML(n)}</b><span>${chW(n).replace(/^\d+\s/,'')}</span></div></div>`}
+function drCdV(at){const s=Math.max(0,Math.round(at-Date.now()/1000)),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),x=s%60,p=v=>String(v).padStart(2,'0');return s<3600?`${p(m)}:${p(x)}`:`${d}:${p(h)}:${p(m)}`}
+function drCd(at){const s=Math.max(0,Math.round(at-Date.now()/1000));return s?`<span class="dr-cdl">${s<3600?'мин : сек':'дн : ч : мин'} до розыгрыша</span>${flapHTML(drCdV(at))}`:'розыгрыш идёт'}
+setInterval(()=>{document.querySelectorAll('.dr-cd').forEach(el=>{const at=+el.dataset.at;if(at*1000<Date.now()){el.textContent='розыгрыш идёт';return}const b=el.querySelector('.flapbox')||(()=>{const x=document.createElement('span');x.className='flapbox';const f=el.querySelector('.flap');f?f.replaceWith(x):el.appendChild(x);x.innerHTML=flapHTML(drCdV(at));return x})();flapSet(b,drCdV(at))})},1000);
+function drTilt(e,el){if(RM)return;const r=el.getBoundingClientRect();el.style.setProperty('--hx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');el.style.setProperty('--hy',((e.clientY-r.top)/r.height*100).toFixed(1)+'%')}
+function openDraw(){if(!openDraw.g){openDraw.g=1;$('#sheet').addEventListener('pointerdown',()=>{if(DRW)drsInit()},{passive:true})} /* звук — после пружины шторки (создание AudioContext ~150 мс) и по первому касанию (iOS) */const P=payS(),s=P.srv||{},D0=DRD||P.draw||{...DR_DEF,payers:s.payers||0},D={...D0,tiers:[...D0.tiers].sort((a,b)=>(b.weekly?1:0)-(a.weekly?1:0))},J=s.draw_join||{},live=D.tiers.find(t=>t.status==='live'),wins=(s.wins||[]).filter(w=>!w.claimed),ch=s.chances||{},od=s.odds||{},nx=s.next||{},cw=s.chances_wait||{},hold=s.chances_hold;
+  const myAll=Math.max(0,...Object.values(ch));
+  const tierCard=t=>{const left=Math.max(0,t.goal-(D.payers||0)),pc=t.goal?Math.min(100,Math.round((D.payers||0)/t.goal*100)):100,dl=t.deadline?dmyY(t.deadline.slice(0,10)+'T12:00:00'):'[крайняя дата]',my=ch[t.tier]||0,o=od[t.tier],n=nx[t.tier];
+    const when=t.weekly&&t.at?new Date(t.at*1000).toLocaleString('ru-RU',{weekday:'long',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}):'';
+    return `<div class="dr-pz${t.weekly?' wk':t.tier==='t3000'?' big':''}"><div class="dr-art">${drArt(t)}</div><div class="dr-pzb">${t.weekly?`<span class="dr-eb">Еженедельный розыгрыш</span>`:`<span class="dr-eb">Цель: ${fmt(t.goal)} подписчиков</span>`}<b>${esc(t.prize)}</b>
+     ${t.tier==='t3000'?`<div class="dr-tax">Выиграл — забрал. Налог платим мы</div>`:''}
+     ${t.weekly?`<small>${when}</small><span class="dr-cd" data-at="${t.at||0}">${drCd(t.at)}</span>`:`<div class="pg"><i style="width:${pc}%"></i></div><small>${left?`ещё ${fmt(left)} подписчиков · не позднее ${dl}`:`набрано · розыгрыш через 7 дней`}</small>`}
+     <small>Участие: ${esc(t.rule||'')}</small>
+     <div class="dr-mych"><b>${my?chW(my):'нет шансов'}</b>${o&&my?`<span>${pct(o.p)}</span>`:''}</div>
+     ${n?`<small class="dr-nx">+${n.will-my} ${pl(n.will-my,'шанс','шанса','шансов').replace(/^\d+\s/,'')} через ${pl(n.months,'месяц','месяца','месяцев')} подписки</small>`:''}</div></div>`};
+  const done=D.tiers.filter(t=>(t.winners||[]).length&&t.status!=='live');
+  sheet('Розыгрыш призов',`${wins.length?`<button class="card tap pt-card" style="width:100%;text-align:left;background:var(--accent-soft)" onclick="openWinClaim('${wins[0].tier}')"><div class="pw-ic">${ic('star')}</div><div style="flex:1"><div class="title">Вы среди победителей!</div><div class="small muted">${esc(wins[0].prize)} · оставьте контакт для вручения</div></div><span class="chev">${ic('chev')}</span></button>`:''}
+   <div class="dr-stage" id="drstage"><canvas id="drcv" aria-label="Барабан с номерами участников" role="img"></canvas>${live?'<span class="dr-live"><i></i>Прямой эфир</span>':''}<button class="dr-snd" id="drsnd" aria-label="Звук барабана" aria-pressed="${DRS.on}" onclick="drSndTog()">${DRS.on?SPK:MUTE}</button>
+    <div class="dr-cap"><div><b>${fmt((D.chances_total&&(D.chances_total[D.tiers[0].tier]||D.chances_total.t1000))||D.tickets_total||0)}</b><span>шансов в барабане</span></div><div style="text-align:right"><b>${myAll?String(myAll):'0'}</b><span>${myAll?(s.pnum?'ваш номер '+n4(s.pnum):'ваших шансов'):'у вас пока нет шансов'}</span></div></div>
+    ${live?`<div class="dr-wins" id="drwins">${live.winners.map(w=>drWinRow(w,s.pnum)).join('')}</div>`:''}</div>
+   ${(D.founder_left||s.founder_left)>0&&!payPaid()?`<button class="card tap dr-seats" onclick="openPaywall('any')"><div><div class="dr-eb">Цена основателя · 2 990 ₽ в год</div><div class="small muted">осталось мест из 1 000</div></div><b class="flapbox" id="drseats" data-v="${D.founder_left||s.founder_left}">${flapHTML(fmt(D.founder_left||s.founder_left).replace(/\s/g,' '))}</b></button>`:''}
+   ${drWallet(s,D)}
+   ${hold?`<div class="pw-note">${ic('history')}<div>Ожидают: шансы за последнюю оплату появятся ${dmy(hold.at*1000)} — после 14 дней срока возврата.</div></div>`:''}
+   ${Object.values(cw).some(Boolean)?`<button class="pw-note tap" style="width:100%;text-align:left" onclick="openAuth()">${ic('lock')}<div>Шансы ждут входа в аккаунт — войдите, чтобы участвовать.</div></button>`:''}
+   ${done.map(t=>`<div class="card"><div class="title">Итоги: ${esc(t.prize)}</div><div>${t.winners.map(w=>`<div class="dr-win${w.ticket===s.pnum?' me':''}"><span class="ball">${String(w.ticket).padStart(4,'0')}</span><div style="flex:1"><b>${esc(w.name)}</b><div class="tiny muted">шаг ${w.step}</div></div></div>`).join('')}</div>${t.status==='done'?`<button class="btn sec sm" style="margin-top:10px" onclick="openDrawVerify('${t.tier}')">Проверить честность</button>`:''}</div>`).join('')}
+   <h2>Призы и ваши шансы</h2><div class="dr-prz">${D.tiers.map(tierCard).join('')}</div>
+   <button class="pw-note tap" style="width:100%;text-align:left" onclick="openOddsInfo()">${ic('spark')}<div><b>Как считаются шансы</b> — стаж подписки, друзья, проценты</div></button>
+   ${AC?`<div class="card"><label class="pw-cons" style="margin:0 0 8px;padding:0;background:none"><input type="checkbox" id="drjoin"${J.join?' checked':''} onchange="drJoin()"><span>Участвую в розыгрыше призов по ${docA('pravila-rozygrysha','Правилам')}, мне есть 18 лет</span></label>
+     <label class="pw-cons" style="margin:0;padding:0;background:none"><input type="checkbox" id="drnick"${J.nick?' checked':''} onchange="drJoin()"${J.join?'':' disabled'}><span>Показывать мой ник «${esc((S.profile&&S.profile.name!=='Вы'&&S.profile.name)||'—')}» в итогах. Без галочки — только номер участника</span></label></div>`
+    :`<button class="pw-note tap" style="width:100%;text-align:left" onclick="openAuth()">${ic('lock')}<div><b>Войдите в аккаунт, чтобы участвовать.</b> Номер участника привязывается к аккаунту — так он не потеряется.</div></button>`}
+   <div class="card"><div class="title">Честный выбор</div><div class="small muted" style="margin-top:6px;text-wrap:pretty">При объявлении публикуем список номеров с шансами и отпечаток секретного числа (SHA-256). После розыгрыша раскрываем число — любой может пересчитать победителей сам.</div>${D.tiers.filter(t=>t.commit).map(t=>`<div class="dr-hash">${esc(t.prize)}: ${esc(t.commit)}</div>`).join('')}
+    <button class="btn sec sm" style="margin-top:10px" onclick="openDrawVerify()">Проверить честность</button></div>
+   <div class="card"><div class="small muted" style="text-wrap:pretty">Розыгрыш призов среди подписчиков — стимулирующее мероприятие, не лотерея: плата за участие не берётся, цена подписки не зависит от участия, призы покупает организатор за свой счёт. Если к крайней дате порог не наберётся — розыгрыш всё равно пройдёт в эту дату. Организатор, сроки, вручение и налоги — в ${docA('pravila-rozygrysha','Правилах розыгрыша')}.</div></div>`);
+  SHEET_FN=null;const P2=payS(),seen=P2.dwSeen||0;requestAnimationFrame(()=>{drMount(D,s,!!live);drWalletIn(seen)});
+  drRefresh.last=(D0.tiers||[]).map(t=>[t.tier,t.status,(t.winners||[]).length,t.commit||''].join(':')).join('|');
+  drLoad().then(d=>{if(!d||$('#stitle').textContent!=='Розыгрыш призов')return;drRefresh(d)});paySync(true);
+  clearInterval(openDraw.t);openDraw.t=setInterval(()=>{if(!$('#drcv')){clearInterval(openDraw.t);return}drLoad().then(d=>d&&drRefresh(d))},live?2500:60000)}
+// новые шансы: карточка вылетает сверху и ложится в стопку, счётчик растёт, шелест бумаги
+function drWalletIn(seen){const w=$('#dwal');if(!w)return;const cards=[...w.querySelectorAll('.dt')],n=cards.length,P=payS();if(n<=seen||RM){P.dwSeen=n;save();return}
+  const el=$('#dwn');if(el)el.innerHTML=flapHTML(seen);cards.slice(seen).forEach((c,k)=>{c.style.opacity=0;setTimeout(()=>{c.style.opacity='';c.animate([{transform:'translate(40px,-260px) rotate(-18deg) scale(1.1)',opacity:0},{transform:'translate(0,-12px) rotate(2deg)',opacity:1,offset:.7},{transform:''}],{duration:700,easing:'cubic-bezier(.2,.9,.3,1.15)'});drsPlay('rustle');drsPlay('tick');if(el)flapSet(el,seen+k+1)},300+k*360)});P.dwSeen=n;save()}
+function drWinRow(w,me){return `<div class="dr-win${w.ticket===me?' me':''}"><span class="ball">${String(w.ticket).padStart(4,'0')}</span><div style="flex:1;min-width:0"><b>${esc(w.name)}</b><div class="tiny">шаг ${w.step}</div></div>${w.ticket===me?'<span class="pill accent">это вы</span>':''}</div>`}
+function drRefresh(d){const live=d.tiers.some(t=>t.status==='live');DRD=d;
+  if(DRW&&DRW.live&&live){let q=0;const me=(payS().srv||{}).pnum;d.tiers.forEach(t=>(t.winners||[]).forEach(w=>{if(DRW.out.has(w.ticket)||drRefresh.q.has(w.ticket))return;drRefresh.q.add(w.ticket);
+      setTimeout(()=>drEject(w.ticket,{...w,prize:(t.prizes&&t.prizes[t.winners.indexOf(w)])||t.prize},()=>{const box=$('#drwins');if(box)box.insertAdjacentHTML('beforeend',drWinRow(w,me));if(w.ticket===me){const c=document.querySelector('#dwal .dt');c&&c.classList.add('win')}}),q*5200);q++}));return}
+  const sb=$('#drseats');if(sb&&d.founder_left!=null){flapSet(sb,fmt(d.founder_left).replace(/\s/g,' '))}
+  const sig=x=>(x.tiers||[]).map(t=>[t.tier,t.status,(t.winners||[]).length,t.commit||''].join(':')).join('|');
+  if(drRefresh.last===sig(d))return; // поменялись только числа — табло уже перелистнулось, экран целиком не перестраиваем (это был кадр 650 мс)
+  drRefresh.last=sig(d);const y=$('#sbody').scrollTop;openDraw();$('#sbody').scrollTop=y}
+drRefresh.q=new Set();
+async function drJoin(){const j=$('#drjoin'),n=$('#drnick');if(n)n.disabled=!(j&&j.checked);if(n&&!(j&&j.checked))n.checked=false;
+  if(j&&j.checked){const w=$('#dwal');if(w&&!w.classList.contains('torn')){w.classList.add('torn');drsPlay('tear')}}else{const w=$('#dwal');w&&w.classList.remove('torn')}
+  const r=await api('/pay/draw/join',{did:S.did,token:payTok(),join:!!(j&&j.checked),nick:!!(n&&n.checked)});if(r.ok){payApply(r.data);toast(j&&j.checked?'Вы участвуете в розыгрыше':'Участие отменено — подписка сохраняется')}else toast('Не сохранилось — нет связи',true)}
+
+function openOddsInfo(){const s=payS().srv||{},ch=s.chances||{},od=s.odds||{},mx=s.chance_max||20;
+  sheet('Как считаются шансы',`<div class="card" style="font-size:15px;line-height:1.5;text-wrap:pretty"><b>Шансы растут со стажем подписки без перерыва.</b>
+    <div class="dr-lad">${[['2 мес','1','—'],['3 мес','1','1'],['6 мес','2','2'],['год','3','3'],['2-й год','6','6']].map(([a,b,c])=>`<div><small>${a}</small><b>${b}</b><b>${c}</b></div>`).join('')}<div class="lab"><small>&nbsp;</small><b>спортпит</b><b>iPhone</b></div></div>
+    Годовая подписка — сразу как год. Каждый оплативший друг — ещё +1 (не больше 10). Всего не больше ${mx} шансов на человека — чтобы никто не забирал приз «стажем».
+    Перерыв в подписке — стаж считается заново, а уже заработанные шансы сохраняются до розыгрыша.</div>
+   <div class="card" style="font-size:15px;line-height:1.5;text-wrap:pretty"><b>Процент — честная оценка.</b> Сервер 10 000 раз повторяет тот же выбор, что и в розыгрыше: номер выпадает с вероятностью, пропорциональной шансам, один человек получает не больше одного приза. Доля прогонов, где вам достался приз, — это и есть процент. Он меняется, когда приходят новые участники.
+    ${Object.keys(ch).length?`<div style="margin-top:10px">${['t1000','t3000'].map(t=>`<div class="li" style="padding:6px 0"><span style="flex:1">${t==='t1000'?'Спортпит':'iPhone'}: ${chW(ch[t]||0)}</span><b>${od[t]?pct(od[t].p):'—'}</b></div>`).join('')}</div>`:''}</div>
+   <div class="small muted" style="margin:0 4px 12px">Шансы не продаются и не дают преимуществ в подписке. Вернули деньги — шансы за эту оплату снимаются.</div>
+   <button class="btn sec" onclick="openDraw()">К розыгрышу</button>`)}
+// барабан: прозрачная акриловая сфера на стойке, внутри шары с номерами участников (ваши — изумрудные, столько, сколько шансов, до 6).
+// Физика: гравитация, столкновения, отскок, стенка тянет шары при вращении; разгон и инерция (ω тянется к цели пружиной).
+// Розыгрыш: барабан замедляется, шар выкатывается по жёлобу в лоток, номер раскрывается с конфетти и (по желанию) звуком.
+// 60 к/с: ≤ 40 шаров, без теней-фильтров; reduced-motion — статичная картинка и смена без движения.
+// ---------- Звук барабана: синтез Web Audio (без чужих записей). Гул и перестук от скорости, щелчок выхода, свист подлёта, аккорд.
+// Включён по умолчанию, звучит после первого касания (ограничение iOS); кнопка на сцене выключает. Для записи ролика события пишутся в журнал
+// и тот же синтез рендерится офлайн (OfflineAudioContext).
+const DRS={on:(()=>{try{return localStorage.getItem('mt-drsnd')!=='0'}catch(e){return true}})(),ctx:null,bus:null,rum:null,log:null,t0:0,noise:null};
+function drsNoise(ctx){const b=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b}
+const DRSYN={
+  clack(ctx,out,t,v,f){const s=ctx.createBufferSource();s.buffer=DRS.noise||(DRS.noise=drsNoise(ctx));const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=f||2600;bp.Q.value=9;const g=ctx.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.002);g.gain.exponentialRampToValueAtTime(.0005,t+.05);s.connect(bp);bp.connect(g);g.connect(out);s.start(t,Math.random()*1.5,.07)},
+  click(ctx,out,t){DRSYN.clack(ctx,out,t,.5,1800);const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.setValueAtTime(180,t);o.frequency.exponentialRampToValueAtTime(70,t+.12);g.gain.setValueAtTime(.35,t);g.gain.exponentialRampToValueAtTime(.001,t+.16);o.connect(g);g.connect(out);o.start(t);o.stop(t+.18)},
+  whoosh(ctx,out,t){const s=ctx.createBufferSource();s.buffer=DRS.noise||(DRS.noise=drsNoise(ctx));const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.Q.value=1.2;bp.frequency.setValueAtTime(300,t);bp.frequency.exponentialRampToValueAtTime(2600,t+.75);const g=ctx.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+.45);g.gain.exponentialRampToValueAtTime(.0001,t+.85);s.connect(bp);bp.connect(g);g.connect(out);s.start(t,0,.9)},
+  chord(ctx,out,t){[261.63,329.63,392,523.25,659.25].forEach((f,i)=>{const o=ctx.createOscillator(),o2=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o2.type='sine';o.frequency.value=f;o2.frequency.value=f*2.003;const a=t+i*.035;g.gain.setValueAtTime(0,a);g.gain.linearRampToValueAtTime(.09,a+.06);g.gain.exponentialRampToValueAtTime(.0008,a+2.6);o.connect(g);o2.connect(g);g.connect(out);o.start(a);o2.start(a);o.stop(a+2.7);o2.stop(a+2.7)})},
+  rustle(ctx,out,t){const s=ctx.createBufferSource();s.buffer=DRS.noise||(DRS.noise=drsNoise(ctx));const hp=ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=2800;const g=ctx.createGain();g.gain.setValueAtTime(0,t);[0,.05,.1,.16,.22].forEach((d,i)=>{g.gain.linearRampToValueAtTime(.10-i*.015,t+d+.015);g.gain.linearRampToValueAtTime(.02,t+d+.045)});g.gain.linearRampToValueAtTime(0,t+.3);s.connect(hp);hp.connect(g);g.connect(out);s.start(t,Math.random(),.32)},
+  tear(ctx,out,t){for(let i=0;i<9;i++){const a=t+i*.028+Math.random()*.01;DRSYN.clack(ctx,out,a,.12+Math.random()*.08,1200+Math.random()*2200)}const s=ctx.createBufferSource();s.buffer=DRS.noise||(DRS.noise=drsNoise(ctx));const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=1600;bp.Q.value=.8;const g=ctx.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.14,t+.05);g.gain.exponentialRampToValueAtTime(.0001,t+.32);s.connect(bp);bp.connect(g);g.connect(out);s.start(t,0,.35)},
+  shimmer(ctx,out,t){[1318.5,1568,1975.5,2349.3,2637].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain(),a=t+i*.07;o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,a);g.gain.linearRampToValueAtTime(.035,a+.02);g.gain.exponentialRampToValueAtTime(.0006,a+.5);o.connect(g);g.connect(out);o.start(a);o.stop(a+.55)})},
+  tick(ctx,out,t){const o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.setValueAtTime(1760,t);o.frequency.exponentialRampToValueAtTime(1320,t+.05);g.gain.setValueAtTime(.07,t);g.gain.exponentialRampToValueAtTime(.0006,t+.09);o.connect(g);g.connect(out);o.start(t);o.stop(t+.1)},
+  rumble(ctx,out){const s=ctx.createBufferSource();s.buffer=DRS.noise||(DRS.noise=drsNoise(ctx));s.loop=true;const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=180;const g=ctx.createGain();g.gain.value=0;s.connect(lp);lp.connect(g);g.connect(out);s.start();return g}};
+function drsInit(){if(!DRS.on)return;try{if(!DRS.ctx){const C=window.AudioContext||window.webkitAudioContext;DRS.ctx=new C();DRS.bus=DRS.ctx.createGain();DRS.bus.gain.value=.55;DRS.bus.connect(DRS.ctx.destination);DRS.rum=DRSYN.rumble(DRS.ctx,DRS.bus)}if(DRS.ctx.state==='suspended')DRS.ctx.resume()}catch(e){}}
+function drsPlay(kind,v,f){if(DRS.log)DRS.log.push([performance.now()-DRS.t0,kind,v,f]);if(!DRS.on||!DRS.ctx||DRS.ctx.state!=='running')return;try{DRSYN[kind](DRS.ctx,DRS.bus,DRS.ctx.currentTime+.005,v,f)}catch(e){}}
+function drsRumble(level){if(DRS.log&&(!DRS.lastR||performance.now()-DRS.lastR>80)){DRS.lastR=performance.now();DRS.log.push([DRS.lastR-DRS.t0,'rum',level])}if(DRS.rum&&DRS.ctx)DRS.rum.gain.setTargetAtTime(DRS.on?level:0,DRS.ctx.currentTime,.12)}
+function drSndTog(){DRS.on=!DRS.on;try{localStorage.setItem('mt-drsnd',DRS.on?'1':'0')}catch(e){}const b=$('#drsnd');if(b){b.innerHTML=DRS.on?SPK:MUTE;b.setAttribute('aria-pressed',DRS.on)}if(DRS.on){drsInit();drsPlay('clack',.3)}else drsRumble(0);haptic(6)}
+// офлайн-рендер журнала (только для записи ролика): WAV в base64
+async function drsRender(sec){const sr=44100,ctx=new OfflineAudioContext(1,sr*sec,sr),bus=ctx.createGain();bus.gain.value=.55;bus.connect(ctx.destination);DRS.noise=null;
+  const rg=DRSYN.rumble(ctx,bus);for(const [t,k,v,f] of DRS.log){const at=t/1000;if(at>=sec)continue;if(k==='rum')rg.gain.setTargetAtTime(v,at,.12);else DRSYN[k](ctx,bus,at,v,f)}
+  const buf=await ctx.startRendering(),d=buf.getChannelData(0),wav=new DataView(new ArrayBuffer(44+d.length*2)),w=(o,s)=>[...s].forEach((c,i)=>wav.setUint8(o+i,c.charCodeAt(0)));
+  w(0,'RIFF');wav.setUint32(4,36+d.length*2,true);w(8,'WAVEfmt ');wav.setUint32(16,16,true);wav.setUint16(20,1,true);wav.setUint16(22,1,true);wav.setUint32(24,sr,true);wav.setUint32(28,sr*2,true);wav.setUint16(32,2,true);wav.setUint16(34,16,true);w(36,'data');wav.setUint32(40,d.length*2,true);
+  for(let i=0;i<d.length;i++)wav.setInt16(44+i*2,Math.max(-1,Math.min(1,d[i]))*32767,true);let bin='';const u=new Uint8Array(wav.buffer);for(let i=0;i<u.length;i+=32768)bin+=String.fromCharCode(...u.subarray(i,i+32768));return btoa(bin)}
+
+// ---------- Барабан: прозрачная акриловая сфера на стойке; внутри — объёмные лотерейные шары с номерами участников (номер вращается вместе с шаром).
+// Ваши шары — изумрудные (по числу шансов, до 6); в барабане до 48 шаров — остальные «за кадром» с подписью «и ещё N».
+// Физика: гравитация, столкновения, отскоки; стенка тянет шары; разгон и инерция. Розыгрыш: замедление → щелчок → шар вылетает «в экран»
+// (растёт из глубины, лёгкий поворот, пружинная остановка) → ник и приз, свечение, конфетти, аккорд → шар уходит в лоток. 60 к/с: только canvas и transform/opacity.
+function drMount(D,s,live){const cv=$('#drcv');if(!cv)return;const dpr=Math.min(2,devicePixelRatio||1),W=cv.clientWidth,H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;const c=cv.getContext('2d');c.scale(dpr,dpr);
+  const R=Math.min(W*.36,H*.39),cx=W*.45,cy=H*.44,me=s.pnum,mine=Math.min(6,Math.max(0,...Object.values(s.chances||{0:0}))),pool=Math.max(D.joined||0,(D.chances_total&&D.chances_total.t1000)||0),dark=document.documentElement.dataset.scheme==='dark';
+  const nums=[];for(let i=0;i<mine&&me;i++)nums.push(me);const others=Math.min(48-nums.length,Math.max(0,pool-mine));for(let i=0;i<others;i++){const n=1+Math.floor((i*7919+13)%Math.max(2,(D.joined||pool)+1));nums.push(n===me?n+1:n)}
+  if(!nums.length)for(let i=0;i<18;i++)nums.push(0);
+  const br=Math.max(13,Math.min(17,R/Math.sqrt(nums.length)*.68));
+  const balls=nums.map((n,i)=>{const a=i*2.399,rr=R*.7*Math.sqrt((i+.5)/nums.length);return {n,me:!!me&&n===me,x:cx+Math.cos(a)*rr*.9,y:cy+R*.3+Math.sin(a)*rr*.45,vx:0,vy:0,rot:Math.random()*6.28}});
+  const tray={x0:cx+R*.3,y0:cy+R+br*.2,x1:W-12,y:cy+R+br*2.3};
+  const st={c,W,H,cx,cy,R,br,balls,ang:0,om:0,tgt:live?3.8:.5,live,out:new Set(),ej:[],dark,tray,t:0,more:Math.max(0,pool-nums.length),clk:0};
+  const P=payS(),was=P.drSeenCh||0;if(mine>was&&me){balls.filter(b=>b.me).slice(was).slice(-3).forEach((b,i)=>{b.x=cx+(i-1)*br*2.2;b.y=-br*2-i*46;b.drop=1})}P.drSeenCh=mine;save();
+  const prev=((D.tiers||[]).flatMap(t=>t.winners||[])).map(w=>w.ticket);prev.forEach((n,k)=>{st.out.add(n);const b={n,me:n===me,x:0,y:0,vx:0,vy:0,rot:0,ej:1};balls.push(b);st.ej.push({b,t:9,done:1,k})});
+  DRW=st;drStep(st,0);if(RM){st.om=0;drDraw(st);return}let last=performance.now();
+  try{new IntersectionObserver(e=>{st.vis=e[0].isIntersecting}).observe(cv)}catch(e){}st.vis=true;
+  const loop=now=>{if(!cv.isConnected||DRW!==st){drsRumble(0);return}const dt=Math.min(.033,(now-last)/1000);last=now;if(st.vis&&!document.hidden){drStep(st,dt);drDraw(st)}else drsRumble(0);requestAnimationFrame(loop)};requestAnimationFrame(loop)}
+function drStep(st,dt){const {cx,cy,R,br,balls}=st;st.t+=dt;
+  st.om+=(st.tgt-st.om)*(1-Math.exp(-dt*(st.tgt>st.om?1.3:2.4)));st.ang+=st.om*dt; // разгон мягче, торможение быстрее — тяжёлый барабан
+  drsRumble(Math.min(.32,st.om*.075));let hits=0;
+  for(const b of balls){if(b.ej)continue;b.vy+=980*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.rot+=(b.vx/br)*dt*.6;
+    const dx=b.x-cx,dy=b.y-cy,d=Math.hypot(dx,dy),lim=R-br-4;
+    if(b.drop&&b.y<cy-R*.55&&Math.abs(dx)<R*.3)continue;
+    if(d>lim){b.drop=0;const nx=dx/d,ny=dy/d;b.x=cx+nx*lim;b.y=cy+ny*lim;const vn=b.vx*nx+b.vy*ny;if(vn>0){b.vx-=1.5*vn*nx;b.vy-=1.5*vn*ny;if(vn>140)hits++}
+      const tx=-ny,ty=nx,vt=b.vx*tx+b.vy*ty,wall=st.om*lim,k=Math.min(1,dt*10);b.vx+=(wall-vt)*tx*k;b.vy+=(wall-vt)*ty*k;
+      if(st.om>2.2&&Math.random()<dt*(st.om-1.8)){b.vx+=(Math.random()-.5)*380;b.vy-=180+Math.random()*300}}
+    b.vx*=1-dt*.55;b.vy*=1-dt*.55}
+  for(let i=0;i<balls.length;i++){const a=balls[i];if(a.ej||a.drop)continue;for(let j=i+1;j<balls.length;j++){const b=balls[j];if(b.ej||b.drop)continue;const dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy,m=br*2;if(d2<m*m&&d2>.01){const d=Math.sqrt(d2),o=(m-d)/2,nx=dx/d,ny=dy/d;a.x-=nx*o;a.y-=ny*o;b.x+=nx*o;b.y+=ny*o;const rv=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(rv<0){const k=-rv*.6;a.vx-=k*nx;a.vy-=k*ny;b.vx+=k*nx;b.vy+=k*ny;a.rot+=k*.004;b.rot-=k*.004;if(-rv>220)hits++}}}}
+  // перестук: плотность — от скорости барабана и числа ударов, не чаще 28 в секунду
+  st.clk+=dt;if(hits&&st.clk>1/Math.min(28,4+st.om*7)){st.clk=0;drsPlay('clack',Math.min(.22,.05+hits*.02)*(.6+Math.random()*.5),1900+Math.random()*1600)}
+  for(const e of st.ej){const b=e.b;const k=e.k;b.x=st.tray.x1-br*1.25-k*br*2.2;b.y=st.tray.y}} // в лотке — по порядку выпадения
+// спрайты: тело шара с номером (вращается), блик и тень (не вращаются) — по одному canvas на номер; слои сцены — сзади и спереди
+const DRSP={};
+function drSprite(n,me,r){const k=(me?'m':'o')+n+'|'+r;if(DRSP[k])return DRSP[k];const dpr=Math.min(2,devicePixelRatio||1),S=Math.ceil(r*2+4),cv=document.createElement('canvas');cv.width=cv.height=Math.ceil(S*dpr);
+  const c=cv.getContext('2d');c.scale(dpr,dpr);const x=S/2,y=S/2,g=c.createRadialGradient(x-r*.38,y-r*.42,r*.06,x,y,r*1.04);
+  if(me){g.addColorStop(0,'#ECFDF5');g.addColorStop(.28,'#6EE7B7');g.addColorStop(.7,'#059669');g.addColorStop(1,'#03392B')}else{g.addColorStop(0,'#FFFFFF');g.addColorStop(.5,'#F2F4F7');g.addColorStop(.85,'#C5CBD4');g.addColorStop(1,'#8C95A3')}
+  c.fillStyle=g;c.beginPath();c.arc(x,y,r,0,7);c.fill();c.strokeStyle='rgba(0,0,0,.10)';c.lineWidth=1;c.beginPath();c.arc(x,y,r-.5,0,7);c.stroke();
+  if(n){if(me){c.fillStyle='rgba(255,255,255,.96)';c.beginPath();c.arc(x,y+.5,r*.66,0,7);c.fill()}c.fillStyle=me?'#064E3B':'#0B0D12';c.font=`800 ${Math.round(r*.78)}px ui-rounded,"SF Pro Rounded",-apple-system,system-ui,sans-serif`;c.textAlign='center';c.textBaseline='middle';c.fillText(String(n).padStart(4,'0').slice(-4),x,y+1)}
+  return DRSP[k]={cv,S}}
+function drGloss(r){const k='g|'+r;if(DRSP[k])return DRSP[k];const dpr=Math.min(2,devicePixelRatio||1),S=Math.ceil(r*2+4),cv=document.createElement('canvas');cv.width=Math.ceil(S*dpr);cv.height=Math.ceil((S+r*.6)*dpr);const c=cv.getContext('2d');c.scale(dpr,dpr);const x=S/2,y=S/2;
+  c.fillStyle='rgba(255,255,255,.85)';c.beginPath();c.ellipse(x-r*.4,y-r*.5,r*.25,r*.13,-.6,0,7);c.fill();return DRSP[k]={cv,S}}
+function drBall(c,b,r){const sp=drSprite(b.n,b.me,r),gl=drGloss(r),h=sp.S/2;
+  c.fillStyle='rgba(0,0,0,.18)';c.beginPath();c.ellipse(b.x+r*.12,b.y+r*.92,r*.8,r*.22,0,0,7);c.fill();
+  const a=Math.sin(b.rot||0)*.9,sx=.72+.28*Math.abs(Math.cos(b.rot||0)),cs=Math.cos(a),sn=Math.sin(a);
+  // поворот номера вместе с шаром: тело круглое — его поворот не виден, номер сжимается по сфере
+  c.setTransform(cs*sx*DRW_DPR,sn*sx*DRW_DPR,-sn*DRW_DPR,cs*DRW_DPR,b.x*DRW_DPR,b.y*DRW_DPR);c.drawImage(sp.cv,-h,-h,sp.S,sp.S);c.setTransform(DRW_DPR,0,0,DRW_DPR,0,0);
+  c.drawImage(gl.cv,b.x-h,b.y-h,gl.S,gl.cv.height/(gl.cv.width/gl.S))}
+let DRW_DPR=1;
+function drLayers(st){const {W,H,cx,cy,R,br,tray}=st,dpr=Math.min(2,devicePixelRatio||1),mk=()=>{const v=document.createElement('canvas');v.width=W*dpr;v.height=H*dpr;const c=v.getContext('2d');c.scale(dpr,dpr);return [v,c]};
+  const [back,c]=mk(),fy=cy+R+br*3.4;let g=c.createRadialGradient(cx,fy,0,cx,fy,R*1.1);g.addColorStop(0,'rgba(0,0,0,.38)');g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.beginPath();c.ellipse(cx,fy,R*1.05,14,0,0,7);c.fill();
+  const leg=(x0,x1)=>{const lg=c.createLinearGradient(x0-6,0,x0+6,0);lg.addColorStop(0,'#8D96A3');lg.addColorStop(.5,'#F5F7FA');lg.addColorStop(1,'#6F7886');c.strokeStyle=lg;c.lineWidth=7;c.lineCap='round';c.beginPath();c.moveTo(x0,cy);c.lineTo(x1,fy-4);c.stroke()};
+  leg(cx-R-6,cx-R*.78);leg(cx+R+6,cx+R*.78);
+  g=c.createLinearGradient(0,fy-10,0,fy+4);g.addColorStop(0,'#E9EDF2');g.addColorStop(1,'#9AA3AF');c.fillStyle=g;c.beginPath();c.ellipse(cx,fy-3,R*.95,7,0,0,7);c.fill();
+  g=c.createRadialGradient(cx+R*.2,cy+R*.3,R*.1,cx,cy,R);g.addColorStop(0,'rgba(255,255,255,.04)');g.addColorStop(.8,'rgba(255,255,255,.09)');g.addColorStop(1,'rgba(255,255,255,.24)');c.fillStyle=g;c.beginPath();c.arc(cx,cy,R,0,7);c.fill();
+  c.strokeStyle='rgba(255,255,255,.28)';c.lineWidth=2;c.beginPath();c.moveTo(cx+R*.18,cy+R*.98);c.quadraticCurveTo(tray.x0,tray.y0+br*1.2,tray.x0+br,tray.y+br+2);c.lineTo(tray.x1,tray.y+br+2);c.stroke();
+  g=c.createLinearGradient(0,tray.y-br,0,tray.y+br+6);g.addColorStop(0,'rgba(255,255,255,.04)');g.addColorStop(1,'rgba(255,255,255,.16)');c.fillStyle=g;payRR(c,tray.x0,tray.y-br-2,tray.x1-tray.x0,br*2+6,br+3);c.fill();
+  if(st.more){c.fillStyle='rgba(255,255,255,.72)';c.font='600 12px -apple-system,system-ui,sans-serif';c.textAlign='left';c.fillText('и ещё '+fmt(st.more)+' за кадром',14,H-12)}
+  const [front,f]=mk();g=f.createLinearGradient(cx-R,cy-R,cx+R*.2,cy+R*.2);g.addColorStop(0,'rgba(255,255,255,.32)');g.addColorStop(.35,'rgba(255,255,255,.06)');g.addColorStop(1,'rgba(255,255,255,0)');f.fillStyle=g;f.beginPath();f.arc(cx,cy,R,Math.PI*.9,Math.PI*1.75);f.arc(cx-R*.08,cy-R*.06,R*.86,Math.PI*1.75,Math.PI*.9,true);f.fill();
+  f.strokeStyle='rgba(255,255,255,.55)';f.lineWidth=2.5;f.lineCap='round';f.beginPath();f.arc(cx,cy,R*.9,Math.PI*1.08,Math.PI*1.32);f.stroke();
+  f.fillStyle='rgba(255,255,255,.8)';f.beginPath();f.ellipse(cx-R*.42,cy-R*.62,R*.07,R*.035,-.7,0,7);f.fill();
+  g=f.createLinearGradient(cx-R,cy-R,cx+R,cy+R);g.addColorStop(0,'#F7F9FB');g.addColorStop(.45,'#9EA7B3');g.addColorStop(.55,'#E8ECF1');g.addColorStop(1,'#6F7886');f.strokeStyle=g;f.lineWidth=4;f.beginPath();f.arc(cx,cy,R,0,7);f.stroke();
+  g=f.createRadialGradient(cx-2,cy-2,1,cx,cy,8);g.addColorStop(0,'#fff');g.addColorStop(1,'#8E97A4');f.fillStyle=g;f.beginPath();f.arc(cx,cy,7,0,7);f.fill();
+  f.fillStyle='rgba(255,255,255,.22)';payRR(f,cx-R*.22,cy-R-5,R*.44,8,4);f.fill();
+  st.back=back;st.front=front}
+function drDraw(st){const {c,W,H,cx,cy,R,br,balls}=st;DRW_DPR=Math.min(2,devicePixelRatio||1);if(!st.back)drLayers(st);
+  c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,c.canvas.width,c.canvas.height);c.drawImage(st.back,0,0);c.setTransform(DRW_DPR,0,0,DRW_DPR,0,0);
+  c.save();c.translate(cx,cy);c.rotate(st.ang);c.strokeStyle='rgba(255,255,255,.13)';c.lineWidth=1.5;c.beginPath();for(let i=0;i<8;i++){const a=i*Math.PI/4;c.moveTo(Math.cos(a)*6,Math.sin(a)*6);c.lineTo(Math.cos(a)*(R-3),Math.sin(a)*(R-3))}c.stroke();c.strokeStyle='rgba(255,255,255,.09)';c.beginPath();c.arc(0,0,R*.55,0,7);c.stroke();c.restore();
+  c.save();c.beginPath();c.arc(cx,cy,R-2,0,7);c.clip();const inside=balls.filter(b=>!b.ej&&!b.drop).sort((a,b)=>a.y-b.y);for(const b of inside)drBall(c,b,br);c.restore();
+  for(const b of balls)if(b.drop)drBall(c,b,br);
+  c.setTransform(1,0,0,1,0,0);c.drawImage(st.front,0,0);c.setTransform(DRW_DPR,0,0,DRW_DPR,0,0);
+  for(const e of st.ej)if(!e.b.hide)drBall(c,e.b,br)}
+// победный шар «подлетает в экран»: DOM-слой поверх (transform/opacity), пружина, поворот; потом ник и приз, свечение, конфетти, аккорд
+function drEject(n,w,cb){const st=DRW;if(!st||st.out.has(n))return;st.out.add(n);const me=n===(payS().srv||{}).pnum;
+  const fly=()=>{let b=st.balls.filter(x=>!x.ej).sort((a,b)=>b.y-a.y).find(x=>x.n===n)||st.balls.filter(x=>!x.ej&&!x.me).sort((a,b)=>b.y-a.y)[0];
+    if(!b){b={n,x:st.cx,y:st.cy+st.R*.6,vx:0,vy:0,rot:0};st.balls.push(b)}b.n=n;b.me=me;b.hide=1;b.ej=1;const k=st.ej.length;
+    drsPlay('click');drsPlay('whoosh');const cv=$('#drcv'),ph=$('#phone'),rc=cv.getBoundingClientRect(),pr=ph.getBoundingClientRect();
+    const ov=document.createElement('div');ov.className='drfly'+(me?' me':'');ov.innerHTML=`<div class="drfly-glow"></div><div class="drfly-ball"><b>${String(n).padStart(4,'0')}</b></div><div class="drfly-txt"><div class="t">${esc(w&&w.name||('Участник '+n4(n)))}</div><div class="p">${esc(w&&w.prize||'')}</div>${me?'<div class="m">Это вы!</div>':''}</div>`;
+    ph.appendChild(ov);const ball=ov.querySelector('.drfly-ball'),fx=rc.left-pr.left+b.x-pr.width/2,fy=rc.top-pr.top+b.y-pr.height*.42;
+    if(RM){ov.classList.add('on','rev');ball.style.transform='none'}else{
+      ball.animate([{transform:`translate(${fx}px,${fy}px) scale(.12) rotate(-40deg)`,opacity:.9},{transform:`translate(${fx*.3}px,${fy*.3-40}px) scale(.62) rotate(-8deg)`,opacity:1,offset:.55},{transform:'translate(0,0) scale(1) rotate(0)',opacity:1}],{duration:900,easing:'cubic-bezier(.2,.9,.25,1.12)',fill:'forwards'});
+      requestAnimationFrame(()=>ov.classList.add('on'));setTimeout(()=>{ov.classList.add('rev');drsPlay('chord');haptic([10,50,10]);if(typeof confetti==='function')confetti(me?70:36,.5,.42,me?['#047857','#10B981','#34D399','#FFFFFF','#D1FAE5']:['#FFFFFF','#34D399','#D1FAE5','#FCD34D'],1500)},880)}
+    st.ej.push({b,t:0,k,done:0});
+    setTimeout(()=>{ov.classList.add('out');if(!RM)ball.animate([{transform:'none'},{transform:`translate(${(rc.left-pr.left+st.tray.x1-st.br*1.25-k*st.br*2.2)-pr.width/2}px,${(rc.top-pr.top+st.tray.y)-pr.height*.42}px) scale(.1)`}],{duration:520,easing:'cubic-bezier(.5,0,.75,0)',fill:'forwards'});
+      setTimeout(()=>{b.hide=0;ov.remove();st.tgt=st.live?3.8:.5;cb&&cb()},RM?150:500)},RM?1600:3300)};
+  if(RM){fly();return}st.tgt=.3;setTimeout(fly,1100)} // сначала барабан тормозит
+
+// ---------- Перекидное табло (split-flap) — только в «событийных» цифрах: обратный отсчёт, места основателя, мои шансы, друзья.
+// Верхняя половина старой цифры падает вниз (rotateX, перспектива, тень на сгибе), снизу встаёт новая, лёгкий отскок; ~260 мс;
+// по разрядам каскадом 50 мс; тихий щелчок, если звук включён. «Уменьшить движение» — простая смена.
+function flapHTML(t){return `<span class="flap" aria-label="${esc(t)}">${[...String(t)].map(ch=>ch===' '||ch===':'||ch==='.'||ch===' '?`<span class="flsep">${ch===' '?'&nbsp;':ch}</span>`:`<span class="fl"><span class="fl-u">${ch}</span><span class="fl-d">${ch}</span></span>`).join('')}</span>`}
+function flapSet(box,t){t=String(t);const f=box.querySelector('.flap');if(!f||f.children.length!==t.length||f.textContent.length!==t.length){box.innerHTML=flapHTML(t);return}
+  if(box.dataset.v===t)return;box.dataset.v=t;f.setAttribute('aria-label',t);let k=0;
+  [...f.children].forEach((c,i)=>{const ch=t[i];if(!c.classList.contains('fl')){c.innerHTML=ch===' '?'&nbsp;':ch;return}const old=c.querySelector('.fl-u').textContent;if(old===ch)return;
+    const d=k++*50;if(RM){c.querySelector('.fl-u').textContent=ch;c.querySelector('.fl-d').textContent=ch;return}
+    setTimeout(()=>{const top=document.createElement('span'),bot=document.createElement('span');top.className='fl-ft';top.textContent=old;bot.className='fl-fb';bot.textContent=ch;
+      c.querySelector('.fl-u').textContent=ch;c.appendChild(top);c.appendChild(bot);
+      top.animate([{transform:'rotateX(0)'},{transform:'rotateX(-90deg)'}],{duration:130,easing:'cubic-bezier(.55,0,1,.45)',fill:'forwards'});
+      bot.animate([{transform:'rotateX(90deg)'},{transform:'rotateX(0)',offset:.8},{transform:'rotateX(-8deg)',offset:.9},{transform:'rotateX(0)'}],{duration:200,delay:120,easing:'cubic-bezier(0,.55,.45,1)',fill:'both'}).finished.then(()=>{c.querySelector('.fl-d').textContent=ch;top.remove();bot.remove()}).catch(()=>{});
+      if(typeof drsPlay==='function'&&DRS.ctx)drsPlay('clack',.035,4200)},d)})}
+// проверка честности прямо в телефоне: отпечаток секрета, хеш списка, пересчёт победителей тем же алгоритмом
+async function openDrawVerify(tier){const D=DRD||payS().draw;const t=(D&&D.tiers||[]).find(x=>(tier?x.tier===tier:x.commit));
+  const row=(ok,txt)=>`<div class="vf-row"><span class="st ${ok===true?'ok':ok===false?'bad':''}">${ok===true?'✓':ok===false?'!':'·'}</span><div>${txt}</div></div>`;
+  const how=`<div class="card" style="font-size:14px;line-height:1.5;color:var(--text2)"><b style="color:var(--text)">Как выбираются победители.</b> Список номеров раскрывается: номер повторяется столько раз, сколько у участника шансов. Шаг i: SHA-256 от строки «секрет|розыгрыш|маяк|i», как число, по модулю длины списка → номер-победитель. Один человек — один приз: повтор пропускаем. Маяк — публичное число, которое никто не знает заранее (например, хеш блока биткоина с заранее объявленным номером).</div>`;
+  if(!t){sheet('Проверка честности',`${how}<div class="card emp">Розыгрыш ещё не объявлен. Как только наберётся порог — здесь появятся отпечаток секретного числа и список номеров.</div>`);return}
+  sheet('Проверка честности',`${how}<div class="card" id="vfbox">${row(null,'Считаем…')}</div>`);
+  const sha=async x=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(x)))].map(b=>b.toString(16).padStart(2,'0')).join('');
+  const r=await api('/pay/draw?verify='+t.tier+'&did='+encodeURIComponent(S.did));const v=r.ok&&r.data&&r.data.verify,tt=r.ok&&r.data?r.data.tiers.find(x=>x.tier===t.tier):t;const out=[];
+  out.push(row(null,`Отпечаток секретного числа (опубликован заранее):<div class="dr-hash">${esc(tt.commit||'')}</div>`));
+  if(v){const E=v.entries||[],h=await sha(E.map(e=>e.join(':')).join('\n'));out.push(row(h===tt.snap_hash,`Список не меняли после объявления: ${pl(E.length,'участник','участника','участников')}, ${chW(E.reduce((a,e)=>a+e[2],0))} — хеш ${h===tt.snap_hash?'совпадает':'НЕ совпадает'}`))}
+  if(tt.secret&&v){const ok=(await sha(tt.secret))===tt.commit;out.push(row(ok,`Раскрытое число: <div class="dr-hash">${esc(tt.secret)}</div>SHA-256 от него ${ok?'совпадает':'НЕ совпадает'} с отпечатком`));
+    const adj=tt.adj||{},L=[];v.entries.forEach(([pn,who,w])=>{const k=adj[String(pn)]!=null?adj[String(pn)]:w;for(let i=0;i<k;i++)L.push([pn,who])});
+    const ppl=new Set(),win=[],all=new Set(L.map(x=>x[1]));let i=0;while(win.length<tt.n&&i<10000&&ppl.size<all.size){i++;const h=await sha(`${tt.secret}|${tt.tier}|${tt.beacon}|${i}`);const [pn,who]=L[Number(BigInt('0x'+h)%BigInt(L.length))];if(ppl.has(who))continue;ppl.add(who);win.push(pn)}
+    const same=win.join()===tt.winners.map(w=>w.ticket).join();out.push(row(same,`Пересчитали в телефоне: ${win.map(n4).join(', ')} — ${same?'совпадает с итогами':'НЕ совпадает'}`));
+    if(Object.keys(adj).length)out.push(row(null,`Поправки после объявления (возвраты денег): ${Object.entries(adj).map(([a,b])=>n4(a)+' → '+chW(b)).join(', ')}`))}
+  else out.push(row(null,'Секретное число раскроем сразу после розыгрыша — тогда проверка заработает полностью.'));
+  const b=$('#vfbox');if(b)b.innerHTML=out.join('')}
+function openWinClaim(tier){const s=payS().srv||{},w=(s.wins||[]).find(x=>x.tier===tier);if(!w)return openDraw();const org=s.org_tg||'',ag=!!w.agent;
+  sheet('Вы выиграли!',`<div class="pw-ok"><div class="pw-ic">${ic('star')}</div><div class="pw-tt">${esc(w.prize)}</div><div class="pw-ds" style="margin:6px 8px 14px">Номер участника ${n4(w.ticket)}. Оставьте контакт — организатор свяжется в течение 2 дней и договорится о вручении.</div></div>
+   ${ag?`<div class="dr-tax" style="margin-bottom:12px">Выиграл — забрал. Налог платим мы</div>`:''}
+   ${w.claimed?`<div class="card">${ic('check')} Данные получены. Организатор скоро напишет.</div>`:`<div class="card">
+    <input class="inp wc" id="wctg" placeholder="Telegram, например @ivan" autocomplete="off">
+    <input class="inp wc" id="wcph" placeholder="Телефон" inputmode="tel" autocomplete="tel">
+    <input class="inp wc" id="wcem" placeholder="Почта" inputmode="email" autocomplete="email">
+    <input class="inp wc" id="wcnm" placeholder="Как к вам обращаться" autocomplete="given-name">
+    <div class="tiny muted" style="margin:2px 4px 0">Достаточно одного способа связи. Адрес доставки здесь не спрашиваем — договоримся лично.</div></div>
+   <label class="pw-cons"><input type="checkbox" id="wccons" onchange="wcCheck()"><span>Согласен(на) на обработку этих данных для вручения приза по ${docA('pravila-rozygrysha','Правилам')} (152-ФЗ). Хранятся на сервере в России.</span></label>
+   ${ag?`<div class="card"><div class="title" style="font-size:16px">Для налоговой (платим налог за вас)</div><div class="tiny muted" style="margin:4px 0 8px">Организатор — налоговый агент: удерживает НДФЛ из денежной части приза и подаёт отчёт (6-НДФЛ). Для этого нужны ФИО, ИНН, паспорт и дата рождения. Хранятся 5 лет (ст. 24 НК), видит только организатор.</div>
+    <input class="inp wc" id="wcfio" placeholder="Фамилия Имя Отчество" autocomplete="name">
+    <input class="inp wc" id="wcinn" placeholder="ИНН — 12 цифр" inputmode="numeric" maxlength="12">
+    <input class="inp wc" id="wcpas" placeholder="Паспорт: серия и номер, 10 цифр" inputmode="numeric" maxlength="12">
+    <input class="inp wc" id="wcbd" type="date" aria-label="Дата рождения"></div>
+    <label class="pw-cons"><input type="checkbox" id="wctax" onchange="wcCheck()"><span>Согласен(на) на обработку паспортных данных и ИНН для исполнения обязанностей налогового агента (отдельное согласие, 152-ФЗ).</span></label>`:''}
+   <button class="btn" id="wcgo" disabled onclick="payClaim('${tier}')">Отправить организатору</button>`}
+   <div class="pw-note">${ic('wallet')}<div>${esc(w.tax||'')}${ag?'. Победитель ничего не доплачивает.':''}</div></div>
+   ${org?`<a class="btn sec" href="https://t.me/${encodeURIComponent(org.replace(/^@/,''))}" target="_blank" rel="noopener">Написать организатору</a>`:`<a class="btn sec" href="mailto:${PAY_MAIL}?subject=${encodeURIComponent('Приз: '+n4(w.ticket))}">Написать организатору</a>`}`)}
+function wcCheck(){const b=$('#wcgo');if(b)b.disabled=!($('#wccons')&&$('#wccons').checked&&(!$('#wctax')||$('#wctax').checked))}
+async function payClaim(tier){const v=id=>(($(id)||{}).value||'').trim(),b=$('#wcgo');if(!$('#wccons').checked)return;if(!v('#wctg')&&!v('#wcph')&&!v('#wcem')){toast('Оставьте хотя бы один способ связи',true);return}
+  const body={did:S.did,token:payTok(),tier,tg:v('#wctg'),phone:v('#wcph'),email:v('#wcem'),name:v('#wcnm'),consent:true};
+  if($('#wctax')){if(!$('#wctax').checked)return;Object.assign(body,{tax_consent:true,fio:v('#wcfio'),inn:v('#wcinn'),passport:v('#wcpas'),birth:v('#wcbd')})}
+  b.disabled=true;const r=await api('/pay/draw/claim',body);
+  if(r.ok){toast('Отправили организатору');await paySync(true);openWinClaim(tier);if(typeof cbConfetti==='function')cbConfetti();return}
+  b.disabled=false;const e=r.data&&r.data.error;toast(e==='bad_tax_data'?'Проверьте ФИО, ИНН (12 цифр), паспорт (10 цифр) и дату рождения':r.status===400?'Проверьте контакт':r.status===0?'Нет интернета':'Не получилось — попробуйте ещё раз',true)}
+
+/* --- главная: тонкая строка честных счётчиков (с сервера) + одна карточка по ситуации --- */
+function payTicker(){const P=payS(),D=P.draw,s=P.srv||{};if(!D||!D.tiers||payTicker.off)return '';const it=[];
+  const wk=D.tiers.find(t=>t.weekly&&t.status!=='done');if(wk&&wk.at){const d=new Date(wk.at*1000),day=d.toLocaleDateString('ru-RU',{weekday:'long'}),my=(s.chances||{})[wk.tier]||0;
+    it.push(`${day==='вторник'?'Во':'В'} ${day} в ${d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} разыгрываем: ${esc(wk.prize)}${my?` · у вас <b class="num">${my}</b> ${chW(my).replace(/^\d+\s/,'')}`:''}`)}
+  const fl=D.founder_left!=null?D.founder_left:s.founder_left;if(fl>0&&!payPaid())it.push(`Цена основателя: осталось <b class="odo" data-k="fl">${fmt(fl)}</b> мест из 1 000`);
+  D.tiers.forEach(t=>{const left=Math.max(0,t.goal-(D.payers||0));if(t.status==='wait'&&left)it.push(`До розыгрыша ${t.tier==='t3000'?'iPhone':'спортпита'}: ещё <b class="num" data-k="${t.tier}">${fmt(left)}</b> подписчиков`)});
+  if(!it.length)return '';
+  const row=it.map(x=>`<span>${x}</span><i class="tk-dot"></i>`).join('');
+  return `<div class="tk" role="region" aria-label="Счётчики подписки и розыгрыша"><div class="tk-v" onpointerdown="this.classList.add('hold')" onpointerup="this.classList.remove('hold')" onpointercancel="this.classList.remove('hold')" onpointerleave="this.classList.remove('hold')"><div class="tk-r${RM?' rm':''}" data-n="${it.length}"><div class="tk-s">${row}</div><div class="tk-s" aria-hidden="true">${row}</div></div></div><button class="tk-b" onclick="openDraw()">Участвую</button></div>`}
+// скорость постоянная: длительность петли = ширина половины / 40 px/с; после каждой перерисовки главной — пересчёт
+function payTickerGo(){const r=document.querySelector('.tk-r');if(!r||r.dataset.go)return;r.dataset.go=1;if(RM){let i=0;const sp=[...r.querySelector('.tk-s').children].filter(x=>x.tagName==='SPAN');sp.forEach((x,k)=>x.classList.toggle('on',!k));clearInterval(payTickerGo.t);payTickerGo.t=setInterval(()=>{if(!r.isConnected)return clearInterval(payTickerGo.t);sp[i].classList.remove('on');i=(i+1)%sp.length;sp[i].classList.add('on')},4000);return}
+  const w=r.querySelector('.tk-s').getBoundingClientRect().width;r.style.animationDuration=(w/40).toFixed(2)+'s';r.classList.add('run')}
+// число на табло: при изменении цифры перелистываются
+function payFlip(el,v){const old=el.textContent,nw=fmt(v);if(old===nw)return;if(RM){el.textContent=nw;return}el.innerHTML=`<span class="odo-o">${old}</span><span class="odo-n">${nw}</span>`;setTimeout(()=>{if(el.querySelector('.odo-n'))el.textContent=nw},450)}
+// пока главная открыта — цифры обновляются раз в 2 минуты; уменьшилось — «−1» всплывает над числом
+function payTickRefresh(){if(!payOn()||document.hidden||S.tab!=='today'||$('#sheet').classList.contains('on'))return;drLoad().then(d=>{if(!d)return;const P=payS(),old={fl:+(P.tkOld&&P.tkOld.fl),t1000:+(P.tkOld&&P.tkOld.t1000),t3000:+(P.tkOld&&P.tkOld.t3000)},nw={fl:d.founder_left,t1000:Math.max(0,1000-d.payers),t3000:Math.max(0,3000-d.payers)};
+  document.querySelectorAll('.tk [data-k]').forEach(el=>{const k=el.dataset.k;if(nw[k]==null)return;if(old[k]&&nw[k]<old[k]&&!RM){const m=document.createElement('i');m.className='tk-m';m.textContent='−'+(old[k]-nw[k]);el.appendChild(m);setTimeout(()=>m.remove(),1600)}document.querySelectorAll(`.tk [data-k="${k}"]`).forEach(x=>x.classList.contains('flapbox')?flapSet(x,nw[k]):payFlip(x,nw[k]))});P.tkOld=nw})}
+function payTodayCard(){if(S.onb||!payOn())return '';const P=payS(),s=P.srv||{},D=P.draw,live=D&&D.tiers&&D.tiers.some(t=>t.status==='live')||(s.draw&&s.draw.status==='live'),wins=(s.wins||[]).filter(w=>!w.claimed);
+  const card=(icn,t,sub,fn)=>`<button class="card tap pt-card" style="width:100%;text-align:left" onclick="${fn}"><div class="pw-ic">${ic(icn)}</div><div style="flex:1;min-width:0"><div class="title">${t}</div><div class="small muted">${sub}</div></div><span class="chev">${ic('chev')}</span></button>`;
+  let out=payTicker();
+  if(wins.length)return out+card('star','Вы среди победителей!','Оставьте контакт для вручения приза',`openWinClaim('${wins[0].tier}')`);
+  if(live)return out+card('star','Идёт розыгрыш призов','Прямой эфир — смотреть барабан','openDraw()');
+  const left=payUntil()-Date.now();
+  if(payTrialOn()&&left<864e5)out+=card('spark','Завтра закончится пробный период','Бесплатное останется. Продолжить Полный — от 249 ₽/мес',"openPaywall('any')");
+  else if(!P.trial&&!payPaid())out+=card('spark','7 дней Полного — бесплатно','Меню на неделю, программа, все рецепты. Без карты','openTrialInfo()');
+  const r=s.ref;if(r&&r.invited>0&&r.next)out+=card('people',`Друзья: оплатили ${r.paid} из ${r.next.n}`,`До награды — ещё ${pl(r.next.left,'друг','друга','друзей')}`,'openInvite()');
+  return out}
+
+/* --- запуск --- */
+(function payInit(){const P=payS();
+  try{const u=new URL(location.href),fc=u.searchParams.get('fam');if(fc&&/^[A-Z0-9]{6,12}$/i.test(fc)){u.searchParams.delete('fam');history.replaceState(history.state,'',u.pathname+(u.search||'')+u.hash);setTimeout(()=>{if(!S.onb&&payOn())payFamInvite(fc.toUpperCase())},2500)}}catch(e){}
+  try{const u=new URL(location.href),rc=u.searchParams.get('r'),pk=u.searchParams.get('pay');if(rc&&/^[A-Z0-9]{6,12}$/i.test(rc)&&!P.refCode){P.refCode=rc.toUpperCase();save()}
+    if(rc||pk){u.searchParams.delete('r');u.searchParams.delete('pay');history.replaceState(history.state,'',u.pathname+(u.search||'')+u.hash)}
+    if(pk==='ok'&&P.wait)setTimeout(()=>{if(!S.onb)openPayWait()},700)}catch(e){}
+  // номер устройства — ещё и в отдельном хранилище: очистка «данных сайта» частично не сбрасывает пробный период
+  try{caches.open('trener-id').then(async c=>{const m=await c.match('/did'),v=m&&await m.text();if(v&&v!==S.did&&/^[\w-]{8,64}$/.test(v)&&S.onb){S.did=v;save()}else if(!v)c.put('/did',new Response(S.did))}).catch(()=>{})}catch(e){}
+  if(PAY_OLD)P.legacy=1;
+  payWrap('openWeek','week');payWrap('swapDish','swap');payWrap('wkSwap','swap');payWrap('wkNo','swap');payWrap('wkOwn','swap');payWrap('openWeekPick','swap');
+  payWrap('openWeekShop','shop');payWrap('openShopMode','shop');payWrap('openShops','shops');payWrap('openProgram','program');payWrap('openExercise','sets');
+  payWrap('openDish','recipe',id=>payRecipeFree(id,false));payWrap('openCook','recipe',id=>payRecipeFree(id,true));payWrap('openForm','tech',()=>payFormsMonth()<1&&!payAccess()&&!!payS().trial);
+  payWrap('photoFlow','scan',()=>payScanFree());payWrap('openExSwap','swapex');payWrap('openEx','ex3d',id=>payExFree(id));payWrap('openTen','ex3d',id=>payExFree(id));
+  {const sc=window.openScan;window.openScan=function(...a){const r=sc.apply(this,a);const b=$('#sbody');if(b&&!payAccess())b.insertAdjacentHTML('afterbegin',payScanNote());return r}}
+  {const wc=window.wChart;window.wChart=function(){if(!payOn()||payAccess())return wc();return `<button class="card tap pw-lockcard" onclick="openPaywall('weight')"><div class="pw-lk">${ic('lock')}</div><div><b>График и прогноз веса</b><div class="small muted">Запись веса — бесплатно. График, темп и прогноз — в Полном</div></div></button>`}}
+  payLimLoad();
+  payWrap('openFridge','kitchen');payWrap('openFridgeCook','kitchen');payWrap('openPrep','kitchen');payWrap('openFam','fam');
+  {const rd=window.render;window.render=function(...a){const x=rd.apply(this,a);requestAnimationFrame(payTickerGo);return x};const rr=window.rerender;window.rerender=function(...a){const x=rr.apply(this,a);requestAnimationFrame(payTickerGo);return x}}
+  setInterval(payTickRefresh,120e3);
+  // звук барабана: AudioContext создаём заранее в простое (~150 мс), чтобы не было рывка при открытии розыгрыша; включится по касанию
+  setTimeout(()=>(window.requestIdleCallback||setTimeout)(()=>{if(DRS.on&&!S.onb)drsInit()},{timeout:3000}),6000);
+  save(); // S.pay записан — следующий запуск не примет нового пользователя за «бывшего до подписки»
+  setTimeout(()=>paySync(true),1800);document.addEventListener('visibilitychange',()=>{if(!document.hidden)paySync()});addEventListener('online',()=>paySync(true))})();
 
 /* ---------- старт ---------- */
 if(S.onb)showOnb();else $('#onb').classList.add('hide');
