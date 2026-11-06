@@ -702,7 +702,7 @@ input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:var(
 /* настройка тренировки: строка, сегменты, предпросмотр */
 .wcfg{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;margin:-2px 0 12px;padding:6px 6px 6px 14px;border-radius:var(--pill);background:var(--card);box-shadow:var(--shadow);font:500 15px var(--font);color:var(--text);text-align:left}
 #sheet .wcfg{background:var(--sheet-card)} .wcfg>.ic{width:19px;height:19px;color:var(--text2);flex:none}
-.wcfg .wc-t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .wcfg .wc-t b{font-weight:700;font-variant-numeric:tabular-nums}
+.wcfg .wc-t{flex:1;min-width:0;line-height:1.25} .wcfg .wc-t b{font-weight:700;font-variant-numeric:tabular-nums}
 .wcfg .wc-go{flex:none;height:40px;padding:0 16px;border-radius:var(--pill);background:var(--accent-soft);color:var(--accent-text);font-weight:650;display:inline-flex;align-items:center}
 .wc-sec{font:600 13px var(--font);color:var(--text2);margin:16px 4px 8px;letter-spacing:.01em} .wc-sec:first-child{margin-top:4px} .wc-sec span{color:var(--text)}
 .wseg{position:relative;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));padding:3px;border-radius:14px;background:var(--card2);isolation:isolate}
@@ -1517,7 +1517,7 @@ button.home-v{display:block;width:100%;padding:0;text-align:left;position:relati
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-07-r127v'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r128'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v9h14v-9"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10.5 3 12 8 12 8s1.5-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>',cup:'<path d="M7 4h10l-1.3 15.2a2 2 0 0 1-2 1.8h-3.4a2 2 0 0 1-2-1.8z"/><path d="M7.4 9h9.2"/>',expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -2174,7 +2174,7 @@ function openWcfg(next){const c=wcfg();if(!(SHEET_FN&&SHEET_FN.wc&&WCD)){WCD={mi
    <div class="wc-sec">Что получится · <span id="wcsum">${wcLabel(wcClean(WCD))}</span></div><div class="card wc-prev" id="wcprev"><div class="wp-in">${wcPrevHTML()}</div></div>
    <div class="wseg wseg2" role="radiogroup" aria-label="Насколько" style="--n:2"><i style="transform:translateX(${WCD.scope==='one'?0:100}%)"></i><button role="radio" class="${WCD.scope==='one'?'on':''}" aria-checked="${WCD.scope==='one'}" onclick="wcScope('one',this)">Только сегодня</button><button role="radio" class="${WCD.scope!=='one'?'on':''}" aria-checked="${WCD.scope!=='one'}" onclick="wcScope('def',this)">По умолчанию</button></div>
    <button class="btn" style="margin-top:14px" onclick="wcApply()">Применить</button>
-   <div class="concept">Время считает код: подходы × (работа + отдых), плюс разминка и растяжка. Длиннее — больше упражнений и подходов, отдых тот же; после 75 мин — кардио в зоне 2, кор и мобильность</div>`);
+   <div class="concept">Длиннее — больше упражнений и подходов, отдых тот же. После 75 мин — спокойное кардио, пресс и растяжка</div>`);
   wcRangeTxt(WCD.min);const f=()=>openWcfg();f.wc=1;SHEET_FN=f}
 function wcSet(o,scope){const before=program().ex.map(x=>x[0]+x[1])+'';const v={min:o.min,foc:o.foc,ld:o.ld};
   if(o.typeSet||o.type&&S.wk&&S.wk.type&&o.type!==S.wk.type){S.wk={...wcDef(),...(S.wk||{}),type:o.type}} // тип программы — всегда «по умолчанию»: это структура недели
@@ -2237,10 +2237,10 @@ function trainSlots(slots){const o={},b=S.burnOn&&S.burnOn[today0()];if(!slots.l
   else if(!doneToday()&&(!S.plan||S.plan.includes((new Date().getDay()+6)%7))&&!restDay()&&f[1]!=='b')o[f[0]]={w:1.15,p:1.1,lab:'до тренировки: за 1,5–2 ч',b:d=>.35*ck(d)};
   return o}
 function burnExplain(pr,n){const t=n.tb,wk=effTrains(pr,1);
-  return `<div class="card small" style="line-height:1.45"><b style="color:var(--text)">Тренировки и расход</b><br>
-   Расход тренировки считает код: ккал&nbsp;≈ MET × вес&nbsp;(кг) × время&nbsp;(ч). MET — из Компендиума физической активности (Ainsworth, 2011; обновление 2024) для каждого упражнения: силовые лёгкие 3,5, тяжёлые 6, со своим весом 2,8–3,8, кардио 5–10 по скорости, растяжка 2,3. Время — по отмеченным подходам: повтор ≈ 3&nbsp;сек плюс обычный отдых ${MET.restSec}&nbsp;сек (он уже входит в MET силовых). Поправка на отдых: если тренировка шла дольше, лишнее время считаем покоем (MET&nbsp;${dec(MET.rest)}), не больше 30&nbsp;мин; отметили подходы быстрее — считаем по реальному времени.<br>
+  return `<details class="card small src-d" style="line-height:1.45"><summary>Как считаем расход тренировок</summary><div style="margin-top:14px">
+   Расход тренировки: ккал&nbsp;≈ MET × вес&nbsp;(кг) × время&nbsp;(ч). MET — из Компендиума физической активности (Ainsworth, 2011; обновление 2024) для каждого упражнения: силовые лёгкие 3,5, тяжёлые 6, со своим весом 2,8–3,8, кардио 5–10 по скорости, растяжка 2,3. Время — по отмеченным подходам: повтор ≈ 3&nbsp;сек плюс обычный отдых ${MET.restSec}&nbsp;сек (он уже входит в MET силовых). Поправка на отдых: если тренировка шла дольше, лишнее время считаем покоем (MET&nbsp;${dec(MET.rest)}), не больше 30&nbsp;мин; отметили подходы быстрее — считаем по реальному времени.<br>
    ${wk?`В норме уже заложены ${pl(wk,'тренировка','тренировки','тренировок')} в неделю — в среднем +${fmt(n.train)} ккал на каждый день. Поэтому в день тренировки добавляем только превышение: расход сверх покоя минус ${fmt(n.train)}, и не больше 15&nbsp;% нормы.`:'Тренировки в норму не заложены (в анкете — без тренировок), поэтому в день тренировки добавляем расход сверх покоя, но не больше 15&nbsp;% нормы.'} ${t?(t.extra?`Сегодня: ≈&nbsp;${fmt(t.net)} сверх покоя → добор <b>+${fmt(t.extra)}&nbsp;ккал</b> (белок +${t.dp}&nbsp;г, углеводы +${t.dc}&nbsp;г — ${t.kind==='c'?'после кардио упор на углеводы':'после силовой упор на белок'}).`:`Сегодня: ≈&nbsp;${fmt(t.net)} сверх покоя — не больше, чем уже заложено в норму, добирать не нужно.`):'Сегодня тренировки ещё не было.'}<br>
-   Цифры по таблицам MET приблизительные (±20–30&nbsp;%): поэтому «≈» и мягкий добор. Не медицинская консультация.</div>`}
+   Цифры по таблицам MET приблизительные (±20–30&nbsp;%): поэтому «≈» и мягкий добор. Не медицинская консультация.</div></details>`}
 
 /* ---------- каркас ---------- */
 const TABS0=[['today','Сегодня','sun'],['food','Еда','food'],['gym','Тренировки','gym'],['me','Профиль','me']];
@@ -2270,7 +2270,7 @@ function clipWarm(){if(!CLIP&&!CLIPLOAD)setTimeout(async()=>{try{if((await (awai
 function openAdd(){
   clipWarm();
   sheet('Записать',`<button class="addopt big" onclick="openScan()"><div class="ibox primary">${ic('cam')}</div><div style="flex:1"><div class="title">Сфотографировать блюдо</div><div class="small muted">Узнаем по базе, вы уточните граммы</div></div><span class="chev">${ic('chev')}</span></button>
-   <button class="addopt" onclick="openBarcode()"><div class="ibox accent">${ic('barcode')}</div><div style="flex:1"><div class="title">Штрихкод с упаковки</div><div class="small muted">Open Food Facts, миллионы продуктов</div></div><span class="chev">${ic('chev')}</span></button>
+   <button class="addopt" onclick="openBarcode()"><div class="ibox accent">${ic('barcode')}</div><div style="flex:1"><div class="title">Штрихкод с упаковки</div><div class="small muted">Миллионы продуктов</div></div><span class="chev">${ic('chev')}</span></button>
    <button class="addopt" onclick="SC=null;openSearch()"><div class="ibox c">${ic('search')}</div><div style="flex:1"><div class="title">Найти по названию</div><div class="small muted">Продукт или блюдо, недавнее и избранное</div></div><span class="chev">${ic('chev')}</span></button>
    <button class="addopt" onclick="openQuick()"><div class="ibox">${ic('bolt')}</div><div style="flex:1"><div class="title">Просто калории</div><div class="small muted">Кафе, гости — когда не взвесить</div></div><span class="chev">${ic('chev')}</span></button>
    <button class="addopt" onclick="openRepeat()"><div class="ibox">${ic('history')}</div><div style="flex:1"><div class="title">Как вчера</div><div class="small muted">Весь день или один приём</div></div><span class="chev">${ic('chev')}</span></button>
@@ -2458,7 +2458,7 @@ function nowAct(n,e){const hr=new Date().getHours(),left=n.kcal-e.k,s=suggest(),
   if(trainNow&&hr>=16)return {t:`Сегодня тренировка «${esc(pg.days[curDay()])}» — около ${pg.min} минут. Поешьте за 1,5–2 часа до неё.`,b:[`go('gym');setTimeout(()=>openExercise(${ex}),350)`,'gym','Начать тренировку']};
   if(left<0)return {t:e.k>n.kcal*1.3?`Сегодня ${u(-left,'ккал')} сверх нормы — проверьте граммы в записях. Один день план не ломает.`:`Вышли за норму на ${u(-left,'ккал')}. Бывает — завтра по плану, без урезания.`,b:['go(\'food\')','food','Посмотреть записи']};
   if(s.late)return {t:hr<5?'Ночь — время сна. Утром начнём с завтрака.':'Поздний вечер: на ночь калории не добираем. Если голодно — кефир или творог.',b:['openAdd()','plus','Записать еду']};
-  if(nx)return {t:`На ${mealW(nx)}: ${nx.n.toLowerCase()} — ${u(nx.nut.k,'ккал')}, белок ${u(nx.nut.p,'г')}. Подобрано под остаток и бюджет.`,b:['go(\'food\')','food',`Что съесть на ${mealW(nx)}`]};
+  if(nx)return {t:`На ${mealW(nx)}: ${nx.n.toLowerCase()} — ${u(nx.nut.k,'ккал')}, белок ${u(nx.nut.p,'г')}.`,b:['go(\'food\')','food',`Что съесть на ${mealW(nx)}`]};
   if(trainNow)return {t:`Сегодня тренировка «${esc(pg.days[curDay()])}» — около ${pg.min} минут.${pg.min>=90?' Возьмите воду и перекус с углеводами.':''}`,b:[`go('gym');setTimeout(()=>openExercise(${ex}),350)`,'gym','Начать тренировку']};
   return {t:tip(n,e),b:['openAdd()','plus','Записать еду']}}
 function vToday(){
@@ -2473,7 +2473,7 @@ function vToday(){
   const P=KIT?dayPlan():null,buy=P?P.ing.filter(([id])=>!STAPLES.includes(id)).length:0,ex=Math.max(0,pg.ex.findIndex((x,i)=>!exDone(i,x)));
   const prow=(fn,icn,cl,eb,t,v)=>`<button class="pd-r" onclick="${fn}"><span class="ibox ${cl}">${ic(icn)}</span><span class="pd-t"><small>${eb}${v?' · '+v:''}</small><b>${t}</b></span><span class="chev">${ic('chev')}</span></button>`;
   const rows=[!KIT?`<div class="pd-r" aria-hidden="true"><span class="ibox sk" style="height:40px;border-radius:12px"></span><span class="pd-t" style="flex:1"><span class="sk" style="display:block;width:38%"></span><span class="sk" style="display:block;width:72%;margin-top:8px;height:16px"></span></span></div>`:'',nx&&!s.late?prow(`openDish('${nx.id}')`,dishCat(nx)[1]||'food','accent',((nx.lab||SLOT[nx.m]||'').split(' · ')[0])||'Дальше',nx.n,u(nx.nut.k,'ккал')):'',
-    prow(done||wfull?`go('gym')`:`go('gym');setTimeout(()=>openExercise(${ex}),350)`,'gym','volt','Тренировка',done?'Сделано сегодня':wfull?'Неделя выполнена':rest?'Сегодня отдых — прогулка 30 минут':!planToday?'Сегодня по плану отдых':esc(pg.days[ti])+' · '+pg.min+' мин',done||wfull||rest||!planToday?'':placeName(pg.place)),
+    A.b[1]==='gym'?'':prow(done||wfull?`go('gym')`:`go('gym');setTimeout(()=>openExercise(${ex}),350)`,'gym','volt','Тренировка',done?'Сделано сегодня':wfull?'Неделя выполнена':rest?'Сегодня отдых — прогулка 30 минут':!planToday?'Сегодня по плану отдых':esc(pg.days[ti])+' · '+pg.min+' мин',done||wfull||rest||!planToday?'':placeName(pg.place)),
     buy&&P.slots.length?prow('openShops()','cart','c','Купить',`${pl(buy,'продукт','продукта','продуктов')} на сегодня`,P.cost?'≈'+NBS+rub(P.cost):''):''].filter(Boolean).join('');
   // одна подсказка в день: взвешивание → напоминания → проверка техники
   const hint=wAge>=7?['openWeight()','weight',lw?'Пора взвеситься':'Запишите вес','раз в неделю, утром — норма точнее']:!(S.remind&&S.remind.on)&&!S.hlRemOff?['openRemind()','bell','Напоминания','утром — план, вечером — тренировка и белок']:!S.forms.length?['openForm()','cam','Проверьте технику камерой','снимите подход сбоку']:null;
@@ -2499,7 +2499,7 @@ function vToday(){
   ${phCard()}${chCard()}
   ${rvAsk()}
   ${hint?`<div class="card list"><button class="rowbtn" onclick="${hint[0]}"><div class="ibox">${ic(hint[1])}</div><div class="t">${hint[2]}<small>${hint[3]}</small></div><span class="chev">${ic('chev')}</span></button></div>`:''}
-  <div class="concept">Калории считает код по базе продуктов · не&nbsp;медицинская консультация</div>`;
+  <div class="concept">Не&nbsp;медицинская консультация</div>`;
 }
 /* подсказки дня: цветные карточки, как «Главное» в «Здоровье» на iPhone; всё считает код по дневнику, плану и весу */
 function hlCards(n,e){const hr=new Date().getHours(),pg=program(),ti=curDay(),done=doneToday(),wd=(new Date().getDay()+6)%7,planToday=!S.plan||S.plan.includes(wd),leftP=n.p-Math.round(e.p),cards=[];
@@ -2513,7 +2513,7 @@ function hlCards(n,e){const hr=new Date().getHours(),pg=program(),ti=curDay(),do
   if(!(S.remind&&S.remind.on)&&!S.hlRemOff)cards.push(c('g-f','bell','Напоминания','Не забыть про главное','Утром — план на день, вечером — тренировка и белок. Только если есть что напомнить.','Настроить','openRemind()'));
   const lw=S.weights[S.weights.length-1],wAge=lw?(Date.parse(today0())-Date.parse(lw.d))/864e5:99;
   if(wAge>=7)cards.push(c('g-c','weight','Вес',lw?'Пора взвеситься':'Запишите вес','Раз в неделю, утром до завтрака — так норма считается точнее.','Записать','openWeight()'));
-  if(!S.forms.length)cards.push(c('g-a','ruler','Техника','Проверьте присед','Снимите себя сбоку — телефон найдёт ошибки и покажет, как надо.','Снять видео','openForm()'));
+  if(!S.forms.length)cards.push(c('g-a','ruler','Техника','Проверьте присед','Снимите себя сбоку — подскажем, что поправить.','Снять видео','openForm()'));
   if(!cards.length)return '';
   return `<h2>Подсказки дня</h2><div class="hl">${cards.slice(0,3).join('')}</div>`}
 function ago(t){const d=Date.now()-t,m=Math.round(d/60000);if(m<60)return 'только что';if(m<60*20)return Math.round(m/60)+' ч назад';const dd=Math.round(m/1440);return dd<=1?'вчера':dd+' дн. назад'}
@@ -2612,7 +2612,7 @@ function openDiet(){const A=algOf(),q=norm_(DIETQ),ne=S.noeat||[],sel=dietList()
   const sec=(t,icn,kind,rows,note)=>{const l=rows.filter(fit);return l.length?`<div class="dsec"><div class="dhead">${icn?ic(icn):''}${t}</div>${note?`<div class="tiny muted" style="margin:0 4px 6px">${note}</div>`:''}<div class="card list dlist">${l.map(r=>row(kind,r)).join('')}</div></div>`:''};
   sheet('Не ем и аллергии',`<div class="dtop"><input class="search" type="search" placeholder="Найти: креветки, лактоза, пост…" value="${DIETQ.replace(/"/g,'&quot;')}" oninput="DIETQ=this.value;dietRe()" aria-label="Поиск по списку">
    ${sel.length?`<div class="chips dsel">${sel.map(([k,id,n])=>`<button class="chip on" onclick="dietDrop('${k}','${String(id).replace(/'/g,'')}')" aria-label="Убрать ${esc(n)}">${esc(n)} ✕</button>`).join('')}</div>`:''}</div>
-   <div class="small muted" style="margin:6px 4px 10px">Всё необязательно. Отмеченное уберём из советов, списка блюд, покупок и замены.</div>
+   <div class="small muted" style="margin:6px 4px 10px">Отмеченное уберём из блюд, меню и покупок.</div>
    ${sec('Аллергия и непереносимость','lock','alg',ALG,'Хранится только на этом телефоне')}
    ${sec('Непереносимость','','alg',INTOL)}
    ${sec('Не ем','','noeat',NOEAT.filter(r=>!FAITH_KEYS.includes(r[0])))}
@@ -2622,7 +2622,7 @@ function openDiet(){const A=algOf(),q=norm_(DIETQ),ne=S.noeat||[],sel=dietList()
    <div class="dsec"><div class="dhead">Другое: свой продукт</div>
     <div class="card list dlist">${[...A.o.map(x=>['o',x.id,x.n,'из базы продуктов']),...A.w.map(w=>['w',w,w,'ищем по названию в составе'])].map(([k,id,n,s])=>`<button class="dietrow on" role="switch" aria-checked="true" onclick="dietDrop('${k}','${String(id).replace(/'/g,'')}')"><span class="dicon">${ic('leaf')}</span><span class="dtx"><b>${esc(n)}</b><small>${s}</small></span><span class="toggle on" aria-hidden="true"></span></button>`).join('')||'<div class="li small muted">Найдите продукт в поиске сверху — например «кинза»</div>'}</div>
     <div id="dietres"></div></div>
-   <div class="ddone"><button class="btn" onclick="dietDone()">Готово</button><div class="tiny muted" style="text-align:center;margin-top:6px">Аллергии и здоровье хранятся только на этом телефоне. Мы убираем такие блюда из советов, но состав в магазине может отличаться — проверяйте упаковку. Не медицинская консультация.</div></div>`);
+   <div class="ddone"><button class="btn" onclick="dietDone()">Готово</button><div class="tiny muted" style="text-align:center;margin-top:6px">Состав в магазине может отличаться — проверяйте упаковку · не медицинская консультация</div></div>`);
   SHEET_FN=openDiet;if(!openDiet.n0&&KIT)openDiet.n0=KIT.recipes.filter(d=>!dishBan(d)).length;if(q)dietFind(DIETQ)}
 function dietRe(){const el=document.activeElement,pos=el&&el.selectionStart;keepScroll(openDiet);const i=$('#sbody .dtop input');if(i&&el&&el.classList&&el.classList.contains('search')){i.focus();try{i.setSelectionRange(pos,pos)}catch(_){}}}
 const FAITH_KEYS=['halal','kosher','fast','fastfish'];
@@ -2860,7 +2860,7 @@ function srcNote(){if(!hasPrices())return '';const c=PRICES.chains,l=[];
   const sh=[c.mg&&chLive('mg')?'Магнит '+c.mg.d:'',c.vv&&chLive('vv')?'ВкусВилл '+c.vv.d:'',...Object.keys(c).filter(k=>c[k].src==='отметки покупателей'&&chLive(k)).map(k=>c[k].n+' '+c[k].d),c.rs?'Росстат — '+c.rs.d:''].filter(Boolean),osm=GEO&&SHOPS&&Object.keys(SHOPS.chains||{}).length;
   return `<details class="src srcd" style="margin:2px 4px 14px"><summary>Цены для: ${placeTxt()} · ${sh.join(', ')}. Справочно.${osm?' Магазины: © OpenStreetMap.':''} <span class="srcm">Подробнее</span></summary><span class="srcx">${l.join('; ')}. «≈» — на одного человека. Обычная цена полки, без акций и карт; суммы — с запасом 3 %. Для Пятёрочки, Перекрёстка, Чижика, Ленты и Ашана открытых цен пока нет — показываем ориентир «примерно». «≈» — блюда: сколько уйдёт продуктов; «чек» — сколько заплатите за целые упаковки${people()>1?` на ${pl(people(),'человека','человек','человек')}`:''}. Цены справочные, окончательная цена — в магазине.${osm?' Магазины рядом: © участники OpenStreetMap, лицензия ODbL.':''}</span></details>`}
 function wkCard(){const has=S.wk&&S.wk.days&&S.wk.start===monday0(),wd=(new Date().getDay()+6)%7,d=has&&KIT?S.wk.days[wd]:null,n=d?d.sl.filter(x=>x.id&&!x.top).map(x=>{const r=KIT.recipes.find(q=>q.id===x.id);return r?r.n:''}).filter(Boolean):[];
-  return `<button class="wkc tap" onclick="openWeek()"><div class="wkc-i">${ic('cal')}</div><div class="wkc-t"><b>Меню на неделю</b><span>${has&&S.wk.key!==wkKey()?'Профиль изменился — пересоберите меню под него':n.length?'Сегодня: '+n.slice(0,2).join(', ').toLowerCase()+(n.length>2?' и ещё':''):'7 разных дней под цель и бюджет'}</span></div><span class="chev">${ic('chev')}</span></button>`}
+  return `<button class="rowbtn" onclick="openWeek()"><div class="ibox accent">${ic('cal')}</div><div class="t">Меню на неделю<small>${has&&S.wk.key!==wkKey()?'Профиль изменился — пересоберите меню под него':n.length?'Сегодня: '+n.slice(0,2).join(', ').toLowerCase()+(n.length>2?' и ещё':''):'7 разных дней под цель и бюджет'}</small></div><span class="chev">${ic('chev')}</span></button>`}
 // анкета стала короче: «Не ем и аллергии» спрашиваем потом — одной мягкой карточкой, пока человек не ответил или не скрыл её
 function dietHint(){if(dietOn()||S.dietHintOff||S.onb)return '';return `<div class="card dhint"><div class="row" style="gap:12px;align-items:flex-start"><div class="ibox warn">${ic('heart')}</div><div style="flex:1;min-width:0"><div style="font-weight:650">Есть продукты, которые вы не едите?</div><div class="small muted" style="margin-top:2px">Аллергии, пост, «не люблю» — уберём такие блюда из меню</div>
   <div class="row" style="gap:8px;margin-top:10px"><button class="btn sm" onclick="openDiet()">Указать</button><button class="btn sm ghost" onclick="S.dietHintOff=1;save();rerender()">Ем всё</button></div></div></div></div>`}
@@ -2873,7 +2873,6 @@ function vFood(){
   ${DEV.inApp?`<div class="small muted" style="margin:-4px 4px 12px;text-align:center">${INAPP_HINT}</div>`:''}
   ${diaryHTML()}${microCard()}
   ${postNow()&&KIT?`<div id="postd">${postCard()}</div>`:''}
-  ${dietHint()}${wkCard()}${KIT?frCard():''}
   <h2>Что съесть сегодня</h2>${n.tb&&n.tb.extra?`<div class="fd-tb">${ic('gym')}<span>Тренировка добавила к норме ${u(n.tb.extra,'ккал')}: белок +${u(n.tb.dp,'г')}, углеводы +${u(n.tb.dc,'г')}</span></div>`:''}
   ${!loaded?[0,1].map(()=>`<div class="card dish"><div class="row"><div class="thumb sk" style="height:auto"></div><div style="flex:1"><div class="sk" style="width:40%"></div><div class="sk" style="width:80%;margin-top:10px;height:18px"></div><div class="sk" style="width:55%;margin-top:10px"></div></div></div></div>`).join(''):P.slots.length?`${P.slots.map(x=>dishRow(x.d,x.c,`${x.top?'Перекус · чтобы добрать белок':(x.lab||SLOT[x.m])+' · '+dishCat(x.d)[0]}${salty(x.d)?' · солоновато':''}`,x.n>1&&!x.top?x.sl:null)).join('')}
   ${(()=>{const kc=P.slots.reduce((t,x)=>t+x.d.nut.k,0),pp=P.slots.reduce((t,x)=>t+x.d.nut.p,0),tot=P.slots.reduce((t,x)=>t+(x.c?x.c.r:0),0);return `<div class="small muted" style="margin:-2px 4px 12px">Всего по плану: ≈${NBS}${u(kc,'ккал')} · белок ${u(pp,'г')}${hasPrices()&&tot?` · ≈${NBS}${rub(tot)}`:''}</div>`})()}
@@ -2883,13 +2882,15 @@ function vFood(){
   <h2>Все рецепты</h2>
   <div class="fd-cats">${[['b','Завтраки','egg'],['l','Обеды','bowl'],['d','Ужины','meat'],['s','Перекусы','cup']].map(([k,t,i])=>`<button class="fd-c tap" onclick="openDishes('${k}')">${ic(i)}<b>${t}</b></button>`).join('')}</div>
   <button class="btn sec" style="margin-bottom:6px" onclick="openDishes()">${ic('food')} Все ${KIT?pl(KIT.recipes.length,'рецепт','рецепта','рецептов'):'рецепты'}</button>
+  ${dietHint()}
   <div class="card list">
+   ${wkCard()}${KIT?frCard():''}
    ${row('openShops()','c','cart','Покупки и магазины','что купить и где дешевле')}
    ${row('openDiet()','warn','heart','Не ем и аллергии',dietOn()?dietSub():'указать')}
    ${row('openRegion()','ok','pin','Цены для: '+placeTxt(),S.region?'сменить город':'уточнить город — цены точнее')}
-   ${row('openAdd()','accent','barcode','Штрихкод с упаковки','и другие способы записать еду')}
+   ${row('openAdd()','accent','barcode','Штрихкод с упаковки','')}
   </div>
-  <div class="concept">Калории и цены считает код по базе продуктов · не&nbsp;медицинская консультация</div>`;
+  <div class="concept">Не&nbsp;медицинская консультация</div>`;
 }
 function dishCat(d){const t=new Set(d.ing.flatMap(([id])=>KIT.it[id].al||[])),ids=d.ing.map(x=>x[0]);
   if(t.has('fish')||t.has('seafood'))return ['рыба','fish'];if(t.has('poultry')&&!t.has('pork')&&!t.has('beef'))return ['птица','meat'];if(t.has('meat'))return ['мясо','steak'];
@@ -2965,7 +2966,7 @@ function openDish(id,n){const d=dishOf(id);if(!d){loadKit().then(()=>KIT&&KIT.re
        ${p?`<div class="num" style="white-space:nowrap;text-align:right" data-r="${RV[ii]}">${rub(buy.r)}<div class="tiny muted" style="font-weight:500">${buy.t}</div></div>`:'<div class="tiny muted" style="text-align:right;max-width:84px">цена уточняется</div>'}</div>`}).join('')}
      ${(d.extra||[]).map(([nm,g,m])=>{const txt=exTxt(nm,g,m,fam?f+N-1:K*f);return `<div class="li"><div style="flex:1;min-width:0"><div style="font-weight:600">${nm[0].toUpperCase()+nm.slice(1)} · ${txt}</div></div><div class="tiny muted">из дома</div></div>`}).join('')}
      ${c?`<div class="li"><div style="flex:1;font-weight:650">${N>1?`Всего на ${pl(N,'порцию','порции','порций')}`:'Порция'}</div><div class="num" style="font-weight:700">≈${NBS}${rub(c.r*K)}${c.part?'+':''}</div></div>${c.part?`<div class="tiny muted" style="padding:0 0 10px">+ ${c.none.map(i=>KIT.it[i].n.toLowerCase()).join(', ')} — цена уточняется, в сумму не вошло</div>`:''}`:''}</div>
-   <div class="tiny muted" style="margin:-4px 4px 12px">Граммы — сырых продуктов. Коснитесь продукта — покажем, где купить и цену на порцию. Калории и цену считает код; соль, специи и вода в цену не входят.</div>
+   <div class="tiny muted" style="margin:-4px 4px 12px">Граммы — сырых продуктов. Соль, специи и вода в цену не входят.</div>
    ${hasPrices()?`<h2>Где купить</h2><div class="card list">${chainList(d.ing,d.ing.map(([i,g])=>[i,g*K]))}</div>${srcNote()}`:''}
    <h2>Как готовить</h2>${d.tools?`<div class="small muted" style="margin:-4px 4px 10px"><b style="color:var(--text)">Посуда:</b> ${d.tools}${N>1?` — на ${pl(N,'порцию','порции','порций')} возьмите посуду побольше`:''}</div>`:''}
    <div class="card list steps">${d.steps.map(([m,t,a],i)=>{const par=/^(Параллельно|Пока )/.test(t);return `<div class="li" style="align-items:flex-start"><div class="stepn">${i+1}</div><div style="flex:1;min-width:0"><div class="tiny" style="color:var(--accent-text);font-weight:650;margin-bottom:2px">Шаг ${i+1} · <span class="nw">${a&&a!==m?a+'–'+m:m}&nbsp;мин</span>${par?' · одновременно':''}</div><div>${stepTxt(d,t,N)}</div></div></div>`}).join('')}
@@ -3114,8 +3115,8 @@ function openFridgeCook(){if(!KIT)return openFridge();const L=frCook(),grp=[[0,'
   const body=grp.map(([n,t])=>{const G=L.filter(x=>n===2?x.miss.length>=2:x.miss.length===n).slice(0,n===2?10:12);return G.length?`<h2>${t}</h2>${G.map(row).join('')}`:''}).join('');
   sheet('Что приготовить',`<button class="card tap fr-top" onclick="openFridge()"><div class="small muted">Есть дома</div><div style="font-weight:650;margin-top:2px">${frIds().map(leftNm).join(', ')}</div><div class="tiny" style="color:var(--accent-text);font-weight:650;margin-top:4px">изменить</div></button>
    ${body||'<div class="card muted">Из этого блюд в книге не нашлось — отметьте ещё пару продуктов: крупу, яйца, овощи.</div>'}
-   <div class="concept">Под вашу цель и «Не ем и аллергии»${k>1?` · докупить — на ${pl(k,'человека','человек','человек')}`:''} · цены считает код по ценам сетей · не медицинская консультация</div>`);SHEET_FN=openFridgeCook}
-function frCard(){const n=frOn()?frIds().length:0;return `<button class="wkc tap" onclick="${n?'openFridgeCook()':'openFridge()'}"><div class="wkc-i">${ic('home')}</div><div class="wkc-t"><b>Что есть дома</b><span>${n?`${pl(n,'продукт','продукта','продуктов')} — посмотреть, что приготовить`:'отметьте продукты — подскажем, что из них приготовить'}</span></div><span class="chev">${ic('chev')}</span></button>`}
+   <div class="concept">Под вашу цель и «Не ем и аллергии»${k>1?` · докупить — на ${pl(k,'человека','человек','человек')}`:''} · не медицинская консультация</div>`);SHEET_FN=openFridgeCook}
+function frCard(){const n=frOn()?frIds().length:0;return `<button class="rowbtn" onclick="${n?'openFridgeCook()':'openFridge()'}"><div class="ibox ok">${ic('home')}</div><div class="t">Что есть дома<small>${n?`${pl(n,'продукт','продукта','продуктов')} — что из них приготовить`:'подскажем, что из этого приготовить'}</small></div><span class="chev">${ic('chev')}</span></button>`}
 const frFrac=x=>{if(!frOn())return 0;const H=frIds(),ids=x.ing.map(q=>q[0]).filter(id=>!STAPLES.includes(id));return ids.length?ids.filter(id=>H.includes(id)).length/ids.length:0};
 /* ---------- Готовка впрок: блюда меню, которые хранятся 2+ дня (keep), готовим за один раз на 3 дня — план, общий список продуктов,
    порядок шагов (что идёт параллельно, пока варится и тушится), хранение. В меню недели — «уже приготовлено» ---------- */
@@ -3148,7 +3149,7 @@ function openPrep(c){if(!KIT||!S.wk||!S.wk.days){openWeek();return}const wd=(new
    <h2>Порядок</h2><div class="card list prep-o">${O.out.map((s,n)=>`<div class="li prep-s${s.pas?' pas':''}"><i class="prep-dot ${COL[s.i%4]}"></i><div style="flex:1;min-width:0"><div class="tiny muted">${esc(L[s.i].d.n)} · ${s.m}${NBS}мин</div><div class="prep-t">${esc(s.t)}</div>${s.pas&&O.out.slice(n+1).some(z=>z.i!==s.i)?`<div class="prep-p">${ic('bolt')}пока готовится — следующее блюдо</div>`:''}</div></div>`).join('')}</div>
    <h2>Хранение</h2><div class="card list">${L.map((x,i)=>{const last=Math.max(...x.occ.map(o=>o.j)),until=Math.min(c+x.d.keep,6);return `<div class="li"><i class="prep-dot ${COL[i%4]}"></i><div style="flex:1;min-width:0"><div style="font-weight:650">${x.d.n}</div><div class="small muted">Остудите и уберите в контейнерах в холодильник в течение 2 часов. Хранится ${pl(x.d.keep,'день','дня','дней')} — съесть до ${WDS[Math.max(last,until)].toLowerCase()}${x.occ.length>1?', порции разложите по дням':''}.</div></div></div>`}).join('')}</div>
    <button class="btn${done?' sec':''}" onclick="prepMark(${c})">${done?'Снять отметку «приготовлено»':ic('check')+' Приготовил — отметить в меню'}</button>
-   <div class="concept">Блюда — из вашего меню недели, срок хранения — из рецептов · граммы и цены считает код</div>`);SHEET_FN=()=>openPrep()}
+   <div class="concept">Блюда — из вашего меню недели, срок хранения — из рецептов</div>`);SHEET_FN=()=>openPrep()}
 function prepMark(c){const L=prepPlan(c),keys=L.flatMap(x=>x.occ.map(o=>o.j+':'+o.s+':'+x.d.id));if(!S.prep||S.prep.w!==S.wk.start||!Array.isArray(S.prep.d))S.prep={w:S.wk.start,d:[]};
   const all=keys.every(k=>S.prep.d.includes(k));S.prep.d=all?S.prep.d.filter(k=>!keys.includes(k)):[...new Set([...S.prep.d,...keys])];save();haptic(all?5:[10,40,10]);if(!all)toast('Отметили в меню: уже приготовлено');keepScroll(()=>openPrep(c))}
 /* ---------- Семейное меню: у каждого своя норма (возраст, пол, цель), одна кастрюля — разные порции: «Вам 350 г, Маше 220 г».
@@ -3175,7 +3176,7 @@ function openFam(){const L=famList(),R=famR(),me=norm(S.profile).kcal,k=people()
      <div class="chips eq" style="margin-top:10px">${[['f','Женщина'],['m','Мужчина']].map(([v,l])=>`<button class="chip ${m.s===v?'on':''}" aria-pressed="${m.s===v}" onclick="famSet(${i},'s','${v}')">${m.a<18?(v==='f'?'Девочка':'Мальчик'):l}</button>`).join('')}</div>
      ${m.a>=18?`<div class="chips eq" style="margin-top:8px">${[['lose','Похудеть'],['keep','Держать'],['muscle','Набрать']].map(([v,l])=>`<button class="chip ${m.g===v?'on':''}" aria-pressed="${m.g===v}" onclick="famSet(${i},'g','${v}')">${l}</button>`).join('')}</div>`:'<div class="tiny muted" style="margin-top:8px">Детям калории не урезаем — порция по возрасту</div>'}</div>`).join('')}
    ${k>1?`<div class="fd-note">${ic('bowl')}<span>Одна кастрюля — разные порции. Например, ${famPorEx()}. Список продуктов — сразу на всех.</span></div>`:'<div class="small muted" style="margin:0 4px 12px">Добавьте членов семьи — посчитаем порцию каждому и продукты на всех.</div>'}
-   <div class="concept">Нормы — по формуле, рост и вес взрослых — средние; детям — ориентир по возрасту (МР 2.3.1.2432-08) · хранится только на этом телефоне · не медицинская консультация</div>`);SHEET_FN=openFam}
+   <div class="concept">Нормы — ориентир по возрасту, росту и весу · хранится только на этом телефоне · не медицинская консультация</div>`);SHEET_FN=openFam}
 function famPorEx(){const d=KIT&&KIT.recipes.find(x=>x.id==='grechka_kurica')||KIT&&KIT.recipes[0];if(!d)return 'вам 350 г, ребёнку 220 г';const t=famPor(d);return t?'«'+d.n+'»: '+t.replace(/^Вы/,'вы'):''}
 function famN(dl){const p=S.profile,n=Math.max(1,Math.min(6,(+p.people||1)+dl));if(n===p.people)return;p.people=n;S.fam=famList();if(dl>0&&S.fam.length<n-1)S.fam=famList();save();haptic(6);keepScroll(openFam);rerender.dirty=1}
 function famSet(i,k,v){const L=famList();if(!L[i])return;if(k==='a')v=Math.max(1,Math.min(99,+v||1));if(k==='n')v=String(v).replace(/[<>"'`]/g,'').slice(0,16);L[i][k]=v;S.fam=L;save();haptic(4);if(k!=='n')keepScroll(openFam);rerender.dirty=1}
@@ -3260,7 +3261,7 @@ function openWeekShop(){if(!KIT){openWeek();return}if(!S.wk||!S.wk.days)wkBuild(
   sheet('Продукты на неделю',`<div class="wk-sum card"><div class="small muted">Всё меню на 7 дней${k>1?` · на ${pl(k,'человека','человека','человек')}`:''}</div>
     <div class="wk-nums" style="grid-template-columns:1fr 1fr"><div><b class="num">${tot?'≈'+NBS+rub(tot):'—'}</b><small>${tot?'чек за целые упаковки':'цены грузятся'}</small></div><div><b class="num">${pl(need.length,'продукт','продукта','продуктов')}</b><small>купить</small></div></div>
     ${tot?`<div class="wsl-b ${tot<=WB?'ok':'over'}">${tot<=WB?`${ic('check')}В бюджете: ${rub(WB)} на неделю`:`Больше бюджета на ${rub(tot-WB)} — отметьте, что есть дома, или замените дорогие блюда`}</div>`:''}</div>
-   ${(L=>hasPrices()?`<div class="fd-note">${ic('leaf')}<span>Упаковки покупаем целыми — меню следующих дней сначала доедает начатые.${L.length?' К концу недели останется: '+L.slice(0,3).map(id=>leftNm(id)+' '+leftG(id,wkStock(7).st[id])).join(', ')+'.':''}</span></div>`:'')(wkLeftEnd())}
+   ${(L=>hasPrices()?`<div class="fd-note">${ic('leaf')}<span>Упаковки целые — следующие дни доедают начатое.${L.length?' Останется: '+L.slice(0,3).map(id=>leftNm(id)+' '+leftG(id,wkStock(7).st[id])).join(', ')+'.':''}</span></div>`:'')(wkLeftEnd())}
    <button class="btn" onclick="openShopMode()">${ic('cart')} Я в магазине</button>
    ${sh.length?`<h2>Где купить всё сразу</h2><div class="card list">${sh.map(x=>`<div class="li wss${x===best?' best':''}"><div style="flex:1;min-width:0"><div class="wsl-n">${x.n}${x===best?' <span class="wss-t">дешевле всего</span>':''}</div><div class="small muted">${x.avg?'ориентир, цены Росстата':x.have<x.tot?`есть ${x.have} из ${x.tot}, остальное — в другом магазине`:'есть всё'}${x.d!=null?' · '+distTxt(x.d)+' до ближайшего':''}</div></div><div style="text-align:right"><b class="num">≈${NBS}${rub(x.chk)}</b><div class="tiny ${x.chk<=WB?'ok-t':'warn-t'}">${x.chk<=WB?'в бюджете':'сверх бюджета'}</div></div></div>`).join('')}
      ${GEO?'':`<button class="li" style="width:100%;text-align:left" onclick="findNear()"><div class="ibox ok">${ic('pin')}</div><div style="flex:1;min-width:0"><div style="font-weight:650">Какие магазины ближе</div><div class="small muted">по геопозиции — она остаётся на телефоне</div></div><span class="chev">${ic('chev')}</span></button>`}</div>${srcNote()}`:''}
@@ -3303,7 +3304,7 @@ function openWeek(i){if(!KIT){sheet('Меню на неделю','<div class="ca
    ${(()=>{const wd=(new Date().getDay()+6)%7,c=Math.max(wd,WKD>5?wd:WKD),L=prepPlan(c);return L.length?`<button class="wkc tap prep-in" onclick="openPrep(${c})"><div class="wkc-i">${ic('bowl')}</div><div class="wkc-t"><b>Готовка впрок</b><span>${WDV[c]}: ${pl(L.length,'блюдо','блюда','блюд')} на 3 дня за один раз</span></div><span class="chev">${ic('chev')}</span></button>`:''})()}
    <button class="btn ghost" onclick="wkBuild(S.wk.days.flatMap(wkIds));openWeek()">Собрать всё меню заново</button>
    ${k>1?`<button class="wkc tap" style="margin-top:10px" onclick="openFam()"><div class="wkc-i">${ic('people')}</div><div class="wkc-t"><b>Семья · ${pl(k,'человек','человека','человек')}</b><span>${famOn()?'порции — по норме каждого':'укажите возраст и цель — посчитаем порцию каждому'}</span></div><span class="chev">${ic('chev')}</span></button>`:''}
-   <div class="concept">${famOn()?'Калории дня — ваши; порции семьи — по норме каждого, продукты — на всех':`Порции — на одного${k>1?`; в списке продуктов — на ${pl(k,'человека','человек','человек')}`:''}`} · калории и цены считает код · не медицинская консультация</div>`);SHEET_FN=()=>openWeek();SHEET_FN.wk=1;kitchenLoad()}
+   <div class="concept">${famOn()?'Калории дня — ваши; порции семьи — по норме каждого, продукты — на всех':`Порции — на одного${k>1?`; в списке продуктов — на ${pl(k,'человека','человек','человек')}`:''}`} · не медицинская консультация</div>`);SHEET_FN=()=>openWeek();SHEET_FN.wk=1;kitchenLoad()}
 /* фото «перелетает» из строки списка в шапку карточки (общий элемент): копия летит вместе со шторкой — сдвиг, масштаб и обрезка (clip-path),
    только transform и clip-path; потом фото в карточке мягко отстаёт при прокрутке (параллакс). «Уменьшить движение» — без этого */
 let DFROM=null;
@@ -3489,7 +3490,7 @@ function openShopList(){const P=dayPlan(),all={},k=people();P.slots.forEach(({d}
     return `<div class="li" style="${h?'opacity:.55':''}"><button style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;text-align:left" onclick="toggleGot('${id}')" aria-pressed="${got}" aria-label="${x.n}${got?', в корзине':''}"><div class="ibox ${got?'ok':''}">${ic(got?'check':'cart')}</div>
       <div style="flex:1;min-width:0"><div style="font-weight:600;${got?'text-decoration:line-through':''}">${x.n} · ${gramsTxt(id,Math.round(g))}</div><div class="tiny muted">${h?'есть дома — не считаем':buy}</div></div></button>
       <div style="text-align:right;flex:none"><div class="num" style="white-space:nowrap">${h||!p?'':'≈'+NBS+rub(p.r*g/1000*RESERVE)}</div><button class="tiny" style="color:var(--accent-text);font-weight:650" onclick="toggleHave('${id}')">${h?'купить':'есть дома'}</button></div></div>`};
-  sheet('Список покупок',`<div class="small muted" style="margin:0 4px 10px">На ${P.slots.map(x=>x.d.n.toLowerCase()).join(', ')}${k>1?` — на ${pl(k,'человека','человек','человек')}`:''}. Отмечайте купленное; «есть дома» убирает продукт из суммы.</div>
+  sheet('Список покупок',`<div class="small muted" style="margin:0 4px 10px">На ${P.slots.map(x=>x.d.n.toLowerCase()).join(', ')}${k>1?` — на ${pl(k,'человека','человек','человек')}`:''}.</div>
    ${c?`<div class="grid2"><div class="card" style="margin:0"><div class="small muted">Блюда сегодня${k>1?" · на "+k:""}</div><div class="num" style="font-size:24px">≈${NBS}${rub(c.r)}</div><div class="tiny muted">сколько уйдёт продуктов</div></div><div class="card" style="margin:0"><div class="small muted">Чек в магазине${k>1?" · на "+k:""}</div><div class="num" style="font-size:24px">≈${NBS}${rub(c.chk)}</div><div class="tiny muted">за целые упаковки</div></div></div>`:''}
    <div class="card list">${Object.entries(all).map(row).join('')}</div>
    ${hasPrices()?`<h2>Где выгоднее</h2><div class="card list">${chainList(P.ing,planFam(P))}</div>${srcNote()}`:''}`);SHEET_FN=openShopList;try{localStorage.setItem('mt-shoplist',$('#sbody').innerHTML)}catch(_){}}
@@ -3508,7 +3509,7 @@ const cityName=()=>S.city&&S.city[1]===region()?S.city[0]:null;
 function placeTxt(){const c=cityName();return c?c+(c!==regName(region())?' · '+regName(region()):''):regName(region())}
 function openRegion(q=''){const R=KIT?KIT.regions:[],k=norm_(q),C=CITIES||[];
   const cities=k.length>=2?C.filter(c=>norm_(c[0]).startsWith(k)).sort((a,b)=>b[4]-a[4]).slice(0,12):[],regs=R.filter(r=>!k||norm_(r.n).includes(k));
-  sheet('Ваш город',`<div class="small muted" style="margin:0 4px 10px">Цены продуктов зависят от региона. Город определяет телефон; на сервер уходит только регион — не адрес и не координаты.</div>
+  sheet('Ваш город',`<div class="small muted" style="margin:0 4px 10px">Цены зависят от региона. На сервер уходит только регион — не адрес.</div>
    <button class="addopt" onclick="regionByGeo()"><div class="ibox ok">${ic('pin')}</div><div style="flex:1"><div class="title">Определить по геопозиции</div><div class="small muted">координаты остаются на телефоне</div></div></button>
    <input class="search" type="search" placeholder="Город или регион" value="${q.replace(/"/g,'&quot;')}" oninput="openRegion(this.value);const e=$('#sbody input');if(e){e.focus();e.setSelectionRange(e.value.length,e.value.length)}" style="margin:6px 0 10px">
    ${cities.length?`<div class="small muted" style="margin:0 4px 6px">Города</div><div class="card list">${cities.map(c=>`<button class="li" style="width:100%;text-align:left" onclick="setCity('${c[0].replace(/'/g,'')}','${c[1]}')"><div style="flex:1;min-width:0">${c[0]}<div class="tiny muted">${regName(c[1])}</div></div>${cityName()===c[0]?`<span class="pill ok">выбран</span>`:''}</button>`).join('')}</div>`:''}
@@ -3598,7 +3599,7 @@ function productPortion(id,g){
    <div class="row" style="gap:10px;margin-top:14px">${[['Белки',x.p*k,'var(--p-text)','var(--p-soft)'],['Жиры',x.f*k,'var(--f-text)','var(--f-soft)'],['Углеводы',x.c*k,'var(--c-text)','var(--c-soft)']].map(([l,v,col,soft])=>`<div style="flex:1;min-width:0;background:${soft};border-radius:12px;padding:10px"><div class="small muted">${l}</div><div class="num" style="font-size:20px;color:${col}">${fmt(v)} г</div></div>`).join('')}</div></div>
    <div class="card"><div class="row between"><span class="muted small">Сколько съели</span><span class="num" style="font-size:22px">${g} г</span></div><input type="range" min="10" max="${Math.max(400,g*2)}" step="5" value="${g}" oninput="const c=this.closest('.card').querySelector('.num');if(c)c.textContent=this.value+' г'" onchange="productPortion('${id}',+this.value)">
     <div class="chips">${[50,100,150,200,300].map(v=>`<button class="chip ${g===v?'on':''}" onclick="productPortion('${id}',${v})">${v} г</button>`).join('')}</div></div>
-   ${x.odd?`<div class="small" style="margin:0 4px 8px;color:var(--warn-text)">Цифры этикетки не сходятся (по составу ≈${fmt(x.calcK)} ккал на 100 г) — проверьте упаковку</div>`:''}<div class="src" style="margin:0 4px 10px">Источник: ${(x.src||'база приложения').replace(/;?\s*цифры по памяти,?\s*проверить/i,' · цифры ещё сверяем с таблицей')} · считает код: ${x.kcal?'ккал на 100 г × граммы':'Б×4 + Ж×9 + У×4'}</div>
+   ${x.odd?`<div class="small" style="margin:0 4px 8px;color:var(--warn-text)">Цифры этикетки не сходятся (по составу ≈${fmt(x.calcK)} ккал на 100 г) — проверьте упаковку</div>`:''}<div class="src" style="margin:0 4px 10px">Источник: ${(x.src||'база приложения').replace(/;?\s*цифры по памяти,?\s*проверить/i,' · цифры ещё сверяем с таблицей')}</div>
    ${addWhere()}<button class="btn" onclick="logProduct()">Записать в дневник</button>${(()=>{const fe=prodEntry(x,g),on=isFav(fe);return `<button class="btn sec fav-b${on?' on':''}" style="margin-top:8px" onclick="favTog(prodEntry(DB.products.find(p=>p.id==='${id}'),${g}));productPortion('${id}',${g})">${ic('star')}${on?'В избранном':'В избранное'}</button>`})()}${x.alc?`<div class="small muted" style="margin:8px 4px 0;text-align:center">Отметим в итоге дня как «алкоголь»</div>`:''}<button class="btn ghost" onclick="openSearch('${x.n.replace(/'/g,'')}')">Назад к поиску</button>`);
 }
 function logProduct(){S.foodN=(S.foodN||0)+1;if(S.foodN===1)setTimeout(remOffer,2400);const x=DB.products.find(p=>p.id===PP.id),e=logPush(prodEntry(x,PP.g));S.entries=(S.entries||0)+1;logDone(e.k)}
@@ -3653,7 +3654,7 @@ function openBarcode(){
    ${can?`<div class="plate" style="aspect-ratio:4/3;background:#111;margin-bottom:10px"><video id="bcv" playsinline muted autoplay style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></video><div class="scanline"></div><div class="capt"><span class="small" id="bcs">Ищем штрихкод…</span></div></div>`:''}
    <div class="card" style="padding:4px 18px"><div class="field"><label>Цифры штрихкода</label><input type="tel" id="bcin" inputmode="numeric" placeholder="4607025392651" autocomplete="off" onkeydown="if(event.key==='Enter')bcLookup(this.value)"></div></div>
    <button class="btn" onclick="bcLookup($('#bcin').value)">Найти продукт</button>
-   <div class="concept">Open Food Facts — открытая база, данные с этикеток, которые загружают люди. Если продукта нет — перепишите цифры с этикетки, и мы сохраним его в вашу базу.</div>`);
+   <div class="concept">Данные с этикеток, их загружают люди. Нет продукта — перепишите цифры с упаковки, сохраним его у вас.</div>`);
   if(can)bcCamera();
 }
 async function bcCamera(){
@@ -3697,7 +3698,7 @@ function openScan(){
     <input type="file" accept="image/*" style="display:none" onclick="scanMark()" onchange="gotPhoto(this)"></label>
    ${DEV.inApp?`<div class="small muted" style="margin:10px 4px 0;text-align:center">${INAPP_HINT}</div>`:''}
    <button class="btn sec" style="margin-top:12px" onclick="openSearch()">${ic('search')} Найти в базе продуктов и блюд</button>
-   <div class="small muted" style="margin:14px 4px 8px">Или пример для показа:</div>
+   <div class="small muted" style="margin:14px 4px 8px">Или попробуйте на примере:</div>
    ${Object.entries(DISHES).filter(([,d])=>d.img).map(([id,d])=>`<button class="opt" onclick="recognize('${id}')">${plateMini(d)}<div style="flex:1"><div style="font-weight:700">${d.name}</div><div class="small muted">${d.store?'магазинное блюдо из нашей базы':'домашнее блюдо'}</div></div><span class="chev">${ic('chev')}</span></button>`).join('')}`);
 }
 function plateMini(d){return `<div class="thumb"><i style="background:conic-gradient(${d.tone[0]} 0 45%,${d.tone[1]} 45% 80%,${d.tone[2]} 80% 100%)"></i>${pic(d.img,d.name)}</div>`}
@@ -3728,7 +3729,7 @@ async function loadClip(onStatus){
   let tick=Date.now(),dl=true,imp=false,dog=null;const stall=new Promise((_,rej)=>{dog=setInterval(()=>{if(dl&&Date.now()-tick>(imp?45000:150000))rej(new Error('нет связи: загрузка модели остановилась'))},3000)});
   // мало свободного места (<300 МБ): лёгкая модель и без записи в кэш — иначе Safari не может её сохранить и вкладка падает
   try{const e=navigator.storage&&navigator.storage.estimate&&await navigator.storage.estimate();loadClip.lowSpace=!!(e&&e.quota&&e.quota-(e.usage||0)<300e6)}catch(e){}
-  CLIPLOAD=Promise.race([stall,(async()=>{say('Загружаем движок нейросети (один раз)…');const T=await import(TFJS_URL);tick=Date.now();imp=true;T.env.allowRemoteModels=false;T.env.allowLocalModels=true;if(loadClip.lowSpace||loadClip.noCache)T.env.useBrowserCache=false;
+  CLIPLOAD=Promise.race([stall,(async()=>{say('Готовим распознавание (один раз)…');const T=await import(TFJS_URL);tick=Date.now();imp=true;T.env.allowRemoteModels=false;T.env.allowLocalModels=true;if(loadClip.lowSpace||loadClip.noCache)T.env.useBrowserCache=false;
     // тяжёлые файлы (модель 72 МБ и движок 27 МБ) — с нашего сервера в России: GitHub из России по мобильной сети отдаёт их еле-еле.
     // Выбранный источник запоминаем: без сети модель берётся из памяти телефона по тому же адресу
     let hv=S.heavyBase;if(!hv){hv='gh';try{const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),4000);const r=await fetch(HEAVY+'models/mobileclip-s2/config.json',{signal:ac.signal,cache:'no-store'});clearTimeout(tm);if(r.ok)hv='ru'}catch(e){}}
@@ -3748,7 +3749,7 @@ async function loadClip(onStatus){
     const liteDev=db.lite&&clipPlan()==='lite',dir=db.dir||'mobileclip',mb=liteDev?db.lite.mb:(db.mb||72);
     // проценты — по сумме всех файлов модели (событие progress_total библиотеки); если его нет — по самому файлу .onnx. Маленький config.json первым не даёт «100%»
     let last=-9,tot=false;const cb=p=>{let pc;if(p.status==='progress_total'){tot=true;pc=p.progress}else if(p.status==='progress'&&!tot&&/\.onnx$/.test(p.file||''))pc=p.progress;else return;
-      if(!(pc>=0))return;tick=Date.now();if(pc>=99.9){if(last<100){last=100;dl=false;say('Скачано. Запускаем нейросеть в телефоне — обычно 5–15 секунд, один раз за запуск приложения')}return}
+      if(!(pc>=0))return;tick=Date.now();if(pc>=99.9){if(last<100){last=100;dl=false;say('Скачано. Запускаем распознавание — обычно 5–15 секунд, один раз за запуск приложения')}return}
       if(pc-last>=1){last=pc;const all=tot&&p.total>1e6?p.total/1e6:mb,got=tot&&p.loaded>=0?p.loaded/1e6:all*pc/100,w=loadClip.wmb||0;
         say(`Скачиваем распознавание: ${Math.floor(w+got)} из ${Math.round(w+all)} МБ (${Math.floor((w+got)/(w+all)*100)}%) — один раз, дальше без интернета`)}};
     const load=dt=>T.CLIPVisionModelWithProjection.from_pretrained(dir,{dtype:dt,device:'wasm',progress_callback:cb});
@@ -3765,7 +3766,7 @@ async function loadClip(onStatus){
     if(S.heavyBase!==loadClip.hv){S.heavyBase=loadClip.hv;save()} // модель скачалась отсюда — дальше берём из памяти по этому адресу
     const fn=async src=>{const img=await T.RawImage.read(src);const out=await model(await proc(img));const e=Float32Array.from(out.image_embeds.data);let s=0;for(const x of e)s+=x*x;s=Math.sqrt(s)||1;return e.map(x=>x/s)};
     // пробный прогон на маленькой картинке: «готово» говорим, только если нейросеть реально считает (на iPhone 12 «скачано», а распознавание молчало)
-    say('Проверяем нейросеть…');{const c=document.createElement('canvas');c.width=c.height=32;const g=c.getContext('2d');g.fillStyle='#c84';g.fillRect(0,0,32,32);
+    say('Проверяем распознавание…');{const c=document.createElement('canvas');c.width=c.height=32;const g=c.getContext('2d');g.fillStyle='#c84';g.fillRect(0,0,32,32);
       try{const e=await fn(c.toDataURL('image/png'));if(!e||!e.length||!isFinite(e[0]))throw new Error('пустой ответ')}catch(e){throw new Error('прогон нейросети не прошёл: '+(e&&e.message||e))}}
     // сохранилась ли модель в памяти телефона (иначе в следующий раз скачается заново)
     loadClip.saved=false;try{loadClip.saved=!T.env.useBrowserCache?false:(await (await caches.open('transformers-cache')).keys()).some(r=>/mobileclip/i.test(r.url))}catch(e){}
@@ -3804,7 +3805,7 @@ async function photoFlow(){
   const tok=photoFlow.n=(photoFlow.n||0)+1,sc=SC,alive=()=>tok===photoFlow.n&&SC===sc&&$('#sheet').classList.contains('on');
   sheet('Узнаём блюдо…',`<div class="plate" style="margin-bottom:12px"><img src="${SC.photo}" alt=""><div class="scanline"></div></div>
     <div class="card"><div class="row between"><span class="small muted" id="fdst">Смотрим на фото…</span></div><div class="sk" style="width:60%;margin-top:10px"></div><div class="sk" style="width:85%;margin-top:8px"></div></div>
-    <div class="small muted" style="text-align:center">Модель работает в телефоне, фото никуда не отправляется · калории считает код по базе</div>`);
+    <div class="small muted" style="text-align:center">Фото не покидает телефон</div>`);
   // фото, которое браузер не может показать (часто HEIC с Android/компьютера), модель тоже не прочтёт — говорим честно, а не «модель не загрузилась»
   const opens=await new Promise(r=>{const im=new Image();im.onload=()=>r(im.naturalWidth>0);im.onerror=()=>r(false);im.src=SC.photo});
   if(!alive())return;
@@ -3829,7 +3830,7 @@ async function photoFlow(){
     ${top===null?`${/нет связи|fetch|network|load/i.test(lerr)&&!CLIP?`<div class="card small" style="margin-bottom:8px"><b>Загрузка модели оборвалась.</b> <span class="muted">Похоже, пропала связь. Скачанное не пропадает — «Повторить» продолжит.</span></div><button class="btn" style="margin-bottom:10px" onclick="photoFlow()">Повторить</button>`:`<div class="card small"><b>${loadClip.lowSpace||/quota|storage/i.test(lerr)?'На телефоне мало свободного места — освободите 300 МБ или выберите блюдо поиском.':'Не получилось распознать на этом телефоне.'}</b> <span class="muted">${loadClip.lowSpace||/quota|storage/i.test(lerr)?'Фото сохранится в записи.':clipUnsupported()||'Нейросети не хватило памяти или браузер её не запустил.'} Найдите блюдо по названию — это быстро.${DEV.inApp?' '+INAPP_HINT:IOS?' Если открыто не в Safari — откройте сайт в Safari.':''}</span></div>`}`:rows?`${loadClip.saved===false?'<div class="small muted" style="margin:0 4px 8px">Нейросеть загружена, но не сохранилась: на телефоне мало места — в следующий раз скачается заново.</div>':''}<div class="small muted" style="margin:0 4px 8px">Похоже на это из нашей базы — выберите, что на самом деле</div>${rows}`:`<div class="card small muted">Не узнали. Снимите ближе и при хорошем свете или найдите в базе — ваш выбор запомнится.</div>`}
     <button class="btn sec" onclick="openSearch()">${ic('search')} Найти в базе по названию</button>
     <button class="btn ghost" onclick="openBarcode()">Это упаковка? Штрихкод</button>
-    <div class="concept">Модель MobileCLIP (Apple, открытая), дообученная на ${CLIPDB&&CLIPDB.db.nphoto?CLIPDB.db.nphoto.toLocaleString('ru-RU'):'тысячах'} фото еды, сравнивает снимок со всеми ${CLIPDB?CLIPDB.db.items.length:'500+'} позициями нашей базы — ничего чужого предложить не может. Каждый ваш выбор запоминается в телефоне${nref?` (уже ${nref})`:''} и в следующий раз подсказка точнее. Состав и калории всегда из базы, а не «на глаз».</div>`);
+    <div class="concept">Фото не покидает телефон. Ваш выбор запоминается — в следующий раз узнаем точнее.</div>`);
 }
 function groupTitle(names){ // общее начало названий близнецов до целого слова: «Кефир 1%», «Кефир 2,5%» → «Кефир»
   let p=names[0];for(const n of names){let k=0;while(k<p.length&&k<n.length&&p[k]===n[k])k++;p=p.slice(0,k)}
@@ -4007,7 +4008,7 @@ function mrPaint(){const x=id=>DB.products.find(p=>p.id===id);
    <input id="mrq" class="search" type="search" placeholder="Добавить продукт: «гречка», «курица»…" oninput="mrSearch(this.value)" style="margin:4px 0 8px"><div id="mrres"></div>
    <button class="btn" style="margin-top:10px" onclick="mrSave()">${MR.id?'Сохранить':'Сохранить рецепт'}</button>
    ${MR.id?`<button class="btn ghost" onclick="mrDel()">Удалить рецепт</button>`:''}
-   <div class="small muted" style="text-align:center;margin-top:6px">Калории считает код по базе продуктов, не «на глаз»</div>`);SHEET_FN=mrPaint}
+   <div class="small muted" style="text-align:center;margin-top:6px">Калории — по базе продуктов</div>`);SHEET_FN=mrPaint}
 function mrUpd(all){const t=$('#mrtot');if(t)t.innerHTML=mrTotHTML();const p=$('#mr_por');if(p)p.textContent=MR.por;if(all){const L=$('#mrlist');if(L)L.querySelectorAll('.mr-it').forEach((el,i)=>{const it=MR.items[i],x=it&&DB.products.find(p=>p.id===it[0]);if(x)el.querySelector('.tiny').textContent=fmt((x.kcal||kcalOf(x))*it[1]/100)+' ккал'})}haptic(5)}
 function mrSearch(q){const box=$('#mrres');if(!box)return;const r=norm_(q)?searchDB(q).products.slice(0,8):[];box.innerHTML=r.map(p=>`<button class="opt" onclick="mrAdd('${p.id}')"><div class="ibox c">${ic('plus')}</div><div style="flex:1"><div style="font-weight:700">${esc(p.n)}</div><div class="small muted">${Math.round(p.kcal||kcalOf(p))} ккал на 100 г</div></div></button>`).join('')||(norm_(q)?'<div class="card small muted">В базе нет — попробуйте другое слово</div>':'')}
 function mrAdd(id){const x=DB.products.find(p=>p.id===id);if(!x)return;const i=MR.items.findIndex(it=>it[0]===id);if(i>=0)MR.items[i][1]+=100;else MR.items.push([id,(x.portion&&x.portion.g)||100]);haptic(8);const y=$('#sbody').scrollTop;mrPaint();$('#sbody').scrollTop=y;const q=$('#mrq');if(q){q.value='';q.focus({preventScroll:true})}}
@@ -4142,7 +4143,7 @@ function vGym(){
   ${(tenIdx(),wuBlock('Разминка · '+Math.max(1,Math.round(blkSecs(pg.wu)/60))+' мин',pg.wu,'Спокойно, без веса — разогреть суставы и мышцы'))}
   ${pg.ex.length?'<h2>Основная часть</h2>'+woWhy(pg)+woLong(pg):''}
   ${pg.ex.map((x,i)=>`${new Set(pg.ex.map(woBlk)).size>1&&(!i||woBlk(pg.ex[i-1])!==woBlk(x))?`<div class="wc-blk">${WBLK[woBlk(x)]}</div>`:''}<div class="card">
-    <div class="vid" onclick="openExercise(${i})">${pic(exPic(x),x[0])}<div class="cap">как делать и какие мышцы работают</div></div>
+    <div class="vid" onclick="openExercise(${i})">${pic(exPic(x),x[0])}<div class="cap">как делать</div></div>
     <div style="margin-top:12px"><div class="row between"><div class="title">${x[0]}</div>${exDone(i,x)?'<span class="pill ok" style="padding:3px 9px;font-size:11px">готово</span>':''}</div><div class="small muted">${x[1]}${x[7]?' · '+x[7]:''}${restTxt(x)?' · отдых '+restTxt(x):''}</div></div><div class="small muted" style="margin-top:6px">${x[2]}</div>
     <div class="row" style="gap:10px;margin-top:12px">${Array.from({length:setsOf(x)},(_,j)=>`<button class="setdot ${S.sets[i+'-'+j]?'on':''}" onclick="toggleSet(${i},${j})">${S.sets[i+'-'+j]?ic('check','style="width:18px;height:18px"'):j+1}</button>`).join('')}
      <button class="btn sec sm" style="margin-left:auto;white-space:nowrap;padding:0 14px" onclick="${x[4]?`loadEX().then(()=>openEx('${x[4]}'))`:`openExercise(${i})`}">${ic('play','style="width:18px;height:18px"')} Как делать</button></div>
@@ -4150,7 +4151,7 @@ function vGym(){
   ${wuBlock('Растяжка · '+Math.max(1,Math.round(blkSecs(pg.cd)/60))+' мин',pg.cd,'Плавно, без боли, дышите ровно')}
   ${S.extra.length?`<h2>Добавлено из упражнений 3D</h2><div class="card list">${S.extra.map(id=>{const x=EXL&&EXL.find(e=>e.id===id);return `<button class="exrow" onclick="${x?`openEx('${id}')`:`loadEX().then(()=>openEx('${id}'))`}"><div class="th">${exThumb(id)}</div><div class="t"><b>${x?x.n:id.replace(/_/g,' ')}</b><small>${x?(EXEQ[x.eq]||'Без инвентаря')+' · 3 подхода':'из атласа'}</small></div><span class="chev">${ic('chev')}</span></button><div class="row" style="gap:10px;padding:0 0 12px 72px">${[0,1,2].map(j=>`<button class="setdot ${S.sets['x'+id+'-'+j]?'on':''}" onclick="toggleX('${id}',${j})">${S.sets['x'+id+'-'+j]?ic('check','style="width:18px;height:18px"'):j+1}</button>`).join('')}</div>`}).join('')}</div>`:''}
   ${restDay()&&!weekFull()?`<div class="lock" style="background:var(--warn-soft);margin-top:6px"><span style="color:var(--warn-text)">${ic('heart')}</span><div><b>Сегодня лучше отдохнуть.</b> Вчера была тренировка, а новичкам нужен день между занятиями. Подойдёт прогулка.</div></div>`:''}${doneToday()||weekFull()?`<div class="btn sec" style="margin-top:6px;pointer-events:none">${ic('check')} ${doneToday()?'Сделано сегодня':'Неделя выполнена'}</div>`:`<button class="btn ${restDay()?'sec':doneSets&&doneSets===allSets?'ready':''}" onclick="finishWorkout()" style="margin-top:6px">${restDay()?'Всё равно записать тренировку':'Завершить тренировку'}</button>`}
-  <div class="card tap row" style="margin-top:14px" onclick="openForm()"><div class="ibox tech">${ic('ruler')}</div><div style="flex:1"><div class="title" style="font-size:16px">Проверить технику по видео</div><div class="small muted">Снимите себя сбоку — телефон найдёт ошибки и покажет, как надо</div></div><span class="chev">${ic('chev')}</span></div>
+  <div class="card tap row" style="margin-top:14px" onclick="openForm()"><div class="ibox tech">${ic('ruler')}</div><div style="flex:1"><div class="title" style="font-size:16px">Проверить технику по видео</div><div class="small muted">Снимите подход сбоку — подскажем, что поправить</div></div><span class="chev">${ic('chev')}</span></div>
   <div class="card tap row" style="margin-top:0" onclick="openHome()"><div class="ibox ok">${ic('home')}</div><div style="flex:1"><div class="title" style="font-size:16px">${pg.place==='home'?'Мало времени?':'Не получается в зал?'}</div><div class="small muted">${pg.place==='home'?'Короткая тренировка на 20 минут без инвентаря':'Домашняя тренировка на 20 минут без инвентаря'}</div></div><span class="chev">${ic('chev')}</span></div>`;
 }
 function toggleX(id,j){const k='x'+id+'-'+j;S.sets[k]=!S.sets[k];if(S.sets[k]&&!S.startedAt)S.startedAt=Date.now();save();haptic(S.sets[k]?12:5);rerender();if(S.sets[k]&&!(j===2&&id===S.extra[S.extra.length-1]))startRest()}
@@ -4178,7 +4179,7 @@ function woLog(i){const x=program().ex[i],c=woCur(i,x),td=today0();S.lift=S.lift
   S.lift[x[0]]={d:td,w:exW(x)?c.w:0,r:c.r,n:L&&L.d===td?(L.n||0)+1:1,prev:L?(L.d===td?L.prev:{d:L.d,w:L.w,r:L.r,n:L.n}):null};
   WO.logged=1} // вес и повторы подхода — в дневник их запишет toggleSet
 function woRpe(v){if(!WO)return;WO.rpe=WO.rpe===v?null:v;haptic(4);keepScroll(()=>openExercise(WO.i))}
-function woTip(x){const L=(S.lift||{})[x[0]],td=today0(),p0=L&&(L.d===td?L.prev:L),p=p0&&{w:+p0.w||0,r:+p0.r||0,n:+p0.n||0},ld=program().ld,rir=WLOAD[ld][1];if(!p)return exW(x)?`<div class="wo-tip">${ic('spark')}<span>Подберите вес, с которым ${exR(x)} повторов даются с запасом ${ld==='rec'?'4–5':rir} — RPE ${WLOAD[ld][2]}</span></div>`:'';
+function woTip(x){const L=(S.lift||{})[x[0]],td=today0(),p0=L&&(L.d===td?L.prev:L),p=p0&&{w:+p0.w||0,r:+p0.r||0,n:+p0.n||0},ld=program().ld,rir=WLOAD[ld][1];if(!p)return exW(x)?`<div class="wo-tip">${ic('spark')}<span>Подберите вес, с которым ${exR(x)} повторов даются с запасом ${ld==='rec'?'4–5':rir} — тяжесть ${WLOAD[ld][2]} из 10</span></div>`:'';
   if(exW(x)&&p.w&&(ld==='rec'||ld==='light')){const st=wStep(x),v=Math.max(st,Math.round(p.w*(ld==='rec'?.8:.9)/st)*st);return `<div class="wo-tip">${ic('spark')}<span>В прошлый раз ${dec(p.w)} кг × ${p.r} — сегодня ${ld==='rec'?'восстановительная':'лёгкая'}: ≈ ${dec(v)} кг, ${WLOAD[ld][3].split(',')[0]}</span></div>`}
   const tr=exR(x),w=exW(x)&&p.w,all=(p.n||0)>=setsOf(x)&&p.r>=tr;
   return `<div class="wo-tip">${ic('spark')}<span>В прошлый раз ${w?dec(p.w)+' кг × ':''}${p.r}${all?(w?` — попробуйте ${dec(p.w+wStep(x))} кг`:' — добавьте 1–2 повтора'):ld==='heavy'&&w&&p.r>=tr-1?` — попробуйте ${dec(p.w+wStep(x))} кг, запас 1 повтор`:' — повторите и доделайте все подходы'}</span></div>`}
@@ -4193,9 +4194,9 @@ function openExercise(i){
    <div class="plate wo-pic" style="aspect-ratio:16/10">${pic(exPic(x),x[0])}${x[4]?`<button class="wo-3d" onclick="loadEX().then(()=>openEx('${x[4]}'))">${ic('play')} Как делать · 3D</button>`:''}</div>
    <div class="card wo-c"><div class="wo-eb">Упражнение ${i+1} из ${pg.ex.length} · ${x[1]}${x[7]?' · '+x[7]:''}</div>
     <div class="wo-n num">${cur>=0?`Подход ${cur+1} из ${ns}`:'Все подходы сделаны'}</div><div class="muted wo-h">${x[2]}</div>
-    ${c?`<div class="wo-log">${exW(x)?`<div class="wo-st"><span>Вес, кг</span><div class="ctl"><button class="rb" onclick="woAdj('w',-${wStep(x)})" aria-label="Вес меньше">−</button><b class="num">${c.w?dec(c.w):'—'}</b><button class="rb" onclick="woAdj('w',${wStep(x)})" aria-label="Вес больше">+</button></div></div>`:''}<div class="wo-st"><span>Повторы</span><div class="ctl"><button class="rb" onclick="woAdj('r',-1)" aria-label="Меньше повторов">−</button><b class="num">${c.r}</b><button class="rb" onclick="woAdj('r',1)" aria-label="Больше повторов">+</button></div></div><div class="wo-rpe" role="group" aria-label="Тяжесть подхода, RPE — по желанию"><span>Тяжесть · RPE<small>по желанию</small></span><div>${[6,7,8,9,10].map(v=>`<button class="${c.rpe===v?'on':''}" aria-pressed="${c.rpe===v}" onclick="woRpe(${v})">${v}</button>`).join('')}</div></div></div>${woTip(x)}`:''}
+    ${c?`<div class="wo-log">${exW(x)?`<div class="wo-st"><span>Вес, кг</span><div class="ctl"><button class="rb" onclick="woAdj('w',-${wStep(x)})" aria-label="Вес меньше">−</button><b class="num">${c.w?dec(c.w):'—'}</b><button class="rb" onclick="woAdj('w',${wStep(x)})" aria-label="Вес больше">+</button></div></div>`:''}<div class="wo-st"><span>Повторы</span><div class="ctl"><button class="rb" onclick="woAdj('r',-1)" aria-label="Меньше повторов">−</button><b class="num">${c.r}</b><button class="rb" onclick="woAdj('r',1)" aria-label="Больше повторов">+</button></div></div><div class="wo-rpe" role="group" aria-label="Тяжесть подхода, RPE — по желанию"><span>Насколько тяжело<small>по желанию, 10 — предел</small></span><div>${[6,7,8,9,10].map(v=>`<button class="${c.rpe===v?'on':''}" aria-pressed="${c.rpe===v}" onclick="woRpe(${v})">${v}</button>`).join('')}</div></div></div>${woTip(x)}`:''}
     <div class="row wo-dots">${sd.map((on,j)=>`<button class="setdot${on?' on':''}" onclick="toggleSet(${i},${j})" aria-pressed="${on}" aria-label="Подход ${j+1}">${on?ic('check','style="width:20px;height:20px"'):j+1}</button>`).join('')}</div>
-    <div class="tiny muted" style="margin-top:10px">${restTxt(x)?`После подхода — отдых ${restTxt(x)}: ${woRestWhy(x)}`:'Отдых — внутри интервала'}${pg.min>=90?' · вода каждые 20 мин':''}</div></div>
+    <div class="tiny muted" style="margin-top:10px">${restTxt(x)?`Отдых после подхода — ${restTxt(x)}`:'Отдых — внутри интервала'}${pg.min>=90?' · вода каждые 20 мин':''}</div></div>
    ${main}
    <button class="btn ghost" onclick="openTrainer('${x[0]}')">${ic('cam')} Проверить технику камерой</button>`);SHEET_FN=()=>openExercise(i);
 }
@@ -4236,7 +4237,7 @@ function finishWorkout(force,homeMin){if(!S.remAsked)setTimeout(remOffer,3000);
    ${bu?`<div class="card burnx" style="margin-top:0"><div class="row between"><span class="small muted">Расход по таблицам MET</span><b class="num">≈ ${u(kcal,'ккал')}</b></div><div class="small muted" style="margin-top:6px;line-height:1.4">${nb&&nb.extra?`К норме на сегодня добавили <b style="color:var(--text)">+${u(nb.extra,'ккал')}</b>: белок +${u(nb.dp,'г')}, углеводы +${u(nb.dc,'г')}. Обычная тренировка уже заложена в норму, поэтому добавляем только превышение, не больше ${Math.round(nb.cf*100)} %.`:'Такая тренировка уже заложена в норму на день — добирать отдельно не нужно.'}</div></div>
    <div id="postd"></div>`:''}
    <div class="grid2"><div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:26px">${Math.min(S.done.length,weekPlanCount())}/${weekPlanCount()}</div><div class="small muted">на этой неделе</div></div><div class="card" style="margin:0;text-align:center"><div class="num" style="font-size:26px">${S.workouts}</div><div class="small muted">${pl(S.workouts,'тренировка','тренировки','тренировок').replace(/^\S+\s/,'')+' всего'}</div></div></div>
-   <div class="card" style="margin-top:12px">${(()=>{const nx=pg.days.findIndex((d,i)=>i<weekPlanCount()&&!S.done.includes(i));return nx<0?'Все тренировки этой недели сделаны. Новая неделя — с понедельника.':'Следующая — «'+pg.days[nx]+'». Привычка закрепляется в среднем за 66 дней (Lally, 2010): держите ритм '+pl(pg.days.length,'тренировка','тренировки','тренировок')+' в неделю.'})()}</div>
+   <div class="card" style="margin-top:12px">${(()=>{const nx=pg.days.findIndex((d,i)=>i<weekPlanCount()&&!S.done.includes(i));return nx<0?'Все тренировки этой недели сделаны. Новая неделя — с понедельника.':'Следующая — «'+pg.days[nx]+'». Привычка закрепляется примерно за 2 месяца — держите ритм '+pl(pg.days.length,'тренировка','тренировки','тренировок')+' в неделю.'})()}</div>
    <button class="btn" onclick="closeSheet();if(S.tab==='today'){rerender();toTop()}else go('today')">Отлично</button>${bu?'<div class="concept">Расход — по таблицам MET, приблизительно · не&nbsp;медицинская консультация</div>':''}`);
   if(bu)fillPost();
 }
@@ -4314,7 +4315,7 @@ function openEx(id){
    ${t3?'':(nr=>nr?`<button class="card tap row ex3n-c" onclick="openEx('${nr.id}')"><div class="ibox accent">${ic('muscle')}</div><div style="flex:1;min-width:0;text-align:left"><div class="small muted">Для этого упражнения нет 3D. Похожее с 3D:</div><div style="font-weight:650">${nr.n}</div></div><span class="chev">${ic('chev')}</span></button>`:'')(exNear3D(id))}
    <button class="btn" onclick="exFromCard('${id}')">${ic('ruler')} Проверить технику по видео</button>
    <button class="btn ${inPlan?'sec':'ghost'}" onclick="togglePlan('${id}',this)">${inPlan?'Убрать из плана на сегодня':'В план на сегодня'}</button>
-   ${t3?`<h2>Какие мышцы работают</h2><div class="card small">${mus.replace('tiny muted" style="margin-top:8px','" style="line-height:1.45')}<div class="tiny muted" style="margin-top:6px">На 3D-модели рабочие мышцы светятся изумрудным. Коснитесь мышцы на модели — расскажем о ней; «на весь экран» — покрутить, «Всё тело» — вся анатомия</div></div>`
+   ${t3?`<h2>Какие мышцы работают</h2><div class="card small">${mus.replace('tiny muted" style="margin-top:8px','" style="line-height:1.45')}<div class="tiny muted" style="margin-top:6px">Рабочие мышцы светятся зелёным. Коснитесь мышцы — расскажем о ней</div></div>`
        :`<h2>Какие мышцы работают</h2><div class="card">${gs.length?muscleMapLv(lv):'<div class="small muted">Для этого упражнения карта мышц не размечена</div>'}${mus}${gs.length?ATLAS_CR:''}</div>`}
    <h2>Как выполнять</h2><div class="card list">${x.steps.map((t,i)=>`<div class="li" style="align-items:flex-start"><span class="num" style="width:26px;color:var(--text3);font-size:17px">${i+1}</span><div style="flex:1;line-height:1.4">${t}</div></div>`).join('')}</div>
    <div class="concept">${t3?'3D-анатомия: BodyParts3D © DBCLS, Z-Anatomy, CC BY-SA 4.0 · ':''}описание — база free-exercise-db (свободная лицензия), перевод наш. При боли остановитесь · не медицинская консультация</div>`);
@@ -4339,12 +4340,12 @@ const MUSCLES={quads:'Квадрицепсы',glutes:'Ягодичные',hams:'
 let FV={ex:'auto',file:null};
 function openForm(){
   if((FV.ex==='auto'||String(FV.ex).startsWith('lib:'))&&!EXR.clip)setTimeout(async()=>{try{if((await (await caches.open('transformers-cache')).keys()).some(r=>/mobileclip/i.test(r.url)))loadExRecog().then(()=>loadExClip()).catch(()=>{})}catch(e){}},0); // модель уже в телефоне — поднимаем, пока человек снимает
-  sheet('Разбор техники по видео',`<div class="card small muted">Снимите себя сбоку, целиком в кадре, 2–5 повторов. Телефон разберёт движение сам, без отправки видео на сервер: точки суставов, углы, повторы. Это подсказка по технике, не медицинская консультация.</div>
+  sheet('Разбор техники по видео',`<div class="small muted" style="margin:0 4px 12px">Снимите 2–5 повторов сбоку, целиком в кадре. Видео не покидает телефон.</div>
    <div class="small muted" style="margin:0 4px 6px">Упражнение</div><div class="chips" style="margin-bottom:12px"><button class="chip ${FV.ex==='auto'?'on':''}" onclick="FV.ex='auto';openForm()">Определит сам</button>${String(FV.ex).startsWith('lib:')?`<button class="chip on">${fName(FV.ex)}</button>`:''}${Object.entries(FORM).map(([k,f])=>`<button class="chip ${FV.ex===k?'on':''}" onclick="FV.ex='${k}';openForm()">${f.n}</button>`).join('')}</div>
    ${FV.ex==='auto'?`<div class="small muted" style="margin:-4px 4px 12px">Камера сама узнает упражнение — вы подтвердите, и мы сравним с эталоном</div>`:''}
    <label class="card tap" style="display:block;text-align:center;padding:22px 16px;cursor:pointer"><div class="bigicon">${ic('cam')}</div><div class="title">Снять или выбрать видео</div><div class="small muted">до 20 секунд, сбоку, во весь рост</div><input type="file" accept="video/*" style="display:none" onchange="formFile(this)"></label>
    <button class="btn sec" onclick="formRun('squat.mp4','squat')">Показать на примере: присед</button>
-   <div class="concept">Распознавание суставов — MediaPipe Pose, работает в телефоне · правила техники считает код</div>`);
+   <div class="concept">Подсказка по технике, не медицинская консультация</div>`);
 }
 function formFile(inp){const f=inp.files&&inp.files[0];if(!f)return;if(FV.ex==='auto'&&!EXR.clip&&!(navigator.connection&&navigator.connection.saveData))loadExRecog().then(()=>loadExClip()).catch(()=>{}); // качается, пока идёт разбор движения
   formRun(URL.createObjectURL(f),FV.ex)}
@@ -4359,7 +4360,7 @@ async function loadPose0(){
   const vision=await m.FilesetResolver.forVisionTasks(LIB('mediapipe/wasm'));
   const pl=await m.PoseLandmarker.createFromOptions(vision,{baseOptions:{modelAssetPath:LIB('mediapipe/pose_landmarker_lite.task'),delegate:'CPU'},runningMode:'VIDEO',numPoses:1});
   // на процессоре: на видеокарте первый кадр компилировал шейдеры и замораживал экран на 2–13 с; лёгкой модели процессора хватает (~50 мс на кадр).
-  // короткий прогрев (~0,3 с) — сейчас, под «Запускаем модель разбора…»
+  // короткий прогрев (~0,3 с) — сейчас, под «Готовим разбор…»
   try{const c=document.createElement('canvas');c.width=c.height=64;c.getContext('2d').fillRect(0,0,64,64);POSE_TS+=1000;pl.detectForVideo(c,POSE_TS)}catch(e){}
   POSE=pl;return POSE;
 }
@@ -4367,12 +4368,12 @@ async function loadPose0(){
 async function posePrefetch(on){
   const fs=[['mediapipe/wasm/vision_wasm_internal.wasm',9423986],['mediapipe/pose_landmarker_lite.task',5777746]],n=fs.reduce((a,f)=>a+f[1],0);
   let hit=false;try{hit=!!(window.caches&&await caches.match(LIB(fs[1][0])))}catch(e){}
-  if(hit){on('Запускаем модель разбора…',null);return true}
-  if(!(navigator.serviceWorker&&navigator.serviceWorker.controller)){on('Загружаем модель разбора (один раз, ~15 МБ)…',null);return true} // без сервис-воркера наша копия не сохранится — не качаем дважды
-  on('Загружаем модель разбора (один раз, ~15 МБ)…',0);let got=0,shown=0,ok=0;
+  if(hit){on('Готовим разбор…',null);return true}
+  if(!(navigator.serviceWorker&&navigator.serviceWorker.controller)){on('Загружаем разбор техники (один раз, ~15 МБ)…',null);return true} // без сервис-воркера наша копия не сохранится — не качаем дважды
+  on('Загружаем разбор техники (один раз, ~15 МБ)…',0);let got=0,shown=0,ok=0;
   await Promise.all(fs.map(async([f,sz])=>{try{const r=await fetch(LIB(f));if(!r.ok||!r.body)return;let mine=0;const rd=r.body.getReader();
-    for(;;){const {done,value}=await rd.read();if(done){if(mine>=sz*.98)ok++;break}got+=value.length;mine+=value.length;const p=Math.floor(Math.min(1,got/n)*100);if(p-shown>=1){shown=p;on(`Скачиваем модель разбора: ${(got/1e6).toFixed(1).replace('.',',')} из ${(n/1e6).toFixed(1).replace('.',',')} МБ — один раз`,Math.min(p,99))}}}catch(e){}}));
-  on('Запускаем модель разбора…',null);return ok===fs.length}
+    for(;;){const {done,value}=await rd.read();if(done){if(mine>=sz*.98)ok++;break}got+=value.length;mine+=value.length;const p=Math.floor(Math.min(1,got/n)*100);if(p-shown>=1){shown=p;on(`Скачиваем разбор техники: ${(got/1e6).toFixed(1).replace('.',',')} из ${(n/1e6).toFixed(1).replace('.',',')} МБ — один раз`,Math.min(p,99))}}}catch(e){}}));
+  on('Готовим разбор…',null);return ok===fs.length}
 async function formRun(src,ex){
   FV.ex=ex;const f=FORM[ex],tok=formRun.n=(formRun.n||0)+1;
   sheet('Разбираем…',`<div class="plate" style="background:#111"><video id="fv" playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain"></video><canvas id="fc" style="position:absolute;inset:0;width:100%;height:100%;z-index:2"></canvas></div>
@@ -4693,8 +4694,8 @@ async function formResult(src,ex,S2,v,live){
    ${a.good.map(g=>`<div class="card row" style="padding:12px 16px"><span style="color:var(--ok-text)">${ic('check')}</span><div style="flex:1">${g}</div></div>`).join('')}
    <h2 style="margin-top:14px">Шаг за шагом на ваших кадрах</h2>${stepsHtml.join('')}
    <h2>Какие мышцы работают</h2><div class="card">${muscleMap(f.muscles)}<div class="tiny muted" style="margin-top:10px">Подсветка — по упражнению, не измерение активности</div>${ATLAS_CR}</div>
-   ${(()=>{const id=({squat:'Bodyweight_Squat',lunge:'Bodyweight_Walking_Lunge',pushup:'Pushups',plank:'Plank',deadlift:'Romanian_Deadlift',press:'Standing_Dumbbell_Press',bench:'Barbell_Bench_Press_-_Medium_Grip',row:'Bent_Over_Two-Dumbbell_Row',curl:'Dumbbell_Bicep_Curl'})[ex];return `<div class="vid" style="margin-top:12px" onclick="openTen('${id}')">${pic(tenPoster(id)||gymPic(f.img),f.n)}<div class="cap">эталон в 3D: как правильно и какие мышцы работают</div></div>`})()}
-   <div class="concept">Углы считаются по точкам суставов, точность зависит от ракурса и света · не медицинская консультация</div>
+   ${(()=>{const id=({squat:'Bodyweight_Squat',lunge:'Bodyweight_Walking_Lunge',pushup:'Pushups',plank:'Plank',deadlift:'Romanian_Deadlift',press:'Standing_Dumbbell_Press',bench:'Barbell_Bench_Press_-_Medium_Grip',row:'Bent_Over_Two-Dumbbell_Row',curl:'Dumbbell_Bicep_Curl'})[ex];return `<div class="vid" style="margin-top:12px" onclick="openTen('${id}')">${pic(tenPoster(id)||gymPic(f.img),f.n)}<div class="cap">как правильно — в 3D</div></div>`})()}
+   <div class="concept">Точность зависит от ракурса и света · не медицинская консультация</div>
    <button class="btn" style="margin-top:12px" onclick="openForm()">Разобрать другое видео</button>`);if(S.tab==='today'||S.tab==='gym')setTimeout(rerender,50);
 }
 
@@ -4847,7 +4848,7 @@ async function exAfter(src,ex,S2,v,live){
   sheet('Что вы делали?',`<div class="small muted" style="margin:0 4px 10px">Камера сравнила движение с ${EXR.d.ids.length} упражнениями библиотеки. Выберите своё — разбор будет по нему, а выбор запомнится.</div>
    ${top.map((x,i)=>{const e=names[x.id];return e?`<button class="opt" onclick="exPick('${x.id}')"><div class="thumb" style="width:64px;height:64px;border-radius:12px;overflow:hidden;flex:none;background:var(--card2)">${exThumb(x.id)}</div><div style="flex:1;min-width:0"><div style="font-weight:700">${e.n}</div><div class="small muted">${i===0?'скорее всего':i<3?'похоже':'возможно'} · ${EXEQ[e.eq]||'без инвентаря'}</div></div><span class="chev">${ic('chev')}</span></button>`:''}).join('')}
    <button class="btn sec" onclick="exLibPick()">${ic('search')} Другое — найти в библиотеке</button>
-   <div class="concept">Определение: поза по 3D-точкам суставов + модель 30 упражнений с 3D-тенью + модель 22 частых упражнений + MobileCLIP по кадрам (видит снаряд). Проверка на 50 настоящих роликах 30 упражнений с 3D-тенью (каждый угадывает модель, его не видевшая): движение верно на первом месте примерно в 6 случаях из 10 — поэтому выбор за вами.</div>`);
+   <div class="concept">Камера угадывает упражнение примерно в 6 случаях из 10 — поэтому выбор за вами.</div>`);
 }
 const cosSim=(a,b)=>{let s=0,x=0,y=0;const C=EXR.d.cls;for(let i=0;i<a.length;i++){const u=(a[i]-C.mu[i])/C.sd[i],v=(b[i]-C.mu[i])/C.sd[i];s+=u*v;x+=u*u;y+=v*v}return s/Math.sqrt(x*y||1)};
 function exLibPick(){sheet('Какое упражнение?',`<input class="search" type="search" placeholder="Например «жим лёжа»" oninput="exLibRender(this.value)" style="margin-bottom:10px"><div id="exlibres"></div>`);exLibRender('');if(!EXL)loadEX().then(()=>{const q=$('#exlibres')&&$('#sbody .search');if(q)exLibRender(q.value)})}
@@ -4987,7 +4988,7 @@ async function genericResult(id,key,live){
    ${TEN.has(id)?`<button class="btn sec" style="margin-top:10px" onclick="openTen('${id}')">${ic('expand')} Эталон в 3D</button>`:''}
    ${x.steps&&x.steps.length?`<h2>Как правильно</h2><div class="card list">${x.steps.map((t,i)=>`<div class="li" style="align-items:flex-start"><span class="num" style="width:26px;color:var(--text3);font-size:17px">${i+1}</span><div style="flex:1;line-height:1.4">${t}</div></div>`).join('')}</div>`:''}
    ${Object.keys(lv).length?`<h2>Какие мышцы работают</h2><div class="card">${muscleMapLv(lv)}${ATLAS_CR}</div>`:''}
-   <div class="concept">Сравниваем с 3D-эталоном этого упражнения по углам суставов (не зависят от роста и сложения) · «полная амплитуда» — от 85 % эталона · не медицинская консультация</div>
+   <div class="concept">Сравниваем с правильной техникой в 3D · не медицинская консультация</div>
    <button class="btn" style="margin-top:12px" onclick="openEx('${id}')">Карточка упражнения</button><button class="btn ghost" onclick="openForm()">Разобрать другое видео</button>`);
   if(S.tab==='today'||S.tab==='gym')setTimeout(rerender,50);
 }
@@ -4998,7 +4999,7 @@ try{if(sessionStorage.getItem('mt-dl')){sessionStorage.removeItem('mt-dl');setTi
 function openOffline(){
   const cell=navigator.connection&&/cellular/.test(navigator.connection.type||'');
   sheet('Работа без интернета',`<div class="card"><div class="title" style="font-size:16px">${S.offline?'Всё уже в телефоне':'Скачать один раз — дальше без сети'}</div>
-   <div class="small muted" style="margin-top:6px">Распознавание блюд (~72 МБ), движок нейросети (~27 МБ, при передаче меньше), камера упражнений (~15 МБ), базы продуктов и упражнений. После скачивания фото еды и разбор техники работают в магазине, на улице и в зале без интернета.</div>
+   <div class="small muted" style="margin-top:6px">Около 115 МБ: распознавание еды, разбор техники, базы продуктов и упражнений. Потом фото еды и разбор техники работают в магазине, на улице и в зале без интернета.</div>
    ${cell?'<div class="small" style="margin-top:8px;color:var(--warn)">Сейчас мобильная сеть — лучше скачать по Wi-Fi.</div>':''}</div>
    <div class="card"><div class="row between"><span class="small muted" id="offst">${S.offline?'Готово':'Не скачано'}</span><span class="num" id="offpct">${S.offline?'100%':''}</span></div><div class="bar" style="margin-top:8px"><i id="offbar" style="width:${S.offline?100:0}%;background:var(--accent)"></i></div></div>
    <button class="btn" onclick="prefetchAll()">${S.offline?'Обновить':'Скачать сейчас'}</button>`)}
@@ -5037,7 +5038,6 @@ function vTrain(){
     <span class="wx-st">${done?ic('check')+'Готово':wfull?'Неделя закрыта':rest?'Сегодня лучше отдохнуть':!planToday?'Следующая':lateW?'Завтра':'Тренировка дня'}</span>
     <div class="wx-c"><div class="wx-t">${pg.days[ti]}</div><div class="wx-s">${pl(pg.ex.length,'упражнение','упражнения','упражнений')}${/дома/i.test(pg.days[ti])?'':' · '+placeName(pg.place)} · ${pg.min} мин${ds&&!done?' · подходов '+ds:''}</div>
     <span class="wx-go">${done||wfull?'Посмотреть':ds?'Продолжить':'Начать'}${ic('chev')}</span></div></button>${done||wfull||pg.my?'':wcRow()}${whereChips()}${woCal()}
-  <button class="anat3d tap" onclick="openTen()"><img src="ten/poster/anatomy${isDark()?'-d':''}.jpg?v=${TENV}" alt="" onerror="this.remove()"><span class="a3-t"><b>3D-анатомия</b><small>Покрутите тело и коснитесь мышцы — подскажем, чем её тренировать</small></span><span class="a3-go">${ic('muscle')}Открыть</span></button>
   ${exwCard()}${postNow()&&KIT?`<div id="postd">${postCard()}</div>`:''}
   <div class="card list">
    ${row('openProgram()','volt','history','Программа на неделю',`«${esc(pg.name)}» · все упражнения`)}
@@ -5045,7 +5045,8 @@ function vTrain(){
    ${row('openMyWo()','c','plus','Мои тренировки',S.myWo&&S.myWo.length?pl(S.myWo.length,'сохранённая','сохранённые','сохранённых'):'собрать свою из 3D-упражнений')}
    ${row('openHome()','ok','home','Нет времени? 20 минут дома','без инвентаря')}
   </div>${recovCard()}
-  <h2>Как делать упражнения · 3D</h2>
+  <button class="anat3d tap" onclick="openTen()"><img src="ten/poster/anatomy${isDark()?'-d':''}.jpg?v=${TENV}" alt="" onerror="this.remove()"><span class="a3-t"><b>3D-анатомия</b><small>Коснитесь мышцы — подскажем, чем её тренировать</small></span><span class="a3-go">${ic('muscle')}Открыть</span></button>
+  <h2>Упражнения в 3D</h2>
   <input class="search" type="search" placeholder="Упражнение или мышца" value="${EXQ.replace(/"/g,'&quot;')}" oninput="exSearch(this.value)" style="margin-bottom:10px">
   <div class="hscroll">${EXGROUPS.map(([k,l])=>`<button class="chip ${EXG===k?'on':''}" onclick="exGroup('${k}')">${l}</button>`).join('')}</div>
   <div id="exlist" style="margin-top:12px">${exList()}</div>
@@ -5054,7 +5055,7 @@ function vTrain(){
 function vTech(){
   const lf=S.lastForm;if(!EXL&&!loadEX.busy&&!loadEX.failed){loadEX.busy=1;loadEX().then(()=>{loadEX.busy=0;loadEX.failed=!EXL;if(S.tab==='gym')rerender()})}
   return `<div class="top"><div><div class="eyebrow">3D-анатомия · ${pl(TEN_IDS.length,'упражнение','упражнения','упражнений')}</div><div class="date">3D-анатомия</div></div><button class="avatar tap" onclick="go('me')" aria-label="Личный кабинет">${ava()}</button></div>
-  ${lf?`<a class="ev wide" onclick="openForm()"><img src="${lf.shot}" alt="Ваш кадр"><span class="tag tech">${lf.nf?'повторы':lf.score+' / 100'}</span><span class="cap"><b>${fName(lf.ex)} · ${ago(lf.t)}</b>${lf.reps?pl(lf.reps,'повтор засчитан','повтора засчитаны','повторов засчитано'):lf.st||lf.ex==='plank'?'удержание':'повторов не увидели'} · углы по точкам суставов</span></a>`
+  ${lf?`<a class="ev wide" onclick="openForm()"><img src="${lf.shot}" alt="Ваш кадр"><span class="tag tech">${lf.nf?'повторы':lf.score+' / 100'}</span><span class="cap"><b>${fName(lf.ex)} · ${ago(lf.t)}</b>${lf.reps?pl(lf.reps,'повтор засчитан','повтора засчитаны','повторов засчитано'):lf.st||lf.ex==='plank'?'удержание':'повторов не увидели'}</span></a>`
      :`<a class="ev wide" onclick="formRun('squat.mp4','squat')"><img src="img/tech-demo.jpg" alt="Пример разбора" style="object-position:50% 35%"><span class="tag tech">пример</span><span class="cap"><b>Разбор техники по видео</b>кадр крупно, углы в суставах, что поправить — на ваших кадрах</span></a>`}
   <button class="btn" onclick="openForm()">${ic('cam')} Проверить технику по видео</button>
   <div class="small muted" style="text-align:center;margin:2px 8px 0">Камера сама узнает упражнение, вы подтвердите — и мы сравним с эталоном. Видео не уходит с телефона.</div>
@@ -5063,18 +5064,18 @@ function vTech(){
   <input class="search" type="search" placeholder="Упражнение или мышца" value="${EXQ.replace(/"/g,'&quot;')}" oninput="exSearch(this.value)" style="margin-bottom:10px">
   <div class="hscroll">${EXGROUPS.map(([k,l])=>`<button class="chip ${EXG===k?'on':''}" onclick="exGroup('${k}')">${l}</button>`).join('')}</div>
   <div id="exlist" style="margin-top:12px">${exList()}</div>
-  <div class="concept">Углы считаются по точкам суставов, точность зависит от ракурса и света · не медицинская консультация</div>`;
+  <div class="concept">Точность зависит от ракурса и света · не медицинская консультация</div>`;
 }
 function vMe(){ // личный кабинет как «Настройки» на iPhone: карточка профиля и короткие списки, всё подробное — в шторках
   const pr=S.profile,n=norm(pr),g=GOALS[pr.goal],pg=program(),w=S.weights,lastW=+(w.length?w[w.length-1].w:pr.w)||0,L=rvList(),R=S.remind&&S.remind.on;
   if(!RV.at||Date.now()-RV.at>10*60e3)setTimeout(()=>rvLoad(),0);
   const row=(fn,cl,icn,t,sub)=>`<button class="rowbtn" onclick="${fn}"><div class="ibox me-i">${ic(icn)}</div><div class="t">${t}${sub?`<small>${sub}</small>`:''}</div><span class="chev">${ic('chev')}</span></button>`;
   const TH={light:'светлая',dark:'тёмная',auto:'как в телефоне'};
-  return `<div class="top"><div><div class="eyebrow">Ваш план и настройки</div><div class="date">Профиль</div></div></div>
+  return `<div class="top"><div><div class="date">Профиль</div></div></div>
   ${payOn()?`<button class="card tap sb-card${payPaid()?' paid':''}" onclick="openSub()"><div class="pw-ic sm">${ic('spark')}</div><div style="flex:1;min-width:0"><div class="title">${payPaid()?'Полный':payTrialOn()?'Пробный период':'Подписка «Полный»'}</div><div class="small muted">${paySubLine()}</div></div><span class="sb-go">${payPaid()?'Управлять':'Оформить'}</span></button>`:''}
   <button class="card tap me-card" onclick="openEdit()"><div class="me-ava">${ava()}</div><div style="flex:1;min-width:0"><div class="me-nm">${pr.name==='Вы'?'Ваш профиль':esc(pr.name)}${(((payS().srv||{}).ref||{}).badges||[]).includes('amb')?'<span class="amb">Амбассадор</span>':''}</div>
     <div class="small muted">${g.n} · ${(''+lastW).replace('.',',')} кг · ${fmt(n.kcal)} ккал в день</div>${n.bmi>=35||n.bmi<16?`<div class="tiny" style="margin-top:4px;color:var(--warn-text)">ИМТ ${dec(n.bmi)} — посоветуйтесь с врачом</div>`:''}${n.minor||n.under?`<div class="tiny" style="margin-top:4px;color:var(--warn-text)">${n.minor?'До 18 лет — план с ограничениями':'Вес ниже нормы — план держит вес'}</div>`:''}</div><span class="me-ed">Изменить</span></button>
-  ${dietHint()}<div class="card list">${AC?row('openAccount()','ok','me','Аккаунт',esc((AC.u&&AC.u.email)||(AC.how==='vk'?'VK ID':'Яндекс ID'))+(AC.wait?' · выберите данные':AC.dirty?' · сохраняем':' · сохранено')):row("openAuth()",'accent','me','Войти, чтобы данные не потерялись','Яндекс, VK ID или почта')}</div>
+  <div class="card list">${AC?row('openAccount()','ok','me','Аккаунт',esc((AC.u&&AC.u.email)||(AC.how==='vk'?'VK ID':'Яндекс ID'))+(AC.wait?' · выберите данные':AC.dirty?' · сохраняем':' · сохранено')):row("openAuth()",'accent','me','Войти, чтобы данные не потерялись','Яндекс, VK ID или почта')}</div>
   <div class="card list">
     ${row('openProfile()','tech','doc','Мой план',`${fmt(n.kcal)} ккал · Б ${n.p} · Ж ${n.f} · У ${n.c}`)}
     ${row('openEdit()','accent','wallet','Бюджет на еду',`${fmt(budgetOf(pr))} ₽ в день`)}
@@ -5376,7 +5377,7 @@ function acInit(){oauthResume();if(AC&&AC.t){if(AC.wait)syncAgain().then(()=>{if
   document.addEventListener('visibilitychange',()=>{if(!AC||!AC.t)return;if(document.hidden){if(AC.dirty)syncPush()}else if(Date.now()-(SYNC.pulled||0)>60e3)syncPull()})}
 
 function openData(){
-  sheet('Мои данные',`<div class="lock">${ic('lock')}<div>${AC?'<b>Данные — на телефоне и в вашем аккаунте</b> на сервере в России: профиль, план, дневник без фото, вес и история. Фото еды и видео остаются только на телефоне. Сменили телефон — войдите снова.':'<b>Всё хранится на вашем телефоне</b> — в памяти браузера. Мы не получаем вес, доход, фото и видео. На сервер уходит только случайный номер устройства (для счётчика заходов, без имени и телефона) и отзыв, если вы его оставите. Чтобы данные не потерялись при смене телефона — войдите в аккаунт.'}</div></div>
+  sheet('Мои данные',`<div class="lock">${ic('lock')}<div>${AC?'<b>Данные — на телефоне и в вашем аккаунте</b> на сервере в России: профиль, план, дневник без фото, вес и история. Фото еды и видео остаются только на телефоне. Сменили телефон — войдите снова.':'<b>Всё хранится на этом телефоне.</b> Мы не получаем вес, доход, фото и видео — только случайный номер устройства для счётчика заходов и ваш отзыв, если оставите. Чтобы не потерять данные при смене телефона, войдите в аккаунт.'}</div></div>
    ${AC?'':`<button class="btn sec" style="margin-top:10px" onclick="openAuth()">Войти в аккаунт</button>`}
    <div class="card list" style="margin-top:10px">
     <button class="rowbtn" onclick="exportData()"><div class="ibox">${ic('download')}</div><div class="t">Скачать мои данные<small>файл JSON: профиль, дневник, вес, разборы</small></div><span class="chev">${ic('chev')}</span></button>
@@ -5412,8 +5413,8 @@ const bmiDoc=n=>n.bmi>=35||n.bmi<16?`<div class="lock" style="background:var(--w
 function calcCard(pr){return bmiDoc(norm(pr))+calcCard0(pr)}
 function calcCard0(pr){
   const n=norm(pr),g=GOALS[pr.goal];
-  return `<div class="card"><div class="calcrow"><span class="muted">Основной обмен (формула Миффлина — Сан Жеора)</span><span class="num">${fmt(n.bmr)}</span></div>
-   <div class="calcrow"><span class="muted">× активность на работе и в быту: группа ${ROMAN[n.grp]}, коэффициент ${dec(n.kfa)}</span><span class="num">${fmt(n.base)}</span></div>
+  return `<div class="card"><div class="calcrow"><span class="muted">Расход в покое</span><span class="num">${fmt(n.bmr)}</span></div>
+   <div class="calcrow"><span class="muted">× активность за день (×${dec(n.kfa)})</span><span class="num">${fmt(n.base)}</span></div>
    <div class="calcrow"><span class="muted">+ тренировки: ${pl(effTrains(pr,1),'раз','раза','раз')} в неделю по ~${pr===S.profile?wcDef().min:45} мин, в среднем за день</span><span class="num">+${fmt(n.train)}</span></div>
    <div class="calcrow"><span class="muted">= расход за день</span><span class="num">${fmt(n.tdee)}</span></div>
    <div class="calcrow ${n.floored?'':'fin'}"><span class="muted">${n.capped?(n.minor?'До 18 лет калории не урезаем — держим вес':n.preg?'Беременность и кормление — калории не урезаем, держим вес':'ИМТ '+dec(n.bmi)+' — ниже нормы ВОЗ: калории не урезаем'):n.adj?(n.adj<0?'−':'+')+Math.abs(Math.round(n.adj*100))+'% под цель «'+g.n.toLowerCase()+'»'+(n.minor&&pr.goal==='muscle'&&pr.pace==='fast'?' (до 18 лет — не быстрее)':''):'без поправки — держим вес'}</span><span class="num">${fmt(n.floored?Math.round(n.tdee*(1+n.adj)):n.kcal0)}</span></div>
@@ -5423,13 +5424,13 @@ function calcCard0(pr){
    <div class="calcrow"><span class="muted">Жиры: 27% калорий</span><span class="num">${n.f} г</span></div>
    <div class="calcrow"><span class="muted">Углеводы: остальное</span><span class="num">${n.c} г</span></div></div>${pr===S.profile?burnExplain(pr,n):''}`;
 }
-const SOURCES=`<div class="card src"><div class="row" style="gap:8px;margin-bottom:6px;color:var(--text)">${ic('doc','style="width:18px;height:18px"')}<b>На чём основан расчёт</b></div>
+const SOURCES=`<details class="card src src-d"><summary>На чём основан расчёт</summary><div style="margin-top:14px">
  • МР 2.3.1.0253-21 Роспотребнадзора «Нормы физиологических потребностей в энергии и пищевых веществах» — группы физической активности по работе.<br>
  • Компендиум физической активности (Ainsworth и др., 2011; обновление 2024) и рекомендации ACSM — расход на тренировках в METs, у каждого упражнения своё значение.<br>
  • Формула Миффлина — Сан Жеора (1990) — основной обмен.<br>
  • Позиция Международного общества спортивного питания (ISSN) о белке, 2017 — 1,4–2,0 г/кг, при снижении веса выше.<br>
  • Совместная позиция ACSM, Академии питания и диетологии США и Dietitians of Canada, 2016 — жиры 20–35% калорий, углеводы по нагрузке.<br>
- • ВОЗ — не меньше 400 г овощей и фруктов в день.</div>`;
+ • ВОЗ — не меньше 400 г овощей и фруктов в день.</div></details>`;
 function openProfile(){
   const pr=S.profile,n=norm(pr);
   sheet('Мой план',`${calcCard(pr)}
@@ -5478,7 +5479,7 @@ function renderOnb(){
       <div class="cover" aria-hidden="true"></div>
       <div class="cv-glass"><div class="brand"><div class="bigicon">${ic('bolt')}</div><span class="cv-tag">ИИ-тренер</span></div>
       <div class="cv-title">Мой тренер</div>
-      <div class="muted cv-sub" style="font-size:17px;line-height:1.4;margin-top:10px;text-wrap:pretty">Считает честно: калории — по базе продуктов, технику — по вашему видео. План под цель, тело и бюджет.</div>
+      <div class="muted cv-sub" style="font-size:17px;line-height:1.4;margin-top:10px;text-wrap:pretty">План еды и тренировок под вашу цель, тело и бюджет.</div>
       <div style="margin:14px 0 8px">
        <div class="feat"><div class="ibox accent">${ic('cam')}</div>Калории по фото и базе</div>
        <div class="feat"><div class="ibox tech">${ic('ruler')}</div>Техника по вашему видео</div>
@@ -5500,11 +5501,11 @@ function renderOnb(){
       <div style="flex:1"></div></div><button class="btn" onclick="obNext()">Дальше</button>`,
    ()=>`<div class="q">Бюджет и город</div><div class="qs">Подберём меню и магазины, которые вам по карману</div>
       <div class="fadeb" style="overflow-y:auto;flex:1;min-height:0;margin:0 -4px;padding:0 4px">
-      <div class="lock" style="margin-bottom:12px">${ic('lock')}<div><b>Конфиденциально.</b> Доход видите только вы — он хранится на вашем телефоне и никуда не передаётся.</div></div>
+      <div class="lock" style="margin-bottom:12px">${ic('lock')}<div><b>Только у вас.</b> Доход хранится на телефоне и никуда не передаётся.</div></div>
       <div class="card"><div class="small muted">Доход в месяц</div><div class="num" style="font-size:34px" id="incv">${fmt(D.income)} ₽</div>
        <input type="range" min="20000" max="500000" step="5000" value="${D.income}" oninput="D.income=+this.value;updBud()">
        <div class="row between" style="margin-top:8px"><span class="small muted">Сколько человек кормит этот доход</span><div class="ctl"><button class="rb" onclick="obAdj('people',-1,1,6)">−</button><span class="num" style="font-size:20px;min-width:20px;text-align:center">${D.people}</span><button class="rb" onclick="obAdj('people',1,1,6)">+</button></div></div>
-       <div class="small muted" style="margin-top:12px">Доля на еду (в среднем по России — около трети расходов)</div>
+       <div class="small muted" style="margin-top:12px">Доля на еду</div>
        <div class="chips" style="margin-top:6px">${[[.2,'20%'],[.3,'30%'],[.4,'40%']].map(([v,l])=>`<button class="chip ${D.share===v?'on':''}" onclick="D.share=${v};renderOnb()">${l}</button>`).join('')}</div></div>
       <div class="card row" style="margin:12px 0 0"><div class="ibox ok">${ic('wallet')}</div><div style="flex:1;min-width:0"><div class="small muted">Бюджет на еду</div><div class="num" style="font-size:26px" id="budv">${fmt(bud)} ₽ в день</div><div class="small muted" id="stv">подберём блюда и магазины под эту сумму</div></div></div>
       <div class="ob-l">Город — для цен и магазинов рядом</div>${obGeoPart()}
@@ -5517,7 +5518,7 @@ function renderOnb(){
       <div class="ob-l">Опыт</div><div class="chips eq">${[['new','Новичок'],['mid','До года'],['pro','Больше года']].map(([k,l])=>`<button class="chip ${D.level===k?'on':''}" onclick="D.level='${k}';renderOnb()">${l}</button>`).join('')}</div>
       <div class="small muted" style="margin:12px 4px 0">Тренировки добавят к норме ≈${NBS}${fmt(nr.train)} ккал в день${effTrains(D)<D.trains?' (считаем '+effTrains(D)+' в неделю)':''}</div></div>
       <button class="btn" style="margin-top:12px" onclick="obNext()">Дальше</button>`,
-   ()=>`<div class="q">Ваш план готов</div><div class="qs">Посчитано по вашим данным — формулами, а не нейросетью</div>
+   ()=>`<div class="q">Ваш план готов</div><div class="qs">По вашим данным</div>
       <div class="fadeb" style="overflow-y:auto;flex:1;margin:0 -20px;padding:4px 20px 0">
       <div class="hero-today" style="text-align:center;padding:22px 18px 18px">
        <div class="ht-eb">Суточная норма</div>
@@ -5808,7 +5809,7 @@ function remBody(){const R=remR(),env=remEnv(),p=remPrefs(R),dis=env!=='ok'&&!R.
    <div id="remmsg" aria-live="polite">${remNote()}${R.on&&REMST.wait?'<div class="rem-wait"><span class="spin" aria-hidden="true"></span>Отправили пробное уведомление…</div>':''}${R.on&&REMST.got?`<div class="rem-ok">${ic('check')}<div><b>Пробное пришло</b> — всё работает.</div></div>`:''}${R.on&&REMST.miss?`<div class="lock" style="background:var(--warn-soft)"><span style="color:var(--warn-text)">${ic('bell')}</span><div><b>Пробное не пришло?</b> ${remDeviceHint()} <a href="#" onclick="event.preventDefault();remHello()">Прислать ещё раз</a></div></div>`:''}</div>
    <h2 style="margin-top:6px">О чём напоминать</h2>
    <div class="card">${tg('plan','План на день','утром: калории, белок и тренировка')}${tg('food','Еда и белок','днём: сколько белка добрать, что съесть')}${tg('workout','Тренировка','вечером, если по плану и ещё не сделана')}${tg('praise','Похвала','когда день закрыт: тренировка, белок, серия')}${tg('streak','Серия под угрозой','если сегодня ещё ничего не отмечено')}${tg('weekly','Итоги недели','в воскресенье вечером')}${tg('water','Вода','днём, если выпито меньше, чем пора по времени')}${tg('photo','Фото прогресса','раз в неделю утром; сами фото остаются в телефоне')}</div>
-   <div class="small muted" style="margin:-4px 4px 12px">Вода, итоги недели и фото напоминаем и прямо в телефоне, без сервера: карточкой на главной и уведомлением, пока приложение открыто или свёрнуто.</div>
+   <div class="small muted" style="margin:-4px 4px 12px">Вода, итоги недели и фото — карточкой на главной и уведомлением, пока приложение открыто или свёрнуто.</div>
    <h2 style="margin-top:6px">Когда</h2>
    <div class="card">${tm('morning','Утром','план на день')}${tm('day','Днём','еда и белок')}${tm('evening','Вечером','тренировка и итоги')}</div>
    <h2 style="margin-top:6px">Тихие часы</h2>
