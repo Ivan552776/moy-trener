@@ -1479,7 +1479,7 @@ button.home-v{display:block;width:100%;padding:0;text-align:left;position:relati
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-07-r126'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r126a'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>',cup:'<path d="M7 4h10l-1.3 15.2a2 2 0 0 1-2 1.8h-3.4a2 2 0 0 1-2-1.8z"/><path d="M7.4 9h9.2"/>',expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -5445,7 +5445,7 @@ function renderOnb(){
        <div class="feat"><div class="ibox volt">${ic('cart')}</div>Магазины под ваш бюджет</div></div></div>
       <div id="obrv">${rv}</div></div>
       <button class="btn" style="margin-top:10px" onclick="AC&&consentOk()?obNext():openStart()">Составить мой план</button>
-      <div class="concept" style="margin-top:6px">Данные хранятся в России · не медицинская консультация</div>`},
+      <div class="concept" style="margin-top:6px">Данные хранятся в России · не медицинская консультация</div><div class="concept obreq" style="margin-top:4px;font-size:11px;line-height:1.35;opacity:.75">Кочетов Иван Максимович, самозанятый, ИНН&nbsp;771570623556 · Подписка «Полный»: 690&nbsp;₽/мес, 3&nbsp;990&nbsp;₽/год, семья 990&nbsp;₽/мес или 5&nbsp;490&nbsp;₽/год · <a href="legal/requisites.html" style="color:inherit">Реквизиты и контакты</a> · <a href="legal/terms.html" style="color:inherit">Соглашение</a></div>`},
    ()=>`<div class="q">Чего хотите добиться?</div><div class="qs">План, калории и тренировки подстроятся под цель</div>
       <div class="fadeb" style="overflow-y:auto;flex:1;min-height:0;margin:0 -4px;padding:0 4px">${Object.entries(GOALS).map(([k,g])=>`<button class="opt ${D.goal===k?'on':''}" onclick="D.goal='${k}';obPickGo()"><div class="ibox">${ic(g.i)}</div><div style="flex:1"><div style="font-weight:700">${g.n}</div><div class="small muted">${g.d}</div></div></button>`).join('')}
       </div>
