@@ -7,10 +7,10 @@
 <title>Анатомия · Мой тренер</title>
 <link rel="icon" href="../favicon-32.png">
 <!-- всё для первого кадра — сразу и параллельно: просмотрщик, облегчённые мышцы, студийный свет -->
-<link rel="modulepreload" href="ten.js?v=r121">
-<link rel="preload" href="m/anatomy_xs.json?v=r121" as="fetch" crossorigin="anonymous">
-<link rel="preload" href="m/muscles_xs.bin?v=r121" as="fetch" crossorigin="anonymous">
-<link rel="preload" href="env.hdr?v=r121" as="fetch" crossorigin="anonymous">
+<link rel="modulepreload" href="ten.js?v=r123">
+<link rel="preload" href="m/anatomy_xs.json?v=r123" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="m/muscles_xs.bin?v=r123" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="env.hdr?v=r123" as="fetch" crossorigin="anonymous">
 <style>
 :root{--stage-hi:#F4F4F2;--stage-lo:#D9DAD7;--glass:rgba(255,255,255,.66);--glass-b:rgba(255,255,255,.8);--line:rgba(11,13,18,.08);
   --text:#0B0D12;--text2:#5E6472;--text3:#8C93A1;--accent:#047857;--accent-hi:#10B981;--accent-text:#047857;--accent-soft:rgba(4,120,87,.10);
@@ -41,6 +41,7 @@ button{font:inherit;color:inherit}
   font:600 11px/1.15 var(--font);color:var(--label-text);white-space:normal;display:flex;align-items:center;gap:5px;box-shadow:0 4px 14px rgba(0,0,0,.14);overflow-wrap:normal;word-break:keep-all;hyphens:none} /* перенос только между словами */
 .lbl span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden} /* подпись в 2 строки, не обрезается по ширине */
 .lbl i{width:7px;height:7px;border-radius:4px;flex:none;background:#22D39A;box-shadow:0 0 8px #22D39A}
+.lbl{pointer-events:auto;cursor:pointer}.lbl::after{content:'';position:absolute;inset:-8px}.lbl:active{transform-origin:center} /* подпись нажимается → карточка мышцы; зона касания шире плашки */
 .lbl.s i{opacity:.5;box-shadow:none}
 .dock{position:fixed;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom) + 18px);border-radius:26px;padding:10px;display:flex;flex-direction:column;gap:8px;z-index:5;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .25s}
 .dock.off{transform:translateY(24px);opacity:0;pointer-events:none}
@@ -93,7 +94,7 @@ button{font:inherit;color:inherit}
 .load i{width:28px;height:28px;border-radius:14px;border:3px solid var(--chip);border-top-color:var(--accent-hi);animation:sp .9s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .fps{position:fixed;right:12px;top:calc(env(safe-area-inset-top) + 64px);font:600 11px ui-monospace,monospace;color:var(--text3);display:none;z-index:3}
-.x0{width:44px;height:44px;border-radius:22px;border:0;display:grid;place-items:center;font-size:24px;line-height:1;color:var(--text);cursor:pointer;flex:none}
+.x0{width:48px;height:48px;border-radius:24px;border:1.5px solid var(--text3);display:grid;place-items:center;font-size:32px;font-weight:300;line-height:1;color:var(--text);cursor:pointer;flex:none;box-shadow:var(--shadow)} /* закрыть: крупно и заметно */
 body.embed .top,body.embed #chg,body.embed .cr,body.embed .leg{display:none}
 body.embed .dock{left:6px;right:6px;bottom:6px;border-radius:22px}
 body.poster .top,body.poster .dock,body.poster .cr,body.poster #labels,body.poster .hint,body.poster .info,body.poster .pick{display:none!important}
@@ -138,7 +139,7 @@ body.poster .top,body.poster .dock,body.poster .cr,body.poster #labels,body.post
 <div class="fps" id="fps"></div>
 <div class="dock glass" id="dockBody"><div class="row" id="layers" style="overflow:visible"></div><button class="btn" id="allb2"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>Все мышцы</button></div>
 <div class="dock glass off" id="dockEx">
-  <div class="ex-head"><b id="exName">Приседания</b><div class="ph" id="exPh"></div><button class="chg" id="chg">Сменить</button></div>
+  <div class="ex-head"><button class="chg" id="exback" style="display:none" aria-label="Назад">‹ Назад</button><b id="exName">Приседания</b><div class="ph" id="exPh"></div><button class="chg" id="chg">Сменить</button></div>
   <div class="tl" id="tl" aria-label="Фазы движения — перемотка пальцем"></div>
   <div class="leg" id="leg"></div>
   <div class="ctrl">
@@ -148,7 +149,7 @@ body.poster .top,body.poster .dock,body.poster .cr,body.poster #labels,body.post
   </div>
 </div>
 <div class="pick glass" id="pick" role="dialog"><h3>Упражнения</h3><div class="sub">Выберите — покажем движение и какие мышцы работают</div><div class="lst" id="lst"></div></div>
-<div class="pick glass atl" id="atlas" role="dialog" aria-label="Все мышцы"><button class="x xx" id="ax" aria-label="Закрыть">×</button><h3>Все мышцы</h3>
+<div class="pick glass atl" id="atlas" role="dialog" aria-label="Все мышцы"><button class="x xx" id="ax" aria-label="Закрыть">×</button><h3>Все мышцы</h3><div class="seg aseg" style="flex:none;margin:0 14px 8px;background:var(--chip)"><button id="am" class="on">Мышцы</button><button id="ae">Упражнения 3D</button></div>
   <label class="q"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><input id="aq" type="search" placeholder="Поиск: бицепс, ягодичная, икры…" autocomplete="off" enterkeyhint="search" aria-label="Поиск мышцы по-русски"></label>
   <div class="row gr" id="agr"></div><div class="lst" id="alst"></div></div>
 <div class="info glass" id="info" role="dialog" aria-live="polite">
@@ -161,8 +162,8 @@ body.poster .top,body.poster .dock,body.poster .cr,body.poster #labels,body.post
 <script type="module">
 const qs = new URLSearchParams(location.search);
 if (qs.get('embed')) document.body.classList.add('embed'); if (qs.has('poster')) document.body.classList.add('poster');
-if (qs.has('close')) { const b = document.createElement('button'); b.className = 'x0 glass'; b.setAttribute('aria-label', 'Закрыть'); b.textContent = '×'; b.onclick = () => parent.postMessage({ ten: 'close' }, location.origin); document.querySelector('.top').prepend(b) }
-const VER = 'r121'; // менять вместе с файлами модели и упражнений (и в ссылках предзагрузки выше)
+if (qs.has('close')) { const b = document.createElement('button'); b.className = 'x0 glass'; b.setAttribute('aria-label', 'Закрыть'); b.textContent = '×'; b.onclick = () => { parent.postMessage({ ten: 'close' }, location.origin); parent.postMessage({ type: 'ten-close' }, location.origin) }; document.querySelector('.top').prepend(b) }
+const VER = 'r123'; // менять вместе с файлами модели и упражнений (и в ссылках предзагрузки выше)
 const { mountAnatomy } = await (async () => { for (let i = 0; ; i++) { try { return await import('./ten.js?v=' + VER + (i ? '&r=' + i : '')) } catch (e) { if (i >= 2) throw e; await new Promise(r => setTimeout(r, 900 * (i + 1))) } } })(); // сеть мигнула при выкладке — повторяем (новый адрес: браузер помнит неудачный импорт)
 const $ = s => document.querySelector(s);
 if (qs.get('theme')) document.documentElement.dataset.theme = qs.get('theme');
@@ -191,6 +192,10 @@ try {
     onFrame: (ph, name) => exFrame(ph, name) });
 } catch (e) { $('#load').remove(); document.body.insertAdjacentHTML('beforeend', '<div class="nogl">Этот браузер не показывает 3D. Обновите его или откройте в Safari или Chrome.</div>'); throw e }
 window.A = A; window.__show = showInfo;
+/* пауза рендера: фрейм скрыт (вкладка/приложение в фоне) или родитель прислал {type:'ten-pause', on} — не держим два 3D одновременно */
+let parentPause = false; const sleepUpd = () => A.sleep && A.sleep(document.hidden || parentPause);
+document.addEventListener('visibilitychange', sleepUpd);
+addEventListener('message', e => { if (e.origin !== location.origin || !e.data) return; if (e.data.type === 'ten-pause') { parentPause = !!e.data.on; sleepUpd() } });
 function frame() { // фигура — между верхней плашкой и нижней панелью
   if (document.body.classList.contains('poster')) { A.inset(0, 0); return }
   const top = document.querySelector('.top').getBoundingClientRect().bottom + 8;
@@ -213,10 +218,10 @@ fetch('ex/index.json?v=' + VER).then(r => r.json()).then(j => { LIST = j; render
 function renderList() { $('#lst').innerHTML = LIST.map(x => `<button class="it ${cur && cur.id === x.id ? 'on' : ''}" data-id="${x.id}"><div class="tx"><b>${x.name}</b><small>${x.groups.map(g => GRP[g] || g).join(' · ')}</small></div><span class="go">›</span></button>`).join('') }
 $('#lst').onclick = e => { const b = e.target.closest('.it'); if (b) { tick(); $('#pick').classList.remove('on'); openEx(b.dataset.id) } };
 $('#chg').onclick = () => { renderList(); $('#pick').classList.add('on'); tick() };
-document.querySelectorAll('.seg button').forEach(b => b.onclick = () => setMode(b.dataset.m));
+document.querySelectorAll('.seg button[data-m]').forEach(b => b.onclick = () => setMode(b.dataset.m));
 async function setMode(m, id) {
   if (m === mode && !id) { if (m === 'ex') $('#chg').click(); return } mode = m; tick();
-  document.querySelectorAll('.seg button').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+  document.querySelectorAll('.seg button[data-m]').forEach(b => b.classList.toggle('on', b.dataset.m === m));
   closeInfo(); $('#hint').classList.remove('on'); $('#pick').classList.remove('on');
   $('#dockBody').classList.toggle('off', m !== 'body'); $('#dockEx').classList.toggle('off', m === 'body');
   if (m === 'body') { A.reserve(0); cur = null; await A.play(null); A.isolate('muscles', null); isoOn = false; labels = []; drawLabels(); setTimeout(frame, 380); A.reset(900); return }
@@ -260,11 +265,14 @@ function exFrame(ph) {
 }
 // подписи: точка на мышце, линия к плашке у края экрана; элементы создаются один раз и только двигаются (дёшево на телефоне)
 let pool = [], dockH = 0;
+// касание подписи — карточка мышцы (та сторона тела, куда ведёт стрелка)
+function openLabel(g, el) { const sd = el.dataset.s || '.l', ids = sd === '.l' && g.l.length ? g.l : g.r.length ? g.r : g.l, name = g.names.find(n => n.endsWith(sd)) || g.names[0];
+  if (!ids.length) return; tick(); const p = { layer: 'muscles', id: ids[0], name }; A.select(p); showInfo(p, { both: !!(g.l.length && g.r.length) }) }
 function ensurePool() {
   const box = $('#labels'), svg = $('#lines'), want = labels.filter(g => g.show);
   if (pool.length === want.length && pool.every((o, i) => o.g === want[i])) return;
   pool.forEach(o => { o.el.remove(); o.path.remove(); o.dot.remove() });
-  pool = want.map(g => { const el = document.createElement('div'); el.className = 'lbl' + (g.role > 1 ? ' s' : ''); el.innerHTML = `<i></i><span>${GRP[g.grp] || g.grp}</span>`; box.appendChild(el);
+  pool = want.map(g => { const el = document.createElement('div'); el.className = 'lbl' + (g.role > 1 ? ' s' : ''); el.innerHTML = `<i></i><span>${GRP[g.grp] || g.grp}</span>`; box.appendChild(el); el.onclick = e => { e.stopPropagation(); openLabel(g, el) };
     const NS = 'http://www.w3.org/2000/svg', path = document.createElementNS(NS, 'path'), dot = document.createElementNS(NS, 'circle');
     path.setAttribute('fill', 'none'); path.setAttribute('stroke', 'var(--leader)'); path.setAttribute('stroke-width', '1.2');
     dot.setAttribute('r', '4'); dot.setAttribute('fill', '#22D39A'); dot.setAttribute('stroke', '#fff'); dot.setAttribute('stroke-width', '1.5'); svg.append(path, dot); return { g, el, path, dot } });
@@ -276,7 +284,7 @@ function drawLabels() {
   const W = innerWidth, H = innerHeight, top = (document.body.classList.contains('embed') ? 8 : 76) + 8, bot = H - dockH - 30, B = A.bodyRect(), GAP = 6, MAXL = 90, cx = (B.x0 + B.x1) / 2;
   // подпись — сбоку от тела, на уровне своей мышцы, со стороны мышцы; не влезает или выноска длинная — прячем (есть чипсы внизу)
   const sides = { l: [], r: [] };
-  pool.forEach(o => { const a = A.screen(o.g.l), b = A.screen(o.g.r); o.p = !a ? b : !b ? a : (a.dist < b.dist ? a : b); o.vis = false; if (!o.p) return;
+  pool.forEach(o => { const a = A.screen(o.g.l), b = A.screen(o.g.r); o.p = !a ? b : !b ? a : (a.dist < b.dist ? a : b); o.el.dataset.s = o.p === a ? '.l' : '.r'; o.vis = false; if (!o.p) return;
     o.h = o.h || o.el.offsetHeight || 26; o.w = o.w || o.el.offsetWidth || 100;
     const pref = o.p.x < cx ? 'l' : 'r', fits = sd => sd === 'l' ? B.x0 - GAP - o.w >= 6 : B.x1 + GAP + o.w <= W - 6;
     const sd = fits(pref) ? pref : fits(pref === 'l' ? 'r' : 'l') ? (pref === 'l' ? 'r' : 'l') : null; if (!sd) return;
@@ -285,6 +293,12 @@ function drawLabels() {
     L.forEach(o => { o.y = Math.max(y, Math.min(bot - o.h, o.p.y - o.h / 2)); y = o.y + o.h + 6 });
     for (let i = L.length - 1, lim = bot; i >= 0; i--) { if (L[i].y + L[i].h > lim) L[i].y = lim - L[i].h; lim = L[i].y - 6 }
     L.forEach(o => { const ex = sd === 'l' ? o.lx + o.w : o.lx, ey = o.y + o.h / 2; o.ex = ex; o.ey = ey; o.vis = Math.hypot(ex - o.p.x, ey - o.p.y) <= MAXL && o.y >= top - 1 }) }
+  // нет места сбоку (тело во всю ширину: лёжа, планка) или выноска длинная — подписи рядом над телом (или под ним), стрелка к мышце
+  const rest = pool.filter(o => o.p && !o.vis); if (rest.length) { const bh = Math.max(...rest.map(o => o.h)), my = rest.reduce((t, o) => t + o.p.y, 0) / rest.length;
+    const up = my - top <= bot - my; /* ряд с той стороны, где мышцы ближе; может чуть зайти на край фигуры */
+    const y = up ? Math.max(top, Math.min(B.y0 - GAP - bh, my - 60 - bh)) : Math.min(bot - bh, Math.max(B.y1 + GAP, my + 60));
+    if (y != null) { const R = rest.sort((a, b) => a.p.x - b.p.x); let x = 6; const tot = R.reduce((t, o) => t + o.w + 6, -6); x = Math.max(6, Math.min(W - 6 - tot, cx - tot / 2));
+      for (const o of R) { if (x + o.w > W - 6) break; o.lx = x; o.y = y; o.ex = x + o.w / 2; o.ey = up ? y + o.h : y; o.vis = Math.hypot(o.ex - o.p.x, o.ey - o.p.y) <= MAXL * 3.2; x += o.w + 6 } } }
   for (const o of pool) {
     if (!o.vis) { o.el.style.opacity = 0; o.path.setAttribute('d', ''); o.dot.setAttribute('r', 0); continue }
     o.el.style.opacity = 1; o.el.style.transform = `translate(${o.lx}px, ${o.y}px)`;
@@ -303,9 +317,11 @@ const SRC = '<p class="src">Сверено с учебниками Синель�
 function cardHtml(b, L) {
   const d = OP && OP[b]; if (!d) return OP ? '' : '<p>Загружаем описание…</p>';
   if (L !== 'muscles') return `<p class="fn">${H(d.d)}</p>` + SRC;
-  const ex = (d.ex || []).map(([id, n, t]) => t ? `<a href="?ex=${encodeURIComponent(id)}" data-ex="${H(id)}"><i>3D</i>${H(n)}</a>` : `<span>${H(n)}</span>`).join('');
+  const a3 = e => `<a href="?ex=${encodeURIComponent(e[0])}" data-ex="${H(e[0])}"><i>3D</i>${H(e[1])}</a>`, E3 = (d.ex || []).filter(e => e[2]); /* только 3D: главная — сверху, помогает — ниже, растяжка — отдельно */
+  const row = (t, L) => L.length ? `<p class="t" style="margin:8px 0 2px">${t} · ${L.length}</p><div class="ex">${L.map(a3).join('')}</div>` : '';
+  const ex = row('Работает главной', E3.filter(e => !e[4] && (e[3] || 1) === 1)) + row('Помогает', E3.filter(e => !e[4] && e[3] === 2)) + row('Растяжка', E3.filter(e => e[4]));
   return `<p class="fn">${H(d.fn)}</p><h4>Начало и прикрепление</h4><p><span class="t">Начало:</span> ${H(d.o)}</p><p><span class="t">Прикрепление:</span> ${H(d.i)}</p>`
-    + `<h4>Движения</h4><p>${H(d.mv)}</p>` + (ex ? `<h4>Упражнения</h4><div class="ex">${ex}</div>` : '')
+    + `<h4>Движения</h4><p>${H(d.mv)}</p>` + (ex ? `<h4>Упражнения в 3D</h4>${ex}` : '')
     + `<h4>Как растянуть</h4><p>${H(d.st)}</p><h4>Частые травмы</h4><p>${H(d.inj)}</p>` + SRC;
 }
 function showInfo(p, o = {}) {
@@ -324,7 +340,14 @@ function isoBtns() { $('#iso').textContent = isoMode === 'one' ? 'Показат
 function closeInfo() { $('#info').classList.remove('on'); if (A) A.select(null); $('#dockBody').classList.toggle('off', mode !== 'body'); $('#dockEx').classList.toggle('off', mode === 'body'); if (cardInset) { cardInset = false; if (A) frame() } drawLabels() }
 function unIso() { if (!isoMode && !isoOn) return; isoMode = null; isoOn = false; A.isolate('muscles', null); if (mode === 'body') A.highlight([]) }
 $('#ix').onclick = () => { closeInfo(); unIso() };
-$('#isc').onclick = e => { const a = e.target.closest('a[data-ex]'); if (!a) return; e.preventDefault(); closeInfo(); unIso(); setMode('ex', a.dataset.ex) };
+$('#isc').onclick = e => { const a = e.target.closest('a[data-ex]'); if (!a) return; e.preventDefault(); openExFrom(a.dataset.ex, { muscle: picked && base(picked.name) }) };
+// ролик из карточки мышцы или атласа: «назад» (кнопка, жест, кнопка приложения) возвращает туда же
+let cameFrom = null;
+function openExFrom(id, from) { cameFrom = from; try { history.pushState({ ten: 'ex' }, '') } catch (e) { } closeInfo(); unIso(); $('#atlas').classList.remove('on'); setMode('ex', id); $('#exback').style.display = '' }
+function backFromEx() { const f = cameFrom; cameFrom = null; $('#exback').style.display = 'none'; if (!f) return; setMode('body').then(() => { if (f.muscle) openMuscle(f.muscle); else { atlasOpen(); if (f.atlasEx) atlasMode('ex', f.grp) } }) }
+$('#exback').onclick = () => { tick(); history.back() };
+addEventListener('popstate', () => { if (cameFrom) backFromEx() });
+window.__ten = { openMuscle: k => openMuscle(k), atlasOpen: () => atlasOpen() }; /* для проверок */
 const reOf = keys => new RegExp('^(' + keys.map(esc).join('|') + ')(\\.(l|r))?$');
 const grpKeys = g => Object.keys(RU).filter(k => RU[k].l === 'muscles' && RU[k].g === g);
 $('#iso').onclick = () => {
@@ -375,7 +398,19 @@ function matchQ(k, v, q) {
   const t = nrm(v.ru + ' ' + v.la + ' ' + k + ' ' + GN[v.g]); if (t.includes(q)) return true;
   return SYN.some(([w, re]) => (q.startsWith(w) || (q.length >= 3 && w.startsWith(q))) && new RegExp(re).test(nrm(v.ru)));
 }
-function renderAtlas() { // роговица, склера и т. п. лежат в слое мышц модели — в список не берём, касанием открываются
+// атлас: «Упражнения 3D» — списки по группам (главная нагрузка / помогает) и растяжка; данные — ex-groups.json (собирает build_muscle_ex)
+let aMode = 'mus', XG = null; const xgP = () => XG ? Promise.resolve(XG) : fetch('ex-groups.json?v=' + VER).then(r => r.json()).then(j => XG = j).catch(() => null);
+function atlasMode(m, grp) { aMode = m; $('#am').classList.toggle('on', m === 'mus'); $('#ae').classList.toggle('on', m === 'ex'); $('#aq').placeholder = m === 'ex' ? 'Поиск упражнения: присед, жим, растяжка…' : 'Поиск: бицепс, ягодичная, пресс…'; aBuilt = false;
+  (m === 'ex' ? xgP() : Promise.resolve()).then(() => { renderAtlas(); if (grp) { const h = $('#ag-' + grp); if (h) $('#alst').scrollTop = h.offsetTop - 4 } }) }
+$('#am').onclick = () => { tick(); atlasMode('mus') }; $('#ae').onclick = () => { tick(); atlasMode('ex') };
+function renderAtlasEx() { const q = nrm($('#aq').value.trim()), it = (e, g) => `<button class="it" data-x="${H(e[0])}" data-g2="${g}"><div class="tx"><b>${H(e[1])}</b></div><span class="go">3D ›</span></button>`;
+  const f = L => q ? L.filter(e => nrm(e[1]).includes(q)) : L, G = XG ? Object.entries(XG.groups) : [];
+  const parts = G.map(([g, v]) => { const m = f(v.main), h = f(v.help); return m.length + h.length ? `<div class="sh" id="ag-${g}"><span>${v.name} · ${m.length + h.length}</span></div>` + m.map(e => it(e, g)).join('') + (h.length ? `<div class="sh"><span style="font-weight:500">${v.name}: помогает · ${h.length}</span></div>` + h.map(e => it(e, g)).join('') : '') : '' });
+  const st = XG ? f(XG.stretch) : []; if (st.length) parts.push(`<div class="sh" id="ag-stretch"><span>Растяжка и разминка · ${st.length}</span></div>` + st.map(e => it(e, 'stretch')).join(''));
+  $('#alst').innerHTML = parts.join('') || '<div class="no">' + (XG ? 'Ничего не нашли.' : 'Загружаем упражнения…') + '</div>';
+  if (!aBuilt) { aBuilt = true; $('#agr').innerHTML = G.map(([g, v]) => `<button class="chip" data-g="${g}">${v.name}</button>`).join('') + '<button class="chip" data-g="stretch">Растяжка</button>' } }
+function renderAtlas() {
+  if (aMode === 'ex') { renderAtlasEx(); return } // роговица, склера и т. п. лежат в слое мышц модели — в список не берём, касанием открываются
   const q = nrm($('#aq').value.trim()), by = {}; let n = 0;
   for (const [k, v] of Object.entries(RU)) { if (v.l !== 'muscles' || !v.g || !/мышц/i.test(v.k)) continue; if (q && !matchQ(k, v, q)) continue; (by[v.g] = by[v.g] || []).push([k, v]); n++ }
   const hl = x => { const t = H(x); if (!q) return t; const i = nrm(x).indexOf(q); return i < 0 ? t : H(x.slice(0, i)) + '<mark>' + H(x.slice(i, i + q.length)) + '</mark>' + H(x.slice(i + q.length)) };
@@ -389,7 +424,7 @@ $('#allb').onclick = $('#allb2').onclick = () => ruP.then(atlasOpen);
 $('#ax').onclick = () => { $('#atlas').classList.remove('on'); tick() };
 $('#aq').oninput = () => { renderAtlas(); $('#alst').scrollTop = 0 };
 $('#agr').onclick = e => { const c = e.target.closest('.chip'); if (!c) return; const h = $('#ag-' + c.dataset.g); if (h) $('#alst').scrollTo({ top: h.offsetTop - 4, behavior: 'smooth' }); tick() };
-$('#alst').onclick = e => { const g = e.target.closest('button[data-g]'); if (g) { openGroup(g.dataset.g); return } const b = e.target.closest('.it'); if (b) openMuscle(b.dataset.k) };
+$('#alst').onclick = e => { const x = e.target.closest('.it[data-x]'); if (x) { tick(); openExFrom(x.dataset.x, { atlasEx: true, grp: x.dataset.g2 }); return } const g = e.target.closest('button[data-g]'); if (g) { openGroup(g.dataset.g); return } const b = e.target.closest('.it'); if (b) openMuscle(b.dataset.k) };
 async function toBody() { $('#atlas').classList.remove('on'); if (mode !== 'body') await setMode('body'); setChip('skin', false); setChip('muscles', true); A.turntable(false) }
 async function openMuscle(k) {
   tick(); await toBody();
