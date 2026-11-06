@@ -1036,7 +1036,7 @@ button.wk-pk{display:block;width:100%;text-align:left}
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-07-r119'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r119t'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -3282,7 +3282,9 @@ async function seekTo(v,t){ // ждём не только seeked, но и реа
   // кадр не показался (слабый телефон, фоновая вкладка): сдвигаем на миллисекунду — браузер перерисует кадр
   await new Promise(r=>{v.onseeked=r;v.currentTime=t+0.001});return await shown(160);
 }
-function phaseFrames(a,S2){const r=a.repList&&a.repList[0];if(r)return{start:r.start,down:Math.round((r.start+r.bottom)/2),bottom:r.bottom,up:Math.round((r.bottom+r.end)/2)};const n=S2.length;return{start:0,down:Math.round(n*.3),bottom:Math.round(n*.5),up:Math.round(n*.75)}}
+function phaseFrames(a,S2,ex){const L=a.repList||[],r=L.find(x=>x.bottom-x.start>=2&&x.bottom>0)||L[0],sg={squat:a.knee,lunge:a.knee,deadlift:a.hip,pushup:a.elbow,bench:a.elbow,row:a.elbow,curl:a.elbow}[ex];
+  if(r&&sg&&r.bottom>0){let k=Math.max(0,r.bottom-40),bi=k;for(;k<r.bottom;k++)if(sg[k]>sg[bi])bi=k;if(sg[bi]>sg[r.bottom]+10)r.start=Math.min(r.start,bi)}
+  if(r)return{start:r.start,down:Math.round((r.start+r.bottom)/2),bottom:r.bottom,up:Math.round((r.bottom+r.end)/2)};const n=S2.length;return{start:0,down:Math.round(n*.3),bottom:Math.round(n*.5),up:Math.round(n*.75)}}
 function phaseMetric(ex,a,i){const d=x=>Math.round(x)+'°';
   if(ex==='squat'||ex==='lunge')return{v:d(a.knee[i]),t:'цель ≤ 100°',ok:a.knee[i]<=100,n:'колено'};
   if(ex==='pushup')return{v:d(a.elbow[i]),t:'цель ≤ 90°',ok:a.elbow[i]<=90,n:'локоть'};
@@ -3293,14 +3295,16 @@ function phaseMetric(ex,a,i){const d=x=>Math.round(x)+'°';
   if(ex==='row'||ex==='curl')return{v:d(a.elbow[i]),t:ex==='curl'?'цель ≤ 60°':'цель ≤ 100°',ok:a.elbow[i]<=(ex==='curl'?60:100),n:'локоть'};return null}
 const PHASE_NAME={start:'Исходное',down:'Движение вниз',bottom:'Нижняя точка',up:'Подъём'};
 async function formResult(src,ex,S2,v,live){
-  const f=FORM[ex],a=analyze(ex,S2);window.LAST={ex,S2,a};const worst=a.findings.find(x=>x.at!=null)?.at??a.bottomIdx;
+  if(ex==='bench'){const lie=s=>{if(!s||!s.lm)return false;const l=s.lm,sx=(l[11].x+l[12].x)/2,sy=(l[11].y+l[12].y)/2,hx=(l[23].x+l[24].x)/2,hy=(l[23].y+l[24].y)/2;return Math.abs(Math.atan2(sx-hx,hy-sy)*180/Math.PI)>55}; // жим лёжа: кадры, пока человек сидит на скамье, не разбираем
+    const k=S2.findIndex((s,i)=>[0,1,2,3,4].every(d=>lie(S2[i+d])));if(k>0&&S2.length-k>=15)S2=S2.slice(k)}
+  const f=FORM[ex],a=analyze(ex,S2);window.LAST={ex,S2,a};const ph0=phaseFrames(a,S2),worst=a.findings.find(x=>x.at!=null)?.at??(Number.isFinite(ph0&&ph0.bottom)?ph0.bottom:a.bottomIdx); // без замечаний — тот же кадр, что «Нижняя точка» в шагах
   const w0=Number.isFinite(worst)?Math.max(0,Math.min(worst,S2.length-1)):S2.length>>1;let fr=null;for(let d=0;d<S2.length&&!fr;d++)fr=(S2[w0+d]&&S2[w0+d].lm?S2[w0+d]:null)||(S2[w0-d]&&S2[w0-d].lm?S2[w0-d]:null); // кадр без позы или пустой индекс — берём ближайший с позой
   if(!fr)throw new Error('Не удалось разобрать движение: снимите целиком, сбоку, 2–5 повторов.');await seekTo(v,fr.t);if(live&&!live())return;
   const badJ=a.findings.flatMap(x=>x.j||[]);const sh=frameShot(v,fr.lm,ex,a.findings.length?'#FF3B30':'#1FB57E',720,badJ),shot=sh.src;
   const fixes=shadowFixes(ex,a.findings,fr.lm),shd=fixes.length?shadowShot(v,fr.lm,fixes,720):null,atI=Math.min(worst,S2.length-1);
   S.lastForm={score:a.score,ex,t:Date.now(),reps:a.reps,shot:frameShot(v,fr.lm,ex,a.findings.length?'#FF3B30':'#1FB57E',420,badJ).src};
   S.forms=S.forms||[];S.forms.push({score:a.score,ex,t:Date.now(),reps:a.reps,findings:a.findings.map(x=>x.k),shot:frameShot(v,fr.lm,ex,'#FF4F45',160,badJ).src});if(S.forms.length>40)S.forms.shift();save();
-  const ph=phaseFrames(a,S2),stepsHtml=[];
+  const ph=phaseFrames(a,S2,ex),stepsHtml=[];
   const phases=[...new Set(f.steps.map(x=>x[1]))];
   const near=k=>{k=Number.isFinite(k)?Math.max(0,Math.min(k,S2.length-1)):S2.length>>1;for(let d=0;d<S2.length;d++){if(S2[k+d]&&S2[k+d].lm)return k+d;if(S2[k-d]&&S2[k-d].lm)return k-d}return -1};
   for(const phase of phases){const i=near(ph[phase]);if(i<0)continue;const s=S2[i];await seekTo(v,s.t);const img=frameShot(v,s.lm,phase==='bottom'?ex:null,'#FF4F45',360,badJ).src;const m=phase==='bottom'?phaseMetric(ex,a,i):null;const tips=f.steps.filter(x=>x[1]===phase).map(x=>x[0]);
@@ -3528,10 +3532,9 @@ function f4metrics(fr,C){
   if(mk<0){let b=-1;for(const k of F4I)if((!C||vis[k]>=.6)&&amp[k]>b){b=amp[k];mk=k}}
   if(mk<0){let b=-1;for(const k of F4I)if(amp[k]>b){b=amp[k];mk=k}} // ничего толком не видно — берём что есть
   const s=S[mk],lo=f4pct(s,5),hi=f4pct(s,95),nr=s.map(v=>(v-lo)/((hi-lo)||1)),z0=C&&C.z0!=null&&C.main.length&&mk===g(C.main[0])?C.z0:nr[0]<.5?0:1,far=v=>z0?v<.3:v>.7,home=v=>z0?v>.7:v<.3;
-  // повторы: проходы главного сустава туда и обратно; границы — по 10-му и 90-му процентилю, чтобы разовый выход за обычный размах (присел в конце) не съедал повторы
-  const l10=f4pct(s,10),h90=f4pct(s,90),nq=s.map(v=>(v-l10)/((h90-l10)||1));
-  let reps=0,inFar=false,tl=fr[0].t;const durs=[];
-  if(hi-lo>=12)nq.forEach((v,i)=>{if(!inFar&&far(v))inFar=true;else if(inFar&&home(v)){inFar=false;reps++;durs.push(fr[i].t-tl);tl=fr[i].t}});
+  // повторы: развороты главного сустава с порогом от реального размаха (зигзаг): подготовка, наклоны и шум до начала движения не мешают
+  const hz=Math.max(12,.35*(f4pct(s,90)-f4pct(s,10))),farHigh=!z0;let reps=0,dir=0,ex0=s[0],tl=fr[0].t;const durs=[];
+  if(hi-lo>=12)s.forEach((v,i)=>{if(dir>=0){if(v>ex0)ex0=v;else if(ex0-v>=hz){dir=-1;ex0=v;if(farHigh&&i){reps++;durs.push(fr[i].t-tl);tl=fr[i].t}}}else{if(v<ex0)ex0=v;else if(v-ex0>=hz){dir=1;ex0=v;if(!farHigh){reps++;durs.push(fr[i].t-tl);tl=fr[i].t}}}});
   const B=nr.map((v,i)=>[v,i]).filter(([v])=>z0?v<=.15:v>=.85).map(x=>x[1]),Tp=nr.map((v,i)=>[v,i]).filter(([v])=>z0?v>=.85:v<=.15).map(x=>x[1]);
   const ext=(I,low)=>{const J=I.length?I:nr.map((_,i)=>i);return J.reduce((b,i)=>(low?nr[i]<nr[b]:nr[i]>nr[b])?i:b,J[0])}; // кадр крайней точки (низ приседа) и исходного положения
   const lv=(...ix)=>f4med(fr.map(x=>Math.min(...ix.map(i=>x.l[i][2]))))>=.5,m={T,mir,mk,amp:K.map(k=>amp[g(k)]),med:K.map(k=>f4med(S[g(k)])),vis:K.map(k=>vis[g(k)]),reps,durs,range:hi-lo,z0};
@@ -3543,6 +3546,7 @@ function f4metrics(fr,C){
     m.ia=r>=0?r:ext(Tp,z0===0)} // кадр разбора — наибольшее сгибание главного сустава (низ приседа, тяги, жима)
   // крайние позы главного сустава: где колени/локти согнуты сильнее всего
   const bend=(a,b)=>{const q=S[a].map((v,i)=>Math.min(v,S[b][i])),p=f4pct(q,15);return q.map((v,i)=>[v,i]).filter(([v])=>v<=p).map(x=>x[1])};
+  {const r=F.map(x=>x[mk]),d=r.slice(1,-1).map((v,i)=>Math.abs(v-(r[i]+r[i+2])/2));m.jit=d.length?f4med(d):0} // шум позы: насколько угол главного сустава «скачет» относительно соседних кадров (плавное движение даёт почти 0)
   m.mvis=F4CH[mk]?f4med(fr.map(x=>Math.min(...F4CH[mk].map(i=>x.l[i][2])))):1;
   m.valg=null;if(vis[6]>=.6&&vis[7]>=.6&&lv(25,26,27,28)){const v=bend(6,7).map(i=>f4valg(fr[i].w)).filter(Number.isFinite);if(v.length)m.valg=f4med(v)}
   m.back=null;if(lv(0,7,8,11,12,23,24)&&B.length&&Tp.length)m.back=f4med(B.map(i=>f4back(fr[i].w)))-f4med(Tp.map(i=>f4back(fr[i].w)));
@@ -3552,6 +3556,7 @@ function f4metrics(fr,C){
   const mm=F4M[mk];m.asym=(mm!==mk&&vis[mk]>=.6&&vis[mm]>=.6)?Math.abs(amp[mk]-amp[mm])/Math.max(amp[mk],amp[mm],1):null;
   m.shallow=null;m.sj=-1;if(C&&F4I.includes(C.main[0])){let r=Infinity;for(const k of C.main.slice(0,2)){if(!F4I.includes(k)||(k>=18&&k<=19&&C.main[0]!==k)||C.ra[k]<15||vis[g(k)]<.6)continue;const q=amp[g(k)]/(C.rt||C.ra)[k];if(q<r){r=q;m.sj=k}}if(r<Infinity)m.shallow=r}
   return m}
+const F4JIT=4; // шум позы (°/кадр), выше которого «неполную» не выносим
 const F4T={shallow:null,valg:'Колени уходят внутрь',back:'Круглая спина',flare:'Локти разведены в стороны',sag:'Таз выходит из линии корпуса',swing:'Раскачиваете корпус — помогаете рывком',asym:'Одна сторона работает меньше другой'};
 const F4D={valg:'В нижней точке колени ближе друг к другу, чем в эталоне. Разводите колени по направлению носков.',back:'В крайней точке голова и верх спины заваливаются вперёд сильнее, чем в эталоне. Грудь вперёд, лопатки назад, спина ровная.',
   flare:'Плечи отведены от корпуса сильнее, чем в эталоне. Держите локти ближе к корпусу (30–60°).',sag:'Таз провисает или задран: линия плечи — таз — пятки ломается сильнее, чем в эталоне. Напрягите пресс и ягодицы.',
@@ -3563,6 +3568,7 @@ function f4judge(m,C,fq){
   if(m.shallow!=null&&!C.cyc){const k=m.sj,ur=Math.round(m.amp[k]),rr=Math.round((C.rt||C.ra)[k]),pc=Math.round(100*m.shallow),J=F4J[k][0].toUpperCase()+F4J[k].slice(1),t=pc>100?`${J}: размах ${ur}° (в эталоне ${rr}°)`:`${J}: размах ${ur}° из эталонных ${rr}° (${pc} %)`;
     if(ur<25&&(m.mvis<.8||m.shallow<.35))out.notes.push(`Не удалось уверенно увидеть ${k<4?'руки':'ноги'} — снимите сбоку, чтобы ${k<4?'руки':'ноги'} были видны целиком.`); // тренажёр закрывает конечность — амплитуду не судим
     else if(ch.shallow==null)out.info=t+'. По этому ракурсу и движению оценку амплитуды не даём — только для сведения.';
+    else if((m.jit>F4JIT||m.jit>.08*ur)&&m.shallow<.85){out.info=t+'. Позы на этом видео шумные — оценку амплитуды не даём.';out.cap=95}
     else if(m.shallow<Math.min(ch.shallow,.45))out.findings.push({key:'shallow',w:25,k:'Неполная амплитуда: '+F4J[k],d:t+'. Пройдите движение полностью.'});
     else if(m.shallow<.6)out.findings.push({key:'shallow_soft',w:10,k:`Амплитуда неполная: ${F4J[k]} — ${pc} % эталона`,d:t+'. Доводите движение до конца, если позволяет подвижность.'});
     else if(m.shallow<.85){out.info=t+'. Чуть меньше эталона — в пределах разброса камеры; «полная» пишем от 85 %.';out.cap=95}
@@ -3598,7 +3604,7 @@ async function genericResult(id,key,live){
    ${findings.map(f=>`<div class="card" style="border-left:4px solid var(--bad)"><div class="title" style="font-size:16px">${f.k}</div><div class="small muted" style="margin-top:4px">${f.d}</div></div>`).join('')}
    ${only?`<div class="card small muted">${C?'По видео для этого упражнения оцениваем только повторы и темп: остальное камера телефона надёжно не различает.':'Для этого упражнения пока нет 3D-эталона — по видео оцениваем только повторы и темп.'}</div>`:''}${notes.map(t=>`<div class="card small muted">${t}</div>`).join('')}
    ${good.map(g=>`<div class="card row" style="padding:12px 16px"><span style="color:var(--ok-text)">${ic('check')}</span><div style="flex:1">${g}</div></div>`).join('')}
-   ${gsh?shadowBlock(v,win,e.ib,gfx,gsh):`<h2 style="margin-top:14px">Вы и эталон</h2><div class="card">${pair(sa,ref0,'начало, '+fa.t.toFixed(1).replace('.',',')+' с')}<div style="height:10px"></div>${pair(shb.src,ref1,'крайняя точка, '+fb.t.toFixed(1).replace('.',',')+' с')}</div>`}
+   ${gsh?shadowBlock(v,win,e.ib,gfx,gsh):`<h2 style="margin-top:14px">Вы и эталон</h2><div class="card">${pair(sa,ref0,(fa.t>fb.t?'конец повтора, ':'начало, ')+fa.t.toFixed(1).replace('.',',')+' с')}<div style="height:10px"></div>${pair(shb.src,ref1,'крайняя точка, '+fb.t.toFixed(1).replace('.',',')+' с')}</div>`}
    ${TEN.has(id)?`<button class="btn sec" style="margin-top:10px" onclick="openTen('${id}')">${ic('expand')} Эталон в 3D</button>`:''}
    ${x.steps&&x.steps.length?`<h2>Как правильно</h2><div class="card list">${x.steps.map((t,i)=>`<div class="li" style="align-items:flex-start"><span class="num" style="width:26px;color:var(--text3);font-size:17px">${i+1}</span><div style="flex:1;line-height:1.4">${t}</div></div>`).join('')}</div>`:''}
    ${Object.keys(lv).length?`<h2>Какие мышцы работают</h2><div class="card">${muscleMapLv(lv)}${ATLAS_CR}</div>`:''}
