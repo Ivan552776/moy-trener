@@ -1094,7 +1094,7 @@ button.home-v{display:block;width:100%;padding:0;text-align:left;position:relati
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-07-r124b'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r124c'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1350,7 +1350,7 @@ function wuList(place){const L=TENIDX||[],w=L.filter(x=>x.kind==='warmup'||WU_RE
 function cdList(ex){const L=TENIDX||[],G=new Set(ex.map(x=>T3(x[4])&&TEN_META[x[4]][1]).filter(Boolean)),gr=x=>(Array.isArray(x.groups)?x.groups:[]).some(g=>G.has(g))?1:0;
   const s=L.filter(x=>x.kind==='stretch'||CD_RE.test(x.name||'')||(TEN_META[x.id]&&TEN_META[x.id][5]==='t')).sort((a,b)=>gr(b)-gr(a));return s.slice(0,3).map(x=>[x.id,'2 × 30 сек'])}
 setTimeout(tenIdx,0); // список 3D грузим сразу при запуске — растяжка не «впрыгивает» в программу потом
-function wuBlock(t,L,sub){return L.length?`<h2>${t}</h2><div class="card list wu">${L.map(([id,r])=>`<button class="exrow" onclick="loadEX().then(()=>openEx('${id}'))"><div class="th">${exThumb(id)}</div><div class="t"><b>${esc(TEN_META[id][0])}</b><small>${r}</small></div><span class="chev">${ic('chev')}</span></button>`).join('')}</div>${sub?`<div class="tiny muted" style="margin:-4px 4px 12px">${sub}</div>`:''}`:''}
+function wuBlock(t,L,sub){return L.length?`<h2>${t}</h2><div class="card list wu">${L.map(([id,r])=>`<button class="exrow" onclick="loadEX().then(()=>openEx('${id}'))"><div class="th">${exThumb(id)}</div><div class="t"><b>${esc(tenNm({id,name:((TENIDX||[]).find(z=>z.id===id)||{}).name||id}))}</b><small>${r}</small></div><span class="chev">${ic('chev')}</span></button>`).join('')}</div>${sub?`<div class="tiny muted" style="margin:-4px 4px 12px">${sub}</div>`:''}`:''}
 const T3=id=>!!(id&&TEN_META[id]);
 const GRP_HINT={quads:'Колени смотрят туда же, куда носки; спина прямая.',glutes:'Движение от таза, вверху сожмите ягодицы.',hams:'Спина прямая, таз назад, без рывков.',chest:'Лопатки сведены, опускайте медленно.',lats:'Тяните локтями, плечи опущены.',biceps:'Локти неподвижны, без раскачки.',triceps:'Локти не разводите, разгибайте до конца.',frontdelt:'Без рывков, плечи не поднимайте к ушам.',sidedelt:'Локти чуть согнуты, поднимайте до уровня плеч.',reardelt:'Тяните локтями в стороны, лопатки сводите.',abs:'Поясница прижата, выдох на усилии.',obliques:'Поворот корпусом, таз неподвижен.',calves:'Полная амплитуда, задержка вверху.',forearm:'Двигается только кисть, без рывков.',traps:'Плечи вверх и назад, без вращения.',lowerback:'Спина прямая, без рывков.',adductors:'Медленно, колени над стопами.'};
 const exHash=s=>{let h=2166136261;for(let i=0;i<s.length;i++)h=Math.imul(h^s.charCodeAt(i),16777619);return (h>>>0)/4294967296};
