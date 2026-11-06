@@ -1065,6 +1065,21 @@ button.home-v{display:block;width:100%;padding:0;text-align:left;position:relati
 </style>
 </head>
 <body>
+<!-- заставка: видна с первых килобайт, пока на медленном мобильном интернете грузится остальное приложение; убирается сразу после запуска -->
+<div id="boot" role="status" aria-live="polite"><style>
+#boot{position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#F3F2F6;color:#1C1C1E;font:500 15px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;transition:opacity .28s ease;padding:0 32px;text-align:center}
+[data-scheme="dark"] #boot{background:#0B0B0D;color:#F2F2F7}
+#boot .bl{width:64px;height:64px;border-radius:18px;background:#047857;display:grid;place-items:center;box-shadow:0 10px 30px rgba(4,120,87,.28)}
+#boot .bn{font-weight:700;font-size:22px;letter-spacing:-.02em}
+#boot .bb{width:140px;height:4px;border-radius:2px;background:rgba(120,120,128,.18);overflow:hidden}
+#boot .bb i{display:block;width:40%;height:100%;border-radius:2px;background:#10B981;animation:bootrun 1.2s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes bootrun{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+#boot .bh{min-height:40px;max-width:280px;opacity:.62;font-size:14px}
+#boot button{display:none;margin-top:2px;border:0;border-radius:12px;padding:11px 20px;background:#047857;color:#fff;font-weight:600;font-size:15px;line-height:1;font-family:inherit}
+#boot.slow2 button{display:block}
+#boot.out{opacity:0;pointer-events:none}
+@media (prefers-reduced-motion:reduce){#boot .bb i{animation:none;width:100%;opacity:.5}}
+</style><div class="bl"><svg width="30" height="30" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M13.2 2.5 5 13.4h5.6L9.8 21.5 18 10.6h-5.6z"/></svg></div><div class="bn">Мой тренер</div><div class="bb"><i></i></div><div class="bh" id="bootH">Загружаем приложение…</div><button type="button" onclick="location.reload()">Обновить</button><script>(function(){var b=document.getElementById('boot'),h=document.getElementById('bootH');setTimeout(function(){if(b.isConnected)h.textContent='Медленный интернет — ещё несколько секунд. Следующие запуски будут мгновенными'},6000);setTimeout(function(){if(b.isConnected){b.className='slow2';h.textContent=navigator.onLine===false?'Нет интернета. Подключитесь к сети и нажмите «Обновить»':'Интернет очень медленный или сайт ограничен сетью. Попробуйте Wi-Fi или нажмите «Обновить»'}},30000)})()</script></div>
 <div id="phone">
   <div id="scroll"></div>
   <div id="hdr"></div>
@@ -1079,7 +1094,7 @@ button.home-v{display:block;width:100%;padding:0;text-align:left;position:relati
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-07-r124'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r124a'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -4857,5 +4872,6 @@ async function updCheck(){const now=Date.now();if(!navigator.onLine||now-(updChe
     const w=()=>{if(!busy())go_();else setTimeout(w,5000)};setTimeout(w,5000)}catch(e){}}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){visit();updCheck();if(!S.onb&&S.tab==='today')rvLoad();rvReplyCheck();if(S.remind&&(S.remind.on||S.remind.unsub))remSync()}});
 </script>
+<script>(function(){var b=document.getElementById('boot');if(!b)return;requestAnimationFrame(function(){b.className='out';setTimeout(function(){b.remove()},320)})})()</script>
 </body>
 </html>
