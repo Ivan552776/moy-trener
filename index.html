@@ -1036,7 +1036,7 @@ button.wk-pk{display:block;width:100%;text-align:left}
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-06-r115p'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-06-r115s'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1488,13 +1488,13 @@ function streakSync(){const td=today0();if(!S.profile||S.onb||S.stkDay===td)retu
   const m=MS.filter(x=>st>=x&&!(S.ms||[]).includes(x));if(m.length){S.ms=[...(S.ms||[]),...m];S.msShow=m[m.length-1]}
   save();
   if(S.msShow)setTimeout(()=>{const v=S.msShow;S.msShow=0;save();if(v&&!$('#sheet.on'))openMilestone(v)},900);
-  else if(S.frzMsg)setTimeout(()=>{toast(`Заморозка сохранила серию: ${pl(S.frzMsg,'день','дня','дней')} без захода`);S.frzMsg=0;save()},900)}
-function openMilestone(m){const T={7:['Неделя подряд','Привычка запускается. Так держать!'],30:['Месяц подряд','Это уже образ жизни. Вы большой молодец.'],100:['100 дней подряд','Сотня! Редкий результат — гордитесь собой.'],365:['Год подряд','Целый год заботы о себе. Браво!']}[m]||['Новая веха',''];
+  else if(S.frzMsg)setTimeout(()=>{toast(`Заморозка сохранила серию: ${pl(+S.frzMsg||1,'день','дня','дней')} без захода`);S.frzMsg=0;save()},900)}
+function openMilestone(m){m=+m||0;const T={7:['Неделя подряд','Привычка запускается. Так держать!'],30:['Месяц подряд','Это уже образ жизни. Вы большой молодец.'],100:['100 дней подряд','Сотня! Редкий результат — гордитесь собой.'],365:['Год подряд','Целый год заботы о себе. Браво!']}[m]||['Новая веха',''];
   sheet('Серия',`<div class="ms-w"><div class="ms-f">${ic('flame')}</div><div class="num ms-n">${m}</div><div class="ms-t">${T[0]}</div><div class="ms-s">${T[1]}</div></div><button class="btn" onclick="closeSheet()">Спасибо!</button>`);haptic([10,60,10,60,20]);cbConfetti()}
 function openStreak(){const st=streakDays(),F=frz(),nx=MS.find(x=>x>st)||Math.ceil((st+1)/100)*100,pv=[0,...MS].filter(x=>x<=st).pop()||0,wd=Math.min(S.done.length,weekPlanCount()),wp=weekPlanCount();
   sheet('Серия',`<div class="card stk"><div class="stk-h">${ic('flame')}<b class="num">${st}</b></div><div class="stk-l">${pl(st,'день','дня','дней').replace(/^\d+\s/,'')} подряд</div><div class="stk-s">Считаем дни, когда вы заходили, записывали еду или тренировались</div>
    <div class="stk-ms"><div class="row between"><span>Следующая веха — ${pl(nx,'день','дня','дней')}</span><b class="num">${st} из ${nx}</b></div><div class="bar"><i style="width:${Math.max(4,Math.round((st-pv)/(nx-pv)*100))}%"></i></div></div>${streakCal()}</div>
-   <div class="card list"><div class="li"><span class="ibox frz">${ic('snow')}</span><div style="flex:1;min-width:0"><div style="font-weight:600">Заморозки: ${F.n} из 2</div><div class="small muted">Пропустили день — заморозка сама сохранит серию. Новая — за каждые 7 дней подряд</div></div></div>
+   <div class="card list"><div class="li"><span class="ibox frz">${ic('snow')}</span><div style="flex:1;min-width:0"><div style="font-weight:600">Заморозки: ${+F.n||0} из 2</div><div class="small muted">Пропустили день — заморозка сама сохранит серию. Новая — за каждые 7 дней подряд</div></div></div>
    <div class="li"><span class="ibox volt">${ic('gym')}</span><div style="flex:1;min-width:0"><div style="font-weight:600">Тренировок на неделе: ${wd} из ${wp}</div><div class="small muted">Дни отдыха серию не сжигают</div></div></div>
    <div class="li" role="button" onclick="openWeekSum()"><span class="ibox accent">${ic('spark')}</span><div style="flex:1;min-width:0"><div style="font-weight:600">Итоги недели</div><div class="small muted">еда, тренировки, вес и сэкономленное</div></div><span class="chev">${ic('chev')}</span></div></div>
    <div class="stk-row">${MS.map(m=>`<div class="stk-b${(S.ms||[]).includes(m)||st>=m?' on':''}"><span>${ic('flame')}</span><b class="num">${m}</b><small>${pl(m,'день','дня','дней').replace(/^\d+\s/,'')}</small></div>`).join('')}</div>`)}
@@ -1522,7 +1522,7 @@ function openWeekSum(){const w=wsWhen()||{prev:false},s=weekSum(w.prev),g=S.prof
 // тёплые слова: после тренировки и когда день закрыт (калории и белок в норме) — один раз в день, без конфетти
 /* вода: норма 30 мл на кг (не больше 3,5 л), в день тренировки +0,5 л; стакан — 250 мл. Только на телефоне, без подсчёта «за вас» */
 const watNorm=()=>{const w=S.profile.w;return Math.min(3500,Math.round(w*30/250)*250)+(doneToday()||(S.plan&&S.plan.includes((new Date().getDay()+6)%7))?500:0)};
-const watN=()=>S.water&&S.water.d===today0()?S.water.n:0;
+const watN=()=>S.water&&S.water.d===today0()?Math.max(0,Math.min(20,+S.water.n||0)):0;
 function water(d){const n=Math.max(0,Math.min(20,watN()+d));S.water={d:today0(),n};save();haptic(d>0?8:4);const el=$('#wat');if(el)el.outerHTML=waterCard();if(d>0&&n*250>=watNorm()&&(n-1)*250<watNorm())setTimeout(()=>toast('Норма воды на сегодня — есть!'),200)}
 function waterCard(){const n=watN(),N=watNorm(),cups=Math.ceil(N/250),l=v=>dec((v/1000).toFixed(v%1000?(v%100?2:1):0));
   return `<div class="card wat" id="wat"><div class="row between"><div style="min-width:0"><div class="small muted">Вода</div><div class="wat-n"><b class="num">${l(n*250)}</b><span> из ${l(N)} л</span></div></div><div class="ctl" style="gap:10px"><button class="rb" onclick="water(-1)" aria-label="Убрать стакан" ${n?'':'disabled'}>−</button><button class="rb wat-p" onclick="water(1)" aria-label="Добавить стакан 250 мл">+</button></div></div>
@@ -1785,16 +1785,18 @@ async function loadKit(){if(KIT)return KIT;
     KIT={it,recipes:r.items.map(std).map(d=>({...d,nut:ingNut(d.ing,it),min:d.steps.reduce((s,[m,t])=>s+(par(t)?0:m),0),min0:d.steps.reduce((s,[m,t,a])=>s+(par(t)?0:a),0)})),regions:g.map(([code,n,okato,lat,lon,base])=>({code,n,lat,lon,base}))};
   }catch(e){console.warn('рецепты не загрузились',e)}return KIT}
 function ingNut(ing,it){const t={k:0,p:0,f:0,c:0,g:0};ing.forEach(([id,g])=>{const x=it[id];['k','p','f','c'].forEach(q=>t[q]+=x[q]*g/100);t.g+=g});return t}
+// ответ сервера попадает в разметку: ключи сетей — только латиница, название, дата и пометка — как текст
+function cleanPr(d){const e=s=>String(s==null?'':s).replace(/[&<>"'`]/g,c=>'&#'+c.charCodeAt(0)+';'),c={};Object.entries((d&&d.chains)||{}).forEach(([k,v])=>{if(/^[a-z0-9_]{1,12}$/.test(k)&&v&&typeof v==='object')c[k]={...v,n:e(v.n),d:e(v.d),...(v.note!=null?{note:e(v.note)}:{})}});return {...d,chains:c}}
 async function loadPrices(force){const r=region(),key='mt-pr-'+r;
   if(PRICES&&PRICES.r===r&&!force&&Date.now()-PRICES._t<3600e3)return PRICES;
   let c=null;try{c=JSON.parse(localStorage.getItem(key))}catch(_){}
-  if(c&&c.d&&(!PRICES||PRICES.r!==r))PRICES={...c.d,_t:c.t};
-  if(!c||force||Date.now()-c.t>6*3600e3){try{const d=await fetch(API+'/prices?r='+r).then(x=>{if(!x.ok)throw new Error(x.status);return x.json()});PRICES={...d,_t:Date.now()};try{localStorage.setItem(key,JSON.stringify({t:Date.now(),d}))}catch(_){}}
+  if(c&&c.d&&(!PRICES||PRICES.r!==r))PRICES={...cleanPr(c.d),_t:c.t};
+  if(!c||force||Date.now()-c.t>6*3600e3){try{const d=await fetch(API+'/prices?r='+r).then(x=>{if(!x.ok)throw new Error(x.status);return x.json()});PRICES={...cleanPr(d),_t:Date.now()};try{localStorage.setItem(key,JSON.stringify({t:Date.now(),d}))}catch(_){}}
     catch(e){if(!PRICES||PRICES.r!==r)PRICES={r,items:{},chains:{},failed:true,_t:Date.now()}}}
   return PRICES}
 async function loadShops(){const r=region();if(SHOPS&&SHOPS.r===r)return SHOPS;try{SHOPS=await fetch(API+'/shops?r='+r).then(x=>{if(!x.ok)throw 0;return x.json()})}catch(e){SHOPS={r,chains:{},failed:true}}return SHOPS}
 const km=(a,b)=>{const t=Math.PI/180,x=Math.sin((b[0]-a[0])*t/2)**2+Math.cos(a[0]*t)*Math.cos(b[0]*t)*Math.sin((b[1]-a[1])*t/2)**2;return 12742*Math.asin(Math.sqrt(x))};
-function nearest(chain){const l=GEO&&SHOPS&&SHOPS.chains&&SHOPS.chains[chain];if(!l)return null;let m=1e9;l.forEach(p=>{const d=km(GEO,p);if(d<m)m=d});return m<30?m:null}
+function nearest(chain){const l=GEO&&SHOPS&&SHOPS.chains&&SHOPS.chains[chain];if(!Array.isArray(l))return null;let m=1e9;l.forEach(p=>{const d=km(GEO,p);if(d<m)m=d});return m<30?m:null}
 const distTxt=d=>d==null?'':d<1?Math.max(50,Math.round(d*20)*50)+NBS+'м':f1(Math.round(d*10)/10)+NBS+'км';
 const hasPrices=()=>!!(PRICES&&PRICES.items&&Object.keys(PRICES.items).length);
 // цена за кг: в сети — её цена; без сети — самая низкая цена сайтов сетей; нет — средняя Росстата; нет — оценка (цена Москвы × уровень цен региона)
@@ -2049,7 +2051,8 @@ function openDish(id,n){const d=dishOf(id);if(!d){loadKit().then(()=>KIT&&KIT.re
    Калории, белок и цены считает код (norm, fitPlan, dishCost); меню хранится в S.wk и не пересобирается само.
    Блюдо — не чаще 2 раз в неделю, в один день — разные продукты (рыба, птица, мясо, каша…), «Не нравится» больше не предлагаем ---------- */
 const WD=['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'],WDS=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
-let WKD=null,WKO=null; // открытый день меню; блюдо, у которого раскрыто «Заменить»
+let WKD=null,WKO=null;const WKS=/^\w{1,8}$/; // код приёма (b, l, d, s, top0) попадает в onclick — только буквы и цифры
+ // открытый день меню; блюдо, у которого раскрыто «Заменить»
 const wkRnd=(a,b)=>{let h=2166136261;for(const ch of a+'|'+b){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return ((h>>>0)%1000)/1000};
 function wkKey(){const pr=S.profile,n=norm({...pr});return JSON.stringify([pr.goal,pr.pace,n.kcal,n.p,budgetOf(pr),people(),[...(S.noeat||[])].sort(),(A=>[A.a||[],(A.o||[]).map(x=>x.id||x),A.w||[],A.h||[]])(S.alg||{}),effTrains()])}
 // дни тренировок недели: отмеченные и запланированные; не хватает — через день с понедельника
@@ -2100,12 +2103,12 @@ function wkPinOthers(i,sl){const day=S.wk.days[i];day.pin=day.pin||{};day.sl.for
 function wkSwap(i,sl){const day=S.wk.days[i],cur=day.sl.find(x=>x.s===sl);wkPinOthers(i,sl);day.ex=day.ex||{};if(cur&&cur.id)day.ex[sl]=[...(day.ex[sl]||[]),cur.id];delete day.pin[sl];wkRedo(i);haptic(6);keepScroll(openWeek)}
 function wkNo(i,sl){const cur=S.wk.days[i].sl.find(x=>x.s===sl);if(!cur||!cur.id)return;S.dislikes=S.dislikes||{};S.dislikes[cur.id]=1;if(S.likes)delete S.likes[cur.id];toast('Больше не предложим');wkSwap(i,sl)}
 function wkSet(i,sl,v){const day=S.wk.days[i];wkPinOthers(i,sl);day.pin[sl]=v;wkRedo(i);haptic(8);WKD=i;openWeek()}
-function wkOwn(i,sl){sheet('Ем своё',`<div class="small muted" style="margin:0 4px 12px">Сколько примерно калорий в этом приёме? Остальное меню дня подстроим под остаток.</div>
+function wkOwn(i,sl){if(!WKS.test(sl)||!(i>=0&&i<7))return;sheet('Ем своё',`<div class="small muted" style="margin:0 4px 12px">Сколько примерно калорий в этом приёме? Остальное меню дня подстроим под остаток.</div>
   <div class="card"><div class="field"><label>Калорий в приёме</label><input id="wkown" type="number" inputmode="numeric" min="50" max="2500" step="10" value="500" style="font-size:22px"></div></div>
   <button class="btn" onclick="const v=Math.max(50,Math.min(2500,+$('#wkown').value||0));wkSet(${i},'${sl}',{own:Math.round(v/10)*10})">Сохранить</button>
   <button class="btn ghost" onclick="openWeekPick(${i},'${sl}')">Назад к блюдам</button>`)}
 let WKQ='';
-function openWeekPick(i,sl,q){if(q!=null)WKQ=q;const SCH=wkSched(),m=(SCH.find(x=>x[0]===sl)||[])[1]||'l',k=norm_(WKQ);
+function openWeekPick(i,sl,q){if(!WKS.test(sl)||!(i>=0&&i<7))return;if(q!=null)WKQ=q;const SCH=wkSched(),m=(SCH.find(x=>x[0]===sl)||[])[1]||'l',k=norm_(WKQ);
   const L=KIT.recipes.filter(d=>!dishBan(d)&&(!k||norm_(d.n).includes(k))).sort((a,b)=>(b.m.includes(m)-a.m.includes(m))||a.nut.k-b.nut.k).slice(0,k?60:40);
   sheet(`${WD[i]} · ${(SCH.find(x=>x[0]===sl)||[])[4]||'Приём'}`,`<button class="addopt" onclick="wkOwn(${i},'${sl}')"><div class="ibox accent">${ic('food')}</div><div style="flex:1"><div class="title">Ем своё</div><div class="small muted">укажу калории — меню дня пересчитается</div></div><span class="chev">${ic('chev')}</span></button>
    <input class="search" type="search" placeholder="Найти блюдо" value="${esc(WKQ)}" oninput="clearTimeout(openWeekPick.t);openWeekPick.t=setTimeout(()=>{const y=$('#sbody').scrollTop;openWeekPick(${i},'${sl}',this.value);const s=$('#sbody .search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)" style="margin:6px 0 10px">
@@ -2149,12 +2152,12 @@ function openWeek(i){if(!KIT){sheet('Меню на неделю','<div class="ca
     <button class="btn sec" style="margin-top:10px" onclick="S.wk.start=monday0();S.wk.key=wkKey();save();WKD=${wd};openWeek()">Повторить прошлое меню</button>
     <div class="small muted" style="margin:12px 4px 0;text-align:center">Новое меню не повторяет блюда прошлой недели, где есть замена</div>`);SHEET_FN=openWeek;kitchenLoad();return}
   const day=S.wk.days[WKD],N=wkNorm(WKD),t=wkSum(day),B=budgetOf(S.profile),SCH=wkSched(),k=people(),dt=new Date(monday0()+'T12:00');dt.setDate(dt.getDate()+WKD);
-  const row=x=>{if(x.own)return `<div class="card wk-it"><div class="row"><div class="thumb"><span class="dish-ic">${ic('food')}</span></div><div style="flex:1;min-width:0"><div class="wk-eb">${x.lab}</div><div class="title" style="font-size:17px">Своё блюдо</div><div class="small muted">${u(x.own,'ккал')} — вы указали</div></div></div>
+  const row=x=>{if(!WKS.test(x.s))return '';if(x.own)return `<div class="card wk-it"><div class="row"><div class="thumb"><span class="dish-ic">${ic('food')}</span></div><div style="flex:1;min-width:0"><div class="wk-eb">${esc(x.lab)}</div><div class="title" style="font-size:17px">Своё блюдо</div><div class="small muted">${u(x.own,'ккал')} — вы указали</div></div></div>
       <div class="wk-act"><button onclick="openWeekPick(${WKD},'${x.s}')">${ic('search')}Выбрать блюдо</button></div></div>`;
     const d=wkDish(x);if(!d)return '';const c=dishCost(d);
     // одна тихая кнопка «Заменить» вместо трёх под каждым блюдом; варианты раскрываются по касанию
     const o=WKO===WKD+x.s;
-    return `<div class="card wk-it${o?' wk-o':''}"><div class="row" style="align-items:center"><div class="row tap" style="flex:1;min-width:0" role="button" onclick="openDish('${d.id}')"><div class="thumb">${d.img?pic(d.img,d.n):`<span class="dish-ic">${ic(dishCat(d)[1])}</span>`}</div><div style="flex:1;min-width:0"><div class="wk-eb">${x.top?'Перекус · белок':x.lab}</div><div class="title" style="font-size:17px">${d.n}</div><div class="small muted">${u(d.nut.k,'ккал')} · белок ${u(d.nut.p,'г')}</div>${c?`<div class="small dr-m">${c.part?`<span>${costTxt(c)}</span>`:`<b class="num">${costTxt(c)}</b>`}</div>`:''}</div></div>
+    return `<div class="card wk-it${o?' wk-o':''}"><div class="row" style="align-items:center"><div class="row tap" style="flex:1;min-width:0" role="button" onclick="openDish('${d.id}')"><div class="thumb">${d.img?pic(d.img,d.n):`<span class="dish-ic">${ic(dishCat(d)[1])}</span>`}</div><div style="flex:1;min-width:0"><div class="wk-eb">${x.top?'Перекус · белок':esc(x.lab)}</div><div class="title" style="font-size:17px">${d.n}</div><div class="small muted">${u(d.nut.k,'ккал')} · белок ${u(d.nut.p,'г')}</div>${c?`<div class="small dr-m">${c.part?`<span>${costTxt(c)}</span>`:`<b class="num">${costTxt(c)}</b>`}</div>`:''}</div></div>
       <button class="wk-sw" aria-expanded="${o}" onclick="WKO=${o?'null':`'${WKD+x.s}'`};haptic(5);keepScroll(openWeek)">${ic('swap')}<span>Заменить</span></button></div>
       ${o?`<div class="wk-act"><button onclick="WKO=null;wkSwap(${WKD},'${x.s}')">Другое блюдо</button><button onclick="WKO=null;wkNo(${WKD},'${x.s}')">Не нравится</button>${x.top?'':`<button onclick="WKO=null;openWeekPick(${WKD},'${x.s}')">Своё</button>`}</div>`:''}</div>`};
   sheet('Меню на неделю',`${changed?`<div class="card wk-ch"><div style="font-weight:650">Профиль изменился</div><div class="small muted" style="margin:2px 0 10px">Цель, бюджет, «Не ем» или тренировки стали другими — пересоберём меню под них?</div><button class="btn sm" onclick="wkBuild(S.wk.prev);openWeek()">Пересобрать</button> <button class="btn sm sec" onclick="S.wk.key=wkKey();save();openWeek()">Оставить</button></div>`:''}
@@ -2812,11 +2815,11 @@ const exW=x=>/штанг|гантел|гир|блок|тренаж|машин|с
 const exR=x=>{const m=String(x[1]).match(/(\d+)(?:\s*[–-]\s*(\d+))?\s*$/);return m?+(m[2]||m[1]):12};
 const wStep=x=>/гантел|гир/i.test(x[0])?1:2.5;
 let WO=null;
-function woCur(i,x){const L=(S.lift||{})[x[0]],td=today0();if(!WO||WO.i!==i||WO.n!==x[0]){const p=L&&(L.d===td?L:L);WO={i,n:x[0],w:p?p.w:0,r:p&&p.r?p.r:exR(x)}}return WO}
+function woCur(i,x){const L=(S.lift||{})[x[0]],td=today0();if(!WO||WO.i!==i||WO.n!==x[0]){const p=L&&(L.d===td?L:L);WO={i,n:x[0],w:p?+p.w||0:0,r:p&&+p.r?+p.r:exR(x)}}return WO}
 function woAdj(k,d){if(!WO)return;WO[k]=Math.max(0,Math.min(k==='w'?400:100,Math.round((WO[k]+d)*10)/10));haptic(4);keepScroll(()=>openExercise(WO.i))}
 function woLog(i){const x=program().ex[i],c=woCur(i,x),td=today0();S.lift=S.lift||{};const L=S.lift[x[0]];
   S.lift[x[0]]={d:td,w:exW(x)?c.w:0,r:c.r,n:L&&L.d===td?(L.n||0)+1:1,prev:L?(L.d===td?L.prev:{d:L.d,w:L.w,r:L.r,n:L.n}):null}}
-function woTip(x){const L=(S.lift||{})[x[0]],td=today0(),p=L&&(L.d===td?L.prev:L);if(!p)return exW(x)?`<div class="wo-tip">${ic('spark')}<span>Подберите вес, с которым ${exR(x)} повторов даются с запасом 1–2</span></div>`:'';
+function woTip(x){const L=(S.lift||{})[x[0]],td=today0(),p0=L&&(L.d===td?L.prev:L),p=p0&&{w:+p0.w||0,r:+p0.r||0,n:+p0.n||0};if(!p)return exW(x)?`<div class="wo-tip">${ic('spark')}<span>Подберите вес, с которым ${exR(x)} повторов даются с запасом 1–2</span></div>`:'';
   const tr=exR(x),w=exW(x)&&p.w,all=(p.n||0)>=setsOf(x)&&p.r>=tr;
   return `<div class="wo-tip">${ic('spark')}<span>В прошлый раз ${w?dec(p.w)+' кг × ':''}${p.r}${all?(w?` — попробуйте ${dec(p.w+wStep(x))} кг`:' — добавьте 1–2 повтора'):' — повторите и доделайте все подходы'}</span></div>`}
 function openExercise(i){
@@ -3598,7 +3601,7 @@ function vTech(){
   <div class="concept">Углы считаются по точкам суставов, точность зависит от ракурса и света · не медицинская консультация</div>`;
 }
 function vMe(){ // личный кабинет как «Настройки» на iPhone: карточка профиля и короткие списки, всё подробное — в шторках
-  const pr=S.profile,n=norm(pr),g=GOALS[pr.goal],pg=program(),w=S.weights,lastW=w.length?w[w.length-1].w:pr.w,L=rvList(),R=S.remind&&S.remind.on;
+  const pr=S.profile,n=norm(pr),g=GOALS[pr.goal],pg=program(),w=S.weights,lastW=+(w.length?w[w.length-1].w:pr.w)||0,L=rvList(),R=S.remind&&S.remind.on;
   if(!RV.at||Date.now()-RV.at>10*60e3)setTimeout(()=>rvLoad(),0);
   const row=(fn,cl,icn,t,sub)=>`<button class="rowbtn" onclick="${fn}"><div class="ibox me-i">${ic(icn)}</div><div class="t">${t}${sub?`<small>${sub}</small>`:''}</div><span class="chev">${ic('chev')}</span></button>`;
   const TH={light:'светлая',dark:'тёмная',auto:'как в телефоне'};
@@ -3640,7 +3643,7 @@ function openEdit(){
     <div class="field"><label>Имя</label><input type="text" value="${pr.name==='Вы'?'':esc(pr.name)}" placeholder="Имя" maxlength="24" onchange="S.profile.name=cleanName(this.value);save();rerender()"></div>
     <div class="field"><label>Пол</label><div class="chips">${[['m','Мужчина'],['f','Женщина']].map(([k,l])=>`<button class="chip ${pr.sex===k?'on':''}" onclick="S.profile.sex='${k}';save();rerender()">${l}</button>`).join('')}</div></div>
     ${[['age','Возраст','лет',1,14,80],['h','Рост','см',1,100,250]].map(([k,l,u2,st,mn,mx])=>`<div class="field"><label>${l}</label><div class="ctl"><button class="rb" onclick="adjP('${k}',-${st},${mn},${mx})">−</button><span class="num" style="font-size:22px;min-width:84px;white-space:nowrap;text-align:center">${pr[k]} <span class="muted" style="font-size:12px;font-weight:500">${u2}</span></span><button class="rb" onclick="adjP('${k}',${st},${mn},${mx})">+</button></div></div>`).join('')}
-    <div class="field"><label>Вес</label><div class="row" style="gap:10px"><span class="num" style="font-size:22px">${(''+pr.w).replace('.',',')} <span class="muted" style="font-size:12px;font-weight:500">кг</span></span><button class="btn sm sec" onclick="openWeight()">Записать</button></div></div>
+    <div class="field"><label>Вес</label><div class="row" style="gap:10px"><span class="num" style="font-size:22px">${(''+(+pr.w||0)).replace('.',',')} <span class="muted" style="font-size:12px;font-weight:500">кг</span></span><button class="btn sm sec" onclick="openWeight()">Записать</button></div></div>
    </div>
    <div class="card">
     <div class="small muted" style="margin-bottom:6px">Цель</div><div class="chips">${Object.entries(GOALS).map(([k,g])=>`<button class="chip ${pr.goal===k?'on':''}" onclick="setP('goal','${k}')">${g.n}</button>`).join('')}</div>
@@ -3650,9 +3653,9 @@ function openEdit(){
     <div class="small muted" style="margin:12px 0 6px">Опыт тренировок</div><div class="chips">${[['new','Новичок'],['mid','До года'],['pro','Больше года']].map(([k,l])=>`<button class="chip ${pr.level===k?'on':''}" onclick="setP('level','${k}')">${l}</button>`).join('')}</div>
     <div class="small muted" style="margin:12px 0 6px">Где тренируетесь</div><div class="chips">${[['gym','В зале'],['home','Дома'],['both','И там, и там']].map(([k,l])=>`<button class="chip ${(pr.place||'both')===k?'on':''}" onclick="setP('place','${k}')">${l}</button>`).join('')}</div>
    </div>
-   <div class="card"><div class="small muted">Доход в месяц · для бюджета на еду</div><div class="num" style="font-size:30px">${fmt(pr.income)} ₽</div><input type="range" min="20000" max="500000" step="5000" value="${pr.income}" oninput="S.profile.income=+this.value;this.previousElementSibling.textContent=fmt(this.value)+' ₽'" onchange="save();rerender()">
+   <div class="card"><div class="small muted">Доход в месяц · для бюджета на еду</div><div class="num" style="font-size:30px">${fmt(pr.income)} ₽</div><input type="range" min="20000" max="500000" step="5000" value="${+pr.income||0}" oninput="S.profile.income=+this.value;this.previousElementSibling.textContent=fmt(this.value)+' ₽'" onchange="save();rerender()">
     <div class="row between"><span class="small muted">Доля на еду</span><div class="chips">${[[.2,'20%'],[.3,'30%'],[.4,'40%']].map(([v,l])=>`<button class="chip ${pr.share===v?'on':''}" onclick="S.profile.share=${v};save();rerender()">${l}</button>`).join('')}</div></div>
-    <div class="row between" style="margin-top:10px"><span class="small muted">Сколько человек кормит доход</span><div class="ctl"><button class="rb" onclick="adjP('people',-1,1,6)">−</button><span class="num" style="font-size:20px;min-width:20px;text-align:center">${pr.people}</span><button class="rb" onclick="adjP('people',1,1,6)">+</button></div></div>
+    <div class="row between" style="margin-top:10px"><span class="small muted">Сколько человек кормит доход</span><div class="ctl"><button class="rb" onclick="adjP('people',-1,1,6)">−</button><span class="num" style="font-size:20px;min-width:20px;text-align:center">${+pr.people||1}</span><button class="rb" onclick="adjP('people',1,1,6)">+</button></div></div>
     <div class="small muted" style="margin-top:10px">Бюджет на еду: <b>${fmt(budgetOf(pr))} ₽ в день</b></div></div>
    ${pr.age<18?`<div class="lock" style="background:var(--warn-soft);margin-bottom:12px"><span style="color:var(--warn-text)">${ic('heart')}</span><div><b>До 18 лет</b> калории не урезаем${pr.goal==='muscle'?', набор — только плавный':''}: норма — ориентир. Покажите план родителям, силовые — под присмотром тренера.</div></div>`:''}
    <button class="card tap" style="width:100%;text-align:left" onclick="openProfile()"><div class="row between"><div><div style="font-weight:600">Норма пересчитана: ${fmt(norm(pr).kcal)} ккал</div><div class="small muted">Б ${norm(pr).p} · Ж ${norm(pr).f} · У ${norm(pr).c} г · как считаем</div></div><span class="chev">${ic('chev')}</span></div></button>
@@ -3666,7 +3669,7 @@ const tooFast=w=>w.length>1&&(new Date(w[w.length-1].d)-new Date(w[0].d))/864e5>
    Прогноз — по фактическому темпу за последние 2–6 недель, а пока данных мало — по плану (дефицит или профицит нормы, 7 700 ккал ≈ 1 кг).
    Подстройка: «Похудеть» — вес за 14+ дней изменился меньше чем на 0,3 кг → норма −100 ккал (не больше −300 всего);
    «Набрать мышцы» — прибавка меньше 0,2 кг → +100 ккал. Не чаще раза в 2 недели, человек может вернуть как было */
-const wGoal=()=>{const pr=S.profile;if(pr.tw)return pr.tw;const hm=pr.h/100,b25=Math.round(24.9*hm*hm);return pr.goal==='lose'?Math.min(pr.w-1,Math.max(b25,Math.round(pr.w*.9))):pr.goal==='muscle'?Math.round(pr.w+3):Math.round(pr.w)};
+const wGoal=()=>{const pr=S.profile;if(+pr.tw)return +pr.tw;const hm=pr.h/100,b25=Math.round(24.9*hm*hm);return pr.goal==='lose'?Math.min(pr.w-1,Math.max(b25,Math.round(pr.w*.9))):pr.goal==='muscle'?Math.round(pr.w+3):Math.round(pr.w)};
 function wRate(){const w=S.weights,last=w[w.length-1];if(!last)return null;const t0=Date.parse(last.d),win=w.filter(x=>t0-Date.parse(x.d)<=42*864e5);if(win.length<2||(t0-Date.parse(win[0].d))/864e5<14)return null;
   // наклон по всем точкам окна (наименьшие квадраты), кг в неделю
   const xs=win.map(x=>(Date.parse(x.d)-t0)/864e5/7),ys=win.map(x=>x.w),mx=xs.reduce((s,v)=>s+v,0)/xs.length,my=ys.reduce((s,v)=>s+v,0)/ys.length;let a=0,b=0;xs.forEach((x,i)=>{a+=(x-mx)*(ys[i]-my);b+=(x-mx)*(x-mx)});return b?a/b:null}
@@ -3687,7 +3690,7 @@ function wChart(){const w=S.weights.slice(-12),F=wForecast(),W=320,H=132,P=14;if
    ${fc}<polyline fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="${pts.map(p=>p.map(f1).join(',')).join(' ')}"/>${pts.map((p,i)=>`<circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="${i===pts.length-1?4.5:2.5}" fill="${i===pts.length-1?'var(--accent)':'var(--ink)'}"/>`).join('')}
    <text x="${P}" y="${H-2}" class="wch-t">${w[0].d.slice(8,10)}.${w[0].d.slice(5,7)}</text>${F.dt&&F.wk<=26?`<text x="${W-P}" y="${H-2}" text-anchor="end" class="wch-t">${F.dt.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit'})}</text>`:lp[0]-P>70?`<text x="${f1(lp[0])}" y="${H-2}" text-anchor="end" class="wch-t">${w[w.length-1].d.slice(8,10)}.${w[w.length-1].d.slice(5,7)}</text>`:''}</svg>`}
 function openWeight(){
-  if(WT==null)WT=S.weights.length?S.weights[S.weights.length-1].w:S.profile.w;
+  if(WT==null)WT=+(S.weights.length?S.weights[S.weights.length-1].w:S.profile.w)||70;
   const pr=S.profile,F=wForecast(),w=S.weights,k=S.kadj||0,fmtW=v=>dec((+v).toFixed(1));
   const fTxt=F.done?'Вы у цели — теперь держим вес':F.stuck?(F.src==='fact'?'Пока вес не идёт к цели — смотрим ещё неделю':'Отметьте вес ещё через неделю — покажем прогноз'):F.wk>52?'больше года при нынешнем темпе':`≈ к ${F.dt.toLocaleDateString('ru-RU',{day:'numeric',month:'long',...(F.wk>40?{year:'numeric'}:{})})}`;
   sheet('Вес',`<div class="card" style="text-align:center"><div class="num" style="font-size:56px;line-height:1">${fmtW(WT)}</div><div class="muted">кг · сегодня</div>
@@ -3700,7 +3703,7 @@ function openWeight(){
    ${w.length?'':`<div class="card small muted">Взвешивайтесь раз в неделю утром, до еды — так прогноз будет честным. Если вес стоит 2 недели, норма подстроится сама.</div>`}
    ${w.length?`<div class="card list">${w.slice(-5).reverse().map(x=>`<div class="li"><div style="flex:1" class="muted">${x.d.slice(8,10)}.${x.d.slice(5,7)}.${x.d.slice(0,4)}</div><span class="num">${fmtW(x.w)} кг</span></div>`).join('')}</div>`:''}`);SHEET_FN=openWeight;
 }
-function saveWeight(){const d=today0(),i=S.weights.findIndex(x=>x.d===d);if(i>-1)S.weights[i].w=WT;else S.weights.push({d,w:WT});S.weights.sort((a,b)=>a.d<b.d?-1:1);S.profile.w=WT;wAdapt();save();haptic([10,40,10]);if(S.kadjMsg){const m=S.kadjMsg;S.kadjMsg=0;save();setTimeout(()=>toast(m),1600)}norm(S.profile).under?toast('Вес записан. ИМТ ниже нормы — худеть не советуем, посоветуйтесь с врачом',true):toast('Вес записан · норма пересчитана');WT=null;closeSheet();rerender()}
+function saveWeight(){const d=today0(),i=S.weights.findIndex(x=>x.d===d);if(i>-1)S.weights[i].w=WT;else S.weights.push({d,w:WT});S.weights.sort((a,b)=>a.d<b.d?-1:1);S.profile.w=WT;wAdapt();save();haptic([10,40,10]);if(S.kadjMsg){const m=S.kadjMsg;S.kadjMsg=0;save();setTimeout(()=>toast(esc(m)),1600)}norm(S.profile).under?toast('Вес записан. ИМТ ниже нормы — худеть не советуем, посоветуйтесь с врачом',true):toast('Вес записан · норма пересчитана');WT=null;closeSheet();rerender()}
 function spark(vals){const W=300,H=56,mn=Math.min(...vals),mx=Math.max(...vals),r=mx-mn||1;const pts=vals.map((v,i)=>[i/(vals.length-1)*(W-8)+4,H-6-(v-mn)/r*(H-14)]);return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><polyline fill="none" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${pts.map(p=>p.map(n=>n.toFixed(1)).join(',')).join(' ')}"/><circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="4" fill="var(--accent)"/></svg>`}
 function openHistory(){
   const f=S.forms.slice().reverse();
