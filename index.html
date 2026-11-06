@@ -1094,7 +1094,7 @@ button.home-v{display:block;width:100%;padding:0;text-align:left;position:relati
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-07-r124a'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r124b'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -4605,7 +4605,7 @@ function obRv(){const L=rvtList().slice(0,8);if(!L.length)return '';const solo=L
   const d=Math.max(20,L.length*7),u=S.rvStats&&S.rvStats.users,us=u>=10?`<div class="obrv-u">Уже ${u%10===1&&u%100!==11?'пользуется':'пользуются'} ${pl(u,'человек','человека','человек')}</div>`:''; // ~36 px/с при карточке 240 px + 12 px
   return `<button class="obrv tap" onclick="openReviews()" aria-label="Отзывы: средняя оценка ${avg} из 5. Открыть все отзывы"><div class="obrv-h">${stars(rvAvg(all),14)}<b>${avg}</b><span class="muted" style="flex:none">·&nbsp;${pl(Math.max(all.length,(S.rvStats&&S.rvStats.reviews)||0),'отзыв','отзыва','отзывов')}</span>${RVDEMO?'<span class="pill obrv-demo">пример</span>':''}</div>
    <div class="obrv-win" aria-hidden="true"><div class="obrv-tr${RM||solo?' rm':''}${solo?' solo':''}" style="--obrv-d:${d}s">${one}${RM||solo?'':one}</div></div>${us}</button>`}
-function obRvPaint(){const b=$('#obrv');if(!b||$('#onb').classList.contains('hide'))return;const h=obRv();b.innerHTML=h;const c=$('#obcv');if(c)c.classList.toggle('has-rv',!!h)}
+function obRvPaint(){const b=$('#obrv');if(!b||$('#onb').classList.contains('hide'))return;const h=obRv();if(h===b._h&&b.firstElementChild)return;b._h=h;b.innerHTML=h; /* те же отзывы — не перерисовываем: строка не прыгает в начало */const c=$('#obcv');if(c)c.classList.toggle('has-rv',!!h)}
 function rvtRot(){const el=document.querySelector('.rvtbox .rvt.rm');if(!el){clearInterval(RVT.iv);RVT.iv=0;return}
   if(document.hidden||$('#sheet').classList.contains('on'))return;
   const it=el.querySelectorAll('.rvt-it');if(it.length<2)return;RVT.i=(RVT.i+1)%it.length;it.forEach((x,j)=>x.classList.toggle('on',j===RVT.i))}
@@ -4870,6 +4870,8 @@ async function updCheck(){const now=Date.now();if(!navigator.onLine||now-(updChe
     const busy=()=>$('#sheet').classList.contains('on')||!$('#onb').classList.contains('hide')||document.querySelector('#cons.on')||[...document.querySelectorAll('video')].some(v=>!v.paused);
     if(!busy()){go_();return}
     const w=()=>{if(!busy())go_();else setTimeout(w,5000)};setTimeout(w,5000)}catch(e){}}
+// новые отзывы и ответы команды подтягиваются, пока открыта стартовая страница или «Сегодня» (сервер держит кэш 15 с — нагрузки нет)
+setInterval(()=>{if(!document.hidden&&navigator.onLine&&(!$('#onb').classList.contains('hide')||S.tab==='today'))rvLoad(true)},3*60e3);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){visit();updCheck();if(!S.onb&&S.tab==='today')rvLoad();rvReplyCheck();if(S.remind&&(S.remind.on||S.remind.unsub))remSync()}});
 </script>
 <script>(function(){var b=document.getElementById('boot');if(!b)return;requestAnimationFrame(function(){b.className='out';setTimeout(function(){b.remove()},320)})})()</script>
