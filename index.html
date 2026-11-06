@@ -1484,6 +1484,7 @@ button.home-v{display:block;width:100%;padding:0;text-align:left;position:relati
 .tk-m{position:absolute;left:100%;top:-2px;margin-left:3px;font-style:normal;font-size:12px;color:var(--accent-text);animation:tkm 1.6s var(--ease-out) forwards}
 @keyframes tkm{from{opacity:0;transform:translateY(6px)}20%{opacity:1;transform:none}to{opacity:0;transform:translateY(-10px)}}
 @media (prefers-reduced-motion:reduce){.tk-r{animation:none!important}#paybn{transition:opacity .15s!important;transform:none}}
+.rb:disabled{opacity:.35;pointer-events:none} /* предел — кнопка неактивна, а не «молча ничего» */
 </style>
 </head>
 <body>
@@ -1516,7 +1517,7 @@ button.home-v{display:block;width:100%;padding:0;text-align:left;position:relati
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-07-r127t'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r127u'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v9h14v-9"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10.5 3 12 8 12 8s1.5-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>',cup:'<path d="M7 4h10l-1.3 15.2a2 2 0 0 1-2 1.8h-3.4a2 2 0 0 1-2-1.8z"/><path d="M7.4 9h9.2"/>',expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -3167,10 +3168,10 @@ const famK=()=>1+famR().reduce((s,r)=>s+r,0);
 function famPor(d){if(!famOn()||!d.yield||!d.yield.g)return '';const my=d.yield.g*(d.f||1),R=famR(),L=famList(),g=v=>Math.max(10,Math.round(v/10)*10);
   return `Вы — ${g(my)}${NBS}г`+L.map((m,i)=>` · ${famLbl(m,i)} — ${g(my*R[i])}${NBS}г`).join('')}
 function openFam(){const L=famList(),R=famR(),me=norm(S.profile).kcal,k=people();
-  sheet('Семья',`<div class="card row between" style="gap:10px"><div style="flex:1;min-width:0"><div style="font-weight:650">Готовлю на</div><div class="tiny muted">и бюджет делится на всех</div></div><div class="ctl"><button class="rb" onclick="famN(-1)" aria-label="Меньше">−</button><span class="num" style="font-size:20px;min-width:72px;text-align:center">${pl(k,'человек','человека','человек')}</span><button class="rb" onclick="famN(1)" aria-label="Больше">+</button></div></div>
+  sheet('Семья',`<div class="card row between" style="gap:10px"><div style="flex:1;min-width:0"><div style="font-weight:650">Готовлю на</div><div class="tiny muted">и бюджет делится на всех</div></div><div class="ctl"><button class="rb" onclick="famN(-1)" aria-label="Меньше"${k<=1?' disabled':''}>−</button><span class="num" style="font-size:20px;min-width:72px;text-align:center">${pl(k,'человек','человека','человек')}</span><button class="rb" onclick="famN(1)" aria-label="Больше"${k>=6?' disabled':''}>+</button></div></div>
    <div class="card fam-me row" style="gap:12px"><div class="me-ava sm">${ava()}</div><div style="flex:1;min-width:0"><div style="font-weight:650">Вы</div><div class="small muted">${GOALS[S.profile.goal].n.toLowerCase()} · ${fmt(me)} ккал в день · порция ×1</div></div></div>
    ${L.map((m,i)=>`<div class="card fam-m"><div class="row between" style="gap:8px"><input class="fam-n" type="text" maxlength="16" placeholder="Имя (можно без)" value="${esc(m.n)}" onchange="famSet(${i},'n',this.value)" aria-label="Имя"><span class="small muted nw">${fmt(famKcal(m))} ккал · ×${f1(Math.round(R[i]*100)/100)}</span></div>
-     <div class="row between" style="margin-top:10px"><span class="small muted">Возраст</span><div class="ctl"><button class="rb" onclick="famSet(${i},'a',${m.a-1})" aria-label="Младше">−</button><span class="num" style="font-size:20px;min-width:56px;text-align:center">${m.a}</span><button class="rb" onclick="famSet(${i},'a',${m.a+1})" aria-label="Старше">+</button></div></div>
+     <div class="row between" style="margin-top:10px"><span class="small muted">Возраст</span><div class="ctl"><button class="rb" onclick="famSet(${i},'a',${m.a-1})" aria-label="Младше"${m.a<=1?' disabled':''}>−</button><span class="num" style="font-size:20px;min-width:56px;text-align:center">${m.a}</span><button class="rb" onclick="famSet(${i},'a',${m.a+1})" aria-label="Старше"${m.a>=99?' disabled':''}>+</button></div></div>
      <div class="chips eq" style="margin-top:10px">${[['f','Женщина'],['m','Мужчина']].map(([v,l])=>`<button class="chip ${m.s===v?'on':''}" aria-pressed="${m.s===v}" onclick="famSet(${i},'s','${v}')">${m.a<18?(v==='f'?'Девочка':'Мальчик'):l}</button>`).join('')}</div>
      ${m.a>=18?`<div class="chips eq" style="margin-top:8px">${[['lose','Похудеть'],['keep','Держать'],['muscle','Набрать']].map(([v,l])=>`<button class="chip ${m.g===v?'on':''}" aria-pressed="${m.g===v}" onclick="famSet(${i},'g','${v}')">${l}</button>`).join('')}</div>`:'<div class="tiny muted" style="margin-top:8px">Детям калории не урезаем — порция по возрасту</div>'}</div>`).join('')}
    ${k>1?`<div class="fd-note">${ic('bowl')}<span>Одна кастрюля — разные порции. Например, ${famPorEx()}. Список продуктов — сразу на всех.</span></div>`:'<div class="small muted" style="margin:0 4px 12px">Добавьте членов семьи — посчитаем порцию каждому и продукты на всех.</div>'}
@@ -3359,7 +3360,7 @@ function openCook(id){const d=dishOf(id);if(!d)return;let st=cbSt();
   if(!st||st.id!==id||st.d!==today0()||st.ph==null){st=S.cookbook={id,d:today0(),N:DISHN||people(),got:[],ph:'cover',i:0,tm:{}};save()}
   let el=$('#cook');if(!el){el=document.createElement('div');el.id='cook';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Готовить по шагам');$('#phone').appendChild(el)}
   el.innerHTML=`<div class="kn-bar"><button class="kn-ib" onclick="closeCook(0,1)" aria-label="Назад к блюду">${ic('chevl')}</button><span class="sp"></span><button class="kn-ib" id="knAll" onclick="knAll()" aria-label="Все шаги">${LIST}</button><button class="kn-ib" id="knSnd" onclick="knSound()" aria-label="Звук">${S.cookSnd?SPK:MUTE}</button></div>`;
-  COOKFROM=id;closeSheet();el.classList.add('on');navArm();wakeOn();clearInterval(CBT);CBT=setInterval(cbTick,100);haptic(8);knLib().then(()=>{knShow();if(window.CA&&S.cookSnd)(window.requestIdleCallback||setTimeout)(()=>{if($('#cook.on')&&S.cookSnd)CA.sound(true)},{timeout:900})})} // сначала экран, звук готовим в простое
+  COOKFROM=id;closeSheet();el.classList.remove('kn-allon');el.classList.add('on');navArm();wakeOn();clearInterval(CBT);CBT=setInterval(cbTick,100);haptic(8);knLib().then(()=>{knShow();if(window.CA&&S.cookSnd)(window.requestIdleCallback||setTimeout)(()=>{if($('#cook.on')&&S.cookSnd)CA.sound(true)},{timeout:900})})} // сначала экран, звук готовим в простое
 function knSound(){S.cookSnd=!S.cookSnd;save();if(window.CA)CA.sound(S.cookSnd);$('#knSnd').innerHTML=S.cookSnd?SPK:MUTE;$('#knSnd').classList.toggle('on',S.cookSnd);haptic(6)}
 function knGo(ph){if(S.cookSnd&&window.CA)CA.sound(true); // касание пользователя — iPhone разрешает звук только так
   const st=cbSt();st.ph=typeof ph==='number'?'step':ph;if(typeof ph==='number')st.i=ph;save();haptic(8);knShow()}
@@ -3444,7 +3445,7 @@ function cbConfetti(){if(RM)return;confetti(44,.5,.42,['#047857','#10B981','#34D
 function dishTaste(id,v){S.likes=S.likes||{};S.dislikes=S.dislikes||{};const L=v>0?S.likes:S.dislikes,O=v>0?S.dislikes:S.likes;if(L[id])delete L[id];else{L[id]=1;delete O[id]}if(S.cook)S.cook.skip={};save();haptic(8);toast(L[id]?(v>0?'Будем советовать чаще':'Будем советовать реже'):'Сняли отметку');keepScroll(()=>openDish(id))}
 function cbLike(id){S.likes=S.likes||{};S.likes[id]=S.likes[id]?0:1;if(!S.likes[id])delete S.likes[id];save();haptic(8);const b=$('#cook .kn-like');if(b){b.textContent=S.likes[id]?'♥ Нравится':'♡ Нравится — советовать чаще';b.setAttribute('aria-pressed',!!S.likes[id])}toast(S.likes[id]?'Будем советовать чаще':'Убрали из любимых')}
 let COOKFROM=null;
-function closeCook(fromPop,toDish){clearInterval(CBT);wakeOff();if(KNSC&&window.CA){CA.unmount(KNSC);KNSC=null}if('speechSynthesis' in window)speechSynthesis.cancel();const el=$('#cook');if(el)el.classList.remove('on');haptic(6);
+function closeCook(fromPop,toDish){clearInterval(CBT);wakeOff();if(KNSC&&window.CA){CA.unmount(KNSC);KNSC=null}if('speechSynthesis' in window)speechSynthesis.cancel();const el=$('#cook');if(el)el.classList.remove('on','kn-allon');haptic(6);
   const id=COOKFROM;COOKFROM=null;if(toDish&&id&&dishOf(id))openDish(id);else if(fromPop!==1)navDisarm()} // «назад» из готовки — к карточке блюда
 async function wakeOn(){try{if('wakeLock' in navigator&&!WL){WL=await navigator.wakeLock.request('screen');WL.addEventListener('release',()=>{WL=null})}}catch(e){}}
 function wakeOff(){try{WL&&WL.release()}catch(e){}WL=null}
@@ -5554,8 +5555,8 @@ function newDid(){try{if(crypto.randomUUID)return crypto.randomUUID()}catch(e){}
   b[6]=b[6]&15|64;b[8]=b[8]&63|128;const h=[...b].map(x=>x.toString(16).padStart(2,'0')).join('');
   return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20)}
 // автопроверки (Playwright ставит navigator.webdriver) на живом сайте не пишут на сервер: иначе в статистике «тысячи заходов»; тест может включить сеть ключом mt-test-net
-const API_WRITE=/^\/(visit|reviews|push\/|price-report|sync\/put)/;
-async function api(path,body,ms){if(body&&navigator.webdriver&&location.hostname==='moytrener-app.ru'&&API_WRITE.test(path)){let net=false;try{net=!!localStorage.getItem('mt-test-net')}catch(e){}if(!net)return {ok:true,status:200,data:{ok:true,test:true}}}
+const API_WRITE=/^\/(visit|reviews|push\/|price-report|sync\/put|pay\/)/;
+async function api(path,body,ms){if(body&&navigator.webdriver&&API_WRITE.test(path)){let net=false;try{net=!!localStorage.getItem('mt-test-net')}catch(e){}if(!net)return {ok:true,status:200,data:{ok:true,test:true}}}
   const ac=new AbortController(),t=setTimeout(()=>ac.abort(),ms||8000);
   try{const r=await fetch(API+path,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,signal:ac.signal,credentials:'omit',cache:'no-store',mode:'cors'});
     let data=null;if(r.status!==204){try{data=await r.json()}catch(e){}}
