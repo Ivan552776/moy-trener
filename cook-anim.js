@@ -132,35 +132,49 @@ const IS_KUR = k => /^(kur|kur_grudka|kur_bedro|indeyka|kur_okor|kur_goleni)$/.t
 /* ---------- узнать продукт в тексте шага: основы слов; сначала точные (зелёный лук, томатная паста), потом общие ---------- */
 const B = '(?<![а-яё])';
 const STEM = [
-  ['luk_zel', `зелён[а-я]* лук|лук[а-я]* зелён|перь[а-я]* лук`], ['kv_kapusta', `квашен[а-я]* капуст`], ['cv_kapusta', `цветн[а-я]* капуст`], ['ogurtsy_sol', `солён[а-я]* огур|маринован[а-я]* огур|огур[а-я]* солён`],
+  ['luk_zel', `зелён[а-я]* лук|лук[а-я]* зелён|перь[а-я]* лук`], ['kv_kapusta', `квашен[а-я]* капуст`], ['cv_kapusta', `цветн[а-я]* капуст|соцвет`], ['ogurtsy_sol', `солён[а-я]* огур|маринован[а-я]* огур|огур[а-я]* солён`],
   ['tomat', `томатн[а-я]* паст|томат-паст|${B}паст[уаыо]?${B.replace('<', '')}`], ['kukuruz_krupa', `кукурузн[а-я]* круп|полент`], ['fasol_str', `стручк`], ['indeyka_farsh', `фарш[а-я]* индейк|индюшин[а-я]* фарш`], ['farsh_kur', `курин[а-я]* фарш|фарш[а-я]* курин`],
-  ['maslo_sliv', `сливочн[а-я]* масл`], ['maslo_ol', `оливков[а-я]* масл`], ['maslo_rast', `подсолнечн[а-я]* масл|растительн[а-я]* масл`], ['soy_sous', `соев`], ['lim_sok', `лимонн[а-я]* сок|сок[а-я]* лимон`], ['salat_list', `лист[а-я]* салат|салатн[а-я]* лист|листов[а-я]* салат`],
+  ['maslo_sliv', `сливочн[а-я]* масл`], ['maslo_ol', `оливков[а-я]* масл`], ['maslo_rast', `подсолнечн[а-я]* масл|растительн[а-я]* масл`], ['soy_sous', `соев`], ['lim_sok', `лимонн[а-я]* сок|сок[а-я]* лимон|сок[а-я]* из [а-яё ]{0,24}лимон`], ['salat_list', `лист[а-я]* салат|салатн[а-я]* лист|листов[а-я]* салат`],
   ['hleb_zern', `цельнозерн`], ['cheese_ady', `адыгейск`], ['krab_pal', `крабов`], ['ovoshchi', `овощн[а-я]* смес|замороженн[а-я]* овощ`], ['perec_ch', `чёрн[а-я]* перц|перц[а-я]* чёрн|перец чёрн|чёрный перец|молот[а-я]* перц|перец молот|горошк[а-я]* перц|перц[а-я]* горошк`],
-  ['grechka', `греч`], ['ris', `${B}рис(?:а|у|ом|е|ов[а-я]*)?(?![а-яё])`], ['ovsyanka', `овсян|хлопь`], ['makarony', `макарон|спагетти|рожк|${B}перь(?:я|ев)(?! лук)`], ['perlovka', `перлов`], ['psheno', `пшен`], ['chechevitsa', `чечевиц`],
-  ['fasol', `фасол`], ['kartofel', `картоф|картош|клубн`], ['kapusta', `капуст`], ['morkov', `морков|морк(?:ви|овь)`], ['luk', `${B}лук(?![а-яё]*овиц[а-я]* чеснок)|луковиц`], ['svekla', `свёкл|свекл`], ['chesnok', `чеснок|чесноч|зубч`],
-  ['ogurets', `огур`], ['pomidor', `помидор|томат(?!н)|черри`], ['perets', `сладк[а-я]* пер[ец]|болгарск|${B}пер(?:ец|ца|цы|цу|цем)(?![а-яё])`], ['kabachok', `кабач|цукин`], ['brokkoli', `брокколи`], ['ukrop', `укроп`], ['petrushka', `петрушк`],
+  ['grechka', `греч`], ['ris', `${B}рис(?:а|у|ом|е|ов[а-я]*)?(?![а-яё])`], ['ovsyanka', `овсян|хлопь|геркулес`], ['makarony', `макарон|спагетти|вермишел|лапш|рожк|${B}перь(?:я|ев)(?! лук)`], ['perlovka', `перлов`], ['psheno', `пшен(?!ичн)`], ['chechevitsa', `чечевиц`],
+  ['fasol', `фасол`], ['kartofel', `картоф|картош|клубн`], ['kapusta', `капуст|кочан|кочерыж`], ['morkov', `морков|морк(?:ви|овь)`], ['luk', `${B}лук(?![а-яё]*овиц[а-я]* чеснок)|луковиц`], ['svekla', `свёкл|свекл`], ['chesnok', `чеснок|чесноч|зубч`],
+  ['ogurets', `${B}огур`], ['pomidor', `помидор|томат(?!н)|черри`], ['perets', `сладк[а-я]* пер[ец]|болгарск|${B}пер(?:ец|ца|цы|цу|цем)(?![а-яё])`], ['kabachok', `кабач|цукин`], ['brokkoli', `брокколи`], ['ukrop', `укроп`], ['petrushka', `петрушк`],
   ['yabloko', `яблок`], ['banan', `банан`], ['yagody', `ягод`], ['limon', `лимон`], ['apelsin', `апельсин`], ['grusha', `груш`], ['kivi', `киви`], ['mandarin', `мандарин`], ['izyum', `изюм`], ['chernosliv', `черносл`], ['kuraga', `кураг`],
-  ['farsh', `фарш|голубц|пельмен|тефтел|котлет|фрикадел|биточ|зраз`], ['kur_okor', `окороч`], ['kur_goleni', `голен`], ['kur_bedro', `бедр`], ['kur_grudka', `грудк|филе`], ['indeyka', `индейк|индюш`], ['kur', `куриц|курин|курочк|${B}кур(?:а|у)?${B.replace('<', '')}`],
+  ['farsh', `фарш|голубц|пельмен|тефтел|котлет|фрикадел|биточ|зраз|вареник|драник|оладь`], ['kur_okor', `окороч`], ['kur_goleni', `голен`], ['kur_bedro', `бедр|бёдр`], ['kur_grudka', `грудк|филе`], ['indeyka', `индейк|индюш`], ['kur', `куриц|курин|курочк|${B}кур(?:а|у)?${B.replace('<', '')}`],
   ['myaso', `${B}мяс(?:о|а|у|ом|е)(?![а-яё])|отбивн|стейк`], ['govyadina', `говядин|говяж`], ['svinina', `свинин|свин(?!о-)`], ['baranina', `баранин`], ['pechen', `печен[ьиюе](?![а-яё])|печенк`], ['mintay', `минта`], ['treska', `треск`], ['gorbusha', `горбуш`], ['seld', `сельд|селёд`], ['skumbriya', `скумбри`],
-  ['tunets', `тунц|тунец`], ['fish', `рыб`], ['kalmar', `кальмар`], ['krevetki', `кревет`], ['egg', `яйц|яиц|яйк|желтк|белк(?:и|ов|ами)`], ['tvorog', `творог|творож|сырник`], ['kefir', `кефир`], ['moloko', `молок|молочн`], ['smetana', `сметан`],
-  ['brynza', `брынз`], ['syr', `${B}сыр(?!ник)`], ['yogurt', `йогурт`], ['ryazhenka', `ряженк`], ['mayonez', `майонез`], ['maslo', `${B}масл`], ['muka', `${B}мук`], ['myod', `мёд|${B}мед(?:а|ом|у)(?![а-яё])`], ['sahar', `сахар`], ['baton', `батон`], ['hlebcy', `хлебц`],
-  ['hleb', `хлеб|гренк|сухар`], ['lavash', `лаваш`], ['orehi', `орех`], ['arahis', `арахис`], ['semechki', `семечк|семен`], ['shampinony', `шампиньон|гриб`], ['tykva', `тыкв`], ['baklazhan', `баклажан`], ['goroshek', `горош(?:ек|ка|ком|ку)`], ['kukuruza', `кукуруз`],
+  ['tunets', `тунц|тунец`], ['fish', `рыб`], ['kalmar', `кальмар`], ['krevetki', `кревет`], ['egg', `яйц|яиц|яйк|яичн|желтк|желток|белк(?:и|ов|ами)|${B}белок|омлет`], ['tvorog', `творог|творож|сырник`], ['kefir', `кефир`], ['moloko', `молок|молочн`], ['smetana', `сметан`],
+  ['brynza', `брынз`], ['syr', `${B}сыр(?!ник|ой|ого|ое|ую|ые|ых|ым|ая)`], ['yogurt', `йогурт`], ['ryazhenka', `ряженк`], ['mayonez', `майонез`], ['maslo', `${B}масл(?!ин)`], ['muka', `${B}мук`], ['myod', `мёд|${B}мед(?:а|ом|у)(?![а-яё])`], ['sahar', `сахар`], ['baton', `батон`], ['hlebcy', `хлебц`],
+  ['hleb', `хлеб|гренк|сухар`], ['lavash', `лаваш|${B}ролл|рулет`], ['orehi', `орех`], ['arahis', `арахис`], ['semechki', `семечк|семен`], ['shampinony', `шампиньон|гриб`], ['tykva', `тыкв`], ['baklazhan', `баклажан`], ['goroshek', `горош(?:ек|ка|ком|ку)`], ['kukuruza', `кукуруз`],
   ['nut', `${B}нут`], ['goroh', `горох`], ['manka', `манк|манн`], ['bulgur', `булгур`], ['kuskus', `кускус`], ['shpinat', `шпинат`], ['redis', `редис`], ['masliny', `маслин|оливк`], ['ketchup', `кетчуп`], ['gorchica', `горчиц`],
-  ['paprika', `паприк`], ['travy', `трав|орегано|базилик|прованс`], ['lavr', `лавров`], ['zira', `зир|кумин`], ['uksus', `уксус`], ['soda', `${B}сод`], ['sol', `${B}сол(?:ь|и|ью)(?![а-яё])`], ['voda', `${B}вод(?:а|ы|у|ой|е)(?![а-яё])|кипят`],
+  ['paprika', `паприк`], ['travy', `трав|орегано|базилик|прованс`], ['lavr', `лавров[а-я]*(?: лист[а-я]*)?`], ['zira', `зир|кумин`], ['uksus', `уксус`], ['soda', `${B}сод`], ['sol', `${B}сол(?:ь|и|ью)(?![а-яё])`], ['voda', `${B}вод(?:а|ы|у|ой|е)(?![а-яё])|кипят`],
 ].map(([k, s]) => [k, new RegExp(s, 'g')]);
 // общие слова → конкретный продукт из состава блюда
 const GROUP = { myaso: ['govyadina', 'svinina', 'baranina', 'kur_grudka', 'kur_bedro', 'indeyka', 'kur_okor', 'kur_goleni', 'pechen', 'farsh', 'farsh_kur', 'indeyka_farsh'], kur: ['kur_grudka', 'kur_bedro', 'kur_okor', 'kur_goleni', 'indeyka', 'farsh_kur'], farsh: ['farsh', 'farsh_kur', 'indeyka_farsh'], fish: ['mintay', 'treska', 'gorbusha', 'seld', 'skumbriya', 'tunets'],
-  maslo: ['maslo_rast', 'maslo_ol', 'maslo_sliv'], tvorog: ['tvorog', 'tvorog9'], smetana: ['smetana', 'smetana20'], syr: ['syr', 'brynza', 'cheese_ady'], hleb: ['hleb', 'hleb_zern', 'baton', 'hlebcy'], kur_grudka: ['kur_grudka', 'indeyka', 'kur_bedro'],
+  maslo: ['maslo_rast', 'maslo_ol', 'maslo_sliv'], tvorog: ['tvorog', 'tvorog9'], smetana: ['smetana', 'smetana20'], syr: ['syr', 'brynza', 'cheese_ady'], hleb: ['hleb', 'hleb_zern', 'baton', 'hlebcy'], kur_grudka: ['kur_grudka', 'indeyka', 'kur_bedro', 'mintay', 'treska', 'gorbusha', 'seld', 'skumbriya'], cv_kapusta: ['cv_kapusta', 'brokkoli'],
   pomidor: ['pomidor', 'tomat'], egg: ['egg'], kapusta: ['kapusta', 'kv_kapusta', 'cv_kapusta'], limon: ['limon', 'lim_sok'] };
 const FREE = new Set(['voda', 'sol', 'perec_ch', 'lavr', 'zira', 'uksus', 'soda', 'lim_sok', 'paprika', 'travy']); // добавки: не нужны в составе
 // продукты в тексте: [{k, at}] по порядку; найденный кусок закрывается, чтобы «зелёный лук» не дал ещё и «лук»
+// если в составе нет названного, но есть близкий: «огурцы» в блюде с солёными огурцами, «лук» — с зелёным, «фасоль» — со стручковой
+const ALT = { ogurets: ['ogurtsy_sol'], ogurtsy_sol: ['ogurets'], luk: ['luk_zel'], fasol: ['fasol_str'], smetana: ['smetana20'], tvorog: ['tvorog9'], syr: ['cheese_ady', 'brynza'], hleb: ['hleb_zern', 'baton'], perets: [], ris: [], kapusta: ['kv_kapusta'] };
+// изделие из блюда («вареники», «зразы», «оладьи»): из чего оно — фарш, курица, рыба, творог, картофель, овощ
+const ITEM_OF = ['farsh', 'farsh_kur', 'indeyka_farsh', 'kur_grudka', 'kur_bedro', 'indeyka', 'mintay', 'treska', 'gorbusha', 'tvorog', 'tvorog9', 'kartofel', 'kabachok', 'kapusta'];
+// общие слова → все такие продукты из состава блюда: «овощи», «крупа/каша», «зелень», «фрукты», «сухофрукты»
+const KINDS = { veg: ['ovoshchi', 'kartofel', 'morkov', 'svekla', 'kabachok', 'baklazhan', 'tykva', 'perets', 'pomidor', 'ogurets', 'ogurtsy_sol', 'kapusta', 'cv_kapusta', 'brokkoli', 'redis', 'fasol_str', 'luk', 'shampinony'],
+  grain: ['grechka', 'ris', 'psheno', 'perlovka', 'kukuruz_krupa', 'manka', 'bulgur', 'kuskus', 'ovsyanka', 'chechevitsa', 'goroh', 'nut'], herb: ['ukrop', 'petrushka', 'luk_zel', 'shpinat'],
+  fruit: ['yabloko', 'grusha', 'banan', 'apelsin', 'mandarin', 'kivi', 'yagody'], dried: ['kuraga', 'chernosliv', 'izyum'] };
+const KIND_W = [['dried', /сухофрукт/g], ['fruit', /(?<![а-яё])фрукт/g], ['veg', /(?<![а-яё])овощ(?!н)/g], ['grain', /(?<![а-яё])(?:круп(?!н)|каш[аиуеой])/g], ['herb', /(?<![а-яё])зелен(?:ь|ью|и)(?![а-яё])/g]];
 function prodsIn(text, ing) { const have = new Set(ing.map(x => x[0])); let t = text.toLowerCase().replace(/ё/g, 'ё'); const out = [];
   for (const [k, re] of STEM) { re.lastIndex = 0; let m; while ((m = re.exec(t))) { let id = null;
       if (GROUP[k]) id = GROUP[k].find(x => have.has(x)) || (have.has(k) ? k : null); else if (have.has(k) || FREE.has(k)) id = k;
-      if (k === 'farsh' && !id && /голубц|пельмен|тефтел|котлет|фрикадел|биточ|зраз/.test(m[0])) id = GROUP.kur.find(x => have.has(x)) || GROUP.fish.find(x => have.has(x)) || (have.has('tvorog') ? 'tvorog' : null);
+      if (!id && ALT[k]) id = ALT[k].find(x => have.has(x)) || null;
+      if (k === 'farsh' && !id && /голубц|пельмен|тефтел|котлет|фрикадел|биточ|зраз|вареник|драник|оладь/.test(m[0])) id = ITEM_OF.find(x => have.has(x)) || null;
       if (k === 'perets' && /^пер/.test(m[0]) && !have.has('perets')) id = 'perec_ch';
       if (id) out.push({ k: id, at: m.index, end: m.index + m[0].length });
       t = t.slice(0, m.index) + ' '.repeat(m[0].length) + t.slice(m.index + m[0].length); re.lastIndex = m.index + m[0].length } }
+  // «листья/листьях» в голубцах — капуста (лавровый и салатный лист уже найдены выше)
+  if (have.has('kapusta')) { const re = /(?<![а-яё])лист(?:ья|ьях|ьев|ьям|е|а)?(?![а-яё])/g; let m; while ((m = re.exec(t))) out.push({ k: 'kapusta', at: m.index, end: m.index + m[0].length }) }
+  if (ing.length < 60) for (const [kd, re] of KIND_W) { re.lastIndex = 0;   // по всему каталогу (рисунок по названию) общие слова не раскрываем
+    let m; while ((m = re.exec(t))) { const ks = [...have].filter(x => KINDS[kd].includes(x)); ks.forEach((k, j) => out.push({ k, at: m.index + j * .01, end: m.index + m[0].length, gen: 1 })) } }
   return out.sort((a, b) => a.at - b.at) }
 
 /* ---------- глагол шага → действие (берётся первый глагол шага; существительные вроде «котлеты» действие не задают) ---------- */
@@ -305,12 +319,14 @@ function cut(f = 'morkov') {
 }
 
 /* ---------- 2. Налить воду (сверху): струя бьёт в точку, круги расходятся, гладь растёт к стенкам ---------- */
-function pour(liq = 'voda', items = []) {
+function pour(liq = 'voda', items = [], vessel = 'pot') {
   const LQ = liq === 'voda' || !F[liq] ? ['#9FDAF7', '#5DB4E6', '#3E93CC'] : [F[liq].l, F[liq].c, F[liq].d];
   const { id, svg } = scene(['towel']);
   defs(svg, metalDefs(id) + `<radialGradient id="wat${id}" cx=".42" cy=".38" r=".7"><stop offset="0" stop-color="${LQ[0]}"/><stop offset=".7" stop-color="${LQ[1]}"/><stop offset="1" stop-color="${LQ[2]}"/></radialGradient>
    <radialGradient id="jug${id}" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".6" stop-color="#E6F3FA" stop-opacity=".35"/><stop offset="1" stop-color="#BFDCEB" stop-opacity=".55"/></radialGradient>`);
-  const pot = potTop(svg, id, 196, 92, 74); fillPieces(pot.inner, id, { cx: pot.cx, cy: pot.cy, r: pot.r * .85 }, items);
+  // омлет и соус льют на сковороду — тогда сковорода, а не кастрюля
+  const pot = vessel === 'pan' ? (() => { const p = panTop(svg, id, 196, 92, 74); defs(svg, `<clipPath id="pnc${id}"><circle cx="${p.cx}" cy="${p.cy}" r="${p.r}"/></clipPath>`); p.inner = E('g', { 'clip-path': `url(#pnc${id})` }, svg); return p })() : potTop(svg, id, 196, 92, 74);
+  fillPieces(pot.inner, id, { cx: pot.cx, cy: pot.cy, r: pot.r * .85 }, items);
   const wat = E('circle', { cx: pot.cx, cy: pot.cy, r: pot.r, fill: `url(#wat${id})`, opacity: 0 }, pot.inner), cres = E('path', { d: `M${pot.cx - pot.r * .78} ${pot.cy - pot.r * .1}A${pot.r * .8} ${pot.r * .8} 0 0 1 ${pot.cx + pot.r * .1} ${pot.cy - pot.r * .78}A${pot.r * .95} ${pot.r * .95} 0 0 0 ${pot.cx - pot.r * .78} ${pot.cy - pot.r * .1}Z`, fill: '#fff', opacity: 0 }, pot.inner), glint = E('ellipse', { rx: 18, ry: 5, fill: '#fff', opacity: .28, transform: `rotate(-30 ${pot.cx - 18} ${pot.cy - 20})` }, pot.inner);
   const rg = rings(pot.inner, 7), splash = E('circle', { r: 5, fill: '#E6F6FF', opacity: 0 }, pot.inner), drops = [...Array(8)].map(() => E('circle', { r: 1.6, fill: '#E6F6FF', opacity: 0 }, pot.inner));
   // кувшин сверху: горловина-капля с носиком, ручка-петля; вода внутри смещается к носику при наклоне; тень отходит
@@ -406,10 +422,10 @@ function piecesIn(svg, id, c, items, n) {
     top(body, f, k, sm ? .95 : f === 'kur' || IS_KUR(f) ? 1.25 : 1.05, i, id); list.push({ w, shd, body, x: c.cx + Math.cos(a) * r, y: c.cy + Math.sin(a) * r, a, r, s: i }) }
   return list
 }
-function fry(items = ['kur', 'morkov', 'luk']) {
+function fry(items = ['kur', 'morkov', 'luk'], vessel = 'pan') {
   const { id, svg } = scene(['dill']);
   defs(svg, metalDefs(id) + `<radialGradient id="oil${id}"><stop offset="0" stop-color="#FFD98A" stop-opacity=".5"/><stop offset="1" stop-color="#FFC24D" stop-opacity="0"/></radialGradient>`);
-  const pan = panTop(svg, id, 150, 88, 76);
+  const pan = vessel === 'pot' ? Object.assign(potTop(svg, id, 160, 88, 76), { shine() {} }) : panTop(svg, id, 150, 88, 76);
   E('ellipse', { cx: pan.cx - 10, cy: pan.cy - 6, rx: 46, ry: 34, fill: `url(#oil${id})` }, svg);
   const P = piecesIn(svg, id, pan, items, 15), sp = [...Array(22)].map(() => E('circle', { r: 1.4, fill: '#FFF0C2', opacity: 0 }, svg)), st = steamUp(svg, id, 6, pan.cx, pan.cy - 10, 40);
   const T = 6;
@@ -705,7 +721,7 @@ function batter() {
 
 /* выложить на тарелку: порция ложится и оседает, сверху — веточка зелени */
 function plateUp(items = ['grechka', 'kur']) {
-  items = items.filter(solid); if (!items.length) return show([]);
+  const main = items.find(solid); if (!main) return show([]); items = [main, items.find(k => k !== main && F[k] && !FREE.has(k))].filter(Boolean);
   const { id, svg } = scene(); defs(svg, metalDefs(id)); decor(svg, id, ['towel', 'dill']);
   H(svg, shade(id, '<circle cx="176" cy="90" r="74"/>', 6, 8, .3) + `<circle cx="176" cy="90" r="74" fill="url(#emw${id})"/><circle cx="176" cy="90" r="54" fill="#FFFFFF"/><circle cx="176" cy="90" r="54" fill="none" stroke="#E5EAE7" stroke-width="1.2"/><circle cx="176" cy="90" r="70" fill="none" stroke="#10B981" stroke-width="1.6" opacity=".7"/>`);
   const por = E('g', {}, svg); const c = { cx: 176, cy: 90, r: 36 }; [...Array(Math.min(70, countOf(items[0]) * 2))].forEach((_, i) => { const a = R(i, 0, 6.283), r = Math.sqrt(R(i + 3, 0, 1)) * 30, w = E('g', {}, por); top(w, items[0], KIND[items[0]], GRAINY.has(KIND[items[0]]) ? .9 : 1.1, i, id); w.setAttribute('transform', `translate(${(164 + Math.cos(a) * r).toFixed(1)} ${(92 + Math.sin(a) * r * .8).toFixed(1)})`) });
@@ -728,9 +744,10 @@ function plateUp(items = ['grechka', 'kur']) {
   return sc0(id, svg, frame, T, 'Выложить на тарелку', 'и подать', 'plate') }
 
 /* настоять: накрытая кастрюля, полотенце сверху, лёгкий пар, тонкое кольцо времени */
-function rest(kind = 'grechka') {
+function rest(kind = 'grechka', vessel = 'pot') {
   const { id, svg } = scene(); defs(svg, metalDefs(id));
-  const pot = potTop(svg, id, 170, 90, 72); brothTop(pot, id, kind);
+  if (vessel === 'bowl') { const b = bowlTop(svg, id, 170, 90, 72); fillPieces(b.inner, id, { cx: b.cx, cy: b.cy, r: b.r * .85 }, Array.isArray(kind) ? kind : []) }
+  else if (vessel === 'pan') { const pn = panTop(svg, id, 165, 90, 74); fillPieces(E('g', {}, svg), id, { cx: pn.cx, cy: pn.cy, r: pn.r * .8 }, Array.isArray(kind) ? kind : []) } else { const pot = potTop(svg, id, 170, 90, 72); brothTop(pot, id, kind) }
   H(svg, `<g transform="translate(170 90) rotate(-12)">${shade(id, '<rect x="-60" y="-52" width="120" height="104" rx="10"/>', 4, 6, .25)}<rect x="-60" y="-52" width="120" height="104" rx="10" fill="#F4FBF8"/>${[0, 1, 2, 3, 4, 5, 6].map(i => `<rect x="${-60 + i * 17 + 4}" y="-52" width="8" height="104" fill="#10B981" opacity=".22"/><rect x="-60" y="${-52 + i * 15 + 4}" width="120" height="7" fill="#10B981" opacity=".22"/>`).join('')}</g>`);
   const ring = E('circle', { cx: 286, cy: 34, r: 14, fill: 'none', stroke: '#10B981', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-dasharray': 88, transform: 'rotate(-90 286 34)' }, svg); E('circle', { cx: 286, cy: 34, r: 14, fill: 'none', stroke: '#10B981', 'stroke-width': 3, opacity: .18 }, svg);
   const st = steamUp(svg, id, 4, 170, 50, 30), T = 6;
@@ -859,13 +876,13 @@ function show(items = []) { const { id, svg } = scene(['towel']); defs(svg, meta
     const k = (t % T) / T; sweep.setAttribute('x', (40 + k * 300).toFixed(0)); sweep.setAttribute('opacity', (Math.sin(k * Math.PI) * .12).toFixed(2)) }
   return sc0(id, svg, frame, T, 'Подготовить', names(it), null) }
 
-function soak(items = []) { const { id, svg } = scene(['towel']); defs(svg, metalDefs(id));
-  const b = bowlTop(svg, id, 180, 90, 74), wat = E('circle', { cx: b.cx, cy: b.cy, r: b.r, fill: '#9FD6F2', opacity: .25 }, b.inner), P = fillPieces(b.inner, id, { cx: b.cx, cy: b.cy, r: b.r * .85 }, items.length ? items : []);
+function soak(items = [], liq = 'voda') { const { id, svg } = scene(['towel']); defs(svg, metalDefs(id));
+  const b = bowlTop(svg, id, 180, 90, 74), wat = E('circle', { cx: b.cx, cy: b.cy, r: b.r, fill: liq && liq !== 'voda' && F[liq] ? F[liq].c : '#9FD6F2', opacity: .25 }, b.inner), P = fillPieces(b.inner, id, { cx: b.cx, cy: b.cy, r: b.r * .85 }, items.length ? items : []);
   const bub = [...Array(14)].map((_, i) => E('circle', { r: R(i, 1, 2.4), fill: '#fff', opacity: 0 }, b.inner)), ring = E('circle', { cx: 300, cy: 34, r: 14, fill: 'none', stroke: '#10B981', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-dasharray': 88, transform: 'rotate(-90 300 34)' }, svg), T = 5;
   function frame(t, emit) { t %= T; emit && emit('soak'); const k = clamp(t / (T * .8)); wat.setAttribute('opacity', (.25 + k * .4).toFixed(2)); P.forEach(q => q.w.setAttribute('transform', `translate(${(q.x + wob(t * .4, q.s)).toFixed(1)} ${(q.y + wob(t * .5, q.s + 2)).toFixed(1)}) scale(${(1 + k * .1).toFixed(3)})`));
     bub.forEach((e, i) => { const q = ((t * .5 + i / bub.length) % 1); e.setAttribute('cx', (b.cx + Math.cos(i * 2.2) * R(i, 8, b.r * .8)).toFixed(1)); e.setAttribute('cy', (b.cy + Math.sin(i * 2.2) * R(i, 8, b.r * .8) - q * 6).toFixed(1)); e.setAttribute('opacity', (Math.sin(q * Math.PI) * .6).toFixed(2)) });
     ring.setAttribute('stroke-dashoffset', (88 * (1 - t / T)).toFixed(1)) }
-  return sc0(id, svg, frame, T, 'Замочить', names(items) + ' в воде', null) }
+  return sc0(id, svg, frame, T, 'Замочить', names(items) + (liq && liq !== 'voda' ? ' в: ' + nameOf(liq) : ' в воде'), null) }
 
 function dry(f) { const { id, svg } = scene(); defs(svg, metalDefs(id)); boardTop(svg, id); decor(svg, id, ['salt']);
   const it = f ? [f] : [], prod = E('g', {}, svg); if (f) { if (solid(f) && ['chunk', 'leaf', 'speck', 'floret', 'berry', 'shrimp', 'ring'].includes(KIND[f])) fillPieces(prod, id, { cx: 170, cy: 90, r: 44 }, it, 9); else H(prod, artAt(f, 118, 38, 104)) }
@@ -945,61 +962,187 @@ const TITLE = { cut: 'Нарезать', tear: 'Разобрать руками'
   pour: 'Залить', salt: 'Посолить', pepper: 'Поперчить', add: 'Добавить', stir: 'Перемешать', drain: 'Откинуть', plateUp: 'Подать', lift: 'Вынуть', rest: 'Дать постоять', show: 'Подготовить' };
 const LIQ = new Set(['voda', 'moloko', 'kefir', 'ryazhenka', 'yogurt', 'smetana', 'smetana20', 'maslo_rast', 'maslo_ol', 'soy_sous', 'ketchup', 'tomat', 'uksus', 'lim_sok', 'mayonez', 'myod']);
 const GRAINY = new Set(['grain', 'rice', 'seed', 'lentil', 'pea', 'flake', 'tube', 'bean', 'powder']);
-function vesselIn(t, act) { return /сковород|сотейник|противн/.test(t) && !/кастрюл|ковш/.test(t) ? 'pan' : /миск|салатник|тарелк|контейнер|банк/.test(t) && !/кастрюл|ковш|сковород/.test(t) ? 'bowl' : /кастрюл|ковш|казан/.test(t) ? 'pot' : ['fry', 'oil', 'batter'].includes(act) ? 'pan' : 'pot' }
-const VNAMED = /кастрюл|ковш|казан|сковород|сотейник|противн|миск|салатник|тарелк|контейнер|банк|форм/;
+// жидкости, которых нет в корзине: взбитые яйца для омлета, бульон или отвар; блин — то, что получается из теста на сковороде
+F.yaica = { c: '#F6CF5A', l: '#FBE7A0', d: '#D9A52A', n: 'яйца' }; KIND.yaica = 'drop';
+F.bulyon = { c: '#E3C27A', l: '#F4DDA6', d: '#B98E40', n: 'бульон' }; KIND.bulyon = 'drop';
+F.blin = { c: '#F2C66B', l: '#F8E2A6', d: '#C98A34', n: 'блины' }; KIND.blin = 'blin';
+GEN.blin = (P, s, r) => `<g transform="rotate(${R(r, 0, 360).toFixed(0)})"><ellipse rx="${9.5 * s}" ry="${8.6 * s}" fill="${P.c}" stroke="${P.d}" stroke-width="${1.8 * s}"/><ellipse cx="${-1.4 * s}" cy="${-1.2 * s}" rx="${5.6 * s}" ry="${4.8 * s}" fill="${P.l}" opacity=".7"/>${[0, 1, 2, 3].map(i => `<circle cx="${R(r * 5 + i, -5, 5).toFixed(1) * s}" cy="${R(r * 5 + i + 2, -4, 4).toFixed(1) * s}" r="${.9 * s}" fill="${P.d}" opacity=".55"/>`).join('')}</g>`;
+LIQ.add('yaica'); LIQ.add('bulyon');
+const POTW = /кастрюл|ковш|казан|в суп|в бульон|в воду|вода закип|в кипящ[а-я]* (?:вод|бульон|суп)/;
+function vesselIn(t, act) { return /сковород|сотейник|противн/.test(t) && !/кастрюл|ковш/.test(t) ? 'pan' : /миск|салатник|тарелк|контейнер|банк|чашк/.test(t) && !/кастрюл|ковш|сковород/.test(t) ? 'bowl' : POTW.test(t) ? 'pot' : ['fry', 'oil', 'batter'].includes(act) ? 'pan' : 'pot' }
+const VNAMED = /кастрюл|ковш|казан|сковород|сотейник|противн|миск|салатник|тарелк|контейнер|банк|форм|чашк|в суп|в бульон|в воду|вода закип|в кипящ[а-я]* (?:вод|бульон|суп)/;
+const PAR = /^(?:параллельно|пока )/;   // параллельный шаг — своя посуда
 function stepParts(text, ing) { const t = text.toLowerCase(), vs = verbs(t), ps = prodsIn(t, ing); return { t, vs, ps } }
+// вспомогательный глагол перед главным в том же предложении: «Убавьте огонь, добавьте печень», «Снимите с огня, посыпьте чесноком», «Вскипятите чайник. …»
+const crossAux = (v, t) => { const a = t.slice(v.at, v.at + 40); return (/вскипятите/.test(v.w) && /чайник/.test(a)) || (/убавьте/.test(v.w) && /духовк/.test(a)) };
+function aux(v, n, t) { const a = t.slice(v.at, v.at + 48);
+  if (/убавьте|прибавьте/.test(v.w)) return !/духовк/.test(a);
+  if (/снимите|выключите/.test(v.w) && /огн|огон|крышк|кастрюл|ковш|сковород/.test(a)) return !['rest', 'simmer', 'show'].includes(n.a);
+  if (/вскипятите/.test(v.w) && /чайник/.test(a)) return true;
+  if (/присыпьте/.test(v.w) && /доск|стол/.test(a)) return true;
+  return ['rest', 'show', 'simmer'].includes(v.a) && !['rest', 'show', 'simmer', 'salt', 'pepper'].includes(n.a) && /накройте пл|накройте плёнк|дайте ост|остудите|разделите|отложите|проверьте/.test(t.slice(v.at, v.at + 16)) }
+// продукт стоит после предлога места («к мясу», «на хлеб», «поверх картофеля», «в кашу», «для риса») — это куда кладут, а не что; после «с/со» — с чем подают или смешивают
+const DEST = (t, x) => /(?:^|[\s(])(?:к|ко|на|поверх|в|во)\s+(?:(?:кажд[а-я]+|ломтик[а-я]*|кус(?:ок|ки|ке|ка)|[а-яё]+(?:ый|ий|ой|ое|ее|ую|юю|ые|ие|ом|ем|ей|ых|их|ого|его))\s+){0,3}$/.test(t.slice(Math.max(0, x.at - 40), x.at));
+const SIDE = (t, x) => /(?:^|[\s(])(?:с|со)\s+(?:[а-яё]+(?:ым|им|ой|ей|ыми|ими)\s+)?$/.test(t.slice(Math.max(0, x.at - 26), x.at));
+// украшение и добавка к готовому блюду: сами по себе — не порция
+const GARNISH = new Set(['ukrop', 'petrushka', 'luk_zel', 'smetana', 'smetana20', 'hleb', 'hleb_zern', 'baton', 'hlebcy', 'ogurets', 'ogurtsy_sol', 'limon', 'lim_sok', 'myod', 'mayonez', 'ketchup', 'gorchica', 'salat_list', 'shpinat', 'semechki', 'syr', 'yogurt', 'kefir']);
+const COOKED = ['add', 'pour', 'boil', 'bringBoil', 'simmer', 'fry', 'stir', 'drain', 'bake', 'rest', 'lift', 'soak', 'coat', 'form', 'whisk', 'batter', 'plateUp'];
+const sEndOf = (t, at) => { const m = t.slice(at).search(/[.;]/); return m >= 0 ? at + m : t.length };
+const MEMO = new Map();
 function forStep(text, ing, prev = [], noBase = false) {
-  const { t, vs, ps } = stepParts(text, ing); let v = vs[0] || null;
-  if (v && vs[1] && ['rest', 'show', 'simmer'].includes(v.a) && !/[.;]/.test(t.slice(v.at, vs[1].at)) && !['rest', 'show', 'simmer', 'salt', 'pepper'].includes(vs[1].a) && /накройте пл|накройте плёнк|дайте ост|остудите|разделите|отложите|проверьте/.test(t.slice(v.at, v.at + 16))) { vs.shift(); v = vs[0] }
+  const key = (noBase ? 1 : 0) + '\u0001' + ing.map(x => x[0]).join(',') + '\u0001' + prev.join('\u0002') + '\u0001' + text;
+  if (MEMO.has(key)) return MEMO.get(key); if (MEMO.size > 4000) MEMO.clear();
+  const r = forStep0(text, ing, prev, noBase); MEMO.set(key, r); return r }
+function forStep0(text, ing, prev, noBase) {
+  const { t, vs, ps } = stepParts(text, ing); let vi = 0;
+  while (vs[vi + 1] && ((!/[.;]/.test(t.slice(vs[vi].at, vs[vi + 1].at)) && aux(vs[vi], vs[vi + 1], t)) || crossAux(vs[vi], t))) vi++;
+  const V = vs.slice(vi); let v = V[0] || null;
   let act = v ? v.a : /сковород|сотейник|жар/.test(t) ? 'fry' : /духовк/.test(t) ? 'bake' : /кастрюл|ковш|вар/.test(t) ? 'boil' : 'show';
-  const after = v ? t.slice(v.at, v.at + 70) : '', end = v ? (vs[1] ? vs[1].at : t.length) : t.length, sStart = v ? Math.max(0, t.lastIndexOf('.', v.at - 2) + 1) : 0;
+  const after = v ? t.slice(v.at, v.at + 70) : '';
+  // «Сковорода, средний огонь: масло, котлеты — по 4 минуты…, затем накройте» — без глагола в начале: это жарка перечисленного после двоеточия
+  const head = t.match(/^(?:[а-яё]+,?\s+){0,3}?(сковорода|сотейник|кастрюля|казан)[^:.]{0,48}:/); let zone = null;
+  if (head && v && v.at > head[0].length && !['fry', 'oil', 'cut'].includes(act) && ps.some(x => x.at >= head[0].length && x.at < v.at && solid(x.k) && !FREE.has(x.k))) { act = 'fry'; zone = [head[0].length, v.at] }
   // смысл глагола по соседним словам
-  if (v && /разогрейте|включите|поставьте|прогрейте/.test(v.w) && /духовк/.test(after)) act = 'bake';
+  else if (v && /разогрейте|включите|поставьте|прогрейте|убавьте/.test(v.w) && /духовк/.test(after)) act = 'bake';
   else if (act === 'oil' && !/масл|сковород|сотейник|вок/.test(after)) act = /кастрюл|ковш|молок|вод|суп|бульон/.test(after) ? 'boil' : 'fry';
   else if (act === 'bringBoil' && /доведите/.test(v.w) && !/кипен|кипит|закип/.test(after)) act = 'simmer';
   else if (act === 'simmer' && /накройте/.test(v.w) && /плёнк|пленк|полотенц|тарелк|фольг/.test(after)) act = 'rest';
   else if (act === 'rest' && /дайте/.test(v.w) && /закип/.test(after)) act = 'bringBoil';
   else if (act === 'rest' && /дайте/.test(v.w) && /стечь|стекл/.test(after)) act = 'drain';
+  else if (act === 'rest' && /разморо/.test(v.w)) act = 'soak';   // «разморозьте ягоды в миске / в холодной воде»
+  else if (act === 'lift' && /уберите/.test(v.w) && /холодильник/.test(after)) act = 'rest';
   else if (act === 'add' && /на тарелк|на блюд|в тарелк|на хлеб|на лаваш|на лист салат|порци/.test(after)) act = 'plateUp';
+  else if (act === 'add' && /перемешайте|размешайте/.test(t.slice(v.at, sEndOf(t, v.at))) && /густот|гладкост|однородн|комк/.test(t.slice(v.at, sEndOf(t, v.at))) && !VNAMED.test(t)) act = 'whisk';   // «добавьте муку, перемешайте до густоты сметаны» — тесто в миске
+  else if (act === 'add' && /на (?:кажд[а-я]+ )?ломтик|на хлеб/.test(t.slice(Math.max(0, v.at - 40), v.at))) act = 'plateUp';   // «На каждый ломтик хлеба положите…» — бутерброд
+  else if (['plateUp', 'add'].includes(act) && /выложите|разложите|положите/.test(v.w) && V.some(x => x.a === 'bake') && !/тарелк/.test(after)) act = 'bake';   // «Выложите рыбу к картофелю и запекайте»
+  else if (act === 'plateUp' && /выложите|разложите/.test(v.w) && V.some(x => ['simmer', 'boil'].includes(x.a)) && !/тарелк|порци/.test(t)) act = 'add';   // «Выложите рыбу на морковь… Тушите»
   else if (act === 'plateUp' && /выложите|разложите/.test(v.w) && /сковород|кастрюл|в соус|в бульон|в миск|в форм|противен|в ковш|сотейник/.test(after)) act = /противен|в форм/.test(after) ? 'bake' : 'add';
   else if (act === 'plateUp' && /выложите|разложите/.test(v.w) && /слоем|поверх/.test(after) && !/тарелк|блюд|порци|подав/.test(t)) act = 'add';   // «выложите рис ровным слоем» — в ту же посуду
-  else if (act === 'pour' && /полейте|сбрызните/.test(v.w) && /подав|тарелк|сверху|перед подачей/.test(t)) act = 'plateUp';
+  else if (act === 'plateUp' && /посыпьте|присыпьте/.test(v.w) && V.slice(1).some(x => x.a === 'stir') && !/тарелк|подай|подав/.test(t)) act = 'stir';
+  else if (act === 'plateUp' && /посыпьте|присыпьте/.test(v.w) && /накройте/.test(t) && !/тарелк|подай|подав/.test(t)) act = 'add';   // «посыпьте сыром, накройте крышкой» — на омлет в сковороде
+  else if (act === 'pour' && /полейте/.test(v.w) && V.slice(1).some(x => x.a === 'stir')) act = 'stir';   // «полейте йогуртом и перемешайте»   // «посыпьте чесноком, перемешайте» — в той же посуде
+  else if (act === 'pour' && /полейте|сбрызните/.test(v.w) && /заправк/.test(after)) act = 'stir';   // салат с заправкой — перемешать в миске
+  else if (act === 'pour' && /полейте|сбрызните/.test(v.w) && /подав|подайте|тарелк|сверху|перед подачей|ешьте/.test(t)) act = 'plateUp';
+  else if (act === 'pour' && /налейте/.test(v.w) && /в тарелк/.test(after)) act = 'plateUp';
+  else if (act === 'pour' && /полейте|сбрызните/.test(v.w) && !VNAMED.test(t) && /мёд|мед[ао]м|сметан|масл|соус|сок/.test(after)) act = 'plateUp';
+  else if (act === 'pour' && /налейте/.test(v.w) && /на сковород/.test(after) && /масл/.test(after)) act = 'oil';
+  else if (act === 'grate' && /натрите/.test(v.w) && !/тёрк|терк/.test(t) && /сол|перц|специ|масл/.test(after)) act = 'coat';   // «натрите филе солью и маслом» — натереть специями, не на тёрке
+  else if (act === 'crack' && /блендер/.test(after)) act = 'whisk';
+  else if (act === 'roll' && /разровняйте/.test(v.w) && !/тест/.test(after)) act = 'add';
+  else if (act === 'form' && /заверните|оберните/.test(v.w) && /тест/.test(after)) act = 'knead';
+  else if (act === 'form' && /подверните|сверните/.test(v.w) && /рулет|край|кра[яё]/.test(after) && ing.some(x => x[0] === 'lavash')) act = 'show';
+  else if (act === 'drain' && /выжмите|отожмите/.test(v.w) && /сок/.test(after) && /лимон/.test(after)) act = 'show';
   else if (v && act === 'show' && /готовьте/.test(v.w)) act = /сковород|жар/.test(t) ? 'fry' : /духовк/.test(t) ? 'bake' : 'boil';
   else if (v && act === 'show' && /сделайте|разделите/.test(v.w) && /лепёшк|лепешк|котлет|шарик|колбаск|углублен/.test(after)) act = 'form';
   else if (v && act === 'show' && /поставьте/.test(v.w) && /в кастрюл|в сковород|в сотейник|в ковш|на сковород/.test(after) && !(/вод/.test(after) && /огонь|плит/.test(after))) act = 'add';
   else if (v && act === 'show' && /поставьте/.test(v.w)) act = /огонь|плит/.test(after) ? 'bringBoil' : /холодильник/.test(after) ? 'rest' : 'show';
-  // продукты шага: сначала в части предложения с этим глаголом, иначе — перед глаголом в том же предложении, иначе — во всём шаге
-  const food = ps.filter(x => !FREE.has(x.k)), cut0 = v ? Math.max(sStart, t.lastIndexOf(',', v.at), t.lastIndexOf(':', v.at), vs.filter(x => x.at < v.at).map(x => x.at + x.w.length).pop() || 0) : 0;
-  let end2 = end; if (v && vs[1] && !/[.;]/.test(t.slice(v.at, vs[1].at))) { const c = t.lastIndexOf(',', vs[1].at); if (c > v.at && food.some(x => x.at > c && x.at < vs[1].at)) end2 = c }
-  const pre = v ? food.filter(x => x.at >= cut0 && x.at < v.at) : [];
-  let own = v ? (pre.length ? pre : food.filter(x => x.at >= v.at && x.at < end2)) : food;
-  if (v && !own.length) own = food.filter(x => x.at >= sStart && x.at < v.at); if (!own.length && !VESSEL_ACT.has(act) && !['fry', 'stir', 'simmer', 'bake', 'drain', 'plateUp', 'lift'].includes(act)) own = food;
-  let items = [...new Set(own.map(x => x.k))], src = items.length ? 'step' : 'none';
-  const waterOnly = ['bringBoil', 'pour'].includes(act) && v && /(?<![а-яё])вод/.test(t.slice(v.at, end));
+  // часть шага с этим действием: от прошлого глагола (без придаточного «Пока картофель печётся,») до следующего; «выпотрошите и промойте скумбрию» — общий продукт
+  const sStart = v ? Math.max(0, t.lastIndexOf('.', v.at - 2) + 1, t.lastIndexOf(';', v.at - 1) + 1) : 0; let sEnd = t.length; if (v) { const m = t.slice(v.at).search(/[.;]/); if (m >= 0) sEnd = v.at + m }
+  const prevV = v ? vs.filter(x => x.at < v.at && x.at >= sStart).pop() : null, nextV = v ? vs.find(x => x.at > v.at) : null;
+  let z0 = prevV ? prevV.at + prevV.w.length : sStart; const sub = v && t.slice(z0, v.at).match(/^[\s,:—-]*(?:параллельно,?\s*)?(?:пока|когда|если|после того как)[^,]*,/); if (sub) z0 += sub[0].length;
+  let z1 = v ? Math.min(sEnd, nextV ? nextV.at : t.length) : t.length;
+  const food = ps.filter(x => !FREE.has(x.k));
+  if (v && nextV && nextV.at < sEnd) { const gap = t.slice(v.at + v.w.length, nextV.at);
+    if (/^[\s,]*(?:и|а затем|затем)?\s*$/.test(gap)) { const n2 = vs.find(x => x.at > nextV.at); z1 = Math.min(sEnd, n2 ? n2.at : t.length) }
+    else { const c = t.lastIndexOf(',', nextV.at); if (c > v.at && food.some(x => x.at > c && x.at < nextV.at)) z1 = c } }   // «нарежьте лук, морковь натрите» — морковь уже к «натрите»
+  const pre = v ? food.filter(x => x.at >= z0 && x.at < v.at) : [], post = v ? food.filter(x => x.at >= v.at && x.at < z1) : food;
+  const preDest = pre.length && pre.every(x => DEST(t, x)) && ['add', 'plateUp', 'pour', 'bake'].includes(act);
+  let own = zone ? food.filter(x => x.at >= zone[0] && x.at < zone[1]) : !v ? food : preDest ? [...pre, ...post] : pre.some(x => solid(x.k)) ? pre : post.length ? post : pre;
+  if (v && !own.length) { const near = food.filter(x => x.at >= sStart && x.at < v.at).pop(); if (near) own = [near] }   // «если минтай замороженный, разморозьте его»
+  if (!own.length && (act === 'plateUp' || act === 'bake')) own = food.filter(x => x.at >= sStart && x.at < sEnd);
+  if (!own.length && !VESSEL_ACT.has(act) && !['fry', 'stir', 'simmer', 'bake', 'drain', 'plateUp', 'lift', 'form', 'spread', 'coat'].includes(act)) own = food.filter(x => x.at >= sStart && x.at < sEnd).length ? food.filter(x => x.at >= sStart && x.at < sEnd) : food;
+  const isDest = x => ['add', 'lift', 'plateUp', 'stir', 'coat'].includes(act) && DEST(t, x), isSide = x => ['plateUp', 'stir'].includes(act) && SIDE(t, x);
+  // формовка: «обваляйте в муке», «в центр положите грибы» — не масса, из которой лепят
+  if (act === 'form') own = own.filter(x => !/обвал|в центр|начинк|муке|муку/.test(t.slice(Math.max(0, x.at - 30), x.at)) && !['muka', 'egg'].includes(x.k));
+  const dest = [...new Set(own.filter(isDest).map(x => x.k))], side = [...new Set(own.filter(x => !isDest(x) && isSide(x)).map(x => x.k))];
+  let items = [...new Set(own.filter(x => !isDest(x) && !isSide(x)).map(x => x.k))], src = items.length ? 'step' : 'none';
+  if (act === 'plateUp') items = [...new Set([...dest.filter(solid), ...items, ...side])];
+  else if (act === 'stir') items = [...new Set([...items, ...dest, ...side])];
+  else if (['coat', 'bake', 'pour'].includes(act)) items = [...new Set([...items, ...dest])];
+  if (act === 'show' && /выжмите|отожмите/.test(v ? v.w : '') && ing.some(x => x[0] === 'limon')) items = ['limon'];
+  if (items.length && src === 'none') src = 'step';
+  const zt = v ? t.slice(zone ? zone[0] : Math.min(z0, v.at), z1) : t, sprinkle = v && /посыпьте|присыпьте/.test(v.w) && act !== 'plateUp';
+  if (/(?:смешайте|сложите|переложите|перемешайте|соедините|выложите|залейте)\s+всё/.test(zt) && ['stir', 'add', 'plateUp', 'pour'].includes(act)) { const all = []; for (let i = prev.length - 1, n = 0; i >= 0 && n < 4; i--, n++) prodsIn(prev[i].toLowerCase(), ing).filter(x => !FREE.has(x.k) && solid(x.k) && !/^maslo/.test(x.k)).forEach(x => all.includes(x.k) || all.push(x.k)); items = [...new Set([...items, ...all.reverse()])].filter(k => !dest.includes(k)).slice(0, 5); if (items.length) src = 'step' }
+  // лавровый лист — тоже продукт для «положите» и «выньте»
+  const lavr = ps.some(x => x.k === 'lavr' && x.at >= (v ? z0 : 0) && x.at < z1);
+  if (['add', 'lift'].includes(act) && lavr) items = [...items, 'lavr'];
+  const waterOnly = ['bringBoil', 'pour'].includes(act) && v && /(?<![а-яё])вод/.test(t.slice(v.at, z1));
   // «доведите воду до кипения, положите картофель» — в кипящей воде то, что в неё кладут в этом же шаге
   if (waterOnly && !items.length) { const m = t.search(/положите|опустите|всыпьте|добавьте|отправьте|выложите/); if (m >= 0) items = [...new Set(food.filter(x => x.at > m && solid(x.k) && !LIQ.has(x.k)).map(x => x.k))].slice(0, 3); if (items.length) src = 'step' }
+  // что было в посуде на последнем шаге готовки (не на параллельной нарезке): для «Слейте воду», «Дайте постоять», «Подайте со сметаной»
+  const ordIng = list => { const ix = k => { const j = ing.findIndex(x => x[0] === k); return j < 0 ? -1 : j }; return [...list].sort((a, b) => ix(a) - ix(b)) };
+  const cooked = (inWater = false, plate = false, par = false) => { if (noBase) return []; for (let i = prev.length - 1, n = 0; i >= 0 && n < 8; i--, n++) { const q = forStep(prev[i], ing, prev.slice(0, i), true), pt = prev[i].toLowerCase();
+      if (PAR.test(pt) && !PAR.test(t) && !par) continue;
+      const into = (COOKED.includes(q.act) && q.act !== 'soak') || ['oil', 'batter'].includes(q.act) || /в кастрюл|в ковш|в казан|в сотейник|на сковород|залейте|сложите|положите|опустите|всыпьте/.test(pt); if (!into) continue;
+      if (inWater && !(/(?<![а-яё])вод|кипят|залейте/.test(pt) && q.vessel === 'pot')) continue;
+      const textP = prodsIn(pt, ing).map(x => x.k), ok = k => !FREE.has(k) && solid(k) && !(plate && GARNISH.has(k)) && !/^maslo/.test(k);
+      const pf = [...new Set([...(q.src === 'step' && q.prods.some(ok) ? [...q.prods, ...(['add', 'pour', 'rinse', 'cut', 'peel'].includes(q.act) ? textP : [])] : textP), ...(q.act === 'batter' || (/тест/.test(pt) && /влейте|налейте|половник|выливайте/.test(pt)) ? ['blin'] : [])])].filter(ok);
+      if (pf.length) return pf.slice(0, 3) } return plate && !par ? cooked(inWater, plate, true) : [] };
+  // подать без названного блюда: салат, который только что резали, — он и есть; иначе то, что готовили
+  const lastPrep = () => { const i = prev.length - 1; if (i < 0 || noBase) return []; const pt = prev[i].toLowerCase(), q = forStep(prev[i], ing, prev.slice(0, i), true); if (PAR.test(pt) || !['cut', 'peel', 'grate', 'tear', 'stir', 'rinse'].includes(q.act)) return []; return prodsIn(pt, ing).map(x => x.k).filter(k => !FREE.has(k) && solid(k) && !GARNISH.has(k)) };
+  // масса, тесто, начинка: то, из чего её мешали (без яйца и муки)
+  const massOf = () => { for (let i = prev.length - 1; i >= 0; i--) { const pf = prodsIn(prev[i].toLowerCase(), ing).filter(x => !FREE.has(x.k) && solid(x.k) && !['egg', 'muka', 'sahar'].includes(x.k)).map(x => x.k); if (pf.length) return [...new Set(pf)].slice(0, 2) } return [] };
+  const fryOf = () => { for (let i = prev.length - 1; i >= 0; i--) { const q = forStep(prev[i], ing, prev.slice(0, i), true); if (q.act === 'fry') return q.prods.filter(k => solid(k) && !FREE.has(k)) } return [] };
+  if (act === 'whisk' && v && /добавьте|всыпьте/.test(v.w)) { const m = massOf(); items = [...new Set([...m, ...items])] }
+  if (/зажарк/.test(zt) && !noBase) { const z = fryOf(); if (z.length) { items = [...new Set([...items, ...z])]; src = 'step' } }
+  if (act === 'spread' && items.every(k => /^(hleb|hleb_zern|baton|hlebcy|lavash)$/.test(k))) { const m = massOf(); if (m.length) { items = [...m, ...items]; src = 'mass' } }
+  if (!items.some(solid) && /масс|тест|начинк|смесь|смеси/.test(zt) && !/яичн/.test(zt) && !['batter', 'roll', 'knead', 'pour'].includes(act)) { const m = massOf(); if (m.length) { items = [...new Set([...m, ...items])]; src = 'mass' } }
+  const VESSELY = ['boil', 'bringBoil', 'simmer', 'rest', 'salt', 'pepper', 'drain', 'lift', 'fry', 'bake', 'stir'];
+  if (!items.length && !waterOnly && VESSELY.includes(act)) { items = cooked(act === 'drain'); if (items.length) src = 'carry' }
+  if (!items.length && act === 'bake') { items = [...new Set(food.filter(x => solid(x.k)).map(x => x.k))].slice(0, 3); if (items.length) src = 'step' }
+  if (act === 'plateUp' && !noBase && !own.some(x => x.at >= z0 && x.at < z1)) { const m = lastPrep(); if (m.length) { items = [...new Set([...m.slice(0, 2), ...items])]; src = 'step+carry' } }
   if (!items.length && !waterOnly) { for (let i = prev.length - 1; i >= 0 && !items.length; i--) { const pf = prodsIn(prev[i].toLowerCase(), ing).filter(x => !FREE.has(x.k)); items = [...new Set(pf.map(x => x.k))].slice(0, 3) } if (items.length) src = 'carry' }
-  if (items.length && !items.some(solid) && ['plateUp', 'add', 'fry', 'stir', 'bake', 'spread'].includes(act)) { for (let i = prev.length - 1; i >= 0; i--) { const pf = prodsIn(prev[i].toLowerCase(), ing).filter(x => !FREE.has(x.k) && solid(x.k)).map(x => x.k); if (pf.length) { items = [...new Set([...pf.slice(0, 2), ...items])]; src = 'step+carry'; break } } }
+  // «Подайте со сметаной», «Посыпьте укропом», «Подайте с хлебом» — на тарелке само блюдо, рядом названное
+  if (sprinkle && !noBase && act !== 'add') { const m = cooked(); if (m.length) items = [...new Set([...m.slice(0, 2), ...items])] }
+  if (act === 'plateUp' && !noBase && (!items.some(k => solid(k) && !GARNISH.has(k)) || (side.length && !dest.length && items.every(k => side.includes(k))))) { const m = ordIng(cooked(false, true)); if (!m.length) lastPrep().forEach(k => m.push(k)); if (m.length) { items = [...new Set([m[0], ...items.filter(k => k !== m[0])])]; src = 'step+carry' } }
+  // «Смешайте с гречкой» — с гречкой то, что готовили только что
+  if (act === 'stir' && !noBase && side.length && items.every(k => side.includes(k) || dest.includes(k))) { const m = cooked().filter(k => !items.includes(k)); if (m.length) { items = [...m.slice(0, 2), ...items]; src = 'step+carry' } }
+  // вписали только жидкость или сыпучее («Добавьте томатную пасту», «Всыпьте муку»): твёрдое из прошлых шагов уже лежит в посуде, а не падает заново
+  let keepBase = [];
+  if (items.length && !items.some(solid) && ['salt', 'pepper'].includes(act) && !noBase) { const m = cooked(); if (m.length) { items = m; src = 'carry' } }
+  if (items.length && !items.some(solid) && ['plateUp', 'fry', 'stir', 'bake', 'spread', 'salt', 'pepper'].includes(act)) { for (let i = prev.length - 1; i >= 0; i--) { const pf = prodsIn(prev[i].toLowerCase(), ing).filter(x => !FREE.has(x.k) && solid(x.k)).map(x => x.k); if (pf.length) { items = [...new Set([...pf.slice(0, 2), ...items])]; src = 'step+carry'; break } } }
+  if (act === 'add' && !items.some(solid)) { for (let i = prev.length - 1; i >= 0; i--) { const pf = prodsIn(prev[i].toLowerCase(), ing).filter(x => !FREE.has(x.k) && solid(x.k)).map(x => x.k); if (pf.length) { keepBase = pf.slice(0, 3); break } } }
   // «Разогрейте масло на сковороде, обжарьте курицу» — главное в шаге жарка: на сковороде то, что жарят, а не одно масло
-  if (act === 'oil' && vs.slice(1).some(x => ['fry', 'add', 'plateUp', 'stir'].includes(x.a))) { const fr = [...new Set(food.filter(x => x.at > v.at && solid(x.k) && !LIQ.has(x.k)).map(x => x.k))]; if (fr.length) { act = 'fry'; items = fr.slice(0, 3); src = 'step' } }
-  const liq = (v ? ps.filter(x => x.at >= v.at && x.at < end) : ps).map(x => x.k).find(k => LIQ.has(k)); let vessel = vesselIn(t, act);
-  // посуда не названа в шаге («Соберите рис горкой», «Влейте воду») — та же, что на последнем шаге с посудой
-  if (!noBase && ['add', 'pour', 'lift'].includes(act) && !VNAMED.test(t)) for (let i = prev.length - 1; i >= 0; i--) { const q = forStep(prev[i], ing, prev.slice(0, i), true); if (q.act === 'plateUp') break; if (['add', 'boil', 'simmer', 'fry', 'stir', 'pour', 'bringBoil', 'oil'].includes(q.act)) { vessel = q.vessel === 'bowl' ? 'bowl' : q.vessel; break } }
+  if (act === 'oil' && V.slice(1).some(x => ['fry', 'add', 'plateUp', 'stir'].includes(x.a))) { const fr = [...new Set(food.filter(x => x.at > v.at && solid(x.k) && !LIQ.has(x.k)).map(x => x.k))]; if (fr.length) { act = 'fry'; items = fr.slice(0, 3); src = 'step' } }
+  // что льётся: яйца, бульон/отвар, названная жидкость, иначе вода
+  const pz = v ? t.slice(v.at, Math.max(z1, Math.min(sEnd, v.at + 60))) : t;
+  let liq = (v ? ps.filter(x => x.at >= v.at && x.at < Math.max(z1, v.at + 60) && x.at < sEnd) : ps).map(x => x.k).find(k => LIQ.has(k));
+  if (['pour', 'add'].includes(act) && /^(?:залейте|влейте|вылейте|налейте)\s+(?:(?!вод)[а-яё]+\s+){0,2}?(?:яйц|яичн)/.test(pz)) liq = 'yaica';
+  else if (['pour', 'add', 'soak'].includes(act) && !liq && /бульон|отвар(?!ит|ной|ную|ные|ного|ным)/.test(pz)) liq = 'bulyon';
+  if (act === 'pour' && liq === 'yaica' && !items.includes('egg')) items = [...items, 'egg'];   // льются яйца — в списке шага они есть, кусочками не рисуются
+  // «Добавьте воду, соль и перец» — новых твёрдых нет: это вливают воду
+  if (act === 'add' && !items.length && /(?<![а-яё])вод/.test(zt)) { act = 'pour'; liq = liq || 'voda' }
+  if (act === 'pour' && /в миск|в чашк/.test(t) && items.some(solid)) act = 'soak';
+  let vessel = vesselIn(act === 'lift' ? t.replace(/(?:на|в)\s+(?:доск|тарелк)[а-яё]*/g, ' ') : t, act);
+  if (head) vessel = /кастрюля|казан/.test(head[1]) ? 'pot' : 'pan';
+  else if (['fry', 'oil'].includes(act) && v) { const sent = t.slice(sStart, sEnd); if (/сковород|сотейник/.test(sent)) vessel = 'pan'; else if (/кастрюл|казан|ковш/.test(sent)) vessel = 'pot' }
+  if (/зажарк|в суп|в бульон|в кипящ[а-я]* (?:вод|бульон|суп)/.test(zt) && ['add', 'lift'].includes(act) && !/сотейник|сковород/.test(t)) vessel = 'pot';
+  // посуда не названа в шаге («Соберите рис горкой», «Влейте воду», «Вбейте яйца на картошку») — та же, что на последнем шаге с посудой
+  if (['add', 'pour', 'lift', 'rest', 'soak', 'stir', 'crack', 'salt', 'pepper', 'simmer'].includes(act) && !VNAMED.test(t) && !/зажарк/.test(zt) && !head && !PAR.test(t)) {
+    for (let i = prev.length - 1; i >= 0; i--) { const pt = prev[i].toLowerCase(), q = forStep(prev[i], ing, prev.slice(0, i), true); if (q.act === 'plateUp') break;
+      if (act === 'lift' && !q.prods.some(k => items.includes(k)) && !(items.includes('lavr') && /лавров/.test(pt))) continue;   // вынимают оттуда, куда это клали
+      if (PAR.test(pt) && !['add', 'boil', 'simmer', 'fry', 'stir', 'pour', 'bringBoil', 'oil', 'crack'].includes(q.act)) continue;
+      if (['add', 'boil', 'simmer', 'fry', 'stir', 'pour', 'bringBoil', 'oil', 'crack', 'lift'].includes(q.act) || /в кастрюл|в ковш|в казан|в сотейник|на сковород|в миск|в салатник/.test(pt)) { vessel = q.vessel; break } } }
   const solidItems = items.filter(k => !(['pour'].includes(act) && LIQ.has(k)));
   // что уже лежит в этой посуде с прошлых шагов (посуда не бывает пустой, если в неё уже клали): шаги назад до подачи, та же посуда
-  const base = []; if (!noBase && ['add', 'pour', 'lift'].includes(act)) { for (let i = prev.length - 1, n = 0; i >= 0 && n < 6; i--, n++) { const q = forStep(prev[i], ing, prev.slice(0, i), true);
+  const base = []; if (!noBase && ['add', 'pour', 'lift'].includes(act) && !(PAR.test(t) && VNAMED.test(t)) && !/в друг[а-я]+ (?:ковш|кастрюл)/.test(t)) { dest.filter(k => !items.includes(k) && solid(k)).forEach(k => base.push(k)); keepBase.forEach(k => base.includes(k) || base.push(k));
+
+    for (let i = prev.length - 1, n = 0; i >= 0 && n < 6; i--, n++) { const q = forStep(prev[i], ing, prev.slice(0, i), true);
       if (q.act === 'plateUp') break; if (q.act === 'lift') { q.prods.forEach(k => { const j = base.indexOf(k); if (j >= 0) base.splice(j, 1) }); continue }
-      // та же посуда (или в одном из шагов посуда не названа — значит, та же); промытое, замоченное и сформованное потом кладут в посуду
-      const same = ['add', 'boil', 'simmer', 'fry', 'stir', 'pour', 'bringBoil', 'salt', 'pepper', 'rest', 'oil'].includes(q.act) && (q.vessel === vessel || !VNAMED.test(prev[i].toLowerCase()) || !VNAMED.test(t));
+      // та же посуда (или в одном из шагов посуда не названа — значит, та же); промытое, замоченное и сформованное потом кладут в посуду; жареное со сковороды в кипящую воду не попадает
+      const pt = prev[i].toLowerCase(); if (PAR.test(pt) && !PAR.test(t) && VNAMED.test(pt) && !['add', 'fry', 'stir'].includes(act === 'pour' ? 'x' : q.act)) continue;
+      const same = (['add', 'boil', 'simmer', 'fry', 'stir', 'pour', 'bringBoil', 'salt', 'pepper', 'rest', 'oil', 'crack'].includes(q.act) && q.vessel === vessel) || (vessel === 'pot' && /в кастрюл|в ковш|в казан/.test(pt) && !/сковород|сотейник/.test(pt));
       if (q.act === 'form') { if (!base.length) q.prods.forEach(k => base.push(k)); break }   // до лепки котлет — другое блюдо этого рецепта (гарнир)
-      if (!same && !(['rinse', 'soak'].includes(q.act) && !base.length)) continue;
-      q.prods.filter(k => !FREE.has(k) && !LIQ.has(k) && !base.includes(k)).forEach(k => base.push(k)) } }
+      if (PAR.test(t) && !q.prods.some(k => items.includes(k))) continue;   // параллельный шаг — своя посуда: в ней только то, что в неё положили
+      if (!same && !(['rinse', 'soak'].includes(q.act) && !base.length && (!PAR.test(pt) || q.prods.some(k => items.includes(k))))) continue;
+      [...q.prods, ...(q.liq === 'yaica' ? ['egg'] : []), ...(['cut', 'peel', 'rinse'].includes(q.act) ? prodsIn(pt, ing).map(x => x.k) : [])].filter(k => !FREE.has(k) && !LIQ.has(k)).forEach(k => base.includes(k) || base.push(k)) } }
   const POT = /кастрюл|ковш|вод|бульон|суп|каш|соус/.test(t) || !items.some(solid), one = items[0], forms = /тефтел|шарик|фрикадел|скатайте|ёжик|ежик/.test(t);
+  const lavrOnly = items.length === 1 && items[0] === 'lavr';
   const make = { cut: () => one && solid(one) ? cut(one) : show(items), tear: () => one && solid(one) ? cut(one) : show(items), /* «разберите на соцветия» — ножом, продукт так же уменьшается */ grate: () => one ? grate(one) : show(items), peel: () => one && !GRAINY.has(KIND[one]) && solid(one) ? peel(one) : show(items),
-    rinse: () => rinse(one), soak: () => soak(items), dry: () => dry(one), crack: () => crack(vessel === 'pan' ? 'pan' : 'bowl'), whisk: () => whisk(items), pound: () => pound(one), knead: () => one && KIND[one] === 'ball' ? form(one, forms) : roll(),
+    rinse: () => rinse(one), soak: () => soak(items.filter(k => !LIQ.has(k)), liq), dry: () => dry(one), crack: () => crack(vessel === 'pan' ? 'pan' : 'bowl'), whisk: () => whisk(items), pound: () => pound(one), knead: () => one && KIND[one] === 'ball' ? form(one, forms) : roll(),
     roll: () => roll(), form: () => form(items.find(k => KIND[k] === 'ball') || one, forms), coat: () => stir(items, 'bowl'), spread: () => spread(items), oil: () => oil(items.find(k => /^maslo/.test(k))),
-    bringBoil: () => bringBoil(items), boil: () => boil(items), simmer: () => simmer(items), salt: () => POT ? salt(items) : show(items), pepper: () => POT ? pepper(items) : show(items), rest: () => rest(items), fry: () => fry(items), stir: () => stir(items, vessel === 'pan' ? 'pan' : 'bowl'),
-    bake: () => bake(items), batter: () => batter(), pour: () => pour(liq || 'voda', solidItems.filter(solid).length ? solidItems : base.slice(0, 3)), add: () => add(items, vessel, false, base.slice(0, 3)), lift: () => add(items, vessel, true, base.filter(k => !items.includes(k)).slice(0, 3)), drain: () => drain(items), plateUp: () => plateUp(items), show: () => show(items) }[act];
+    bringBoil: () => bringBoil(items), boil: () => boil(items), simmer: () => simmer(items), salt: () => POT ? salt(items) : stir(items, 'bowl'), pepper: () => POT ? pepper(items) : stir(items, 'bowl'), rest: () => rest(items, vessel), fry: () => fry(items, vessel), stir: () => stir(items, vessel === 'pan' ? 'pan' : 'bowl'),
+    bake: () => bake(items), batter: () => batter(), pour: () => { const inPot = solidItems.filter(k => solid(k) && !(liq === 'yaica' && k === 'egg')); return pour(liq || 'voda', inPot.length ? inPot : base.filter(k => !/^maslo/.test(k)).slice(0, 3), vessel === 'pan' ? 'pan' : 'pot') }, add: () => add(lavrOnly ? items : items, vessel, false, base.slice(0, 3)), lift: () => add(items, vessel, true, base.filter(k => !items.includes(k)).slice(0, 3)), drain: () => drain(items), plateUp: () => plateUp(items), show: () => show(items) }[act];
   const wrap = () => { const sc = make(); sc.title = TITLE[act]; sc.sub = names(items) || sc.sub; sc.items = items; return sc };
   return { act, verb: v ? v.w : null, prods: items, src, liq: liq || null, vessel, base, prod: one || null, make: wrap } }
 
