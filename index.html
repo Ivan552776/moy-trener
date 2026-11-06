@@ -1036,7 +1036,7 @@ button.wk-pk{display:block;width:100%;text-align:left}
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-06-r118'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-06-r118t'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -3086,8 +3086,8 @@ function analyze(ex,S2){
   if(ex==='pushup'){
     const depth=atB(elbow,Math.min);m3.depth=depth;
     if(depth>FT.pushDepth){findings.push({j:['локоть'],k:'Неполная амплитуда',d:`Локоть сгибается только до ${Math.round(depth)}°. Опускайтесь, пока грудь почти не коснётся пола.`,at:bottoms[0]});score-=25}else good.push('Амплитуда полная');
-    const [sag]=line();
-    if(sag>FT.sag){findings.push({j:['таз'],k:'Провисает поясница',d:`Таз уходит с линии плечи — пятки на ${Math.round(sag)}°. Напрягите пресс и ягодицы, тело должно быть одной линией.`,at:0});score-=20}else good.push('Тело держите одной линией');
+    const feetV=npMedian(S2.map(s=>Math.max(s.lm[27].v,s.lm[28].v)))>=.5,[sag]=feetV?line():[0];
+    if(!feetV){}else if(sag>FT.sag){findings.push({j:['таз'],k:'Провисает поясница',d:`Таз уходит с линии плечи — пятки на ${Math.round(sag)}°. Напрягите пресс и ягодицы, тело должно быть одной линией.`,at:0});score-=20}else good.push('Тело держите одной линией');
     flare();
   }
   if(ex==='bench'){
@@ -3294,7 +3294,8 @@ function phaseMetric(ex,a,i){const d=x=>Math.round(x)+'°';
 const PHASE_NAME={start:'Исходное',down:'Движение вниз',bottom:'Нижняя точка',up:'Подъём'};
 async function formResult(src,ex,S2,v,live){
   const f=FORM[ex],a=analyze(ex,S2);window.LAST={ex,S2,a};const worst=a.findings.find(x=>x.at!=null)?.at??a.bottomIdx;
-  const fr=S2[Math.min(worst,S2.length-1)];await seekTo(v,fr.t);if(live&&!live())return;
+  const w0=Number.isFinite(worst)?Math.max(0,Math.min(worst,S2.length-1)):S2.length>>1;let fr=null;for(let d=0;d<S2.length&&!fr;d++)fr=(S2[w0+d]&&S2[w0+d].lm?S2[w0+d]:null)||(S2[w0-d]&&S2[w0-d].lm?S2[w0-d]:null); // кадр без позы или пустой индекс — берём ближайший с позой
+  if(!fr)throw new Error('Не удалось разобрать движение: снимите целиком, сбоку, 2–5 повторов.');await seekTo(v,fr.t);if(live&&!live())return;
   const badJ=a.findings.flatMap(x=>x.j||[]);const sh=frameShot(v,fr.lm,ex,a.findings.length?'#FF3B30':'#1FB57E',720,badJ),shot=sh.src;
   const fixes=shadowFixes(ex,a.findings,fr.lm),shd=fixes.length?shadowShot(v,fr.lm,fixes,720):null,atI=Math.min(worst,S2.length-1);
   S.lastForm={score:a.score,ex,t:Date.now(),reps:a.reps,shot:frameShot(v,fr.lm,ex,a.findings.length?'#FF3B30':'#1FB57E',420,badJ).src};
@@ -3483,30 +3484,106 @@ function exPick(id,silent,live){
   if(x){S.exNames[key]=x.n;S.exMus[key]=[...new Set(x.pm.concat(x.sm).map(m=>EX2MUS[EXMAP[m]]).filter(Boolean))]}save();
   const t0=$('#stitle').textContent,tk=exPick.n=(exPick.n||0)+1,lv=live||(()=>tk===exPick.n&&$('#sheet').classList.contains('on')&&$('#stitle').textContent===t0);
   const fail=e=>{console.error(e);exPick.busy=0;if(lv())sheet('Не получилось',`<div class="card">${e&&e.message||'Разбор не удался'}</div><button class="btn" onclick="openForm()">Попробовать ещё</button>`)};
-  try{Promise.resolve(TECHMAP[id]?formResult(L.src,TECHMAP[id],L.S2,EXV,lv):genericResult(id,key,lv)).catch(fail)}catch(e){fail(e)} // для 6 упражнений — подробные правила техники
+  try{loadF4().then(d=>TECHMAP[id]&&f4frame(exSlots(L.S2).filter(Boolean),d[id]||null).ok?formResult(L.src,TECHMAP[id],L.S2,EXV,lv):genericResult(id,key,lv)).catch(fail)}catch(e){fail(e)} // 6 базовых — прежние правила, если тело целиком в кадре; остальные — по 3D-эталону (ex4_form)
 }
 function exAlign(r,e){ // эталон, развёрнутый к вашему ролику (зеркало и порядок поз); невидимые на фото эталона суставы не считаем
   const D=EXR.d,best={d:Infinity},vis=(m,k)=>!m||!m[r]||m[r][k]==='1';for(const mir of [false,true])for(const sw of [false,true]){const g=k=>mir?MIR3[k]:k,K=[...Array(18).keys()],A=K.map(k=>D.A[r][g(k)]),B=K.map(k=>D.B[r][g(k)]),MA=K.map(k=>vis(D.va,g(k))),MB=K.map(k=>vis(D.vb,g(k))),[p,q]=sw?[B,A]:[A,B],[pm,qm]=sw?[MB,MA]:[MA,MB];
     let d=0;for(let k=0;k<18;k++)if(e.vm[k]&&pm[k]&&qm[k])d+=Math.abs(e.a[k]-p[k])+Math.abs(e.b[k]-q[k]);if(d<best.d)Object.assign(best,{d,p,q,pm,qm,sw})}return best}
+/* ---------- Разбор техники по эталону 3D-тени (tools/expose/ex4_*, data/ex-form.json): у каждого упражнения с 3D свои правила —
+   амплитуда главных суставов, колени, спина, локти, линия тела, раскачка, симметрия; значения эталона сняты с 3D-тени, пороги подобраны
+   на одной половине синтетики (разные ракурсы, пропорции, шум MediaPipe), проверены на другой. Что по камере не различить — не проверяем:
+   тогда честно говорим «по видео оцениваем только повторы и темп» ---------- */
+const F4={d:null};
+async function loadF4(){if(F4.d)return F4.d;try{F4.d=await fetch('data/ex-form.json').then(r=>r.json())}catch(e){F4.d={}}return F4.d}
+const F4N=[[11,13,15],[12,14,16],[23,11,13],[24,12,14],[11,23,25],[12,24,26],[23,25,27],[24,26,28],[11,12,23,24],[23,25],[24,26],[11,13],[12,14],[11,15],[12,16],[25,27],[26,28],[11,12,23,24],[25,27,31],[26,28,32],[7,8,11,12,23,24]];
+const F4M=[1,0,3,2,5,4,7,6,8,10,9,12,11,14,13,16,15,17,19,18,20],F4K=[...Array(21).keys()],F4I=[0,1,2,3,4,5,6,7,18,19,20]; // F4I — углы, не зависящие от наклона телефона
+const F4J=['локоть','локоть','плечо','плечо','таз','таз','колено','колено','наклон корпуса','бедро','бедро','плечо','плечо','рука','рука','голень','голень','корпус','голеностоп','голеностоп','плечи'];
+const f4s=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],f4m=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2],f4d=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],f4u=a=>{const n=Math.hypot(a[0],a[1],a[2])||1;return [a[0]/n,a[1]/n,a[2]/n]};
+function f4a(u,v){const n=Math.hypot(u[0],u[1],u[2])*Math.hypot(v[0],v[1],v[2]);return n>0?Math.acos(Math.max(-1,Math.min(1,f4d(u,v)/n)))*180/Math.PI:90}
+function f4feat(P){const D=[0,1,0],U=[0,-1,0],j=(a,b,c)=>f4a(f4s(P[a],P[b]),f4s(P[c],P[b])),t=(a,b,r)=>f4a(f4s(P[b],P[a]),r),sh=f4m(P[11],P[12]),hp=f4m(P[23],P[24]),u=f4s(P[11],hp),v=f4s(P[12],hp),n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];
+  return [j(11,13,15),j(12,14,16),j(23,11,13),j(24,12,14),j(11,23,25),j(12,24,26),j(23,25,27),j(24,26,28),f4a(f4s(sh,hp),U),t(23,25,D),t(24,26,D),t(11,13,D),t(12,14,D),t(11,15,D),t(12,16,D),t(25,27,D),t(26,28,D),f4a(n,U),j(25,27,31),j(26,28,32),100*Math.hypot(...f4s(sh,f4m(P[7],P[8])))/(Math.hypot(...f4s(sh,hp))||1)]}
+function f4pct(a,q){const s=Float64Array.from(a).sort(),n=s.length;if(!n)return NaN;const p=(n-1)*q/100,lo=Math.floor(p),hi=Math.ceil(p);return s[lo]+(s[hi]-s[lo])*(p-lo)}
+const f4med=a=>f4pct(a,50),f4sm=x=>x.map((_,i)=>f4med(x.slice(Math.max(0,i-2),i+3)));
+function f4valg(w){const h=f4u(f4s(w[24],w[23])),ks=Math.abs(f4d(f4s(w[26],w[25]),h)),as=Math.abs(f4d(f4s(w[28],w[27]),h));return as<.12?NaN:ks/as}
+function f4back(w){const T=f4u(f4s(f4m(w[11],w[12]),f4m(w[23],w[24]))),ear=f4m(w[7],w[8]),e=f4s(w[0],ear),d=f4d(e,T),F=f4u([e[0]-T[0]*d,e[1]-T[1]*d,e[2]-T[2]*d]),u=f4s(ear,f4m(w[11],w[12]));return Math.atan2(f4d(u,F),f4d(u,T))*180/Math.PI}
+function f4abd(w,s){const [S,O,E]=s?[w[12],w[11],w[14]]:[w[11],w[12],w[13]],T=f4u(f4s(f4m(w[23],w[24]),f4m(w[11],w[12]))),o=f4s(S,O),d=f4d(o,T),L=f4u([o[0]-T[0]*d,o[1]-T[1]*d,o[2]-T[2]*d]),u=f4s(E,S);return Math.atan2(Math.abs(f4d(u,L)),f4d(u,T))*180/Math.PI}
+// тело целиком в кадре? MediaPipe дорисовывает невидимые суставы — без головы, таза, колен и стоп в кадре выводов не делаем
+const F4CH={0:[11,13,15],1:[12,14,16],2:[23,11,13],3:[24,12,14],4:[11,23,25],5:[12,24,26],6:[23,25,27],7:[24,26,28],18:[25,27,31],19:[26,28,32]}; // главный сустав и его соседи
+function f4frame(fr,C){const inF=q=>q[2]>=.5&&q[0]>=-.02&&q[0]<=1.02&&q[1]>=-.02&&q[1]<=1.02,G=[[11,12],[23,24]]; // плечо и таз — всегда, хотя бы с одной стороны
+  const legs=!C||Math.max(C.ra[4],C.ra[5],C.ra[6],C.ra[7])>=20||!!C.st,line=!!(C&&C.ln&&!legs);if(legs)G.push([25,26],[27,28]);else if(line)G.push([25,26]); // планка, отжимания: колени обязательны, стопы — если видны (иначе без линии тела) // ноги двигаются или человек стоит — нужны колени и стопы
+  const mk=C&&C.main.length?C.main[0]:-1;if(F4CH[mk]){const a=F4CH[mk],b=F4CH[F4M[mk]];a.forEach((i,n)=>G.push([i,b[n]]))}
+  const okF=fr.filter(x=>G.every(g=>g.some(i=>inF(x.l[i])))).length/Math.max(1,fr.length),K=[0,11,12,23,24,25,26,27,28];
+  const ext=fr.length?f4med(fr.map(x=>{const P=K.map(i=>x.l[i]).filter(inF);if(P.length<3)return 0;const ys=P.map(q=>q[1]),xs=P.map(q=>q[0]);return Math.max(Math.max(...ys)-Math.min(...ys),Math.max(...xs)-Math.min(...xs))})):0;
+  const feet=fr.filter(x=>[27,28].some(i=>inF(x.l[i]))).length/Math.max(1,fr.length)>=.5;
+  return {ok:okF>=.5&&ext>=.12,okF,ext,noFeet:!feet}}
+// fr: кадры с человеком [{t,w,l}] (w — 3D-точки MediaPipe, l — точки в кадре с видимостью); C — эталон упражнения (null — снимаем сам эталон)
+function f4metrics(fr,C){
+  const T=fr.length;if(T<10)return null;const K=F4K;
+  const F=fr.map(x=>f4feat(x.w)),V=fr.map(x=>F4N.map(nd=>nd.every(i=>x.l[i][2]>=.5))),vis=K.map(k=>V.filter(v=>v[k]).length/T);
+  const S=K.map(k=>f4sm(F.map(r=>r[k]))),amp=S.map(s=>f4pct(s,95)-f4pct(s,5));
+  let mir=false;if(C){let d0=0,d1=0;for(const k of K){if(vis[k]<.6||vis[F4M[k]]<.6)continue;d0+=Math.abs(amp[k]-C.ra[k]);d1+=Math.abs(amp[F4M[k]]-C.ra[k])}mir=d1<d0}
+  const g=k=>mir?F4M[k]:k;
+  let mk=-1;if(C)for(const k of C.main)if(vis[g(k)]>=.6){mk=g(k);break}
+  if(mk<0){let b=-1;for(const k of F4I)if((!C||vis[k]>=.6)&&amp[k]>b){b=amp[k];mk=k}}
+  if(mk<0){let b=-1;for(const k of F4I)if(amp[k]>b){b=amp[k];mk=k}} // ничего толком не видно — берём что есть
+  const s=S[mk],lo=f4pct(s,5),hi=f4pct(s,95),nr=s.map(v=>(v-lo)/((hi-lo)||1)),z0=C&&C.z0!=null&&C.main.length&&mk===g(C.main[0])?C.z0:nr[0]<.5?0:1,far=v=>z0?v<.3:v>.7,home=v=>z0?v>.7:v<.3;
+  // повторы: проходы главного сустава туда и обратно; границы — по 10-му и 90-му процентилю, чтобы разовый выход за обычный размах (присел в конце) не съедал повторы
+  const l10=f4pct(s,10),h90=f4pct(s,90),nq=s.map(v=>(v-l10)/((h90-l10)||1));
+  let reps=0,inFar=false,tl=fr[0].t;const durs=[];
+  if(hi-lo>=12)nq.forEach((v,i)=>{if(!inFar&&far(v))inFar=true;else if(inFar&&home(v)){inFar=false;reps++;durs.push(fr[i].t-tl);tl=fr[i].t}});
+  const B=nr.map((v,i)=>[v,i]).filter(([v])=>z0?v<=.15:v>=.85).map(x=>x[1]),Tp=nr.map((v,i)=>[v,i]).filter(([v])=>z0?v>=.85:v<=.15).map(x=>x[1]);
+  const ext=(I,low)=>{const J=I.length?I:nr.map((_,i)=>i);return J.reduce((b,i)=>(low?nr[i]<nr[b]:nr[i]>nr[b])?i:b,J[0])}; // кадр крайней точки (низ приседа) и исходного положения
+  const lv=(...ix)=>f4med(fr.map(x=>Math.min(...ix.map(i=>x.l[i][2]))))>=.5,m={T,mir,mk,amp:K.map(k=>amp[g(k)]),med:K.map(k=>f4med(S[g(k)])),vis:K.map(k=>vis[g(k)]),reps,durs,range:hi-lo,z0};
+  const ang=mk<8||mk===18||mk===19;m.ib=ang?s.reduce((b,v,i)=>v<s[b]?i:b,0):ext(B,z0===1); // кадр разбора — наибольшее сгибание главного сустава (низ приседа, тяги, жима)
+  {const op=i=>ang?s[i]:(z0?nr[i]:-nr[i]),seg=(a,b)=>{let r=-1;for(let i=a;i<=b;i++)if(i!==m.ib&&(r<0||op(i)>op(r)))r=i;return r}; // начало — самое разогнутое положение того же повтора
+    let a0=m.ib;while(a0>0&&m.ib-a0<60&&!(far(nr[a0-1])&&m.ib-a0>8))a0--;let r=seg(a0,m.ib-1);
+    if(r<0||op(r)-op(m.ib)<.3*(ang?hi-lo:1)){let b0=m.ib;while(b0<T-1&&b0-m.ib<60&&!(far(nr[b0+1])&&b0-m.ib>8))b0++;const r2=seg(m.ib+1,b0);if(r2>=0&&(r<0||op(r2)>op(r)))r=r2}
+    if(r<0||op(r)-op(m.ib)<.3*(ang?hi-lo:1)){const b1=m.ib>0?seg(0,m.ib-1):-1;r=b1>=0&&op(b1)-op(m.ib)>=.3*(ang?hi-lo:1)?b1:seg(0,T-1)} // ролик начался с середины — самое разогнутое положение, лучше до крайней точки
+    m.ia=r>=0?r:ext(Tp,z0===0)} // кадр разбора — наибольшее сгибание главного сустава (низ приседа, тяги, жима)
+  // крайние позы главного сустава: где колени/локти согнуты сильнее всего
+  const bend=(a,b)=>{const q=S[a].map((v,i)=>Math.min(v,S[b][i])),p=f4pct(q,15);return q.map((v,i)=>[v,i]).filter(([v])=>v<=p).map(x=>x[1])};
+  m.mvis=F4CH[mk]?f4med(fr.map(x=>Math.min(...F4CH[mk].map(i=>x.l[i][2])))):1;
+  m.valg=null;if(vis[6]>=.6&&vis[7]>=.6&&lv(25,26,27,28)){const v=bend(6,7).map(i=>f4valg(fr[i].w)).filter(Number.isFinite);if(v.length)m.valg=f4med(v)}
+  m.back=null;if(lv(0,7,8,11,12,23,24)&&B.length&&Tp.length)m.back=f4med(B.map(i=>f4back(fr[i].w)))-f4med(Tp.map(i=>f4back(fr[i].w)));
+  m.flare=null;if(vis[0]>=.6&&vis[1]>=.6&&vis[2]>=.6&&vis[3]>=.6)m.flare=f4med(bend(0,1).map(i=>(f4abd(fr[i].w,0)+f4abd(fr[i].w,1))/2));
+  m.sag=null;if(lv(11,12,23,24,27,28)){const q=f4sm(fr.map(x=>180-Math.min(f4a(f4s(x.w[11],x.w[23]),f4s(x.w[27],x.w[23])),f4a(f4s(x.w[12],x.w[24]),f4s(x.w[28],x.w[24])))));m.sag=f4pct(q,75)}
+  m.swing=vis[8]>=.6?f4pct(S[8],90)-f4pct(S[8],10):null;
+  const mm=F4M[mk];m.asym=(mm!==mk&&vis[mk]>=.6&&vis[mm]>=.6)?Math.abs(amp[mk]-amp[mm])/Math.max(amp[mk],amp[mm],1):null;
+  m.shallow=null;m.sj=-1;if(C&&F4I.includes(C.main[0])){let r=Infinity;for(const k of C.main.slice(0,2)){if(!F4I.includes(k)||(k>=18&&k<=19&&C.main[0]!==k)||C.ra[k]<15||vis[g(k)]<.6)continue;const q=amp[g(k)]/(C.rt||C.ra)[k];if(q<r){r=q;m.sj=k}}if(r<Infinity)m.shallow=r}
+  return m}
+const F4T={shallow:null,valg:'Колени уходят внутрь',back:'Круглая спина',flare:'Локти разведены в стороны',sag:'Таз выходит из линии корпуса',swing:'Раскачиваете корпус — помогаете рывком',asym:'Одна сторона работает меньше другой'};
+const F4D={valg:'В нижней точке колени ближе друг к другу, чем в эталоне. Разводите колени по направлению носков.',back:'В крайней точке голова и верх спины заваливаются вперёд сильнее, чем в эталоне. Грудь вперёд, лопатки назад, спина ровная.',
+  flare:'Плечи отведены от корпуса сильнее, чем в эталоне. Держите локти ближе к корпусу (30–60°).',sag:'Таз провисает или задран: линия плечи — таз — пятки ломается сильнее, чем в эталоне. Напрягите пресс и ягодицы.',
+  swing:'Корпус качается в такт движению — вес идёт за счёт рывка. Зафиксируйте корпус, возьмите вес меньше.',asym:'Амплитуда левой и правой стороны заметно разная. Выполняйте движение синхронно, вес — поровну.'};
+// вывод по метрикам и правилам упражнения; C.chk — только проверки, которые на синтетике различимы по камере телефона
+function f4judge(m,C,fq){
+  const out={findings:[],good:[],notes:[],only:!C||!C.chk||!Object.keys(C.chk).length};if(!m||!C)return out;const ch={...(C.chk||{})};
+  if(fq&&fq.noFeet){delete ch.sag;delete ch.valg} // стоп нет в кадре (отжимания спереди): линию тела и колени не проверяем
+  if(m.shallow!=null&&!C.cyc){const k=m.sj,ur=Math.round(m.amp[k]),rr=Math.round((C.rt||C.ra)[k]),pc=Math.round(100*m.shallow),J=F4J[k][0].toUpperCase()+F4J[k].slice(1),t=pc>100?`${J}: размах ${ur}° (в эталоне ${rr}°)`:`${J}: размах ${ur}° из эталонных ${rr}° (${pc} %)`;
+    if(ur<25&&(m.mvis<.8||m.shallow<.35))out.notes.push(`Не удалось уверенно увидеть ${k<4?'руки':'ноги'} — снимите сбоку, чтобы ${k<4?'руки':'ноги'} были видны целиком.`); // тренажёр закрывает конечность — амплитуду не судим
+    else if(ch.shallow==null)out.info=t+'. По этому ракурсу и движению оценку амплитуды не даём — только для сведения.';
+    else if(m.shallow<Math.min(ch.shallow,.45))out.findings.push({key:'shallow',w:25,k:'Неполная амплитуда: '+F4J[k],d:t+'. Пройдите движение полностью.'});
+    else if(m.shallow<.6)out.findings.push({key:'shallow_soft',w:10,k:`Амплитуда неполная: ${F4J[k]} — ${pc} % эталона`,d:t+'. Доводите движение до конца, если позволяет подвижность.'});
+    else if(m.shallow<.85){out.info=t+'. Чуть меньше эталона — в пределах разброса камеры; «полная» пишем от 85 %.';out.cap=95}
+    else out.good.push(t+' — полная амплитуда')}
+  else if(ch.shallow!=null&&m.shallow==null&&!C.cyc)out.notes.push('Не видно главный сустав упражнения — амплитуду не оценили. Снимите так, чтобы тело было в кадре целиком.');
+  for(const key of ['valg','back','flare','sag','swing','asym']){if(ch[key]==null||m[key]==null)continue;const dv=key==='valg'?C.rv.valg-m.valg:m[key]-C.rv[key];if(dv>ch[key])out.findings.push({key,k:F4T[key],d:F4D[key]})}
+  return out}
+
 async function genericResult(id,key,live){
-  const L=EXR.last,v=EXV,e=L.res.e,win=L.res.win,x=(EXL||[]).find(z=>z.id===id)||{n:'Упражнение',pm:[],sm:[],steps:[]},r=L.res.ref(id);
-  // повторы: проходы по главной оси движения туда и обратно
-  // повторы считаем по всему ролику (окно exWindow — только для распознавания), темп — от начала движения
-  const allF=exSlots(L.S2).filter(Boolean),ef=allF.length>=3?exExtremes(allF):null,pc=ef&&ef.pc&&ef.pc.length===allF.length?ef.pc:e.pc,tw=pc===e.pc?win:allF;
-  const lo=Math.min(...pc),hi=Math.max(...pc),nrm=pc.map(p=>(p-lo)/((hi-lo)||1));let reps=0,st=nrm[0]<.5?0:1,start=0,lastIn=0;const durs=[];
-  const first=st;nrm.forEach((p,i)=>{const atStart=first===0?p<.3:p>.7;if(st===first&&atStart)lastIn=i;if(st===first&&(first===0?p>.7:p<.3)){st=1-first;start=lastIn}else if(st!==first&&atStart){st=first;reps++;durs.push(tw[i].t-tw[start].t);start=i}});
-  const isStatic=r==null?e.amp<15:Math.max(...[...Array(18).keys()].map(k=>Math.abs(EXR.d.B[r][k]-EXR.d.A[r][k])))<12;
-  if(isStatic||(ef||e).amp<15){reps=0;durs.length=0}
-  const findings=[],good=[];
-  if(r!=null){const al=exAlign(r,e),seen=new Set();
-    [...Array(18).keys()].filter(k=>e.vm[k]&&al.pm[k]&&al.qm[k]&&k!==17).map(k=>({k,ur:Math.abs(e.b[k]-e.a[k]),rr:Math.abs(al.q[k]-al.p[k])})).sort((a,b)=>b.rr-a.rr).forEach(({k,ur,rr})=>{
-      const nm=J3N[k];if(seen.has(nm)||findings.length>=3)return;
-      if(rr>=25&&ur<rr*.6){seen.add(nm);findings.push({k:'Неполная амплитуда: '+nm,d:`У вас ход ${Math.round(ur)}°, в эталоне ${Math.round(rr)}°. Пройдите движение полностью, без рывка.`,k3:NEED3[k].length===3?NEED3[k]:null,dd:Math.round((e.b[k]<e.a[k]?-1:1)*(rr-ur))})}
-      else if(rr>=25&&ur>=rr*.8){seen.add(nm);good.push(`${nm[0].toUpperCase()+nm.slice(1)}: полная амплитуда (${Math.round(ur)}° при эталоне ${Math.round(rr)}°)`)}});
-    if(Math.abs(e.a[8]-al.p[8])>30&&e.vm[8]&&al.pm[8])findings.push({k:'Положение корпуса',d:`Наклон корпуса у вас ${Math.round(e.a[8])}°, в эталоне ${Math.round(al.p[8])}°. Проверьте исходное положение по картинке эталона.`})}
-  if(!isStatic&&reps<1)findings.push({k:'Не увидели повторов',d:'Снимите 2–5 полных повторов, целиком и сбоку.'});
-  const score=Math.max(40,Math.min(100,100-findings.length*15));
-  const fa=win[e.ia],fb=win[e.ib];await seekTo(v,fa.t);if(live&&!live())return;const sa=frameShot(v,fa.lm,null,'#FF4F45',360).src;await seekTo(v,fb.t);const shb=frameShot(v,fb.lm,null,findings.length?'#FF3B30':'#1FB57E',720),sb=shb.src;
+  const L=EXR.last,v=EXV,e=L.res.e,win=L.res.win,x=(EXL||[]).find(z=>z.id===id)||{n:'Упражнение',pm:[],sm:[],steps:[]};
+  // разбор по эталону 3D-тени (ex4_form): у каждого упражнения свои правила; нет 3D или ничего не различить по камере — честно только повторы и темп
+  const allF=exSlots(L.S2).filter(Boolean),C=(await loadF4())[id]||null,fq=f4frame(allF,C);if(live&&!live())return;
+  if(!fq.ok){ // MediaPipe дорисовывает то, чего нет в кадре, — без головы, таза, нужных суставов и стоп выводов не делаем
+    sheet('Разбор: '+x.n,`<div class="card" style="border-left:4px solid var(--warn)"><div class="title" style="font-size:16px">Тело не целиком в кадре</div><div class="small muted" style="margin-top:4px">Снимите так, чтобы было видно с головы до стоп${C&&!C.st?' (для этого упражнения лучше сбоку)':''}, телефон неподвижно, 2–5 повторов. Оценку и выводы об амплитуде по такому видео не даём.</div></div>
+     <button class="btn" style="margin-top:12px" onclick="openForm()">Снять ещё раз</button><button class="btn ghost" onclick="openEx('${id}')">Карточка упражнения</button>`);return}
+  const m=f4metrics(allF,C),j=f4judge(m,C,fq);
+  const isStatic=C?!!C.iso:!m||m.range<12,noReps=!!(C&&C.nr),reps=isStatic||!m?0:m.reps,durs=isStatic||!m?[]:m.durs.slice();
+  const findings=C?j.findings:[],good=C?j.good:[],notes=C?(j.info?[j.info]:[]).concat(j.notes||[]):[],only=!C||j.only;
+  if(!isStatic&&!noReps&&reps<1)findings.push({k:'Не увидели повторов',d:'Снимите 2–5 полных повторов, целиком и сбоку.'});
+  const score=Math.max(40,Math.min(C&&j.cap||100,100-findings.reduce((s,f)=>s+(f.w||15),0))); // размах 60–85 % эталона — не 100
+  // крайняя точка — по главному суставу упражнения (низ приседа), а не по окну распознавания
+  const fa=m&&allF[m.ia]?allF[m.ia]:win[e.ia],fb=m&&allF[m.ib]?allF[m.ib]:win[e.ib];await seekTo(v,fa.t);if(live&&!live())return;const sa=frameShot(v,fa.lm,null,'#FF4F45',360).src;await seekTo(v,fb.t);const shb=frameShot(v,fb.lm,null,findings.length?'#FF3B30':'#1FB57E',720),sb=shb.src;
   const gfx=shadowFixes('lib',findings,fb.lm),gsh=gfx.length?shadowShot(v,fb.lm,gfx,720):null;
   S.lastForm={score,ex:key,t:Date.now(),reps,st:isStatic?1:0,shot:frameShot(v,fb.lm,null,'#FF4F45',420).src};
   S.forms=S.forms||[];S.forms.push({score,ex:key,t:Date.now(),reps,st:isStatic?1:0,findings:findings.map(f=>f.k),shot:frameShot(v,fb.lm,null,'#FF4F45',160).src});if(S.forms.length>40)S.forms.shift();save();
@@ -3516,14 +3593,15 @@ async function genericResult(id,key,live){
   const ref0=null,ref1=tenPoster(id);
   if(live&&!live())return;
   sheet('Разбор: '+x.n,`<div class="plate" style="background:#111;aspect-ratio:${Math.max(.8,Math.min(1.45,shb.ar)).toFixed(3)}"><img src="${sb}" alt="" style="object-fit:contain"><div class="capt"><span>${findings.length?'Момент для правки':'Крайняя точка'}</span><span class="small" style="font-weight:600">${fb.t.toFixed(1).replace('.',',')} с</span></div></div>
-   <div class="card" style="margin-top:12px;text-align:center"><div class="num" style="font-size:52px;color:${colr}">${CU(score)}</div><div class="muted">из 100 · ${isStatic?'удержание':pl(reps,'повтор','повтора','повторов')}${tempo.length?' · темп '+tempo.join(' / ')+' с':''}</div></div>
+   <div class="card" style="margin-top:12px;text-align:center"><div class="num" style="font-size:52px;color:${colr}">${CU(score)}</div><div class="muted">из 100 · ${isStatic?'удержание':noReps?'повторы по видео не считаем':pl(reps,'повтор','повтора','повторов')}${tempo.length?' · темп '+tempo.join(' / ')+' с':''}</div></div>
    ${findings.map(f=>`<div class="card" style="border-left:4px solid var(--bad)"><div class="title" style="font-size:16px">${f.k}</div><div class="small muted" style="margin-top:4px">${f.d}</div></div>`).join('')}
+   ${only?`<div class="card small muted">${C?'По видео для этого упражнения оцениваем только повторы и темп: остальное камера телефона надёжно не различает.':'Для этого упражнения пока нет 3D-эталона — по видео оцениваем только повторы и темп.'}</div>`:''}${notes.map(t=>`<div class="card small muted">${t}</div>`).join('')}
    ${good.map(g=>`<div class="card row" style="padding:12px 16px"><span style="color:var(--ok-text)">${ic('check')}</span><div style="flex:1">${g}</div></div>`).join('')}
    ${gsh?shadowBlock(v,win,e.ib,gfx,gsh):`<h2 style="margin-top:14px">Вы и эталон</h2><div class="card">${pair(sa,ref0,'начало, '+fa.t.toFixed(1).replace('.',',')+' с')}<div style="height:10px"></div>${pair(shb.src,ref1,'крайняя точка, '+fb.t.toFixed(1).replace('.',',')+' с')}</div>`}
    ${TEN.has(id)?`<button class="btn sec" style="margin-top:10px" onclick="openTen('${id}')">${ic('expand')} Эталон в 3D</button>`:''}
    ${x.steps&&x.steps.length?`<h2>Как правильно</h2><div class="card list">${x.steps.map((t,i)=>`<div class="li" style="align-items:flex-start"><span class="num" style="width:26px;color:var(--text3);font-size:17px">${i+1}</span><div style="flex:1;line-height:1.4">${t}</div></div>`).join('')}</div>`:''}
    ${Object.keys(lv).length?`<h2>Какие мышцы работают</h2><div class="card">${muscleMapLv(lv)}${ATLAS_CR}</div>`:''}
-   <div class="concept">Амплитуду сравниваем с эталоном упражнения по 3D-углам суставов · подробные правила техники пока для 6 базовых упражнений · не медицинская консультация</div>
+   <div class="concept">Сравниваем с 3D-эталоном этого упражнения по углам суставов (не зависят от роста и сложения) · «полная амплитуда» — от 85 % эталона · не медицинская консультация</div>
    <button class="btn" style="margin-top:12px" onclick="openEx('${id}')">Карточка упражнения</button><button class="btn ghost" onclick="openForm()">Разобрать другое видео</button>`);
   if(S.tab==='today'||S.tab==='gym')setTimeout(rerender,50);
 }
