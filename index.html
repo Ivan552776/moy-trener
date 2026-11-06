@@ -1094,7 +1094,7 @@ button.home-v{display:block;width:100%;padding:0;text-align:left;position:relati
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-07-r124d'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r124e'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -3932,6 +3932,7 @@ function f4judge(m,C,fq){
     else if(m.shallow<.85){out.info=t+'. Чуть меньше эталона — в пределах разброса камеры; «полная» пишем от 85 %.';out.cap=95}
     else out.good.push(t+' — полная амплитуда')}
   else if(ch.shallow!=null&&m.shallow==null&&!C.cyc)out.notes.push('Не видно главный сустав упражнения — амплитуду не оценили. Снимите так, чтобы тело было в кадре целиком.');
+  out.skipped=['valg','back','flare','sag','swing','asym'].filter(key=>ch[key]!=null&&m[key]==null); // правило есть, но камера сустав не разглядела — не выдаём это за «всё хорошо»
   for(const key of ['valg','back','flare','sag','swing','asym']){if(ch[key]==null||m[key]==null)continue;const dv=key==='valg'?C.rv.valg-m.valg:m[key]-C.rv[key];if(dv>ch[key])out.findings.push({key,k:F4T[key],d:F4D[key]})}
   return out}
 
@@ -3946,19 +3947,22 @@ async function genericResult(id,key,live){
   const isStatic=C?!!C.iso:!m||m.range<12,noReps=!!(C&&C.nr),reps=isStatic||!m?0:m.reps,durs=isStatic||!m?[]:m.durs.slice();
   const findings=C?j.findings:[],good=C?j.good:[],notes=C?(j.info?[j.info]:[]).concat(j.notes||[]):[],only=!C||j.only;
   if(!isStatic&&!noReps&&reps<1)findings.push({k:'Не увидели повторов',d:'Снимите 2–5 полных повторов, целиком и сбоку.'});
-  const score=Math.max(40,Math.min(C&&j.cap||100,100-findings.reduce((s,f)=>s+(f.w||15),0))); // размах 60–85 % эталона — не 100
+  const F4SK={valg:'колени',back:'спину',flare:'локти',sag:'линию корпуса',swing:'раскачку корпуса',asym:'симметрию сторон'},sk=C&&!only?(j.skipped||[]):[];
+  if(sk.length)notes.unshift(`Не смогли проверить ${sk.map(k=>F4SK[k]).join(', ')} — на этом видео их плохо видно. Оценка неполная: снимите сбоку, всё тело в кадре, хороший свет.`);
+  const nf=only||!m; // техника не оценивалась — только повторы и темп: балл «из 100» не показываем
+  const score=Math.max(40,Math.min(C&&j.cap||100,sk.length?75:100,100-findings.reduce((s,f)=>s+(f.w||15),0))); // размах 60–85 % эталона — не 100; что-то не проверили — не выше 75
   // крайняя точка — по главному суставу упражнения (низ приседа), а не по окну распознавания
   const fa=m&&allF[m.ia]?allF[m.ia]:win[e.ia],fb=m&&allF[m.ib]?allF[m.ib]:win[e.ib];await seekTo(v,fa.t);if(live&&!live())return;const sa=frameShot(v,fa.lm,null,'#FF4F45',360).src;await seekTo(v,fb.t);const shb=frameShot(v,fb.lm,null,findings.length?'#FF3B30':'#1FB57E',720),sb=shb.src;
   const gfx=shadowFixes('lib',findings,fb.lm),gsh=gfx.length?shadowShot(v,fb.lm,gfx,720):null;
-  S.lastForm={score,ex:key,t:Date.now(),reps,st:isStatic?1:0,shot:frameShot(v,fb.lm,null,'#FF4F45',420).src};
-  S.forms=S.forms||[];S.forms.push({score,ex:key,t:Date.now(),reps,st:isStatic?1:0,findings:findings.map(f=>f.k),shot:frameShot(v,fb.lm,null,'#FF4F45',160).src});if(S.forms.length>40)S.forms.shift();save();
+  S.lastForm={score,nf:nf?1:0,ex:key,t:Date.now(),reps,st:isStatic?1:0,shot:frameShot(v,fb.lm,null,'#FF4F45',420).src};
+  S.forms=S.forms||[];S.forms.push({score,nf:nf?1:0,ex:key,t:Date.now(),reps,st:isStatic?1:0,findings:findings.map(f=>f.k),shot:frameShot(v,fb.lm,null,'#FF4F45',160).src});if(S.forms.length>40)S.forms.shift();save();
   const groups=[...new Set(x.pm.map(m=>EXMAP[m]).filter(Boolean))],help=[...new Set(x.sm.map(m=>EXMAP[m]).filter(Boolean).filter(g=>!groups.includes(g)))],lv={};groups.forEach(g=>lv[g]=1);help.forEach(g=>lv[g]=2);
   const colr=score>=80?'var(--ok-text)':score>=55?'var(--warn)':'var(--bad)',tempo=durs.slice(0,3).map(d=>dec(d.toFixed(1)));
   const pair=(img,ref,cap)=>`<div class="row" style="gap:8px;align-items:stretch"><div style="flex:1;min-width:0"><img src="${img}" alt="" style="width:100%;border-radius:12px;background:#111;aspect-ratio:3/4;object-fit:cover"><div class="tiny muted" style="margin-top:4px">Вы · ${cap}</div></div>${ref?`<div style="flex:1;min-width:0"><img src="${ref}" alt="" style="width:100%;border-radius:12px;background:var(--card2);aspect-ratio:3/4;object-fit:cover" onerror="this.style.visibility='hidden'"><div class="tiny muted" style="margin-top:4px">Эталон, 3D</div></div>`:''}</div>`;
   const ref0=null,ref1=tenPoster(id);
   if(live&&!live())return;
   sheet('Разбор: '+x.n,`<div class="plate" style="background:#111;aspect-ratio:${Math.max(.8,Math.min(1.45,shb.ar)).toFixed(3)}"><img src="${sb}" alt="" style="object-fit:contain"><div class="capt"><span>${findings.length?'Момент для правки':'Крайняя точка'}</span><span class="small" style="font-weight:600">${fb.t.toFixed(1).replace('.',',')} с</span></div></div>
-   <div class="card" style="margin-top:12px;text-align:center"><div class="num" style="font-size:52px;color:${colr}">${CU(score)}</div><div class="muted">из 100 · ${isStatic?'удержание':noReps?'повторы по видео не считаем':pl(reps,'повтор','повтора','повторов')}${tempo.length?' · темп '+tempo.join(' / ')+' с':''}</div></div>
+   <div class="card" style="margin-top:12px;text-align:center">${nf?`<div class="title" style="font-size:20px">Технику не оценивали</div><div class="muted" style="margin-top:4px">`:`<div class="num" style="font-size:52px;color:${colr}">${CU(score)}</div><div class="muted">из 100${sk.length?' · оценка неполная':''} · `}${isStatic?'удержание':noReps?'повторы по видео не считаем':pl(reps,'повтор','повтора','повторов')}${tempo.length?' · темп '+tempo.join(' / ')+' с':''}</div></div>
    ${findings.map(f=>`<div class="card" style="border-left:4px solid var(--bad)"><div class="title" style="font-size:16px">${f.k}</div><div class="small muted" style="margin-top:4px">${f.d}</div></div>`).join('')}
    ${only?`<div class="card small muted">${C?'По видео для этого упражнения оцениваем только повторы и темп: остальное камера телефона надёжно не различает.':'Для этого упражнения пока нет 3D-эталона — по видео оцениваем только повторы и темп.'}</div>`:''}${notes.map(t=>`<div class="card small muted">${t}</div>`).join('')}
    ${good.map(g=>`<div class="card row" style="padding:12px 16px"><span style="color:var(--ok-text)">${ic('check')}</span><div style="flex:1">${g}</div></div>`).join('')}
@@ -4032,7 +4036,7 @@ function vTrain(){
 function vTech(){
   const lf=S.lastForm;if(!EXL&&!loadEX.busy&&!loadEX.failed){loadEX.busy=1;loadEX().then(()=>{loadEX.busy=0;loadEX.failed=!EXL;if(S.tab==='gym')rerender()})}
   return `<div class="top"><div><div class="eyebrow">3D-анатомия · ${pl(TEN_IDS.length,'упражнение','упражнения','упражнений')}</div><div class="date">3D-анатомия</div></div><button class="avatar tap" onclick="go('me')" aria-label="Личный кабинет">${ava()}</button></div>
-  ${lf?`<a class="ev wide" onclick="openForm()"><img src="${lf.shot}" alt="Ваш кадр"><span class="tag tech">${lf.score} / 100</span><span class="cap"><b>${fName(lf.ex)} · ${ago(lf.t)}</b>${lf.reps?pl(lf.reps,'повтор засчитан','повтора засчитаны','повторов засчитано'):lf.st||lf.ex==='plank'?'удержание':'повторов не увидели'} · углы по точкам суставов</span></a>`
+  ${lf?`<a class="ev wide" onclick="openForm()"><img src="${lf.shot}" alt="Ваш кадр"><span class="tag tech">${lf.nf?'повторы':lf.score+' / 100'}</span><span class="cap"><b>${fName(lf.ex)} · ${ago(lf.t)}</b>${lf.reps?pl(lf.reps,'повтор засчитан','повтора засчитаны','повторов засчитано'):lf.st||lf.ex==='plank'?'удержание':'повторов не увидели'} · углы по точкам суставов</span></a>`
      :`<a class="ev wide" onclick="formRun('squat.mp4','squat')"><img src="img/tech-demo.jpg" alt="Пример разбора" style="object-position:50% 35%"><span class="tag tech">пример</span><span class="cap"><b>Разбор техники по видео</b>кадр крупно, углы в суставах, что поправить — на ваших кадрах</span></a>`}
   <button class="btn" onclick="openForm()">${ic('cam')} Проверить технику по видео</button>
   <div class="small muted" style="text-align:center;margin:2px 8px 0">Камера сама узнает упражнение, вы подтвердите — и мы сравним с эталоном. Видео не уходит с телефона.</div>
@@ -4155,7 +4159,7 @@ function openHistory(){
   const f=S.forms.slice().reverse();
   if(!(S.workouts||0)&&!f.length&&!S.log.length){sheet('История',`<div class="card emp"><div class="emp-s" style="margin:0">Здесь появятся ваши тренировки и разборы техники.</div><button class="btn sm" onclick="closeSheet();go('gym')">${ic('gym')}К тренировкам</button></div>`);return} // пусто — одна строка и одна кнопка
   sheet('История',`<div class="grid2"><div class="card" style="margin:0"><div class="small muted">Тренировок</div><div class="num" style="font-size:28px">${S.workouts||0}</div></div><div class="card" style="margin:0"><div class="small muted">Разборов техники</div><div class="num" style="font-size:28px">${S.forms.length}</div></div></div>
-   <h2>Разборы техники</h2>${f.length?f.map(x=>`<div class="card row" style="padding:10px"><img src="${x.shot||'img/tech-demo.jpg'}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:12px;flex:none;background:#111"><div style="flex:1"><div style="font-weight:600">${fName(x.ex)}</div><div class="small muted">${new Date(x.t).toLocaleDateString('ru-RU',{day:'numeric',month:'short'})} · ${x.reps?pl(x.reps,'повтор','повтора','повторов'):x.st||x.ex==='plank'?'удержание':'без повторов'}${x.findings&&x.findings.length?' · '+x.findings[0]:''}</div></div><span class="num" style="font-size:22px;color:${x.score>=80?'var(--ok-text)':x.score>=55?'var(--warn)':'var(--bad)'}">${x.score}</span></div>`).join(''):`<button class="addopt" onclick="openForm()"><div class="ibox tech">${ic('ruler')}</div><div style="flex:1"><div class="title">Первый разбор техники</div><div class="small muted">Снимите 2–5 повторов сбоку</div></div><span class="chev">${ic('chev')}</span></button>`}
+   <h2>Разборы техники</h2>${f.length?f.map(x=>`<div class="card row" style="padding:10px"><img src="${x.shot||'img/tech-demo.jpg'}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:12px;flex:none;background:#111"><div style="flex:1"><div style="font-weight:600">${fName(x.ex)}</div><div class="small muted">${new Date(x.t).toLocaleDateString('ru-RU',{day:'numeric',month:'short'})} · ${x.reps?pl(x.reps,'повтор','повтора','повторов'):x.st||x.ex==='plank'?'удержание':'без повторов'}${x.findings&&x.findings.length?' · '+x.findings[0]:''}</div></div>${x.nf?'<span class="small muted">без оценки</span>':`<span class="num" style="font-size:22px;color:${x.score>=80?'var(--ok-text)':x.score>=55?'var(--warn)':'var(--bad)'}">${x.score}</span>`}</div>`).join(''):`<button class="addopt" onclick="openForm()"><div class="ibox tech">${ic('ruler')}</div><div style="flex:1"><div class="title">Первый разбор техники</div><div class="small muted">Снимите 2–5 повторов сбоку</div></div><span class="chev">${ic('chev')}</span></button>`}
    <h2>Дневник еды</h2>${S.log.length?`<div class="card small muted">${pl(S.log.length,'запись','записи','записей')} сегодня · ${fmt(eaten().k)} ккал</div>`:`<button class="addopt" onclick="openScan()"><div class="ibox primary">${ic('cam')}</div><div style="flex:1"><div class="title">Записать первое блюдо</div><div class="small muted">по фото или из базы</div></div><span class="chev">${ic('chev')}</span></button>`}`);
 }
 /* ---------- Аккаунт: вход (Яндекс ID, VK ID, код на почту) и копия данных на сервере в РФ ----------
