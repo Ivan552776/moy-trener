@@ -83,6 +83,7 @@ const KIND = { morkov: 'coin', luk: 'cube', kur: 'chunk', svekla: 'stick', kapus
 /* ---------- все 105 продуктов корзины + добавки (вода, соль, перец, лавр…): название, форма рисунка, вид кусочков, цвета (кусочек c/l/d, кожура s) ---------- */
 // [название, форма рисунка, вид кусочков, c, l, d, s(кожура/упаковка), доп.]
 const CAT = {
+  tofu: ['тофу', 'cheese', 'cube', '#F7F1DF', '#FFFDF4', '#DCCFAE', '', 'white'], soy_myaso: ['соевое мясо', 'bowl', 'crumb', '#C9965A', '#E3B880', '#8F6230'], hummus: ['хумус', 'tub', 'drop', '#E9CF9A', '#F6E6C2', '#C2A266', '#C9A23B'],
   grechka: ['гречка', 'bowl', 'grain', '#93602F', '#C58E56', '#5E3A18'], ris: ['рис', 'bowl', 'rice', '#F7F4EC', '#FFFFFF', '#A99C7E'], ovsyanka: ['овсяные хлопья', 'bowl', 'flake', '#E6D2A2', '#F7ECCF', '#B99A5C'],
   makarony: ['макароны', 'bowl', 'tube', '#F0C964', '#FBE3A0', '#C2922A'], perlovka: ['перловка', 'bowl', 'rice', '#E4D5B2', '#F4ECD8', '#B3A079'], psheno: ['пшено', 'bowl', 'seed', '#F1C33C', '#FBE08A', '#C4901A'],
   chechevitsa: ['чечевица', 'bowl', 'lentil', '#E8803A', '#F6A866', '#B5581C'], fasol: ['фасоль', 'can', 'bean', '#9E3B2A', '#C9614A', '#6B2216', '#C24A32'], kartofel: ['картофель', 'round', 'cube', '#F0D58F', '#FFF1C8', '#C79C4A', '#C99556', 'potato'],
@@ -120,7 +121,7 @@ const CAT = {
   cheese_ady: ['адыгейский сыр', 'cheese', 'cube', '#FBF8EC', '#FFFFFF', '#E6DFC8', '', 'white'], smetana20: ['сметана', 'tub', 'drop', '#FBF4E2', '#FFFFFF', '#E6D8B6', '#E9A23B'], tvorog9: ['творог', 'tub', 'crumb', '#FBF6EA', '#FFFFFF', '#E3D8C0', '#3E8ED0'],
   // добавки из рецептов (не из корзины)
   voda: ['вода', 'water', 'drop', '#9FDAF7', '#D6F0FD', '#3E93CC'], sol: ['соль', 'salt', 'seed', '#FFFFFF', '#FFFFFF', '#C9D0D6'], perec_ch: ['чёрный перец', 'peppercorn', 'seed', '#3A2A1E', '#6E5644', '#1A120A'],
-  paprika: ['паприка', 'bowl', 'powder', '#C8321F', '#E8604A', '#8A1D10'], travy: ['сушёные травы', 'bowl', 'speck', '#6E8A3A', '#9AB25E', '#4A6222'],
+  kurkuma: ['куркума', 'bowl', 'powder', '#E8A317', '#F6C64A', '#B67A0A'], paprika: ['паприка', 'bowl', 'powder', '#C8321F', '#E8604A', '#8A1D10'], travy: ['сушёные травы', 'bowl', 'speck', '#6E8A3A', '#9AB25E', '#4A6222'],
   lavr: ['лавровый лист', 'bay', 'leaf', '#6E8A3A', '#9AB25E', '#4A6222'], zira: ['зира', 'bowl', 'seed', '#9E7A4A', '#C29E6E', '#6E5230'], uksus: ['уксус', 'bottle', 'drop', '#EEF4F2', '#FFFFFF', '#C9D6D2', '#E8EEEC'],
   soda: ['сода', 'box', 'powder', '#FFFFFF', '#FFFFFF', '#DCE2E8', '#E2452E'], lim_sok: ['лимонный сок', 'round', 'drop', '#F8E06A', '#FFF3B0', '#D8B21E', '#F2D22E', 'lemon'],
 };
@@ -132,6 +133,7 @@ const IS_KUR = k => /^(kur|kur_grudka|kur_bedro|indeyka|kur_okor|kur_goleni)$/.t
 /* ---------- узнать продукт в тексте шага: основы слов; сначала точные (зелёный лук, томатная паста), потом общие ---------- */
 const B = '(?<![а-яё])';
 const STEM = [
+  ['soy_myaso', `соев[а-я]* мяс|соев[а-я]* фарш|текстурат`], ['tofu', `тофу`], ['hummus', `хумус`], ['kurkuma', `куркум`], // постные белковые (раньше «соев» — соевый соус, «мяс» — мясо)
   ['luk_zel', `зелён[а-я]* лук|лук[а-я]* зелён|перь[а-я]* лук`], ['kv_kapusta', `квашен[а-я]* капуст`], ['cv_kapusta', `цветн[а-я]* капуст|соцвет`], ['ogurtsy_sol', `солён[а-я]* огур|маринован[а-я]* огур|огур[а-я]* солён`],
   ['tomat', `томатн[а-я]* паст|томат-паст|${B}паст[уаыо]?${B.replace('<', '')}`], ['kukuruz_krupa', `кукурузн[а-я]* круп|полент`], ['fasol_str', `стручк`], ['indeyka_farsh', `фарш[а-я]* индейк|индюшин[а-я]* фарш`], ['farsh_kur', `курин[а-я]* фарш|фарш[а-я]* курин`],
   ['maslo_sliv', `сливочн[а-я]* масл`], ['maslo_ol', `оливков[а-я]* масл`], ['maslo_rast', `подсолнечн[а-я]* масл|растительн[а-я]* масл`], ['soy_sous', `соев`], ['lim_sok', `лимонн[а-я]* сок|сок[а-я]* лимон|сок[а-я]* из [а-яё ]{0,24}лимон`], ['salat_list', `лист[а-я]* салат|салатн[а-я]* лист|листов[а-я]* салат`],
@@ -152,7 +154,7 @@ const STEM = [
 const GROUP = { myaso: ['govyadina', 'svinina', 'baranina', 'kur_grudka', 'kur_bedro', 'indeyka', 'kur_okor', 'kur_goleni', 'pechen', 'farsh', 'farsh_kur', 'indeyka_farsh'], kur: ['kur_grudka', 'kur_bedro', 'kur_okor', 'kur_goleni', 'indeyka', 'farsh_kur'], farsh: ['farsh', 'farsh_kur', 'indeyka_farsh'], fish: ['mintay', 'treska', 'gorbusha', 'seld', 'skumbriya', 'tunets'],
   maslo: ['maslo_rast', 'maslo_ol', 'maslo_sliv'], tvorog: ['tvorog', 'tvorog9'], smetana: ['smetana', 'smetana20'], syr: ['syr', 'brynza', 'cheese_ady'], hleb: ['hleb', 'hleb_zern', 'baton', 'hlebcy'], kur_grudka: ['kur_grudka', 'indeyka', 'kur_bedro', 'mintay', 'treska', 'gorbusha', 'seld', 'skumbriya'], cv_kapusta: ['cv_kapusta', 'brokkoli'],
   pomidor: ['pomidor', 'tomat'], egg: ['egg'], kapusta: ['kapusta', 'kv_kapusta', 'cv_kapusta'], limon: ['limon', 'lim_sok'] };
-const FREE = new Set(['voda', 'sol', 'perec_ch', 'lavr', 'zira', 'uksus', 'soda', 'lim_sok', 'paprika', 'travy']); // добавки: не нужны в составе
+const FREE = new Set(['voda', 'sol', 'perec_ch', 'lavr', 'zira', 'uksus', 'soda', 'lim_sok', 'paprika', 'travy', 'kurkuma']); // добавки: не нужны в составе
 // продукты в тексте: [{k, at}] по порядку; найденный кусок закрывается, чтобы «зелёный лук» не дал ещё и «лук»
 // если в составе нет названного, но есть близкий: «огурцы» в блюде с солёными огурцами, «лук» — с зелёным, «фасоль» — со стручковой
 const ALT = { ogurets: ['ogurtsy_sol'], ogurtsy_sol: ['ogurets'], luk: ['luk_zel'], fasol: ['fasol_str'], smetana: ['smetana20'], tvorog: ['tvorog9'], syr: ['cheese_ady', 'brynza'], hleb: ['hleb_zern', 'baton'], perets: [], ris: [], kapusta: ['kv_kapusta'] };

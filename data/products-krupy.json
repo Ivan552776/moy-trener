@@ -1557,14 +1557,14 @@
   "id": "hummus",
   "n": "Хумус",
   "cat": "бобовые",
-  "p": 7.9,
-  "f": 9.6,
-  "c": 14.3,
-  "kcal": 166,
+  "p": 7.8,
+  "f": 17.8,
+  "c": 15.0,
+  "kcal": 237,
   "portion": {
    "g": 50,
    "name": "порция (50 г)"
   },
-  "src": "USDA FoodData Central, SR Legacy «Hummus, commercial»; цифры по памяти, проверить"
+  "src": "USDA FoodData Central, SR Legacy, FDC 174289 «Hummus, commercial» (получено через api.nal.usda.gov 06.11.2026; прежние цифры были по памяти)"
  }
 ]

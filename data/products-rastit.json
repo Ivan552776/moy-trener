@@ -1734,5 +1734,33 @@
    "name": "1 стакан (300 мл)"
   },
   "src": "этикетка производителя ВкусВилл («Коктейль протеиновый \"Шоколад\" 300 мл, кафе», https://vkusvill.ru/goods/kokteyl-proteinovyy-shokolad-300-ml-72421/)"
+ },
+ {
+  "id": "tofu_tverdyy",
+  "n": "Тофу",
+  "cat": "бобовые",
+  "p": 17.3,
+  "f": 8.7,
+  "c": 2.8,
+  "kcal": 144,
+  "portion": {
+   "g": 100,
+   "name": "порция (100 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy, FDC 172475 «Tofu, raw, firm, prepared with calcium sulfate» (получено через api.nal.usda.gov 06.11.2026)"
+ },
+ {
+  "id": "soevoe_myaso_suhoe",
+  "n": "Соевое мясо (текстурат), сухое",
+  "cat": "бобовые",
+  "p": 51.5,
+  "f": 1.2,
+  "c": 33.9,
+  "kcal": 327,
+  "portion": {
+   "g": 40,
+   "name": "порция сухого (40 г)"
+  },
+  "src": "USDA FoodData Central, SR Legacy, FDC 174275 «Soy flour, defatted» — по аналогу: соевое мясо (текстурат) делают из обезжиренной соевой муки (получено через api.nal.usda.gov 06.11.2026)"
  }
 ]
