@@ -1383,6 +1383,24 @@ button.home-v{display:block;width:100%;padding:0;text-align:left;position:relati
 .sb-card{display:flex;align-items:center;gap:12px;width:100%;text-align:left} .sb-card .pw-ic.sm{animation:none}
 .sb-go{flex:none;height:32px;padding:0 14px;border-radius:var(--pill);background:var(--accent);color:var(--on-accent);font-size:14px;font-weight:650;display:inline-flex;align-items:center} .sb-card.paid .sb-go{background:var(--card2);color:var(--text)}
 @media (prefers-reduced-motion:reduce){.pw-b,.pl-n,.pl-fc,.pl-sheet,.pl-gift{animation:none}}
+
+/* подарок и карточки для сторис */
+.gk-ic{background:linear-gradient(150deg,#F59E0B,#B45309)}
+.gk-card{text-align:center;border-radius:26px;padding:22px 18px;margin-bottom:12px;color:#fff;background:radial-gradient(80% 60% at 50% 0%,rgba(253,230,138,.35),transparent 60%),linear-gradient(160deg,#10865F,#065F46 60%,#022C21);animation:ivup 640ms var(--spring-sheet) both}
+.gk-card .pw-ds{color:rgba(255,255,255,.85)} .gk-top{width:64px;height:64px;margin:0 auto 10px;border-radius:20px;display:grid;place-items:center;background:#FDE68A;color:#7C2D12} .gk-top .ic{width:32px;height:32px}
+.gk-code{font:700 28px ui-monospace,Menlo,monospace;letter-spacing:.12em;margin:10px 0;padding:10px;border-radius:14px;background:rgba(255,255,255,.12)}
+.gk-box{position:relative;width:170px;height:170px;margin:6px auto 4px;perspective:600px}
+.gk-body{position:absolute;left:15px;right:15px;bottom:0;height:100px;border-radius:14px;background:linear-gradient(#10865F,#065F46);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.gk-body::after,.gk-lid::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:22px;margin-left:-11px;background:#FDE68A}
+.gk-lid{position:absolute;left:5px;right:5px;top:44px;height:38px;border-radius:12px;background:linear-gradient(#16A374,#0E7A5A);z-index:2;transform-origin:10% 100%;transition:transform 760ms var(--spring-soft),opacity .5s .3s}
+.gk-in{position:absolute;left:0;right:0;top:70px;text-align:center;color:var(--text);opacity:0;transform:translateY(30px) scale(.8);transition:transform 700ms .25s var(--spring-soft),opacity .4s .25s;z-index:3}
+.gk-in b{display:block;font:800 26px var(--display);color:var(--accent-text)} .gk-in span{font-size:14px;color:var(--text2)}
+.gk-glow{position:absolute;left:50%;top:40%;width:220px;height:220px;margin:-110px 0 0 -110px;border-radius:50%;background:radial-gradient(circle,rgba(253,230,138,.6),rgba(253,230,138,0) 65%);opacity:0;transform:scale(.4);transition:opacity .5s .15s,transform 800ms .15s var(--spring-soft)}
+.gk-box.open .gk-lid{transform:translate(-80px,-36px) rotate(-38deg);opacity:0} .gk-box.open .gk-in{opacity:1;transform:translateY(-62px)} .gk-box.open .gk-glow{opacity:1;transform:none}
+.sc-w{display:flex;justify-content:center;margin-bottom:12px}
+.sc-ph{width:min(62vw,240px);aspect-ratio:9/16;border-radius:22px;overflow:hidden;background:var(--card2);display:grid;place-items:center;box-shadow:0 18px 40px -16px rgba(0,0,0,.45);transform:translateY(24px) scale(.94);opacity:.6;transition:transform 640ms var(--spring-sheet),opacity .3s}
+.sc-ph.on{transform:none;opacity:1} .sc-ph img,.sc-ph canvas{width:100%;height:100%;object-fit:cover;outline:0;display:block}
+@media (prefers-reduced-motion:reduce){.gk-card,.sc-ph,.gk-lid,.gk-in,.gk-glow{animation:none;transition:opacity .15s!important}}
 /* розыгрыш v3: карточки участника, вылет шара, иллюстрации призов, таблица бесплатно/Полный */
 .dr-pz{flex-direction:row;align-items:flex-start;gap:14px;padding:16px}
 .dr-pz.wk{background:linear-gradient(150deg,var(--accent-soft),transparent 70%),var(--sheet-card);box-shadow:inset 0 0 0 1.5px var(--accent)}
@@ -1517,7 +1535,7 @@ button.home-v{display:block;width:100%;padding:0;text-align:left;position:relati
 /* ---------- сервер (его делает отдельно Иван; пока его нет — отзывы «скоро», ошибки молча) ---------- */
 const SRV=/(^|\.)moytrener-app\.ru$/.test(location.hostname)?location.origin:'https://moytrener-app.ru'; // на своём домене — тот же адрес (через CDN), иначе полный
 const API='https://d5duoljblsg80f3qi799.jki8ffxa.apigw.yandexcloud.net/trener-api'; // сервер отзывов через шлюз Яндекс Облака (CDN не пропускает POST) — меняется только здесь
-const APPV='mt-2026-11-07-r128'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r128a'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v9h14v-9"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10.5 3 12 8 12 8s1.5-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>',cup:'<path d="M7 4h10l-1.3 15.2a2 2 0 0 1-2 1.8h-3.4a2 2 0 0 1-2-1.8z"/><path d="M7.4 9h9.2"/>',expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -2429,6 +2447,7 @@ function openWeekSum(){const w=wsWhen()||{prev:false},s=weekSum(w.prev),g=S.prof
     ${s.best?row('star','volt','Лучший день',new Date(s.best.d+'T12:00').toLocaleDateString('ru-RU',{weekday:'long'}),`${u(s.best.k,'ккал')} · белок ${u(s.best.p||0,'г')}`):''}
     ${s.al?row('cup','warn','Алкоголь',pl(s.al,'день','дня','дней'),'калории напитков — в итоге дня'):''}</div>
     ${s.micro.length?`<div class="card small muted ws-micro">${ic('leaf')}<span>${s.micro.map(x=>`Почти не было источников ${x.t}: ${x.src}.`).join(' ')} Можно добавить в меню. Не медицинская консультация.</span></div>`:''}`:''}
+   <div class="iv-btns"><button class="btn sec" onclick="openCard('week')">${ic('share')}Карточка недели</button><span id="scsv"></span>${(setTimeout(scsvFill,450),'')}</div>
    <button class="btn" onclick="closeSheet();rerender()">Вперёд, к новой неделе</button>`)}
 // тёплые слова: после тренировки и когда день закрыт (калории и белок в норме) — один раз в день, без конфетти
 /* вода: норма 30 мл на кг (не больше 3,5 л), в день тренировки +0,5 л; стакан — 250 мл. Только на телефоне, без подсчёта «за вас» */
@@ -4696,7 +4715,7 @@ async function formResult(src,ex,S2,v,live){
    <h2>Какие мышцы работают</h2><div class="card">${muscleMap(f.muscles)}<div class="tiny muted" style="margin-top:10px">Подсветка — по упражнению, не измерение активности</div>${ATLAS_CR}</div>
    ${(()=>{const id=({squat:'Bodyweight_Squat',lunge:'Bodyweight_Walking_Lunge',pushup:'Pushups',plank:'Plank',deadlift:'Romanian_Deadlift',press:'Standing_Dumbbell_Press',bench:'Barbell_Bench_Press_-_Medium_Grip',row:'Bent_Over_Two-Dumbbell_Row',curl:'Dumbbell_Bicep_Curl'})[ex];return `<div class="vid" style="margin-top:12px" onclick="openTen('${id}')">${pic(tenPoster(id)||gymPic(f.img),f.n)}<div class="cap">как правильно — в 3D</div></div>`})()}
    <div class="concept">Точность зависит от ракурса и света · не медицинская консультация</div>
-   <button class="btn" style="margin-top:12px" onclick="openForm()">Разобрать другое видео</button>`);if(S.tab==='today'||S.tab==='gym')setTimeout(rerender,50);
+   <button class="btn sec" style="margin-top:12px" onclick="openCard('tech')">${ic('share')}Карточка «Моя техника»</button><button class="btn" onclick="openForm()">Разобрать другое видео</button>`);if(S.tab==='today'||S.tab==='gym')setTimeout(rerender,50);
 }
 
 /* ---------- Распознавание упражнения по видео: поза (3D-точки MediaPipe) + обученный классификатор 22 частых упражнений + MobileCLIP по кадрам.
@@ -5196,6 +5215,7 @@ function dyChart(S2,prs){const L=S2.slice(-12);if(L.length<2)return '';const W=3
    <div class="dy-lg"><span><i class="dy-lw"></i>${wt?'рабочий вес, кг':'повторы'}</span>${wt?'<span><i class="dy-lr"></i>расчётный 1ПМ</span>':''}<span><i class="dy-lp"></i>рекорд</span></div></div>`}
 function openDyEx(n){const L=(dyByEx()[n]||[]),S2=dySess(L),prs=dyPR(S2),wt=S2.some(x=>x.top>0),best=wt?Math.max(...S2.map(x=>x.top)):Math.max(...S2.map(x=>x.reps)),brm=Math.max(...S2.map(x=>x.rm));
   sheet(n,`<div class="grid2"><div class="card" style="margin:0"><div class="small muted">${wt?'Рекорд веса':'Рекорд повторов'}</div><div class="num" style="font-size:26px">${wt?dec(best)+' кг':best}</div></div><div class="card" style="margin:0"><div class="small muted">${wt?'Расчётный 1ПМ':'Тренировок'}</div><div class="num" style="font-size:26px">${wt?dec(Math.round(brm*2)/2)+' кг':S2.length}</div></div></div>
+   ${prs.some(Boolean)?`<button class="btn sec" style="margin:0 0 12px" onclick="openCard('week',{rec:{n:${JSON.stringify(String(n)).replace(/"/g,'&quot;')},v:'${wt?dec(best)+' кг':best+' повт.'}'}})">${ic('share')}Поделиться рекордом</button>`:''}
    ${dyChart(S2,prs)}
    <h2>Тренировки</h2><div class="card list dy-t">${S2.map((x,k)=>[x,k]).reverse().slice(0,20).map(([x,k])=>`<div class="dy-r"><div class="dy-d">${dDate(x.d)}${prs[k]?'<span class="dy-b">рекорд</span>':''}</div><div class="dy-s num">${x.s.map(e=>(+e.w?dec(e.w)+'×':'')+e.r).join(' · ')}</div>${x.s.some(e=>e.rpe)?`<div class="tiny muted">RPE ${x.s.filter(e=>e.rpe).map(e=>e.rpe).join(', ')}</div>`:''}</div>`).join('')}</div>
    <div class="concept">1ПМ — расчёт по формуле Эпли: вес × (1 + повторы / 30). Это оценка, а не задание поднять максимум</div>`)}
@@ -6036,7 +6056,7 @@ function payApply(d){if(!d||typeof d.now!=='number')return;const P=payS(),was=pa
     api('/pay/trial',{did:S.did,token:payTok()}).then(r=>{if(r.ok)payApply(r.data)});setTimeout(()=>{if(!S.onb&&!$('#sheet').classList.contains('on')&&!P.giftSeen)openGift()},1200)}
   if(d.trial&&d.trial.start)P.trial={start:d.trial.start*1000,end:d.trial.end*1000}; // сервер главный: сброс данных телефона пробный не продлевает
   {const mx=Math.max(0,...Object.values(d.chances||{0:0})),dn=(d.wins||[]).length;if((P.clubCh!=null&&mx>P.clubCh)||dn>(P.clubWins||0))P.clubNew=1;P.clubCh=mx;P.clubWins=dn}
-  setTimeout(payTrialEndCheck,1500);
+  setTimeout(payTrialEndCheck,1500);if(P.giftCode&&!S.onb&&!$('#sheet').classList.contains('on'))setTimeout(()=>giftOpen(P.giftCode),900);
   save();if(d.paid&&!wasPaid&&P.wait){P.wait=null;save();payPaidNow()}if((was!==payAccess()||!wasOn)&&!$('#sheet').classList.contains('on'))rerender();payRefCheck()}
 async function paySync(force){if(paySync.busy||S.onb)return;if(!force&&Date.now()-(paySync.at||0)<60e3)return;paySync.busy=1;
   try{const P=payS(),nm=S.profile&&S.profile.name&&S.profile.name!=='Вы'?S.profile.name:'';
@@ -6140,6 +6160,7 @@ function openSub(){const P=payS(),s=P.srv||{},paid=payPaid(),tr=payTrialOn(),own
    ${s.family_member?`<div class="card"><div class="title">Вы в семейной подписке</div><div class="small muted" style="margin-top:4px">Полный доступ, пока действует подписка владельца.</div><button class="btn ghost sm" style="margin-top:8px" onclick="payFamLeave()">Выйти из семьи</button></div>`:''}
    ${!payAccess()&&(((s.picks||{}).ids)||P.picks||[]).length?`<div class="card"><div class="title">Мои 5 бесплатных рецептов</div>${((s.picks||{}).ids||P.picks||[]).map(id=>{const d=KIT&&KIT.recipes.find(r=>r.id===id);return `<div class="li"><span style="flex:1">${esc(d?d.n:id)}</span><button class="btn ghost sm" onclick="payPickUnset('${esc(id)}')">Убрать</button></div>`}).join('')}<div class="tiny muted">Менять набор — раз в месяц</div></div>`:''}
    <div class="card list">
+    <button class="rowbtn" onclick="openGiftBuy()"><div class="ibox">${ic('gift')}</div><div class="t">Подарить Полный<small>месяц или год — открытка с кодом${(P.gifts||[]).filter(g=>g.status==='new').length?` · неактивированных: ${(P.gifts||[]).filter(g=>g.status==='new').length}`:''}</small></div><span class="chev">${ic('chev')}</span></button>
     <button class="rowbtn" onclick="openInvite()"><div class="ibox">${ic('people')}</div><div class="t">Пригласить друга<small>${s.ref&&s.ref.paid?`оплатили ${s.ref.paid} · получено ${pl(s.ref.days,'день','дня','дней')}`:'другу 14 дней, вам — месяц за каждого'}</small></div><span class="chev">${ic('chev')}</span></button>
     <button class="rowbtn" onclick="openDraw()"><div class="ibox">${ic('star')}</div><div class="t">Розыгрыш призов<small>среди подписчиков · по правилам</small></div><span class="chev">${ic('chev')}</span></button>
     ${paid?'':`<button class="rowbtn" onclick="payFamJoin()"><div class="ibox">${ic('home')}</div><div class="t">У меня есть код семьи<small>если близкий оформил «Семью»</small></div><span class="chev">${ic('chev')}</span></button>`}
@@ -6610,6 +6631,7 @@ function vClub(){const P=payS(),s=P.srv||{},D=DRD||P.draw||{...DR_DEF,payers:s.p
    ${drWallet(s,D).replace('id="dwal"','id="cwal"').replace('id="dwn"','id="cwn"')}
    ${AC?'':`<button class="pw-note tap" style="width:100%;text-align:left" onclick="openAuth()">${ic('lock')}<div><b>Войдите, чтобы участвовать</b></div></button>`}
    <h2>Пригласить друга</h2>${iv}
+   <button class="card tap pt-card gk-row" style="width:100%;text-align:left" onclick="openGiftBuy()"><div class="pw-ic sm">${ic('gift')}</div><div style="flex:1"><div class="title">Подарить Полный</div><div class="small muted">месяц 690 ₽ или год 3 990 ₽ — открытка с кодом</div></div><span class="chev">${ic('chev')}</span></button>
    ${big.length?`<h2>Большие розыгрыши</h2><div class="dr-prz">${big.map(t=>{const left=Math.max(0,t.goal-(D.payers||0)),pc=Math.min(100,Math.round((D.payers||0)/t.goal*100));
       return `<div class="dr-pz"><div class="dr-art">${drArt(t)}</div><div class="dr-pzb"><b>${esc(t.prize)}</b>${t.tier==='t3000'?'<div class="dr-tax">Выиграл — забрал. Налог платим мы</div>':''}<div class="pg"><i style="width:${pc}%"></i></div><small>${left?`осталось ${fmt(left)} мест до розыгрыша`:'набрано — розыгрыш через 7 дней'}</small></div></div>`}).join('')}</div>`:''}
    ${past.length?`<h2>Прошлые итоги</h2>${past.map(t=>`<div class="card"><div class="title">${esc(t.prize)}</div>${t.winners.map(w=>drWinRow(w,s.pnum).replace('class="tiny"','class="tiny muted"')).join('')}<button class="btn sec sm" style="margin-top:10px" onclick="openDrawVerify('${t.tier}')">Проверить честность</button></div>`).join('')}`:''}
@@ -6639,8 +6661,153 @@ function payTrialEndCheck(){const P=payS();if(!payOn()||!P.trial||payAccess()||P
   sheet('Пробный закончился',`<div class="lk"><div class="pw-ic">${ic('check')}</div><div class="pw-tt">Ваши данные на месте</div><div class="pw-ds">Дневник, план, тренировки и вес — всё сохранено. Бесплатное работает как прежде; меню на неделю, программа и всё остальное — в Полном.</div></div>
    <button class="btn" onclick="openPaywall('any')">Продолжить Полный — от 249 ₽/мес</button><button class="btn ghost" onclick="payS().quietUntil=Date.now()+3*864e5;save();closeSheet()">Позже</button>`)}
 
+
+/* ---------- Подарить Полный (только при включённой оплате): разовая оплата месяц 690 / год 3 990, код и открытка; получатель активирует по ссылке ?gift=КОД ---------- */
+const GIFT_P={gift_month:[690,'1 месяц','Полный на месяц'],gift_year:[3990,'год','Полный на год']};let GIFTSEL='gift_year';
+function openGiftBuy(){if(!payOn())return;const on=(payS().srv||{}).enabled===true;
+  sheet('Подарить Полный',`<div class="lk"><div class="pw-ic gk-ic">${ic('gift')}</div><div class="pw-tt">Подарок другу или близкому</div><div class="pw-ds">Разовая оплата, без автопродления. После оплаты — открытка с кодом: отправьте её, кому хотите. Активировать можно в течение года.</div></div>
+   <div class="pw-plans" role="radiogroup">${Object.entries(GIFT_P).map(([k,[r,t]])=>`<button class="pw-plan${k===GIFTSEL?' on':''}" role="radio" aria-checked="${k===GIFTSEL}" onclick="GIFTSEL='${k}';openGiftBuy();$('#sbody').classList.add('keep')"><span class="rd"></span><div style="min-width:0"><div class="pw-pn">Полный на ${t}</div><div class="pw-sub">разово, без автопродления</div></div><div class="pw-pr"><b>${fmt(r)} ₽</b></div></button>`).join('')}</div>
+   <button class="btn" id="gkgo" onclick="giftGo()">${ic('gift')} Подарить за ${rubN(GIFT_P[GIFTSEL][0])}</button>
+   <div class="pw-fine">Оплата — через Продамус. Условия — в ${docA('oferta','оферте')}.</div>`);SHEET_FN=null}
+async function giftGo(){const b=$('#gkgo');if(b){b.disabled=true;b.innerHTML='<span class="pw-wait" style="width:20px;height:20px;margin:0;border-width:2.5px"></span>'}
+  const r=await api('/pay/gift/link',{did:S.did,token:payTok(),plan:GIFTSEL,consent:true},15000);
+  if(r.ok&&r.data&&r.data.enabled&&/^https:\/\/[\w.-]+\.payform\.ru\//.test(r.data.url||'')){payS().giftWait={order:r.data.order,at:Date.now()};save();location.assign(r.data.url);return}
+  if(b){b.disabled=false;b.textContent='Попробовать ещё раз'}toast(r.status===0?'Нет интернета':'Оплата пока не открылась — попробуйте позже',true)}
+// вернулись с оплаты подарка: ждём код и показываем открытку
+async function giftWaitCode(){const P=payS();let n=0;sheet('Подарок',`<div class="pw-ok"><div class="pw-wait"></div><div class="pw-tt">Готовим подарок</div><div class="pw-ds" style="margin:6px 12px 16px">Банк подтверждает оплату — обычно 10–30 секунд.</div></div>`);
+  const tick=async()=>{n++;const r=await api('/pay/gift/mine',{did:S.did,token:payTok()});const g=r.ok&&r.data&&(r.data.gifts||[]).find(x=>x.status==='new'&&x.created*1000>(P.giftWait?P.giftWait.at-600e3:0));
+    if(g){P.giftWait=null;P.gifts=r.data.gifts;save();openGiftCard(g.code,g.months);return}if(n<40)setTimeout(tick,3000);else sheet('Подарок',`<div class="card">Оплата ещё не подтвердилась. Код появится в Профиле → Подписка → «Мои подарки».</div>`)};tick()}
+const giftLink=c=>PAY_SITE+'?gift='+c;
+async function giftBlob(code,months){const W=1080,H=1920,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d'),F=CF,nick=(S.profile&&S.profile.name!=='Вы'&&S.profile.name)||'';
+  cardBg(c,W,H);let g=c.createRadialGradient(W/2,560,0,W/2,560,W*.6);g.addColorStop(0,'rgba(253,230,138,.3)');g.addColorStop(1,'rgba(253,230,138,0)');c.fillStyle=g;c.fillRect(0,0,W,H);
+  // бант целиком, ниже безопасной зоны: петли, хвосты, узел
+  const bx=W/2,by=420,gold=c.createLinearGradient(bx-220,by-120,bx+220,by+160);gold.addColorStop(0,'#FEF3C7');gold.addColorStop(.5,'#FDE68A');gold.addColorStop(1,'#F59E0B');
+  c.fillStyle=gold;for(const s of[-1,1]){c.beginPath();c.moveTo(bx-s*6,by);c.quadraticCurveTo(bx+s*50,by+80,bx+s*92,by+170);c.lineTo(bx+s*56,by+152);c.lineTo(bx+s*38,by+186);c.quadraticCurveTo(bx+s*14,by+90,bx+s*-14,by+8);c.closePath();c.fill()}
+  for(const s of[-1,1]){c.save();c.translate(bx+s*100,by-34);c.rotate(s*-.32);c.fillStyle=gold;c.beginPath();c.ellipse(0,0,116,66,0,0,7);c.fill();c.fillStyle='rgba(180,83,9,.28)';c.beginPath();c.ellipse(s*-14,6,58,28,0,0,7);c.fill();c.restore()}
+  c.fillStyle='#FCD34D';c.beginPath();c.arc(bx,by-22,42,0,7);c.fill();c.fillStyle='rgba(255,255,255,.45)';c.beginPath();c.arc(bx-12,by-36,12,0,7);c.fill();
+  c.fillStyle='#fff';c.textAlign='center';c.font=`650 ${cardFit(c,nick?`${nick} дарит вам`:'Вам подарок',W-180,56,650)}px ${F}`;c.fillText(nick?`${nick} дарит вам`:'Вам подарок',W/2,690);
+  c.font=`800 176px ${F}`;c.fillText('Полный',W/2,860);c.font=`800 100px ${F}`;c.fillText(months>=12?'на год':'на месяц',W/2,975);
+  c.font=`500 40px ${F}`;c.fillStyle='rgba(255,255,255,.9)';c.fillText('меню под бюджет, тренировки и сканер еды',W/2,1045);
+  const q=240,qx=(W-q)/2,qy=1128;c.fillStyle='#FFFDF7';payRR(c,qx-30,qy-30,q+60,q+60,36);c.fill();qrFancyDraw(c,giftLink(code),qx,qy,q);
+  const ct=code.replace(/(.{5})/,'$1 ');c.font=`800 84px ui-monospace,Menlo,monospace`;const cw=c.measureText(ct).width+80;c.fillStyle='rgba(255,255,255,.16)';payRR(c,(W-cw)/2,1424,cw,112,56);c.fill();c.fillStyle='#fff';c.fillText(ct,W/2,1510);
+  c.font=`500 34px ${F}`;c.fillStyle='rgba(255,255,255,.82)';c.fillText('moytrener-app.ru · активировать в течение года',W/2,1596);c.textAlign='left';
+  return await new Promise(r=>cv.toBlob(r,'image/png'))}
+function openGiftCard(code,months){sheet('Ваш подарок',`<div class="gk-card"><div class="gk-top">${ic('gift')}</div><div class="pw-tt">Полный ${months>=12?'на год':'на месяц'}</div><div class="gk-code">${esc(code.replace(/(.{5})/,'$1 '))}</div><div class="pw-ds">Отправьте открытку — получатель откроет ссылку и активирует подарок.</div></div>
+   <div class="iv-btns"><button class="btn" onclick="cardShare(giftBlob('${esc(code)}',${+months}),'moy-trener-podarok.png','Вам подарок — «Мой тренер» Полный',giftLink('${esc(code)}'))">${ic('share')}Поделиться</button><button class="btn sec" onclick="cardSave(giftBlob('${esc(code)}',${+months}),'moy-trener-podarok.png')">${ic('download')}Сохранить</button></div>
+   <div class="pw-fine">${esc(giftLink(code))}</div>`);if(typeof cbConfetti==='function')cbConfetti();drsInit();drsPlay('chord')}
+// получатель: «Вам подарили…» с распаковкой
+async function giftOpen(code){if(giftOpen.busy||$('#gkbox'))return;giftOpen.busy=1;let r;try{r=await api('/pay/gift/check',{did:S.did,code})}finally{giftOpen.busy=0}if($('#gkbox'))return;if(!r.ok){if(r.status===404){toast('Код подарка не найден',true);payS().giftCode=null;save()}return}const m=r.data.months,st=r.data.status;if(st!=='new'){payS().giftCode=null;save()}
+  sheet('Вам подарок',`<div class="gk-box${RM?' open':''}" id="gkbox"><div class="gk-lid"></div><div class="gk-body"></div><div class="gk-glow"></div><div class="gk-in"><b>Полный</b><span>${m>=12?'на год':'на месяц'}</span></div></div>
+   <div class="lk" style="padding-top:0"><div class="pw-tt">Вам подарили Полный ${m>=12?'на год':'на месяц'}</div><div class="pw-ds">${st==='new'?'Меню на неделю, программа под вас, все рецепты и 3D-упражнения. Активировать можно на этом телефоне или в аккаунте.':st==='used'?'Этот подарок уже активирован.':st==='void'?'Подарок отменён.':'Срок активации истёк.'}</div></div>
+   ${st==='new'?`<button class="btn" id="gkact" onclick="giftRedeem('${esc(code)}')">Активировать подарок</button>`:''}${AC||st!=='new'?'':`<button class="btn ghost" onclick="openAuth()">Войти, чтобы подарок был в аккаунте</button>`}`);
+  if(!RM)setTimeout(()=>{const b=$('#gkbox');if(b){b.classList.add('open');drsInit();drsPlay('rustle');setTimeout(()=>drsPlay('chord'),420)}},500)}
+async function giftRedeem(code){const b=$('#gkact');if(b){b.disabled=true}const r=await api('/pay/gift/redeem',{did:S.did,token:payTok(),code});
+  if(r.ok){payApply(r.data);payS().giftCode=null;save();closeSheet();toast(`Полный включён ${r.data.months>=12?'на год':'на месяц'}`);if(typeof cbConfetti==='function')cbConfetti();return}
+  if(b)b.disabled=false;const e=r.data&&r.data.error;toast(e==='used'?'Подарок уже активирован':e==='self'?'Свой подарок активировать нельзя — отправьте его другу':e==='expired'?'Срок активации истёк':r.status===429?'Слишком много попыток — попробуйте через час':'Не получилось — попробуйте позже',true)}
+
+/* ---------- Карточки для сторис 1080×1920: рисуются в телефоне, на сервер ничего не уходит. Итоги недели, экономия на продуктах, техника.
+   Безопасные зоны сторис: верх 250 px и низ 300 px — там интерфейс Instagram/Telegram, важного текста нет. Нули не показываем — только то, чем можно гордиться ---------- */
+const CF='-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif',plW=(n,a,b,c)=>pl(n,a,b,c).split(NBS).slice(1).join(NBS);
+function cardBg(c,W,H){let g=c.createLinearGradient(0,0,W,H);g.addColorStop(0,'#12946A');g.addColorStop(.5,'#065F46');g.addColorStop(1,'#01261C');c.fillStyle=g;c.fillRect(0,0,W,H);
+  [[.9,.07,.85,'110,231,183',.38],[.02,.52,.7,'16,185,129',.22],[.75,.97,.65,'253,230,138',.13]].forEach(([x,y,r,col,a])=>{const q=c.createRadialGradient(W*x,H*y,0,W*x,H*y,W*r);q.addColorStop(0,`rgba(${col},${a})`);q.addColorStop(1,`rgba(${col},0)`);c.fillStyle=q;c.fillRect(0,0,W,H)});
+  c.save();c.globalAlpha=.06;c.fillStyle='#fff';c.beginPath();c.moveTo(W*.38,0);c.lineTo(W*.66,0);c.lineTo(W*.1,H);c.lineTo(-W*.18,H);c.closePath();c.fill();c.restore(); // блик по диагонали
+  if(!cardBg.n){const n=document.createElement('canvas');n.width=n.height=192;const x=n.getContext('2d');let s=7;const rnd=()=>(s=s*16807%2147483647)/2147483647;for(let i=0;i<300;i++){x.fillStyle=rnd()<.5?'rgba(255,255,255,.06)':'rgba(0,0,0,.08)';x.fillRect(rnd()*192,rnd()*192,2,2)}cardBg.n=n}
+  c.fillStyle=c.createPattern(cardBg.n,'repeat');c.fillRect(0,0,W,H)} // лёгкое зерно, как у бумаги (плитка 192 px — рисуется один раз)
+function cardFit(c,t,w,size,wt){let s=size;do{c.font=`${wt} ${s}px ${CF}`;s-=4}while(c.measureText(t).width>w&&s>24);return s+4}
+function cardWrap(c,t,w){const out=[];let line='';String(t).split(' ').forEach(x=>{const n=line?line+' '+x:x;if(c.measureText(n).width>w&&line){out.push(line);line=x}else line=n});if(line)out.push(line);return out}
+function cardBase(c,W,H,title){const F=CF;cardBg(c,W,H);c.textAlign='left';
+  c.fillStyle='rgba(255,255,255,.14)';payRR(c,90,262,292,64,32);c.fill();c.fillStyle='#6EE7B7';c.beginPath();c.arc(126,294,13,0,7);c.fill();c.fillStyle='#fff';c.font=`650 34px ${F}`;c.fillText('Мой тренер',152,306);
+  const L=String(title).split('\n'),fs=Math.min(...L.map(t=>cardFit(c,t,W-180,104,800)));c.fillStyle='#fff';c.font=`800 ${fs}px ${F}`;L.forEach((t,i)=>c.fillText(t,90,440+i*(fs+8)));
+  // низ (над безопасной зоной): личная ссылка-приглашение с QR, если оплата включена; иначе сайт
+  const R=payOn()&&payS().ref,fy=H-300-190;c.fillStyle='rgba(255,255,255,.13)';payRR(c,60,fy,W-120,180,40);c.fill();
+  if(R){const q=144;c.fillStyle='#FFFDF7';payRR(c,84,fy+18,q,q,22);c.fill();qrFancyDraw(c,payLink(R.code),94,fy+28,q-20);c.fillStyle='#fff';c.font=`800 46px ${F}`;c.fillText('14 дней бесплатно',264,fy+84);c.font=`500 34px ${F}`;c.fillStyle='rgba(255,255,255,.85)';c.fillText('moytrener-app.ru/?r='+R.code,264,fy+134)}
+  else{c.fillStyle='#fff';c.font=`700 46px ${F}`;c.textAlign='center';c.fillText('moytrener-app.ru · попробуйте бесплатно',W/2,fy+106);c.textAlign='left'}
+  return {F,y:440+(L.length-1)*(fs+8)+70,fy}}
+function cardTiles(c,F,x,y,w,T){const n=T.length,gap=24,tw=(w-(n-1)*gap)/n;T.forEach(([v,l],i)=>{const tx=x+i*(tw+gap);c.fillStyle='rgba(255,255,255,.12)';payRR(c,tx,y,tw,220,36);c.fill();
+  c.fillStyle='#fff';c.font=`800 ${n>2?100:116}px ${F}`;c.fillText(String(v),tx+30,y+118);c.fillStyle='rgba(255,255,255,.9)';c.font=`600 34px ${F}`;cardWrap(c,l,tw-50).slice(0,2).forEach((t,k)=>c.fillText(t,tx+30,y+168+k*40))})}
+function cardCheck(c,F,x,y,t){c.fillStyle='#6EE7B7';c.beginPath();c.arc(x+24,y-14,24,0,7);c.fill();c.strokeStyle='#064E3B';c.lineWidth=6;c.lineCap='round';c.lineJoin='round';c.beginPath();c.moveTo(x+13,y-14);c.lineTo(x+21,y-5);c.lineTo(x+36,y-23);c.stroke();
+  c.fillStyle='#fff';c.font=`650 44px ${F}`;c.fillText(t,x+68,y)}
+function weekCardData(){const w=wsWhen&&wsWhen()||{prev:false},s=weekSum(w.prev),t0=Date.parse(s.days[0]+'T00:00'),t1=t0+7*864e5,dd=(S.diary||[]).filter(e=>e.t>=t0&&e.t<t1);let prs=0;
+  try{const by=dyByEx();Object.values(by).forEach(L=>{const S2=dySess(L),f=dyPR(S2);S2.forEach((x,k)=>{if(k&&f[k]&&x.d>=s.days[0]&&x.d<=s.days[6])prs++})})}catch(e){}
+  const nk=norm(S.profile),Hh={},td=today0();(S.hist||[]).forEach(h=>Hh[h.d]=h);if(s.days.includes(td)&&S.log&&S.log.length){const e=dayTot(S.log);Hh[td]={...(Hh[td]||{}),k:e.k,n:nk.kcal}}
+  const days=s.days.map(d=>{const h=Hh[d];return {d,w:!!((h&&h.w)||(S.doneOn&&S.doneOn[d]!=null)),ok:!!(h&&h.k>0&&Math.abs(h.k/(h.n||nk.kcal)-1)<=.1),fut:d>td}});
+  return {wo:s.wo,sets:dd.length,prs,ok:s.ok,n:s.n,plan:s.plan,streak:streakDays(),days}}
+function saveCardData(){const key=[S.wk&&S.wk.days&&S.wk.days.map(d=>(d.sl||[]).map(x=>x.id).join(',')).join(';'),S.wk&&S.wk.key,S.region,people(),PRICES&&(PRICES.at||PRICES.ts||PRICES.v),famKey()].join('|');if(saveCardData.k===key)return saveCardData.v;saveCardData.k=key;return saveCardData.v=saveCardCalc().then(d=>{if(!d)saveCardData.k=null;return d})} // обещание; считается по кадрам
+function scsvFill(){saveCardData().then(d=>{const el=$('#scsv');if(el&&d)el.outerHTML=`<button class="btn sec" onclick="openCard('save')">${ic('wallet')}Экономия</button>`})} // кнопка «Экономия» в итогах недели — после расчёта по кадрам
+const cardYield=()=>new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0))); // разбить работу на кадры
+async function saveCardCalc(){try{if(!KIT||!hasPrices()||!S.wk||!S.wk.days||!PRICES.chains.rs)return null;const need=Object.entries(wkIng());if(need.length<5)return null;await cardYield();
+  /* честно: сравниваем только те продукты, у которых есть цена и в сети, и у Росстата по региону — одна и та же корзина, по цене за кг */
+  const rs=need.filter(x=>costOf([x],'rs').have);let best=null;
+  for(const c of chOpen().filter(chLive)){await cardYield();const com=rs.filter(x=>costOf([x],c).have);if(com.length<Math.max(5,need.length*.6))continue;const a=costOf(com,c).r,b=costOf(com,'rs').r;if(b>a&&(!best||b-a>best.avg-best.best))best={c,com,shop:chName(c),best:a,avg:b,n:com.length,tot:need.length}}
+  if(!best||best.avg-best.best<50)return null;
+  // в чек — 4 самые крупные позиции корзины (по средней цене), а не самые выгодные: без подбора
+  const rows=best.com.map(x=>({n:(KIT.it[x[0]]&&KIT.it[x[0]].n)||x[0],a:costOf([x],best.c).r,b:costOf([x],'rs').r})).sort((p,q)=>q.b-p.b).slice(0,4);
+  return {shop:best.shop,best:Math.round(best.best),avg:Math.round(best.avg),diff:Math.round(best.avg-best.best),n:best.n,tot:best.tot,rows}}catch(e){return null}}
+async function cardBlob(kind,o){const cv=await cardDraw(kind,o);return cv&&await new Promise(r=>cv.toBlob(r,'image/png'))}
+/* превью показывает сам холст — без кодирования PNG при открытии (иначе рывок кадра); PNG кодируется только по «Поделиться»/«Сохранить» */
+async function cardDraw(kind,o){const W=1080,H=1920,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d');
+  if(kind==='week'){const d=weekCardData(),rec=o&&o.rec;await cardYield();const B=cardBase(c,W,H,rec?'Новый рекорд!':'Мои итоги\nнедели'),F=B.F;let y=B.y;
+    if(rec){const g=c.createLinearGradient(90,y,W-90,y+180);g.addColorStop(0,'#FDE68A');g.addColorStop(1,'#FBBF24');c.fillStyle=g;payRR(c,90,y,W-180,180,40);c.fill();
+      c.fillStyle='#3B2600';c.font=`600 38px ${F}`;c.fillText(String(rec.n).slice(0,32),134,y+70);c.font=`800 ${cardFit(c,String(rec.v),W-270,72,800)}px ${F}`;c.fillText(String(rec.v),134,y+146);y+=220}
+    // плитки: только ненулевое; без тренировок — по еде и серии
+    const T=(d.wo?[[d.wo,plW(d.wo,'тренировка','тренировки','тренировок')],[d.sets,plW(d.sets,'подход','подхода','подходов')+' записано'],[d.prs,plW(d.prs,'рекорд','рекорда','рекордов')]]
+      :[[d.ok,plW(d.ok,'день','дня','дней')+' калории в норме'],[d.streak,plW(d.streak,'день','дня','дней')+' подряд'],[d.n,plW(d.n,'день','дня','дней')+' с записями еды']]).filter(x=>x[0]>0).slice(0,3);
+    if(T.length){cardTiles(c,F,90,y,W-180,T);y+=260}
+    // кольца активности (без пустых): тренировки из плана, калории в норме, серия
+    const RG=[[d.wo,Math.max(d.plan||0,d.wo,1),'#6EE7B7',`Тренировки: ${d.wo} из ${Math.max(d.plan||0,d.wo)}`],[d.ok,7,'#FDE68A',`Калории в норме: ${plW(d.ok,'день','дня','дней').replace(/^/,d.ok+' ')}`],[Math.min(d.streak,7),7,'#93C5FD',`Серия: ${pl(d.streak,'день','дня','дней')} подряд`]].filter(x=>x[0]>0);
+    if(RG.length&&!rec){const cx=90+150,cy=y+150;RG.forEach(([v,m,col],i)=>{const r=140-i*40;c.lineWidth=30;c.lineCap='round';c.strokeStyle='rgba(255,255,255,.12)';c.beginPath();c.arc(cx,cy,r,0,7);c.stroke();c.strokeStyle=col;c.beginPath();c.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.min(1,v/m));c.stroke()});
+      RG.forEach(([v,m,col,l],i)=>{const ly=cy-(RG.length-1)*40+i*80+14;c.fillStyle=col;c.beginPath();c.arc(452,ly-13,13,0,7);c.fill();c.fillStyle='#fff';c.font=`650 ${cardFit(c,l,W-90-480,40,650)}px ${F}`;c.fillText(l,480,ly)});y+=340}
+    // полоска 7 дней: круг — тренировка, жёлтая точка — калории в норме
+    const DN=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],cw=(W-180)/7;c.textAlign='center';d.days.forEach((x,i)=>{const cx=90+cw*i+cw/2;c.globalAlpha=x.fut?.35:1;
+      c.fillStyle='rgba(255,255,255,.85)';c.font=`600 32px ${F}`;c.fillText(DN[i],cx,y+30);c.beginPath();c.arc(cx,y+90,42,0,7);c.fillStyle=x.w?'#6EE7B7':'rgba(255,255,255,.12)';c.fill();
+      if(x.w){c.strokeStyle='#064E3B';c.lineWidth=7;c.lineCap='round';c.lineJoin='round';c.beginPath();c.moveTo(cx-16,y+90);c.lineTo(cx-4,y+103);c.lineTo(cx+18,y+77);c.stroke()}
+      if(x.ok){c.fillStyle='#FDE68A';c.beginPath();c.arc(cx,y+152,11,0,7);c.fill()}c.globalAlpha=1});c.textAlign='left'}
+  if(kind==='save'){const d=o&&o.diff?o:await saveCardData();if(!d)return null;await cardYield();const B=cardBase(c,W,H,'Корзина недели\nдешевле среднего'),F=B.F;let y=B.y;
+    c.fillStyle='#fff';c.font=`800 ${cardFit(c,`−${fmt(d.diff)} ₽`,W-180,190,800)}px ${F}`;c.fillText(`−${fmt(d.diff)} ₽`,84,y+140);c.font=`600 40px ${F}`;c.fillStyle='rgba(255,255,255,.92)';c.fillText(`за неделю: «${d.shop}» против средней по региону`.slice(0,52),90,y+204);
+    // чек: бумага с зубчатым краем, слегка повёрнута
+    const rx=120,rw=W-240,ry=y+244,rows=(d.rows||[]).slice(0,4),rh=150+rows.length*50+70;c.save();c.translate(W/2,ry+rh/2);c.rotate(-.025);c.translate(-W/2,-(ry+rh/2));
+    c.fillStyle='rgba(0,0,0,.25)';payRR(c,rx+10,ry+16,rw,rh,18);c.fill();c.fillStyle='#FFFDF7';c.beginPath();c.moveTo(rx,ry+18);c.arcTo(rx,ry,rx+18,ry,18);c.arcTo(rx+rw,ry,rx+rw,ry+18,18);c.lineTo(rx+rw,ry+rh);for(let zx=rx+rw;zx>rx;zx-=30){c.lineTo(zx-15,ry+rh+16);c.lineTo(Math.max(rx,zx-30),ry+rh)}c.closePath();c.fill();
+    const mono='ui-monospace,Menlo,monospace',xa=rx+rw-210,xb=rx+rw-36;c.fillStyle='#57534E';c.font=`600 28px ${mono}`;c.fillText(`ЧЕК · ${d.n&&d.n<d.tot?`те же ${d.n} из ${d.tot} продуктов`:'та же корзина'}`,rx+36,ry+54);
+    c.textAlign='right';c.font=`600 26px ${F}`;c.fillText('в среднем',xa,ry+100);c.fillStyle='#047857';c.fillText(String(d.shop).slice(0,12),xb,ry+100);c.textAlign='left';
+    const money=v=>fmt(Math.round(v))+' ₽',strike=(t,x,yy)=>{const w=c.measureText(t).width;c.fillText(t,x,yy);c.fillRect(x-w,yy-12,w,3)};
+    rows.forEach((r,i)=>{const yy=ry+150+i*50;c.fillStyle='#1C1917';c.font=`500 32px ${F}`;let nm=String(r.n);while(c.measureText(nm).width>xa-150-rx-36&&nm.length>4)nm=nm.slice(0,-2)+'…';c.fillText(nm,rx+36,yy);
+      c.textAlign='right';c.fillStyle='#78716C';c.font=`500 32px ${F}`;strike(money(r.b),xa,yy);c.fillStyle='#047857';c.font=`700 32px ${F}`;c.fillText(money(r.a),xb,yy);c.textAlign='left'});
+    const ty=ry+150+rows.length*50;c.strokeStyle='#A8A29E';c.setLineDash([10,8]);c.lineWidth=2;c.beginPath();c.moveTo(rx+36,ty-20);c.lineTo(rx+rw-36,ty-20);c.stroke();c.setLineDash([]);
+    c.fillStyle='#1C1917';c.font=`800 36px ${F}`;c.fillText('Итого',rx+36,ty+30);c.textAlign='right';c.fillStyle='#78716C';c.font=`600 34px ${F}`;strike(money(d.avg),xa,ty+30);c.fillStyle='#047857';c.font=`800 36px ${F}`;c.fillText(money(d.best),xb,ty+30);c.textAlign='left';c.restore();
+    const yr=Math.round(d.diff*52/100)*100;c.fillStyle='rgba(255,255,255,.9)';c.font=`600 34px ${F}`;c.fillText(`≈ ${fmt(yr)} ₽ в год, если так каждую неделю (×52)`,90,ry+rh+72);
+    c.fillStyle='rgba(255,255,255,.7)';c.font=`500 28px ${F}`;c.fillText('Цены за кг: сайты сетей и Росстат.',90,ry+rh+112)}
+  if(kind==='tech'){const f=(S.forms||[]).slice(-1)[0],B=cardBase(c,W,H,'Моя техника'),F=B.F,y=B.y;const sc=f?Math.round(f.score):0,nm=f&&FORM[f.ex]?FORM[f.ex].n:'Упражнение';
+    // кольцо оценки
+    const cx=290,cy=y+230,r=190;c.lineWidth=36;c.lineCap='round';c.strokeStyle='rgba(255,255,255,.13)';c.beginPath();c.arc(cx,cy,r,0,7);c.stroke();const g=c.createLinearGradient(cx-r,cy-r,cx+r,cy+r);g.addColorStop(0,'#A7F3D0');g.addColorStop(1,'#FDE68A');c.strokeStyle=g;c.beginPath();c.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+Math.PI*2*sc/100);c.stroke();
+    c.textAlign='center';c.fillStyle='#fff';c.font=`800 150px ${F}`;c.fillText(String(sc),cx,cy+50);c.font=`600 38px ${F}`;c.fillStyle='rgba(255,255,255,.8)';c.fillText('из 100',cx,cy+104);c.textAlign='left';
+    c.fillStyle='#fff';c.font=`800 ${cardFit(c,nm,440,68,800)}px ${F}`;c.fillText(nm,90,cy+r+110);
+    // справа: силуэт-скелет крупно (без лица) или моё фото, если человек выбрал
+    const bx=560,by=y-10,bw=430,bh=600;c.fillStyle='rgba(255,255,255,.1)';payRR(c,bx,by,bw,bh,44);c.fill();
+    if(o&&o.photo&&f&&f.shot){const im=new Image();im.src=f.shot;await im.decode().catch(()=>{});const k=Math.max(bw/im.width,bh/im.height);c.save();payRR(c,bx,by,bw,bh,44);c.clip();c.drawImage(im,bx+(bw-im.width*k)/2,by+(bh-im.height*k)/2,im.width*k,im.height*k);c.restore()}
+    else{c.strokeStyle='#6EE7B7';c.lineWidth=18;c.lineCap='round';c.lineJoin='round';const P=(x,yy)=>[bx+x*bw,by+yy*bh],L=(...pts)=>{c.beginPath();pts.forEach((p,i)=>{const [x,yy]=P(...p);i?c.lineTo(x,yy):c.moveTo(x,yy)});c.stroke()};
+      L([.42,.3],[.5,.55]);L([.5,.55],[.72,.6],[.62,.88]);L([.5,.55],[.3,.62],[.38,.9]);L([.44,.36],[.68,.38],[.86,.36]);c.fillStyle='#6EE7B7';const [hx,hy]=P(.4,.2);c.beginPath();c.arc(hx,hy,40,0,7);c.fill();
+      [[.5,.55],[.72,.6],[.3,.62],[.68,.38]].forEach(p=>{const [x,yy]=P(...p);c.fillStyle='#fff';c.beginPath();c.arc(x,yy,14,0,7);c.fill()})}
+    // «что получилось» — только факты из разбора, без замечаний
+    const prev=f?(S.forms||[]).slice(0,-1).filter(x=>x.ex===f.ex):[],G=[];if(f&&f.reps)G.push(`${pl(f.reps,'повтор','повтора','повторов')} разобрано`);if(f&&!(f.findings||[]).length)G.push('Без замечаний');
+    if(prev.length&&sc>Math.round(prev[prev.length-1].score))G.push(`+${sc-Math.round(prev[prev.length-1].score)} к прошлому разбору`);else if(prev.length&&sc>=Math.max(...prev.map(x=>Math.round(x.score))))G.push('Лучший результат в упражнении');
+    if(G.length<2)G.push('Разбор по видео — прямо в телефоне');G.slice(0,3).forEach((t,i)=>cardCheck(c,F,90,cy+r+200+i*76,t))}
+  return cv}
+async function cardShare(bp,name,text,url){const b=await bp;if(!b)return;const file=new File([b],name,{type:'image/png'});
+  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Мой тренер',...(text?{text}:{}),...(url?{url}:{})});return}}catch(e){if(e&&e.name==='AbortError')return}
+  cardSave(Promise.resolve(b),name)}
+async function cardSave(bp,name){const b=await bp;if(!b)return;const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);drsInit();drsPlay('click');haptic(10);toast('Картинка сохранена')}
+let CARDO=null;
+async function openCard(kind,o){CARDO=o||{};const T={week:'Итоги недели',save:'Экономия на продуктах',tech:'Моя техника'}[kind];
+  sheet(T,`<div class="sc-w"><div class="sc-ph" id="scph"><div class="pw-wait"></div></div></div>
+   ${kind==='tech'&&(S.forms||[]).slice(-1)[0]&&(S.forms||[]).slice(-1)[0].shot?`<label class="pw-cons" style="margin:0 0 10px"><input type="checkbox" ${CARDO.photo?'checked':''} onchange="CARDO.photo=this.checked;openCard('tech',CARDO)"><span>Показать моё фото вместо силуэта</span></label>`:''}
+   <div class="iv-btns"><button class="btn" onclick="cardShare(cardBlob('${kind}',CARDO),'moy-trener-${kind}.png')">${ic('share')}Поделиться</button><button class="btn sec" onclick="cardSave(cardBlob('${kind}',CARDO),'moy-trener-${kind}.png')">${ic('download')}Сохранить</button></div>
+   <div class="pw-fine">Картинка рисуется на телефоне — никуда не отправляется, пока вы сами не поделитесь.</div>`);SHEET_FN=null;
+  await new Promise(r=>setTimeout(r,RM?0:420)); /* рисуем после выезда шторки — без рывка анимации */const b=await cardDraw(kind,CARDO),ph=$('#scph');if(!ph)return;if(!b){ph.innerHTML='<div class="pw-ds" style="padding:40px 16px">Пока нет данных для этой карточки.</div>';return}b.setAttribute('role','img');b.setAttribute('aria-label',T);ph.innerHTML='';ph.appendChild(b);requestAnimationFrame(()=>ph.classList.add('on'))}
+
 /* --- запуск --- */
 (function payInit(){const P=payS();
+  try{const u=new URL(location.href),gc=u.searchParams.get('gift'),gp=u.searchParams.get('gift_paid');if(gc&&/^[A-Z0-9]{10}$/i.test(gc)){P.giftCode=gc.toUpperCase();save()}
+    if(gc||gp){u.searchParams.delete('gift');u.searchParams.delete('gift_paid');history.replaceState(history.state,'',u.pathname+(u.search||'')+u.hash)}if(gp&&P.giftWait)setTimeout(()=>{if(!S.onb&&payOn())giftWaitCode()},1500)}catch(e){}
   try{const u=new URL(location.href),fc=u.searchParams.get('fam');if(fc&&/^[A-Z0-9]{6,12}$/i.test(fc)){u.searchParams.delete('fam');history.replaceState(history.state,'',u.pathname+(u.search||'')+u.hash);setTimeout(()=>{if(!S.onb&&payOn())payFamInvite(fc.toUpperCase())},2500)}}catch(e){}
   try{const u=new URL(location.href),rc=u.searchParams.get('r'),pk=u.searchParams.get('pay');if(rc&&/^[A-Z0-9]{6,12}$/i.test(rc)&&!P.refCode){P.refCode=rc.toUpperCase();save()}
     if(rc||pk){u.searchParams.delete('r');u.searchParams.delete('pay');history.replaceState(history.state,'',u.pathname+(u.search||'')+u.hash)}
