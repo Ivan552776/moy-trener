@@ -23,6 +23,22 @@
 </head>
 <body>
 <!-- заставка: видна с первых килобайт, пока на медленном мобильном интернете грузится остальное приложение; убирается сразу после запуска -->
+<script>/* встроенный браузер Instagram / Telegram / VK / Facebook / TikTok / ОК — сразу открываем в обычном браузере:
+ Android — Chrome через intent (если Chrome нет — откроется выбор браузера), iPhone — Safari через x-safari-https (работает в части приложений);
+ не получилось за 1,5 с — аккуратная плашка «Откройте в браузере» с подсказкой и кнопкой «Скопировать ссылку». Один раз за сессию, без зацикливания */
+(function(){try{var ua=navigator.userAgent||'',inapp=/Instagram|FBAN|FBAV|FB_IAB|Telegram|VKClient|OKApp|musical_ly|BytedanceWebview|TikTok|Line\//i.test(ua)||(/; wv\)/.test(ua)&&/Android/.test(ua));
+ if(!inapp)return;var ss=window.sessionStorage,k='mt-inapp';if(ss&&ss.getItem(k))return;ss&&ss.setItem(k,'1');
+ var url=location.href,ios=/iPhone|iPad|iPod/.test(ua),and=/Android/.test(ua);
+ // переход — только после полной загрузки: если встроенный браузер его не пропустит, приложение уже работает
+ window.addEventListener('load',function(){setTimeout(function(){try{
+ if(and){var u=url.replace(/^https?:\/\//,'');location.href='intent://'+u+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(url)+';end'}
+ else if(ios){location.href='x-safari-'+url}}catch(e){}},400)});
+ window.addEventListener('load',function(){setTimeout(function(){if(document.hidden)return;var b=document.createElement('div');b.id='inapp';
+  b.innerHTML='<div class="ia-c"><b>Откройте в браузере</b><span>Так приложение работает быстрее и его можно поставить на экран. Нажмите <b>⋯</b> вверху → «Открыть в '+(ios?'Safari':'браузере')+'»</span><div class="ia-b"><button id="iaCopy">Скопировать ссылку</button><button id="iaX">Продолжить здесь</button></div></div>';
+  var st=document.createElement('style');st.textContent='#inapp{position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top) + 10px);z-index:2147483600;animation:iaIn .45s cubic-bezier(.2,.9,.25,1.15) both}#inapp .ia-c{background:#047857;color:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 12px 32px rgba(0,0,0,.25);font:500 14px/1.35 -apple-system,BlinkMacSystemFont,Roboto,sans-serif;display:grid;gap:6px}#inapp b{font-weight:700}#inapp .ia-b{display:flex;gap:8px;margin-top:4px}#inapp button{flex:1;border:0;border-radius:12px;padding:10px;font:600 14px/1 inherit;font-family:inherit}#iaCopy{background:#fff;color:#047857}#iaX{background:rgba(255,255,255,.18);color:#fff}@keyframes iaIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none}}@media (prefers-reduced-motion:reduce){#inapp{animation:none}}';
+  document.head.appendChild(st);(document.body||document.documentElement).appendChild(b);
+  document.getElementById('iaX').onclick=function(){b.remove()};
+  document.getElementById('iaCopy').onclick=function(){var t=this;var ok=function(){t.textContent='Скопировано ✓'};try{navigator.clipboard.writeText(url).then(ok,function(){prompt('Скопируйте ссылку',url)})}catch(e){prompt('Скопируйте ссылку',url)}}},2200)})}catch(e){}})()</script>
 <div id="boot" role="status" aria-live="polite"><style>
 #boot{position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#F3F2F6;color:#1C1C1E;font:500 15px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;transition:opacity .28s ease;padding:0 32px;text-align:center}
 [data-scheme="dark"] #boot{background:#0B0B0D;color:#F2F2F7}
@@ -1563,7 +1579,7 @@ async function apiFetch(path,opt,ms){const B=apiBases();let last;
     catch(e){last=e;if(e&&e.name==='AbortError'&&i===B.length-1)throw e}
     finally{clearTimeout(t)}}
   if(last instanceof Response)return last;throw last||new Error('api')}
-const APPV='mt-2026-11-07-r129d'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r129e'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v9h14v-9"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10.5 3 12 8 12 8s1.5-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>',cup:'<path d="M7 4h10l-1.3 15.2a2 2 0 0 1-2 1.8h-3.4a2 2 0 0 1-2-1.8z"/><path d="M7.4 9h9.2"/>',expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
