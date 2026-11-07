@@ -6,8 +6,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" id="themecolor" content="#F2F3F7"><meta name="color-scheme" content="light dark">
-<script>try{var dm=navigator.deviceMemory;if((dm&&dm<=2)||matchMedia('(prefers-reduced-transparency: reduce)').matches||!(CSS.supports('backdrop-filter','blur(1px)')||CSS.supports('-webkit-backdrop-filter','blur(1px)')))document.documentElement.classList.add('noblur')}catch(e){}try{var t=(JSON.parse(localStorage.getItem('yb-demo2'))||{}).theme||'light',r=document.documentElement;r.dataset.theme=t;r.dataset.scheme=t==='dark'||(t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}catch(e){}</script>
+<meta name="theme-color" id="themecolor" content="#F2F3F7"><meta name="color-scheme" content="light">
+<script>try{var dm=navigator.deviceMemory;if((dm&&dm<=2)||matchMedia('(prefers-reduced-transparency: reduce)').matches||!(CSS.supports('backdrop-filter','blur(1px)')||CSS.supports('-webkit-backdrop-filter','blur(1px)')))document.documentElement.classList.add('noblur')}catch(e){}try{var t=(JSON.parse(localStorage.getItem('yb-demo2'))||{}).theme||'light',r=document.documentElement;r.dataset.theme=t;r.dataset.scheme='light'}catch(e){}</script>
 <title>Мой тренер — ИИ-тренер: питание по базе и техника по видео</title>
 <meta name="description" content="Мой тренер: калории по фото считает база продуктов, техника упражнений разбирается по вашему видео прямо в телефоне. Открывается на любом телефоне.">
 <meta property="og:title" content="Мой тренер — питание по базе, техника по видео">
@@ -1633,7 +1633,7 @@ async function apiFetch(path,opt,ms){const B=apiBases();let last;
     catch(e){last=e;if(e&&e.name==='AbortError'&&i===B.length-1)throw e}
     finally{clearTimeout(t)}}
   if(last instanceof Response)return last;throw last||new Error('api')}
-const APPV='mt-2026-11-07-r130a'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r130b'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v9h14v-9"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10.5 3 12 8 12 8s1.5-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>',cup:'<path d="M7 4h10l-1.3 15.2a2 2 0 0 1-2 1.8h-3.4a2 2 0 0 1-2-1.8z"/><path d="M7.4 9h9.2"/>',expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -1797,9 +1797,9 @@ const DEF={name:'',sex:'m',age:30,h:178,w:80,goal:'lose',pace:'mid',work:'sit',t
 const fresh=()=>({onb:true,profile:{...DEF},log:[],done:[],sets:{},remind:{},tab:'today',theme:'auto',weights:[],forms:[],extra:[],custom:[],refs:[],v:3,day:null,week:null,doneOn:{},plan:null,hist:[]});
 let S=load()||fresh();if(S.demo||(S.profile&&S.profile.name==='Алексей'&&S.profile.club==='izumrud'&&S.profile.w===88)){const th=S.theme;S=fresh();S.theme=th} // старое сохранение «примера» — честно начинаем с анкеты
 if(!['today','tech','me'].includes(S.tab))S.tab='today';
-S.theme=S.theme||'auto';
-function applyTheme(){const r=document.documentElement;r.dataset.theme=S.theme;const dark=S.theme==='dark'||(S.theme==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);r.dataset.scheme=dark?'dark':'light';const m=document.getElementById('themecolor');if(m)m.content=dark?'#0B0B0D':'#F2F3F7'}
-applyTheme();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
+S.theme='light'; // тёмной темы нет: приложение всегда светлое (решение Ивана 07.11)
+function applyTheme(){const r=document.documentElement;r.dataset.theme=S.theme;const dark=false;r.dataset.scheme=dark?'dark':'light';const m=document.getElementById('themecolor');if(m)m.content=dark?'#0B0B0D':'#F2F3F7'}
+applyTheme();
 /* iOS 26, приложение с экрана «Домой»: после закрытия клавиатуры (код из письма, поиск, вес) система не возвращает высоту экрана —
    снизу пустая полоса, панель вкладок уезжает вверх. Лечится пересчётом: на миг скрыть и показать #phone (прокрутка внутри сохраняется). */
 let maxVH=innerHeight;addEventListener('resize',()=>{maxVH=Math.max(maxVH,innerHeight)});addEventListener('orientationchange',()=>{maxVH=0;setTimeout(()=>{maxVH=innerHeight},600)});
@@ -5230,7 +5230,6 @@ function vMe(){ // личный кабинет как «Настройки» н�
   </div>
   <div class="card list">
     ${row('openData()','ok','lock','Данные и конфиденциальность',AC?'копия в аккаунте, сервер в России':'всё хранится на этом телефоне')}
-    ${row('openThemeSheet()','tech','moon','Тема',TH[S.theme]||'светлая')}
   </div>
   <div class="concept">Не медицинская консультация. При травмах и заболеваниях посоветуйтесь с врачом.</div>`;
 }
@@ -6236,7 +6235,7 @@ const LK_OPEN={week:'openWeek',shop:'openWeekShop',shops:'openShops',program:'op
 function payAfterReveal(){const P=payS(),feat=P.afterPay;P.afterPay=null;save();const fn=feat&&LK_OPEN[feat];if(!fn||!payAccess()||typeof window[fn]!=='function')return;
   setTimeout(()=>{window[fn]();setTimeout(()=>{const sb=$('#sbody');if(!sb||RM)return;const k=document.createElement('div');k.className='lk3 lk3-full';k.innerHTML=`<div class="lk3-glass"></div><span class="lk3-lock">${LK_SVG}</span>`;sb.appendChild(k);
     requestAnimationFrame(()=>requestAnimationFrame(()=>{k.classList.add('open');sndLite('click')}));setTimeout(()=>k.remove(),1400)},380)},420)}
-function lockTap(btn,feat){const k=btn.closest('.lk3');if(!k||k.classList.contains('tap'))return;k.classList.add('tap');sndLite('click');haptic([8,30,12]);setTimeout(()=>{k.classList.remove('tap');openPaywall(feat)},RM?0:520)}
+function lockTap(btn,feat){const k=btn.closest('.lk3');if(!k||k.classList.contains('tap'))return;k.classList.add('tap');sndLite('click');haptic([8,30,12]);setTimeout(()=>{k.classList.remove('tap');if(!payS().trial&&payOn()){payTrialStart();closeSheet();rerender();return}openPaywall(feat)},RM?0:520)}
 function openLock(feat){const F=PAY_FEAT[feat]||PAY_FEAT.any,P=payS();PWS.feat=feat;
   sheet(F[1],`${lockCover(feat,F[1])}<div class="lk" style="padding-top:4px"><div class="pw-ds">${F[2]}</div></div>
    ${feat==='recipe'&&PWS.pick?`<button class="btn sec" style="box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--accent-text)" onclick="payPick('${esc(PWS.pick)}')">Сделать одним из 5 бесплатных</button>`:''}
@@ -6321,7 +6320,7 @@ function openSub(){const P=payS(),s=P.srv||{},paid=payPaid(),tr=payTrialOn(),own
   sheet('Подписка',`${hero}${dl}
    ${own&&payOnce()&&!s.family_member?`<button class="btn" onclick="payRenew()">Продлить — ${rubN(PAY_PRICE[s.plan]||s.amount||0)}${s.founder_keep&&/founder/.test(s.plan)?' · цена основателя':''}</button>`:''}
    ${own&&(s.devices||[]).length?`<div class="card"><div class="title">Устройства: ${s.devices.length} из ${s.device_max||3}</div>${payDevList(s)}</div>`:''}
-   ${paid||s.device_limit?'':`<button class="btn" onclick="openPaywall('any')">${P.trial?'Оформить Полный — от 249 ₽/мес':'Попробовать 7 дней бесплатно'}</button>`}
+   ${paid||s.device_limit?'':`<button class="btn" onclick="${P.trial?"openPaywall('any')":'payTrialStart();openSub()'}">${P.trial?'Оформить Полный — от 249 ₽/мес':'Попробовать 7 дней бесплатно'}</button>`}
    ${own&&fam?`<div class="card"><div class="title">Семья: вы + ${fam.members} из ${fam.max}</div><div class="small muted" style="margin-top:4px">У каждого свой аккаунт и свои данные — никто не видит чужой вес и здоровье.</div>
      ${(fam.list||[]).map(m=>`<div class="li"><div style="flex:1">${esc(m.nick)}<div class="tiny muted">с ${dmy(m.since*1000)}</div></div><button class="btn ghost sm" onclick="payFamRemove(${m.n})"${fam.swaps_left?'':' disabled'}>Исключить</button></div>`).join('')}
      ${fam.members<fam.max?`<div class="iv-qr" style="margin:12px 0 0;padding:16px">${qrSvg(PAY_SITE+'?fam='+(fam.code||''))}<div class="lnk">Присоединиться к семье</div></div><button class="btn sec" style="margin:10px 0 0" onclick="payShare('Присоединяйся к моей семейной подписке «Мой тренер»',PAY_SITE+'?fam=${esc(fam.code||'')}')">Отправить приглашение</button>`:''}
@@ -7124,14 +7123,14 @@ setTimeout(visit,1500);setTimeout(remSync,2500);openHash(location.hash);if(!/myr
 // только когда человек ничего не делает (нет открытой шторки, анкеты, тренировки, камеры)
 async function updCheck(){const now=Date.now();if(!navigator.onLine||now-(updCheck.at||0)<10*60e3)return;updCheck.at=now;
   try{const t=await (await fetch('sw.js',{cache:'no-store'})).text(),m=t.match(/const V='([^']+)'/);if(!m||m[1]===APPV)return;let tried='';try{tried=sessionStorage.getItem('mt-upd')||''}catch(e){}if(tried===m[1])return; // уже обновлялись на эту версию — не крутим перезагрузки
-    const go_=()=>{try{sessionStorage.setItem('mt-upd',m[1])}catch(e){}location.reload()};
+    const go_=async()=>{try{sessionStorage.setItem('mt-upd',m[1])}catch(e){}try{await Promise.race([fetch(location.pathname,{cache:'reload'}),new Promise(r=>setTimeout(r,8000))])}catch(e){}location.reload()};
     const busy=()=>$('#sheet').classList.contains('on')||!$('#onb').classList.contains('hide')||document.querySelector('#cons.on')||[...document.querySelectorAll('video')].some(v=>!v.paused);
     if(!busy()){go_();return}
     const w=()=>{if(!busy())go_();else setTimeout(w,5000)};setTimeout(w,5000)}catch(e){}}
 // новые отзывы и ответы команды подтягиваются, пока открыта стартовая страница или «Сегодня» (сервер держит кэш 15 с — нагрузки нет)
 setInterval(()=>{if(!document.hidden&&navigator.onLine&&(!$('#onb').classList.contains('hide')||S.tab==='today'))rvLoad(true)},3*60e3);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){visit();updCheck();if(!S.onb&&S.tab==='today')rvLoad();rvReplyCheck();if(S.remind&&(S.remind.on||S.remind.unsub))remSync()}});
-window.__mtOK=1; // главный код дошёл до конца — приложение запустилось
+setTimeout(updCheck,3000);window.__mtOK=1; // главный код дошёл до конца — приложение запустилось
 </script>
 <script>(function(){var b=document.getElementById('boot');if(!b)return;
 if(!window.__mtOK){ // приложение не запустилось (испорченная сохранённая копия, сбой) — самовосстановление: стираем копию и перезагружаемся один раз, иначе понятная кнопка
