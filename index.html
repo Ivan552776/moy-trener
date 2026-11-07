@@ -1633,7 +1633,7 @@ async function apiFetch(path,opt,ms){const B=apiBases();let last;
     catch(e){last=e;if(e&&e.name==='AbortError'&&i===B.length-1)throw e}
     finally{clearTimeout(t)}}
   if(last instanceof Response)return last;throw last||new Error('api')}
-const APPV='mt-2026-11-07-r130f'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r130g'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v9h14v-9"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10.5 3 12 8 12 8s1.5-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>',cup:'<path d="M7 4h10l-1.3 15.2a2 2 0 0 1-2 1.8h-3.4a2 2 0 0 1-2-1.8z"/><path d="M7.4 9h9.2"/>',expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -6347,12 +6347,18 @@ async function payDevOff(id){if(!payTok()){toast('Войдите в аккаун
 // продление в одно касание: тот же тариф (цену основателя сохранит сервер)
 function payRenew(){const s=payS().srv||{};PWS.plan=s.plan==='founder'?'year':(s.plan||'month');PWS.fam=/fam/.test(PWS.plan);PWS.cons=true;haptic(8);toast('Открываем оплату…');payGo()}
 // возврат по оферте (раздел 6): письмо с номером устройства, тарифом и суммой; деньги возвращает Иван в кабинете Продамуса — уведомление о возврате само закроет доступ
-function payRefundAsk(){const s=payS().srv||{},yr=s.plan&&/year|founder/.test(s.plan),sum=s.amount?rubN(s.amount):'',
-  body=`Прошу вернуть деньги за подписку «Мой тренер».\nТариф: ${({month:'Полный — месяц',year:'Полный — год',founder:'Полный — год (цена основателя)',fam_month:'Семья — месяц',fam_year:'Семья — год'})[s.plan]||s.plan||'—'}${sum?', '+sum:''}\nДоступ до: ${s.until?dmy(s.until*1000):'—'}\nНомер устройства: ${S.did}\nКуда вернуть: на карту/счёт, с которого оплачивал(а).`;
-  sheet('Вернуть деньги',`<div class="card" style="text-wrap:pretty">${yr?'<b>Годовая подписка:</b> в течение 14 дней с оплаты вернём всю сумму без объяснения причин. Позже —':'<b>Месячная подписка:</b>'} вернём деньги за неиспользованные дни. Срок — до 10 дней, на ту же карту или счёт. После возврата платные функции закроются, ваши данные останутся.</div>
-   <a class="btn" href="mailto:${PAY_MAIL}?subject=${encodeURIComponent('Возврат за подписку')}&body=${encodeURIComponent(body)}">Написать запрос на возврат</a>
-   <div class="pw-fine">Письмо уже заполнено — просто отправьте. Адрес: ${PAY_MAIL}. Условия — в ${docA('oferta','оферте')}, раздел 6.</div>
-   <button class="btn ghost" onclick="openSub()">Назад</button>`)}
+function payRefundAsk(){const s=payS().srv||{},yr=s.plan&&/year|founder/.test(s.plan),P=payS(),sent=P.refundAt&&Date.now()-P.refundAt<864e5;
+  sheet('Вернуть деньги',`<div class="card" style="text-wrap:pretty">${yr?'<b>Годовая подписка:</b> в течение 14 дней с оплаты вернём всю сумму без объяснения причин. Позже —':'<b>Месячная подписка:</b>'} вернём деньги за неиспользованные дни. Срок — до 10 дней, на ту же карту или счёт, с которого платили. После возврата платные функции закроются, ваши записи останутся.</div>
+   ${sent?`<div class="pw-note">${ic('check')}<div><b>Запрос уже у нас</b> — вернём в течение 10 дней. Вопросы: ${PAY_MAIL}</div></div><button class="btn sec" onclick="openSub()">Назад</button>`
+   :`<textarea id="rfwhy" class="inp" rows="2" maxlength="200" placeholder="Что не понравилось? (необязательно)" style="width:100%;margin-bottom:10px;resize:none"></textarea>
+   <button class="btn" id="rfgo" onclick="payRefundSend()">Отправить запрос</button>
+   <div class="pw-fine">Условия — в ${docA('oferta','оферте')}, раздел 6. Вопросы: ${PAY_MAIL}</div>
+   <button class="btn ghost" onclick="openSub()">Назад</button>`}`)}
+async function payRefundSend(){const b=$('#rfgo');if(b){b.disabled=true;b.textContent='Отправляем…'}
+  const r=await api('/pay/refund/request',{did:S.did,token:payTok(),why:($('#rfwhy')||{}).value||''},15000);
+  if(r.ok){const P=payS();P.refundAt=Date.now();save();haptic([10,40,10]);
+    sheet('Запрос принят',`<div class="pw-ok"><div class="pw-ic">${ic('check')}</div><div class="pw-tt">Запрос принят</div><div class="pw-ds" style="margin:6px 12px 16px;text-wrap:pretty">${r.data&&r.data.amount?`Вернём ${rubN(r.data.amount)}`:'Вернём деньги'} в течение 10 дней на карту или счёт, с которого вы платили. Когда деньги уйдут, платные функции закроются — ваши записи останутся.</div></div><button class="btn sec" onclick="closeSheet()">Понятно</button>`);return}
+  if(b){b.disabled=false;b.textContent='Отправить ещё раз'}toast(r.status===0?'Нет интернета — попробуйте ещё раз':'Не получилось — попробуйте ещё раз или напишите на '+PAY_MAIL,true)}
 function paySubCancelAsk(){const s=payS().srv||{};sheet('Отменить автопродление?',`<div class="card" style="text-wrap:pretty">Списаний больше не будет. Полный останется до ${dmy((s.until||0)*1000)} — потом откроются только бесплатные функции. Данные не удалятся.</div>
    <button class="btn danger" id="sbCancel" onclick="paySubCancel()">Отменить автопродление</button><button class="btn ghost" onclick="openSub()">Оставить</button>`)}
 async function paySubCancel(){const b=$('#sbCancel');if(b){b.disabled=true;b.textContent='Отменяем…'}const r=await api('/pay/cancel',{did:S.did,token:payTok()},20000);
