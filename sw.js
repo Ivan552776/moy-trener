@@ -4,7 +4,7 @@
    видео не трогаем (нужны частичные ответы 206), кроме короткого примера squat.mp4: страница берёт его целиком через fetch.
    Версия кэша меняется при выкладке — скачанное (библиотеки, базы, картинки) переносится в новую копию, старые страницы не переносятся.
    lib/ отдаётся из памяти без проверки: новую версию библиотеки класть по новому пути, иначе останется старая. */
-const V='mt-2026-11-07-r129b';
+const V='mt-2026-11-07-r129d';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(['./','index.html','manifest.webmanifest','icon.png','data/products.json','data/dishes.json','data/aliases.json','data/korzina.json','data/recepty-std.json','data/regiony.json','data/allergens.json','data/goroda.json','cook-anim.js','snd/nozh-1.mp3','snd/nozh-2.mp3','snd/nozh-3.mp3','snd/nozh-4.mp3','snd/hrust-1.mp3','snd/hrust-2.mp3','snd/hrust-3.mp3'].map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 // страница просит сохранить себя (её адрес заранее неизвестен: index.html на сервере, yobody.html в превью)
 self.addEventListener('message',e=>{const u=e.data&&e.data.cachePage;if(u)e.waitUntil(caches.open(V).then(c=>c.add(new Request(u,{cache:'reload'}))).catch(()=>{}))});
@@ -40,7 +40,10 @@ self.addEventListener('fetch',e=>{
     // перезагрузка ради новой версии (cache: reload/no-cache) — сначала сеть, при сбое — сохранённая копия
     const net=()=>fetch(r).then(res=>put(r,res)),saved=()=>caches.match(r,{ignoreSearch:true}).then(m=>m||caches.match('./',{ignoreSearch:true}));
     if(r.cache==='reload'||r.cache==='no-cache'){e.respondWith(timeout(net(),8000).catch(saved));return}
-    e.respondWith(saved().then(m=>{if(m){e.waitUntil(net().catch(()=>{}));return m}return timeout(net(),15000).catch(()=>saved().then(x=>x||Response.error()))}));return}
+    // фоновое обновление — через e.waitUntil, вызванный сразу (Safari не разрешает вызывать его позже, внутри then — была ошибка и тёмный экран)
+    const sp=saved().catch(()=>null);
+    e.respondWith(sp.then(m=>m||timeout(net(),15000).catch(()=>saved().then(x=>x||Response.error()))).catch(()=>fetch(r)));
+    e.waitUntil(sp.then(m=>m?net().catch(()=>{}):null));return}
   if(/\/(data|models)\//.test(p)){
     // из памяти; обновляем в фоне не чаще раза за жизнь воркера (раньше — при каждом обращении, лишний трафик на мобильной сети)
     if(r.cache==='reload'||r.cache==='no-cache'){fresh.add(p);e.respondWith(timeout(fetch(r),8000).then(res=>res.ok?put(r,res):caches.match(r,{ignoreSearch:true}).then(m=>m||res)).catch(()=>caches.match(r,{ignoreSearch:true}).then(m=>m||Response.error())));return} // страница входа в Wi-Fi или 5xx — отдаём сохранённое
