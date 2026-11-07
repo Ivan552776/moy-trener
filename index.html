@@ -1633,7 +1633,7 @@ async function apiFetch(path,opt,ms){const B=apiBases();let last;
     catch(e){last=e;if(e&&e.name==='AbortError'&&i===B.length-1)throw e}
     finally{clearTimeout(t)}}
   if(last instanceof Response)return last;throw last||new Error('api')}
-const APPV='mt-2026-11-07-r130b'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
+const APPV='mt-2026-11-07-r130c'; // версия приложения для счётчика заходов — менять вместе с V в sw.js
 /* ---------- иконки ---------- */
 const I={gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M5 12v9h14v-9"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10.5 3 12 8 12 8s1.5-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>',cup:'<path d="M7 4h10l-1.3 15.2a2 2 0 0 1-2 1.8h-3.4a2 2 0 0 1-2-1.8z"/><path d="M7.4 9h9.2"/>',expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
  today:'<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/><path d="M12 7v5l3 2"/>',
@@ -6281,7 +6281,7 @@ function payPaint(keep){const P=payS(),s=P.srv||{},F=PAY_FEAT[PWS.feat]||PAY_FEA
 async function payInterest(){const P=payS();P.interest=Date.now();save();haptic(8);payPaint(true);const r=await api('/pay/interest',{did:S.did,token:payTok(),plan:PWS.plan});if(r.ok)payApply(r.data);toast('Записали. Включим 7 дней бесплатно, как только откроем оплату')}
 async function payGo(){if(!PWS.cons&&!payOnce())return;const b=$('#pwgo');if(b){b.disabled=true;b.innerHTML='<span class="pw-wait" style="width:20px;height:20px;margin:0;border-width:2.5px"></span>'}
   const r=await api('/pay/link',{did:S.did,token:payTok(),plan:PWS.plan,...(payOnce()?{}:{consent:true})},15000);
-  if(r.ok&&r.data&&r.data.enabled&&/^https:\/\/[\w.-]+\.payform\.ru\//.test(r.data.url||'')){const P=payS();P.wait={plan:r.data.plan,at:Date.now()};P.afterPay=PWS.feat&&PWS.feat!=='any'?PWS.feat:null;save();location.assign(r.data.url);return}
+  if(r.ok&&r.data&&r.data.enabled&&/^https:\/\/[\w.-]+\.payform\.ru\//.test(r.data.url||'')){const P=payS();P.wait={plan:r.data.plan,at:Date.now()};P.afterPay=PWS.feat&&PWS.feat!=='any'?PWS.feat:null;save();const u=r.data.url;location.assign(u);setTimeout(()=>{if(document.hidden||!$('#pwgo'))return;const g=$('#pwgo');g.disabled=false;g.textContent='Открыть оплату ещё раз';g.onclick=()=>location.assign(u);if(!$('#pwslow')){const d=document.createElement('div');d.id='pwslow';d.className='pw-fine';d.innerHTML='Страница оплаты долго открывается — бывает в мобильной сети и во встроенном браузере Telegram или Instagram. Попробуйте ещё раз, через Wi‑Fi или в Safari/Chrome: <button style="background:none;border:0;padding:0;font:inherit;color:var(--accent-text);font-weight:600;text-decoration:underline">скопировать ссылку</button>';d.querySelector('button').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(u).then(()=>toast('Ссылка скопирована — вставьте в Safari или Chrome'),()=>toast('Не получилось скопировать',true))};g.after(d)}},7000);return}
   if(r.ok&&r.data&&r.data.enabled===false){payApply(r.data);payPaint(true);return}
   if(b){b.disabled=false;b.textContent='Попробовать ещё раз'}toast(r.status===0?'Нет интернета — оплата не открылась':'Не получилось открыть оплату — попробуйте ещё раз',true)}
 // вернулись с платёжной страницы: ждём уведомление банка, доступ — без перезагрузки
